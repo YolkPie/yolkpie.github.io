@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>浮点数 float | Yolk CLI</title>
+    <meta name="description" content="前端项目脚手架">
+    
+    
+    <link rel="preload" href="/yolk-cli/assets/css/0.styles.fe878658.css" as="style"><link rel="preload" href="/yolk-cli/assets/js/app.d9af19e1.js" as="script"><link rel="preload" href="/yolk-cli/assets/js/2.fa9773ce.js" as="script"><link rel="preload" href="/yolk-cli/assets/js/28.cac2dfbf.js" as="script"><link rel="prefetch" href="/yolk-cli/assets/js/10.35613ee1.js"><link rel="prefetch" href="/yolk-cli/assets/js/11.d310f83e.js"><link rel="prefetch" href="/yolk-cli/assets/js/12.53c2af00.js"><link rel="prefetch" href="/yolk-cli/assets/js/13.7a8840ab.js"><link rel="prefetch" href="/yolk-cli/assets/js/14.e88858ed.js"><link rel="prefetch" href="/yolk-cli/assets/js/15.434572f2.js"><link rel="prefetch" href="/yolk-cli/assets/js/16.a86ecca5.js"><link rel="prefetch" href="/yolk-cli/assets/js/17.a1b215e5.js"><link rel="prefetch" href="/yolk-cli/assets/js/18.008cb70f.js"><link rel="prefetch" href="/yolk-cli/assets/js/19.aa969f7e.js"><link rel="prefetch" href="/yolk-cli/assets/js/20.248f634d.js"><link rel="prefetch" href="/yolk-cli/assets/js/21.fc2099f9.js"><link rel="prefetch" href="/yolk-cli/assets/js/22.087fd68a.js"><link rel="prefetch" href="/yolk-cli/assets/js/23.18b73b38.js"><link rel="prefetch" href="/yolk-cli/assets/js/24.4e3c3cbb.js"><link rel="prefetch" href="/yolk-cli/assets/js/25.17f02cb0.js"><link rel="prefetch" href="/yolk-cli/assets/js/26.8d7bbf48.js"><link rel="prefetch" href="/yolk-cli/assets/js/27.420c250b.js"><link rel="prefetch" href="/yolk-cli/assets/js/29.3ac098b3.js"><link rel="prefetch" href="/yolk-cli/assets/js/3.2c60a8a3.js"><link rel="prefetch" href="/yolk-cli/assets/js/30.b89b9f7b.js"><link rel="prefetch" href="/yolk-cli/assets/js/31.16ae1048.js"><link rel="prefetch" href="/yolk-cli/assets/js/32.5462cb7c.js"><link rel="prefetch" href="/yolk-cli/assets/js/33.bc8dce7c.js"><link rel="prefetch" href="/yolk-cli/assets/js/34.7e7255d1.js"><link rel="prefetch" href="/yolk-cli/assets/js/35.88895cf1.js"><link rel="prefetch" href="/yolk-cli/assets/js/36.db9e06b2.js"><link rel="prefetch" href="/yolk-cli/assets/js/37.fffa2606.js"><link rel="prefetch" href="/yolk-cli/assets/js/38.7bf0f865.js"><link rel="prefetch" href="/yolk-cli/assets/js/39.d897b455.js"><link rel="prefetch" href="/yolk-cli/assets/js/4.d09266af.js"><link rel="prefetch" href="/yolk-cli/assets/js/40.bd6b42b4.js"><link rel="prefetch" href="/yolk-cli/assets/js/5.a3248993.js"><link rel="prefetch" href="/yolk-cli/assets/js/6.d0190e4c.js"><link rel="prefetch" href="/yolk-cli/assets/js/7.26e4958b.js"><link rel="prefetch" href="/yolk-cli/assets/js/8.eb5ef8c9.js"><link rel="prefetch" href="/yolk-cli/assets/js/9.e0631f91.js">
+    <link rel="stylesheet" href="/yolk-cli/assets/css/0.styles.fe878658.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/yolk-cli/" class="home-link router-link-active"><!----> <span class="site-name">Yolk CLI</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/yolk-cli/guide/introduction/" class="nav-link">快速上手</a></div><div class="nav-item"><a href="/yolk-cli/support/" class="nav-link router-link-active">配套设施</a></div><div class="nav-item"><a href="https://yolkpie.net/about/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  关于我们
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <a href="https://github.com/YolkPie/yolk-cli" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/yolk-cli/guide/introduction/" class="nav-link">快速上手</a></div><div class="nav-item"><a href="/yolk-cli/support/" class="nav-link router-link-active">配套设施</a></div><div class="nav-item"><a href="https://yolkpie.net/about/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  关于我们
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <a href="https://github.com/YolkPie/yolk-cli" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><a href="/yolk-cli/support/utils/" class="sidebar-heading clickable router-link-active open"><span>Yolk Utils</span> <span class="arrow down"></span></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/yolk-cli/support/utils/dom.html" class="sidebar-link">文档对象 DOM</a></li><li><a href="/yolk-cli/support/utils/bom.html" class="sidebar-link">浏览器对象 BOM</a></li><li><a href="/yolk-cli/support/utils/string.html" class="sidebar-link">字符串 String</a></li><li><a href="/yolk-cli/support/utils/array.html" class="sidebar-link">数组 Array</a></li><li><a href="/yolk-cli/support/utils/math.html" class="sidebar-link">数值 Math</a></li><li><a href="/yolk-cli/support/utils/event.html" class="sidebar-link">事件 Event</a></li><li><a href="/yolk-cli/support/utils/url.html" class="sidebar-link">链接 URL</a></li><li><a href="/yolk-cli/support/utils/cache.html" class="sidebar-link">缓存 Cache</a></li><li><a href="/yolk-cli/support/utils/global.html" class="sidebar-link">全局 Global</a></li><li><a href="/yolk-cli/support/utils/tools.html" class="sidebar-link">工具 Tools</a></li><li><a href="/yolk-cli/support/utils/functional.html" class="sidebar-link">函数式编程 functional</a></li><li><a href="/yolk-cli/support/utils/formatDate.html" class="sidebar-link">格式化日期 formatDate</a></li><li><a href="/yolk-cli/support/utils/floatCalculate.html" class="active sidebar-link">浮点数 float</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/yolk-cli/support/utils/floatCalculate.html#浮点数-float" class="sidebar-link">浮点数 float</a></li><li class="sidebar-sub-header"><a href="/yolk-cli/support/utils/floatCalculate.html#两个数相加" class="sidebar-link">两个数相加</a></li><li class="sidebar-sub-header"><a href="/yolk-cli/support/utils/floatCalculate.html#两个数相减" class="sidebar-link">两个数相减</a></li><li class="sidebar-sub-header"><a href="/yolk-cli/support/utils/floatCalculate.html#两个数相乘" class="sidebar-link">两个数相乘</a></li><li class="sidebar-sub-header"><a href="/yolk-cli/support/utils/floatCalculate.html#两个数相除" class="sidebar-link">两个数相除</a></li></ul></li><li><a href="/yolk-cli/support/utils/rem.html" class="sidebar-link">移动端适配</a></li><li><a href="/yolk-cli/support/utils/cookies.html" class="sidebar-link">cookie</a></li><li><a href="/yolk-cli/support/utils/getType.html" class="sidebar-link">getType</a></li><li><a href="/yolk-cli/support/utils/getDecimalLen.html" class="sidebar-link">getDecimalLen</a></li><li><a href="/yolk-cli/support/utils/replaceByMath.html" class="sidebar-link">replaceByMath</a></li><li><a href="/yolk-cli/support/utils/axios-jsonp.html" class="sidebar-link">axios-jsonp</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h2 id="浮点数-float">浮点数 float</h2> <div class="custom-block tip"><p class="custom-block-title">提示</p> <p>浮点数相关操作，依赖 <a href="/yolk-cli/support/utils/getDecimalLen.html">getDecimalLen</a> 函数。</p></div> <p>主要为解决浮点数精度问题。</p> <h2 id="两个数相加">两个数相加</h2> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">/**
+ * @description 两个数相加
+ * @author yujihu
+ * @param {number} arg1 - 相加的第一个数
+ * @param {number} arg2 - 相加的第二个数
+ * @returns {number} 返回总和
+ * @example
+ * add(0.1, 0.2) //=&gt; 0.3
+ * add(10, 20) // =&gt; 30
+ */</span>
+<span class="token keyword">function</span> <span class="token function">add</span> <span class="token punctuation">(</span><span class="token parameter">arg1<span class="token punctuation">,</span> arg2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> _len1<span class="token punctuation">,</span> _len2
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    _len1 <span class="token operator">=</span> <span class="token function">getDecimalLen</span><span class="token punctuation">(</span>arg1<span class="token punctuation">)</span>
+    _len2 <span class="token operator">=</span> <span class="token function">getDecimalLen</span><span class="token punctuation">(</span>arg2<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// console.log(e)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> maxLen <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>_len1<span class="token punctuation">,</span> _len2<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> mi <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">pow</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> maxLen<span class="token punctuation">)</span>
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>arg1 <span class="token operator">*</span> mi <span class="token operator">+</span> arg2 <span class="token operator">*</span> mi<span class="token punctuation">)</span> <span class="token operator">/</span> mi<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span>maxLen<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token operator">+</span>res
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="两个数相减">两个数相减</h2> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">/**
+ * @description 两个数相减
+ * @author yujihu
+ * @param {number} arg1 - 相减的第一个数
+ * @param {number} arg2 - 相减的第二个数
+ * @returns {number} 返回差值
+ * @example
+ * subtract(1.5, 1.2) //=&gt; 0.3
+ * subtract(4, 2) //=&gt; 2
+ */</span>
+<span class="token keyword">function</span> <span class="token function">subtract</span> <span class="token punctuation">(</span><span class="token parameter">arg1<span class="token punctuation">,</span> arg2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token function">add</span><span class="token punctuation">(</span>arg1<span class="token punctuation">,</span> <span class="token operator">-</span>arg2<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="两个数相乘">两个数相乘</h2> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">/**
+ * @description 两个数相乘
+ * @author yujihu
+ * @param {number} arg1 - 相乘的第一个数
+ * @param {number} arg2 - 相乘的第二个数
+ * @returns {number} 返回乘积
+ * @example
+ * multiply(19.9, 100) //=&gt; 1990
+ * multiply(11, 12) // =&gt; 132
+ */</span>
+<span class="token keyword">function</span> <span class="token function">multiply</span> <span class="token punctuation">(</span><span class="token parameter">arg1<span class="token punctuation">,</span> arg2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> _len1<span class="token punctuation">,</span> _len2
+  <span class="token keyword">const</span> _arg1 <span class="token operator">=</span> arg1<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> _arg2 <span class="token operator">=</span> arg2<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    _len1 <span class="token operator">=</span> <span class="token function">getDecimalLen</span><span class="token punctuation">(</span>_arg1<span class="token punctuation">)</span>
+    _len2 <span class="token operator">=</span> <span class="token function">getDecimalLen</span><span class="token punctuation">(</span>_arg2<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// console.log(e)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> maxLen <span class="token operator">=</span> _len1 <span class="token operator">+</span> _len2
+  <span class="token keyword">const</span> res <span class="token operator">=</span>
+    <span class="token punctuation">(</span>_arg1<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">*</span> _arg2<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">/</span> Math<span class="token punctuation">.</span><span class="token function">pow</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> maxLen<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token operator">+</span>res
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="两个数相除">两个数相除</h2> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token comment">/**
+ * @description 两个数相除
+ * @author yujihu
+ * @param {number} arg1 - 相除的第一个数
+ * @param {number} arg2 - 相除的第二个数
+ * @returns {number} 返回商数
+ * @example
+ * divide(0.3, 0.1) //=&gt; 3
+ * divide(30, 5) //=&gt; 6
+ */</span>
+<span class="token keyword">function</span> <span class="token function">divide</span> <span class="token punctuation">(</span><span class="token parameter">arg1<span class="token punctuation">,</span> arg2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> _len1<span class="token punctuation">,</span> _len2
+  <span class="token keyword">const</span> _arg1 <span class="token operator">=</span> arg1<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> _arg2 <span class="token operator">=</span> arg2<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    _len1 <span class="token operator">=</span> <span class="token function">getDecimalLen</span><span class="token punctuation">(</span>_arg1<span class="token punctuation">)</span>
+    _len2 <span class="token operator">=</span> <span class="token function">getDecimalLen</span><span class="token punctuation">(</span>_arg2<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// console.log(e)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> m <span class="token operator">=</span> _len2 <span class="token operator">-</span> _len1
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token punctuation">(</span>_arg1<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">/</span> _arg2<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> Math<span class="token punctuation">.</span><span class="token function">pow</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> m<span class="token punctuation">)</span>
+  <span class="token keyword">return</span> <span class="token operator">+</span>res
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/YolkPie/yolk-cli.github.io/edit/master/docs/support/utils/floatCalculate.md" target="_blank" rel="noopener noreferrer">在 GitHub 上编辑此页</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/yolk-cli/support/utils/formatDate.html" class="prev">格式化日期 formatDate</a></span> <span class="next"><a href="/yolk-cli/support/utils/rem.html">移动端适配</a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/yolk-cli/assets/js/app.d9af19e1.js" defer></script><script src="/yolk-cli/assets/js/2.fa9773ce.js" defer></script><script src="/yolk-cli/assets/js/28.cac2dfbf.js" defer></script>
+  </body>
+</html>

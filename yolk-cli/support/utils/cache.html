@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>缓存 Cache | Yolk CLI</title>
+    <meta name="description" content="前端项目脚手架">
+    
+    
+    <link rel="preload" href="/yolk-cli/assets/css/0.styles.fe878658.css" as="style"><link rel="preload" href="/yolk-cli/assets/js/app.d9af19e1.js" as="script"><link rel="preload" href="/yolk-cli/assets/js/2.fa9773ce.js" as="script"><link rel="preload" href="/yolk-cli/assets/js/24.4e3c3cbb.js" as="script"><link rel="prefetch" href="/yolk-cli/assets/js/10.35613ee1.js"><link rel="prefetch" href="/yolk-cli/assets/js/11.d310f83e.js"><link rel="prefetch" href="/yolk-cli/assets/js/12.53c2af00.js"><link rel="prefetch" href="/yolk-cli/assets/js/13.7a8840ab.js"><link rel="prefetch" href="/yolk-cli/assets/js/14.e88858ed.js"><link rel="prefetch" href="/yolk-cli/assets/js/15.434572f2.js"><link rel="prefetch" href="/yolk-cli/assets/js/16.a86ecca5.js"><link rel="prefetch" href="/yolk-cli/assets/js/17.a1b215e5.js"><link rel="prefetch" href="/yolk-cli/assets/js/18.008cb70f.js"><link rel="prefetch" href="/yolk-cli/assets/js/19.aa969f7e.js"><link rel="prefetch" href="/yolk-cli/assets/js/20.248f634d.js"><link rel="prefetch" href="/yolk-cli/assets/js/21.fc2099f9.js"><link rel="prefetch" href="/yolk-cli/assets/js/22.087fd68a.js"><link rel="prefetch" href="/yolk-cli/assets/js/23.18b73b38.js"><link rel="prefetch" href="/yolk-cli/assets/js/25.17f02cb0.js"><link rel="prefetch" href="/yolk-cli/assets/js/26.8d7bbf48.js"><link rel="prefetch" href="/yolk-cli/assets/js/27.420c250b.js"><link rel="prefetch" href="/yolk-cli/assets/js/28.cac2dfbf.js"><link rel="prefetch" href="/yolk-cli/assets/js/29.3ac098b3.js"><link rel="prefetch" href="/yolk-cli/assets/js/3.2c60a8a3.js"><link rel="prefetch" href="/yolk-cli/assets/js/30.b89b9f7b.js"><link rel="prefetch" href="/yolk-cli/assets/js/31.16ae1048.js"><link rel="prefetch" href="/yolk-cli/assets/js/32.5462cb7c.js"><link rel="prefetch" href="/yolk-cli/assets/js/33.bc8dce7c.js"><link rel="prefetch" href="/yolk-cli/assets/js/34.7e7255d1.js"><link rel="prefetch" href="/yolk-cli/assets/js/35.88895cf1.js"><link rel="prefetch" href="/yolk-cli/assets/js/36.db9e06b2.js"><link rel="prefetch" href="/yolk-cli/assets/js/37.fffa2606.js"><link rel="prefetch" href="/yolk-cli/assets/js/38.7bf0f865.js"><link rel="prefetch" href="/yolk-cli/assets/js/39.d897b455.js"><link rel="prefetch" href="/yolk-cli/assets/js/4.d09266af.js"><link rel="prefetch" href="/yolk-cli/assets/js/40.bd6b42b4.js"><link rel="prefetch" href="/yolk-cli/assets/js/5.a3248993.js"><link rel="prefetch" href="/yolk-cli/assets/js/6.d0190e4c.js"><link rel="prefetch" href="/yolk-cli/assets/js/7.26e4958b.js"><link rel="prefetch" href="/yolk-cli/assets/js/8.eb5ef8c9.js"><link rel="prefetch" href="/yolk-cli/assets/js/9.e0631f91.js">
+    <link rel="stylesheet" href="/yolk-cli/assets/css/0.styles.fe878658.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/yolk-cli/" class="home-link router-link-active"><!----> <span class="site-name">Yolk CLI</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/yolk-cli/guide/introduction/" class="nav-link">快速上手</a></div><div class="nav-item"><a href="/yolk-cli/support/" class="nav-link router-link-active">配套设施</a></div><div class="nav-item"><a href="https://yolkpie.net/about/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  关于我们
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <a href="https://github.com/YolkPie/yolk-cli" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/yolk-cli/guide/introduction/" class="nav-link">快速上手</a></div><div class="nav-item"><a href="/yolk-cli/support/" class="nav-link router-link-active">配套设施</a></div><div class="nav-item"><a href="https://yolkpie.net/about/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  关于我们
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <a href="https://github.com/YolkPie/yolk-cli" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><a href="/yolk-cli/support/utils/" class="sidebar-heading clickable router-link-active open"><span>Yolk Utils</span> <span class="arrow down"></span></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/yolk-cli/support/utils/dom.html" class="sidebar-link">文档对象 DOM</a></li><li><a href="/yolk-cli/support/utils/bom.html" class="sidebar-link">浏览器对象 BOM</a></li><li><a href="/yolk-cli/support/utils/string.html" class="sidebar-link">字符串 String</a></li><li><a href="/yolk-cli/support/utils/array.html" class="sidebar-link">数组 Array</a></li><li><a href="/yolk-cli/support/utils/math.html" class="sidebar-link">数值 Math</a></li><li><a href="/yolk-cli/support/utils/event.html" class="sidebar-link">事件 Event</a></li><li><a href="/yolk-cli/support/utils/url.html" class="sidebar-link">链接 URL</a></li><li><a href="/yolk-cli/support/utils/cache.html" class="active sidebar-link">缓存 Cache</a></li><li><a href="/yolk-cli/support/utils/global.html" class="sidebar-link">全局 Global</a></li><li><a href="/yolk-cli/support/utils/tools.html" class="sidebar-link">工具 Tools</a></li><li><a href="/yolk-cli/support/utils/functional.html" class="sidebar-link">函数式编程 functional</a></li><li><a href="/yolk-cli/support/utils/formatDate.html" class="sidebar-link">格式化日期 formatDate</a></li><li><a href="/yolk-cli/support/utils/floatCalculate.html" class="sidebar-link">浮点数 float</a></li><li><a href="/yolk-cli/support/utils/rem.html" class="sidebar-link">移动端适配</a></li><li><a href="/yolk-cli/support/utils/cookies.html" class="sidebar-link">cookie</a></li><li><a href="/yolk-cli/support/utils/getType.html" class="sidebar-link">getType</a></li><li><a href="/yolk-cli/support/utils/getDecimalLen.html" class="sidebar-link">getDecimalLen</a></li><li><a href="/yolk-cli/support/utils/replaceByMath.html" class="sidebar-link">replaceByMath</a></li><li><a href="/yolk-cli/support/utils/axios-jsonp.html" class="sidebar-link">axios-jsonp</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="缓存-cache">缓存 Cache</h1> <p>封装了storage的相关操作</p> <ul><li>sessionStorage（默认）
+<ul><li>get: cache.session.get(key)</li> <li>set: cache.session.set(key, value)</li> <li>remove: cache.session.remove(key)</li> <li>clear: cache.session.clear()</li></ul></li> <li>localStorage
+<ul><li>get: cache.local.get(key)</li> <li>set: cache.local.set(key, value)</li> <li>remove: cache.local.remove(key)</li> <li>clear: cache.local.clear()</li></ul></li></ul> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">const</span> __session__ <span class="token operator">=</span> window<span class="token punctuation">.</span>sessionStorage
+<span class="token keyword">const</span> __local__ <span class="token operator">=</span> window<span class="token punctuation">.</span>localStorage
+
+<span class="token keyword">const</span> <span class="token constant">TYPES</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'session'</span><span class="token punctuation">,</span> <span class="token string">'local'</span><span class="token punctuation">]</span>
+<span class="token keyword">const</span> <span class="token constant">DEFAULT_CACHE</span> <span class="token operator">=</span> <span class="token constant">TYPES</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+
+<span class="token keyword">const</span> cache <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function-variable function">set</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> type <span class="token operator">=</span> <span class="token constant">DEFAULT_CACHE</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token operator">!</span><span class="token punctuation">(</span>type <span class="token keyword">in</span> <span class="token constant">TYPES</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>type <span class="token operator">=</span> <span class="token constant">DEFAULT_CACHE</span><span class="token punctuation">)</span>
+      cache<span class="token punctuation">[</span>type<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> cache<span class="token punctuation">[</span>type<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> cache<span class="token punctuation">[</span>type<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">get</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">key<span class="token punctuation">,</span> type <span class="token operator">=</span> <span class="token constant">DEFAULT_CACHE</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token operator">!</span><span class="token punctuation">(</span>type <span class="token keyword">in</span> <span class="token constant">TYPES</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>type <span class="token operator">=</span> <span class="token constant">DEFAULT_CACHE</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span> cache<span class="token punctuation">[</span>type<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token keyword">null</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">clear</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">type <span class="token operator">=</span> <span class="token constant">DEFAULT_CACHE</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token operator">!</span><span class="token punctuation">(</span>type <span class="token keyword">in</span> <span class="token constant">TYPES</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>type <span class="token operator">=</span> <span class="token constant">DEFAULT_CACHE</span><span class="token punctuation">)</span>
+      cache<span class="token punctuation">[</span>type<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span> cache<span class="token punctuation">[</span>type<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> cache<span class="token punctuation">[</span>type<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function-variable function">remove</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">key<span class="token punctuation">,</span> type <span class="token operator">=</span> <span class="token constant">DEFAULT_CACHE</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      cache<span class="token punctuation">[</span>type<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+      <span class="token keyword">return</span> cache
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> cache
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  session<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">set</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">key<span class="token punctuation">,</span> value</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        __session__<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>session
+      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>session
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">get</span><span class="token operator">:</span> <span class="token parameter">key</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> value <span class="token operator">=</span> __session__<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> key <span class="token operator">&amp;&amp;</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">null</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">remove</span><span class="token operator">:</span> <span class="token parameter">key</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        __session__<span class="token punctuation">.</span><span class="token function">removeItem</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>session
+      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>session
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">clear</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        __session__<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>session
+      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>session
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  local<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token function-variable function">set</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token parameter">key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> isTimeout <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">,</span> expireTime <span class="token operator">=</span> <span class="token number">1000</span> <span class="token operator">*</span> <span class="token number">60</span> <span class="token operator">*</span> <span class="token number">60</span> <span class="token operator">*</span> <span class="token number">24</span></span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token comment">// 如果开启过期，默认过期时间为一天 1000 * 60 * 60 * 24，时间单位为毫秒</span>
+        <span class="token keyword">const</span> localObj <span class="token operator">=</span> <span class="token punctuation">{</span>
+          now<span class="token operator">:</span> <span class="token operator">+</span><span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+          expire<span class="token operator">:</span> isTimeout <span class="token operator">?</span> expireTime <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          data<span class="token operator">:</span> value
+        <span class="token punctuation">}</span>
+        __local__<span class="token punctuation">.</span><span class="token function">setItem</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>localObj<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>local
+      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>local
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">get</span><span class="token operator">:</span> <span class="token parameter">key</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> value <span class="token operator">=</span> __local__<span class="token punctuation">.</span><span class="token function">getItem</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+        <span class="token keyword">let</span> localData <span class="token operator">=</span> <span class="token keyword">null</span>
+        <span class="token keyword">let</span> data <span class="token operator">=</span> <span class="token keyword">null</span>
+        <span class="token comment">// 是否存在key对应的localstorage值</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          localData <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">// 是否存在data属性，有为新的数据格式</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>localData <span class="token operator">&amp;&amp;</span> localData<span class="token punctuation">.</span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token comment">// 数据是否过期</span>
+          <span class="token keyword">const</span> diff <span class="token operator">=</span>
+            localData<span class="token punctuation">.</span>expire <span class="token operator">&gt;</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span>
+            <span class="token operator">+</span><span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> localData<span class="token punctuation">.</span>now <span class="token operator">*</span> <span class="token number">1</span> <span class="token operator">&gt;</span> localData<span class="token punctuation">.</span>expire
+          <span class="token comment">// 过期，删除数据</span>
+          <span class="token keyword">if</span> <span class="token punctuation">(</span>diff<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            cache<span class="token punctuation">.</span>local<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+          <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            data <span class="token operator">=</span> localData<span class="token punctuation">.</span>data
+          <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+          data <span class="token operator">=</span> localData
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> data
+      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">null</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">remove</span><span class="token operator">:</span> <span class="token parameter">key</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        __local__<span class="token punctuation">.</span><span class="token function">removeItem</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>local
+      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>local
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function-variable function">clear</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        __local__<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>local
+      <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> cache<span class="token punctuation">.</span>local
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/YolkPie/yolk-cli.github.io/edit/master/docs/support/utils/cache.md" target="_blank" rel="noopener noreferrer">在 GitHub 上编辑此页</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/yolk-cli/support/utils/url.html" class="prev">链接 URL</a></span> <span class="next"><a href="/yolk-cli/support/utils/global.html">全局 Global</a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/yolk-cli/assets/js/app.d9af19e1.js" defer></script><script src="/yolk-cli/assets/js/2.fa9773ce.js" defer></script><script src="/yolk-cli/assets/js/24.4e3c3cbb.js" defer></script>
+  </body>
+</html>

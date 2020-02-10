@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>axios-jsonp | Yolk CLI</title>
+    <meta name="description" content="前端项目脚手架">
+    
+    
+    <link rel="preload" href="/yolk-cli/assets/css/0.styles.fe878658.css" as="style"><link rel="preload" href="/yolk-cli/assets/js/app.d9af19e1.js" as="script"><link rel="preload" href="/yolk-cli/assets/js/2.fa9773ce.js" as="script"><link rel="preload" href="/yolk-cli/assets/js/22.087fd68a.js" as="script"><link rel="prefetch" href="/yolk-cli/assets/js/10.35613ee1.js"><link rel="prefetch" href="/yolk-cli/assets/js/11.d310f83e.js"><link rel="prefetch" href="/yolk-cli/assets/js/12.53c2af00.js"><link rel="prefetch" href="/yolk-cli/assets/js/13.7a8840ab.js"><link rel="prefetch" href="/yolk-cli/assets/js/14.e88858ed.js"><link rel="prefetch" href="/yolk-cli/assets/js/15.434572f2.js"><link rel="prefetch" href="/yolk-cli/assets/js/16.a86ecca5.js"><link rel="prefetch" href="/yolk-cli/assets/js/17.a1b215e5.js"><link rel="prefetch" href="/yolk-cli/assets/js/18.008cb70f.js"><link rel="prefetch" href="/yolk-cli/assets/js/19.aa969f7e.js"><link rel="prefetch" href="/yolk-cli/assets/js/20.248f634d.js"><link rel="prefetch" href="/yolk-cli/assets/js/21.fc2099f9.js"><link rel="prefetch" href="/yolk-cli/assets/js/23.18b73b38.js"><link rel="prefetch" href="/yolk-cli/assets/js/24.4e3c3cbb.js"><link rel="prefetch" href="/yolk-cli/assets/js/25.17f02cb0.js"><link rel="prefetch" href="/yolk-cli/assets/js/26.8d7bbf48.js"><link rel="prefetch" href="/yolk-cli/assets/js/27.420c250b.js"><link rel="prefetch" href="/yolk-cli/assets/js/28.cac2dfbf.js"><link rel="prefetch" href="/yolk-cli/assets/js/29.3ac098b3.js"><link rel="prefetch" href="/yolk-cli/assets/js/3.2c60a8a3.js"><link rel="prefetch" href="/yolk-cli/assets/js/30.b89b9f7b.js"><link rel="prefetch" href="/yolk-cli/assets/js/31.16ae1048.js"><link rel="prefetch" href="/yolk-cli/assets/js/32.5462cb7c.js"><link rel="prefetch" href="/yolk-cli/assets/js/33.bc8dce7c.js"><link rel="prefetch" href="/yolk-cli/assets/js/34.7e7255d1.js"><link rel="prefetch" href="/yolk-cli/assets/js/35.88895cf1.js"><link rel="prefetch" href="/yolk-cli/assets/js/36.db9e06b2.js"><link rel="prefetch" href="/yolk-cli/assets/js/37.fffa2606.js"><link rel="prefetch" href="/yolk-cli/assets/js/38.7bf0f865.js"><link rel="prefetch" href="/yolk-cli/assets/js/39.d897b455.js"><link rel="prefetch" href="/yolk-cli/assets/js/4.d09266af.js"><link rel="prefetch" href="/yolk-cli/assets/js/40.bd6b42b4.js"><link rel="prefetch" href="/yolk-cli/assets/js/5.a3248993.js"><link rel="prefetch" href="/yolk-cli/assets/js/6.d0190e4c.js"><link rel="prefetch" href="/yolk-cli/assets/js/7.26e4958b.js"><link rel="prefetch" href="/yolk-cli/assets/js/8.eb5ef8c9.js"><link rel="prefetch" href="/yolk-cli/assets/js/9.e0631f91.js">
+    <link rel="stylesheet" href="/yolk-cli/assets/css/0.styles.fe878658.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/yolk-cli/" class="home-link router-link-active"><!----> <span class="site-name">Yolk CLI</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/yolk-cli/guide/introduction/" class="nav-link">快速上手</a></div><div class="nav-item"><a href="/yolk-cli/support/" class="nav-link router-link-active">配套设施</a></div><div class="nav-item"><a href="https://yolkpie.net/about/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  关于我们
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <a href="https://github.com/YolkPie/yolk-cli" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/yolk-cli/guide/introduction/" class="nav-link">快速上手</a></div><div class="nav-item"><a href="/yolk-cli/support/" class="nav-link router-link-active">配套设施</a></div><div class="nav-item"><a href="https://yolkpie.net/about/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  关于我们
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <a href="https://github.com/YolkPie/yolk-cli" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><a href="/yolk-cli/support/utils/" class="sidebar-heading clickable router-link-active open"><span>Yolk Utils</span> <span class="arrow down"></span></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/yolk-cli/support/utils/dom.html" class="sidebar-link">文档对象 DOM</a></li><li><a href="/yolk-cli/support/utils/bom.html" class="sidebar-link">浏览器对象 BOM</a></li><li><a href="/yolk-cli/support/utils/string.html" class="sidebar-link">字符串 String</a></li><li><a href="/yolk-cli/support/utils/array.html" class="sidebar-link">数组 Array</a></li><li><a href="/yolk-cli/support/utils/math.html" class="sidebar-link">数值 Math</a></li><li><a href="/yolk-cli/support/utils/event.html" class="sidebar-link">事件 Event</a></li><li><a href="/yolk-cli/support/utils/url.html" class="sidebar-link">链接 URL</a></li><li><a href="/yolk-cli/support/utils/cache.html" class="sidebar-link">缓存 Cache</a></li><li><a href="/yolk-cli/support/utils/global.html" class="sidebar-link">全局 Global</a></li><li><a href="/yolk-cli/support/utils/tools.html" class="sidebar-link">工具 Tools</a></li><li><a href="/yolk-cli/support/utils/functional.html" class="sidebar-link">函数式编程 functional</a></li><li><a href="/yolk-cli/support/utils/formatDate.html" class="sidebar-link">格式化日期 formatDate</a></li><li><a href="/yolk-cli/support/utils/floatCalculate.html" class="sidebar-link">浮点数 float</a></li><li><a href="/yolk-cli/support/utils/rem.html" class="sidebar-link">移动端适配</a></li><li><a href="/yolk-cli/support/utils/cookies.html" class="sidebar-link">cookie</a></li><li><a href="/yolk-cli/support/utils/getType.html" class="sidebar-link">getType</a></li><li><a href="/yolk-cli/support/utils/getDecimalLen.html" class="sidebar-link">getDecimalLen</a></li><li><a href="/yolk-cli/support/utils/replaceByMath.html" class="sidebar-link">replaceByMath</a></li><li><a href="/yolk-cli/support/utils/axios-jsonp.html" class="active sidebar-link">axios-jsonp</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="axios-jsonp">axios-jsonp</h1> <p>axios没有提供jsonp跨域的方法，axios-jsonp能够让axios支持jsonp请求。</p> <h3 id="源码">源码</h3> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">let</span> cid <span class="token operator">=</span> <span class="token number">1</span>
+
+<span class="token keyword">function</span> <span class="token function">buildParams</span> <span class="token punctuation">(</span><span class="token parameter">params</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> i <span class="token keyword">in</span> params<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    result<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">encodeURIComponent</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'='</span> <span class="token operator">+</span> <span class="token function">encodeURIComponent</span><span class="token punctuation">(</span>params<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">return</span> result<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">'&amp;'</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">jsonpAdapter</span> <span class="token punctuation">(</span><span class="token parameter">config</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">let</span> script <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">'script'</span><span class="token punctuation">)</span>
+    <span class="token keyword">let</span> src <span class="token operator">=</span> config<span class="token punctuation">.</span>url
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span>params<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> params <span class="token operator">=</span> <span class="token function">buildParams</span><span class="token punctuation">(</span>config<span class="token punctuation">.</span>params<span class="token punctuation">)</span>
+
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>params<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        src <span class="token operator">+=</span> <span class="token punctuation">(</span>src<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span><span class="token string">'?'</span><span class="token punctuation">)</span> <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token string">'&amp;'</span> <span class="token operator">:</span> <span class="token string">'?'</span><span class="token punctuation">)</span> <span class="token operator">+</span> params
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    script<span class="token punctuation">.</span>async <span class="token operator">=</span> <span class="token boolean">true</span>
+
+    <span class="token keyword">const</span> jsonp <span class="token operator">=</span> <span class="token string">'axiosJsonpCallback'</span> <span class="token operator">+</span> cid<span class="token operator">++</span>
+    <span class="token keyword">const</span> old <span class="token operator">=</span> window<span class="token punctuation">[</span>jsonp<span class="token punctuation">]</span>
+    <span class="token keyword">let</span> isAbort <span class="token operator">=</span> <span class="token boolean">false</span>
+
+    window<span class="token punctuation">[</span>jsonp<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">responseData</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      window<span class="token punctuation">[</span>jsonp<span class="token punctuation">]</span> <span class="token operator">=</span> old
+
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>isAbort<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span>
+      <span class="token punctuation">}</span>
+
+      <span class="token keyword">const</span> response <span class="token operator">=</span> <span class="token punctuation">{</span>
+        data<span class="token operator">:</span> responseData<span class="token punctuation">,</span>
+        status<span class="token operator">:</span> <span class="token number">200</span>
+      <span class="token punctuation">}</span>
+
+      <span class="token function">resolve</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> additionalParams <span class="token operator">=</span> <span class="token punctuation">{</span>
+      _<span class="token operator">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    additionalParams<span class="token punctuation">[</span>config<span class="token punctuation">.</span>callbackParamName <span class="token operator">||</span> <span class="token string">'callback'</span><span class="token punctuation">]</span> <span class="token operator">=</span> jsonp
+
+    src <span class="token operator">+=</span> <span class="token punctuation">(</span>src<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span><span class="token string">'?'</span><span class="token punctuation">)</span> <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token operator">?</span> <span class="token string">'&amp;'</span> <span class="token operator">:</span> <span class="token string">'?'</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">buildParams</span><span class="token punctuation">(</span>additionalParams<span class="token punctuation">)</span>
+
+    script<span class="token punctuation">.</span>onload <span class="token operator">=</span> script<span class="token punctuation">.</span><span class="token function-variable function">onreadystatechange</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>script<span class="token punctuation">.</span>readyState <span class="token operator">||</span> <span class="token regex">/loaded|complete/</span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>script<span class="token punctuation">.</span>readyState<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        script<span class="token punctuation">.</span>onload <span class="token operator">=</span> script<span class="token punctuation">.</span>onreadystatechange <span class="token operator">=</span> <span class="token keyword">null</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>script<span class="token punctuation">.</span>parentNode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          script<span class="token punctuation">.</span>parentNode<span class="token punctuation">.</span><span class="token function">removeChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+
+        script <span class="token operator">=</span> <span class="token keyword">null</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    script<span class="token punctuation">.</span><span class="token function-variable function">onerror</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">err</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      script<span class="token punctuation">.</span>onerror <span class="token operator">=</span> <span class="token keyword">null</span>
+
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>script<span class="token punctuation">.</span>parentNode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        script<span class="token punctuation">.</span>parentNode<span class="token punctuation">.</span><span class="token function">removeChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+
+      <span class="token function">reject</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>config<span class="token punctuation">.</span>cancelToken<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      config<span class="token punctuation">.</span>cancelToken<span class="token punctuation">.</span>promise<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">cancel</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>script<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token keyword">return</span>
+        <span class="token punctuation">}</span>
+
+        isAbort <span class="token operator">=</span> <span class="token boolean">true</span>
+        <span class="token function">reject</span><span class="token punctuation">(</span>cancel<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+
+    script<span class="token punctuation">.</span>src <span class="token operator">=</span> src
+
+    document<span class="token punctuation">.</span>head<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="使用方式">使用方式</h3> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token keyword">import</span> axios <span class="token keyword">from</span> <span class="token string">'axios'</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> jsonpAdapter <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@yolkpie/utils'</span>
+
+<span class="token function">axios</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    url<span class="token operator">:</span> <span class="token string">'/jsonp'</span><span class="token punctuation">,</span>
+    adapter<span class="token operator">:</span> jsonpAdapter<span class="token punctuation">,</span>
+    callbackParamName<span class="token operator">:</span> <span class="token string">'c'</span> <span class="token comment">// optional, 'callback' by default</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">res</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/YolkPie/yolk-cli.github.io/edit/master/docs/support/utils/axios-jsonp.md" target="_blank" rel="noopener noreferrer">在 GitHub 上编辑此页</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/yolk-cli/support/utils/replaceByMath.html" class="prev">replaceByMath</a></span> <!----></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/yolk-cli/assets/js/app.d9af19e1.js" defer></script><script src="/yolk-cli/assets/js/2.fa9773ce.js" defer></script><script src="/yolk-cli/assets/js/22.087fd68a.js" defer></script>
+  </body>
+</html>
