@@ -115,7 +115,7 @@ hr {
   position: relative;
   margin: 2rem auto;
   width: calc(100% - 4px);
-  border: 2px dashed #a4d8fa;
+  border: 2px dashed #f93;
   background: #fff;
 }
 hr:hover:before {
@@ -376,6 +376,9 @@ canvas,
   body {
     padding-left: 0 !important;
   }
+}
+.iconfont {
+  font-size: inherit !important;
 }
 @-moz-keyframes scroll-down-effect {
   0% {
@@ -2945,7 +2948,7 @@ header {
 }
 .article-sort {
   padding-left: 1rem;
-  border-left: 2px solid #a4d8fa;
+  border-left: 2px solid #f93;
 }
 .article-sort-title {
   position: relative;
@@ -2982,7 +2985,7 @@ header {
   z-index: 0;
   width: 0.1rem;
   height: 1.3rem;
-  background: #a4d8fa;
+  background: #f93;
   content: '';
 }
 .article-sort-item {
