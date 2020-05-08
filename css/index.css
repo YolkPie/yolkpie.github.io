@@ -3064,7 +3064,6 @@ blockquote footer cite:before {
 #article-container ol,
 #article-container ul {
   margin-top: 0.4rem;
-  counter-reset: li;
 }
 #article-container ol p,
 #article-container ul p {
