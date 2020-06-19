@@ -76,10 +76,10 @@ function isDesktop () {
   return !this.isMobile()
 }
 
-function scrollTo (name) {
+function scrollToDest (name, offset = 0) {
   var scrollOffset = $(name).offset()
   $('body,html').animate({
-    scrollTop: scrollOffset.top
+    scrollTop: scrollOffset.top - offset
   })
 };
 
@@ -117,10 +117,29 @@ function snackbarShow (text, showAction, duration) {
   })
 }
 
-window.debounce = debounce
+const Cookies = {
+  get: function (name) {
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop().split(';').shift()
+  },
+  set: function (name, value, days) {
+    var expires = ''
+    if (days) {
+      var date = new Date()
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
+      expires = '; expires=' + date.toUTCString()
+    }
+    document.cookie = name + '=' + (value || '') + expires + '; path=/'
+  }
+}
 
-window.throttle = throttle
-
-window.isMobile = isMobile
-
-window.loadScript = loadScript
+/**
+ * lazyload
+ */
+if (GLOBAL_CONFIG.islazyload) {
+  window.lazyLoadOptions = {
+    elements_selector: 'img',
+    threshold: 0
+  }
+}
