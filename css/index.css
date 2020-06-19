@@ -3418,10 +3418,6 @@ img {
 .layout_post .post-copyright .post-copyright-info a:hover {
   text-decoration: none;
 }
-#article-container {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
 #article-container a {
   color: #99a9bf;
 }
