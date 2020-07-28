@@ -1,3 +1,3 @@
-webpackJsonp([20],{157:/*!**********************************************************************!*\
+webpackJsonp([20],{161:/*!**********************************************************************!*\
   !*** ./node_modules/raw-loader!./src/boilerplates/preact/codepan.js ***!
   \**********************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="/* @jsx h */\nconst { h, render } = preact\nconst { useState } = preactHooks\n\nconst App = () => {\n  const [count, setCount] = useState(0)\n\n  const inc = () => setCount(count + 1)\n\n  const dec = () => setCount(count - 1)\n\n  return (\n    <div>\n      <h2>{count}</h2>\n      <button onClick={inc}>Increment</button>\n      <button onClick={dec}>Decrement</button>\n    </div>\n  )\n}\n\nrender(<App />, document.body)\n"}});

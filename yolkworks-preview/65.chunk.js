@@ -1,3 +1,3 @@
 webpackJsonp([65],{116:/*!***************************************************************************************************!*\
   !*** ./node_modules/raw-loader!./src/boilerplates/custom/react-blocks-BasicNotFound/codepan.html ***!
-  \***************************************************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="<script src=\"https://unpkg.com/vue\"></script>\r\n<script src=\"https://unpkg.com/prop-types\"></script>\r\n<div id=\"app\">\r\n  \r\n</div>\r\n"}});
+  \***************************************************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="<script src=\"https://unpkg.com/vue\"></script>\n<script src=\"https://unpkg.com/prop-types\"></script>\n<div id=\"app\">\n</div>\n"}});
