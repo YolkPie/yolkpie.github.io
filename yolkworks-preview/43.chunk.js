@@ -1,3 +1,3 @@
-webpackJsonp([43],{114:/*!*********************************************************************************************!*\
-  !*** ./node_modules/raw-loader!./src/boilerplates/custom/react-blocks-EntryCard/codepan.js ***!
-  \*********************************************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="new Vue({}).$mount('#app')\n"}});
+webpackJsonp([43],{138:/*!******************************************************************************************!*\
+  !*** ./node_modules/raw-loader!./src/boilerplates/custom/vue-blocks-SubTitle/codepan.js ***!
+  \******************************************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="new Vue({\n\t\tprops: {\n\t\t\ttitle: { // \u5B50\u6807\u9898\u7684\u5185\u5BB9\n\t\t\t\ttype: String,\n\t\t\t\trequired: true\n\t\t\t},\n\t\t\tisShowHandleBtn: { // \u662F\u5426\u5C55\u793A\u64CD\u4F5C\u6309\u94AE\n\t\t\t\ttype: Boolean,\n\t\t\t\tdefault: false\n\t\t\t},\n\t\t\thandleBtnText: { // \u64CD\u4F5C\u6309\u94AE\u540D\u79F0\n\t\t\t\ttype: String,\n\t\t\t\tdefault: '\u8BE6\u60C5'\n\t\t\t},\n\t\t},\n\t\tmethods: {\n\t\t\tclickTitleHandleBtn() {\n\t\t\t\tthis.$emit('clickTitleHandleBtn')\n\t\t\t}\n\t\t}\n\t}\n).$mount('#app')\n"}});

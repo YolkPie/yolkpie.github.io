@@ -1,0 +1,3 @@
+webpackJsonp([51],{130:/*!******************************************************************************************!*\
+  !*** ./node_modules/raw-loader!./src/boilerplates/custom/vue-blocks-EntryCard/index.css ***!
+  \******************************************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports=".item{\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  width: 70px;\n  margin: 10px 40px;\n}\n.link{\n  color: #333;\n  text-decoration: none;\n}\n.cover{\n  width: 70px;\n  height: 70px;\n}\n.title{\n  margin-top: 12px;\n  font-size: 14px;\n  text-align: center;\n}\n.container{\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}"}});
