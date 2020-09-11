@@ -1079,6 +1079,163 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
+    <title>基于Hexo的个人博客搭建</title>
+    <url>/2020/09/11/hexo/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>搭建博客其实很简单，但要注意很多细节问题，之前本人也搭建过博客，那时也踩过一些坑，但是现在重新搭建博客，感觉自己又把之前踩过的坑又踩了一遍。所以为了避免以后搭建博客采坑，所以在此记录一下搭建博客的全流程以及一些注意事项。<br>本文搭建的博客基于<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo</a>，主题选用<a href="https://demo.jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">Butterfly</a>，使用<a href="https://travis-ci.com/" target="_blank" rel="noopener">Travis CI</a>自动部署到Github Pages和Coding Pages上，并在腾讯云上申请个人域名与博客进行绑定。</p>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>安装Hexo并初始化博客，这个没啥好说的，按照<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo官网</a>指示安装初始化即可。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-cli -g     <span class="comment"># 全局安装hexo-cli脚手架，如果不想全局安装，那就使用npx安装</span></span><br><span class="line">$ hexo init blog              <span class="comment"># 初始化博客</span></span><br><span class="line">$ <span class="built_in">cd</span> blog                     <span class="comment"># 进入博客根目录</span></span><br><span class="line">$ npm install                 <span class="comment"># 安装依赖</span></span><br><span class="line">$ hexo s                      <span class="comment"># 本地预览</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用主题"><a href="#使用主题" class="headerlink" title="使用主题"></a>使用主题</h2><p>本文的博客使用<a href="https://github.com/jerryc127/hexo-theme-butterfly/tree/master" target="_blank" rel="noopener">Butterfly</a>，个人觉得这个主题比较好看，大家可以根据自己的喜好进行选择。</p>
+<h3 id="安装主题"><a href="#安装主题" class="headerlink" title="安装主题"></a>安装主题</h3><p>在博客根目录中执行：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> -b 3.0.1 https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong> 此处我们使用的主题版本是3.0.1，建议大家固定使用一个主题版本，因为不同的主题版本的配置有所不同。在每次自动化部署时都需要重新安装主题，如果指定的是<code>master</code>，那每次安装的都是最新版本，会导致部署失败！</p>
+<p>这里所说的版本，即tag，大家可以到主题的仓库中查找最新的tag并使用。</p>
+<p><img src= "/img/loading.gif" data-src="tag.png" alt="主题tag"></p>
+<h3 id="应用主题"><a href="#应用主题" class="headerlink" title="应用主题"></a>应用主题</h3><p>修改站点配置文件_config.yml，把主题改为 butterfly</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">butterfly</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p>如果你没有 pug 以及 stylus 的渲染器，请下载安装：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置主题"><a href="#配置主题" class="headerlink" title="配置主题"></a>配置主题</h2><p>把主题文件夹中的 _config.yml 复制到 Hexo 根目录里，同时重新命名为 _config.butterfly.yml。</p>
+<p>Hexo 会自动合并主题中的_config.yml 和 _config.butterfly.yml 里的配置，如果存在同名配置，会使用_config.butterfly.yml 的配置，其优先度较高。</p>
+<h3 id="配置标签页"><a href="#配置标签页" class="headerlink" title="配置标签页"></a>配置标签页</h3><ul>
+<li>1.在博客根目录中输入<code>hexo new page tags</code></li>
+<li>2.找到 source/tags/index.md 这个文件</li>
+<li>3.修改为：<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 标签</span><br><span class="line">date: 2020-08-29 19:14:29</span><br><span class="line">type: "tags"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="配置分类页"><a href="#配置分类页" class="headerlink" title="配置分类页"></a>配置分类页</h3><ul>
+<li>1.在博客根目录中输入<code>hexo new page categories</code></li>
+<li>2.找到 source/categories/index.md 这个文件</li>
+<li>3.修改为：<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 分类</span><br><span class="line">date: 2020-08-29 19:15:35</span><br><span class="line">type: "categories"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="配置友情链接"><a href="#配置友情链接" class="headerlink" title="配置友情链接"></a>配置友情链接</h3><ul>
+<li>1.在博客根目录中输入<code>hexo new page link</code></li>
+<li>2.找到 source/link/index.md 这个文件</li>
+<li>3.修改为：</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 友情链接</span><br><span class="line">date: 2020-08-29 19:10:49</span><br><span class="line">type: "link"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>4.添加友情链接：</li>
+</ul>
+<p>在博客目录中的 source/_data，创建一个文件 link.yml</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">class:</span></span><br><span class="line">  <span class="attr">class_name:</span> <span class="string">友链</span></span><br><span class="line">  <span class="attr">link_list:</span></span><br><span class="line">    <span class="attr">1:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">YolkPie</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkpie.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">前端研发部</span></span><br><span class="line">    <span class="attr">2:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Yolk</span> <span class="string">CLI</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/yolk-cli/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkcli.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">前端项目脚手架</span></span><br><span class="line">    <span class="attr">3:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Yolk</span> <span class="string">Works</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/yolkworks-list/#/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkworks.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">海量模板及组件</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置关于自己"><a href="#配置关于自己" class="headerlink" title="配置关于自己"></a>配置关于自己</h3><ul>
+<li>1.在博客根目录中输入<code>hexo new page about</code></li>
+<li>2.找到 source/about/index.md 这个文件</li>
+<li>3.修改为：</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 关于我</span><br><span class="line">date: 2020-08-29 19:16:57</span><br><span class="line">type: "about"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置博客语言"><a href="#配置博客语言" class="headerlink" title="配置博客语言"></a>配置博客语言</h3><p>修改博客配置文件 <code>_config.yml</code></p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置导航菜单"><a href="#配置导航菜单" class="headerlink" title="配置导航菜单"></a>配置导航菜单</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="string">首页:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-home</span></span><br><span class="line">  <span class="string">文章:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-archive</span></span><br><span class="line">  <span class="string">标签:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-tags</span></span><br><span class="line">  <span class="string">分类:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-folder-open</span></span><br><span class="line">  <span class="string">友链:</span> <span class="string">/link/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-link</span></span><br><span class="line">  <span class="string">关于:</span> <span class="string">/about/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-heart</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置相关图片"><a href="#配置相关图片" class="headerlink" title="配置相关图片"></a>配置相关图片</h3><p>包括网站图标、头像、首页顶部图片、文章页面顶部默认图、文章封面默认图、其他页面顶部默认图等等。</p>
+<p>如果想要使用本地图片，在<code>source</code>目录下创建<code>img</code>目录，在图片放到该目录下，这样我们就可以使用<code>/img/avatar.jpg</code>访问到本地图片。</p>
+<h3 id="配置本地搜索"><a href="#配置本地搜索" class="headerlink" title="配置本地搜索"></a>配置本地搜索</h3><ul>
+<li>1.安装 <code>hexo-generator-search</code><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-generator-search --save</span><br></pre></td></tr></table></figure></li>
+<li>2.修改站点配置文件_config.yml，添加：<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+<li>3.修改主题配置文件_config.butterfly.yml<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">local_search:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="配置评论"><a href="#配置评论" class="headerlink" title="配置评论"></a>配置评论</h3><p>本博客的评论基于<a href="https://github.com/gitalk/gitalk/blob/master/readme-cn.md" target="_blank" rel="noopener">Gitalk</a>，Gitalk 是一个基于 GitHub Issue 和 Preact 开发的评论插件。</p>
+<ul>
+<li>1.选择一个公共github存储库（已存在或创建一个新的github存储库）用于存储评论，一般选择我们的Github Pages。</li>
+<li>2.创建 GitHub Application，如果没有<a href="https://github.com/settings/applications/new" target="_blank" rel="noopener">点击这里申请</a>，<code>Authorization callback URL</code>填写当前使用插件页面的域名。</li>
+<li>3.修改主题配置文件_config.butterfly.yml<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">client_id:</span> <span class="string">你的client</span> <span class="string">id</span> </span><br><span class="line">  <span class="attr">client_secret:</span> <span class="string">你的client</span> <span class="string">secret</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">你的github仓库</span></span><br><span class="line">  <span class="attr">owner:</span> <span class="string">你的github用户名</span></span><br><span class="line">  <span class="attr">admin:</span> <span class="string">该仓库的拥有者或协作者</span></span><br><span class="line">  <span class="attr">language:</span> <span class="string">zh-CN</span> <span class="comment"># en, zh-CN, zh-TW, es-ES, fr, ru</span></span><br><span class="line">  <span class="attr">perPage:</span> <span class="number">10</span> <span class="comment"># Pagination size, with maximum 100.</span></span><br><span class="line">  <span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment"># Facebook-like distraction free mode.</span></span><br><span class="line">  <span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment"># Comment sorting direction, available values are last and first.</span></span><br><span class="line">  <span class="attr">createIssueManually:</span> <span class="literal">false</span> <span class="comment"># Gitalk will create a corresponding github issue for your every single page automatically</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h3><ul>
+<li><a href="https://demo.jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">Butterfly 安装文档(三) 主题配置-1</a></li>
+<li><a href="https://demo.jerryc.me/posts/ceeb73f/" target="_blank" rel="noopener">Butterfly 安装文档(四) 主题配置-2</a></li>
+</ul>
+<h2 id="写篇博客"><a href="#写篇博客" class="headerlink" title="写篇博客"></a>写篇博客</h2><p>一般博客会引用一些图片，如果想要使用本地图片，则配置<code>_config.yml</code>：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">post_asset_folder:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>执行<code>hexo new &lt;title&gt;</code>创建一篇文章，可以发现<code>source/_posts</code>目录下多出了<code>&lt;title&gt;</code>目录及<code>&lt;title&gt;.md</code>，其中<code>&lt;title&gt;.md</code>用于我们写博客，<code>&lt;title&gt;</code>目录用于存放我们博客使用的图片。</p>
+<p>文章的配置，下面是我本篇文章的配置，大家可以参考：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">基于Hexo的个人博客搭建</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2020</span><span class="number">-08</span><span class="number">-30</span> <span class="number">10</span><span class="string">:45:29</span></span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">blog</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">hexo</span></span><br><span class="line"><span class="attr">keywords:</span> <span class="string">hexo,Butterfly</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">搭建博客其实很简单，但要注意很多细节问题，之前本人也搭建过博客，那时也踩过一些坑，但是现在重新搭建博客，感觉自己又把之前踩过的坑又踩了一遍。所以为了避免以后搭建博客采坑，所以在此记录一下搭建博客的全流程以及一些注意事项。</span></span><br><span class="line"><span class="attr">cover:</span> <span class="string">/img/hexo.jpg</span></span><br><span class="line"><span class="attr">top_img:</span> <span class="string">hexo.jpg</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>title：文章标题</li>
+<li>tags：文章标签</li>
+<li>categories：文章分类</li>
+<li>cover：文章封面</li>
+<li>top_img：文章顶部图片</li>
+</ul>
+<h2 id="github托管"><a href="#github托管" class="headerlink" title="github托管"></a>github托管</h2><p>将我们博客的源代码托管到github上，在github上创建代码仓库，将我们博客的源代码push上去即可。</p>
+<h2 id="github-pages"><a href="#github-pages" class="headerlink" title="github pages"></a>github pages</h2><p>新建一个repo，仓库名字为<code>xxx.github.io</code>，其中xxx为你github的username。</p>
+<h2 id="coding-pages"><a href="#coding-pages" class="headerlink" title="coding pages"></a>coding pages</h2><ul>
+<li>1.新建一个<code>coding.net</code>团队，如果你已经拥有自己的团队，那么久不需要创建团队了。</li>
+<li>2.创建一个DevOps项目。</li>
+<li>3.在项目下创建代码仓库，用于托管博客静态资源，仓库名字为<code>xxx.coding.io</code>。</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="project.png" alt="project"></p>
+<h2 id="自动部署"><a href="#自动部署" class="headerlink" title="自动部署"></a>自动部署</h2><ul>
+<li><p>1.在博客根目录下创建<code>.travis.yml</code>文件，并写入自动化脚本：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">10</span></span><br><span class="line"><span class="attr">cache:</span></span><br><span class="line">  <span class="attr">directories:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">node_modules</span></span><br><span class="line"><span class="attr">before_install:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line"><span class="attr">install:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"><span class="attr">script:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">-b</span> <span class="number">3.0</span><span class="number">.1</span> <span class="string">https://github.com/jerryc127/hexo-theme-butterfly.git</span> <span class="string">themes/butterfly</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">source/img/*</span> <span class="string">themes/butterfly/source/img/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span> <span class="string">g</span></span><br><span class="line"><span class="attr">after_success:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">"$&#123;U_NAME&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">"$&#123;U_EMAIL&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">"https://$&#123;GH_TOKEN&#125;@$&#123;GH_REF&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">public/*</span> <span class="string">yujihu.github.io/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">./yujihu.github.io</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">add</span> <span class="string">.</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">commit</span> <span class="string">-m</span> <span class="string">'travis-ci auto build yujihu-blog'</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">push</span> <span class="string">origin</span> <span class="string">"$&#123;P_BRANCH&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">../</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">"https://$&#123;U_NAME2&#125;:$&#123;CO_TOKEN&#125;@$&#123;CO_REF&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">public/*</span> <span class="string">yujihu.coding.io/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">./yujihu.coding.io</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">add</span> <span class="string">.</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">commit</span> <span class="string">-m</span> <span class="string">'travis-ci auto build yujihu-blog'</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">push</span> <span class="string">origin</span> <span class="string">"$&#123;P_BRANCH&#125;"</span></span><br><span class="line"><span class="attr">branches:</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>node_js: 与我们本地开发的node.js版本保持一致。</p>
+</li>
+<li><p>before_install：全局安装hexo脚手架。</p>
+</li>
+<li><p>install：安装博客的依赖。</p>
+</li>
+<li><p>script： 此处为生成博客静态资源的代码，需要将source/img复制到themes/butterfly/source/img下面，否则会导致图片无法访问。</p>
+</li>
+<li><p>after_success：生成成功后，将静态资源分别提交至github pages和coding pages仓库。</p>
+</li>
+<li><p>环境变量：<code>${***}</code> 这块后面会提到。</p>
+</li>
+<li><p>2.Github 增加一个 Personal access tokens，位置在<a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Settings/Developer settings</a>。</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="token.png" alt="token"></p>
+<ul>
+<li>3.Coding 增加一个访问令牌，位置在<code>个人账户设置/访问令牌</code>。 </li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="coding.png" alt="token"></p>
+<ul>
+<li>4.进入<a href="https://travis-ci.com/" target="_blank" rel="noopener">Travis CI</a>，使用 Github登陆， 进入<a href="https://travis-ci.com/dashboard" target="_blank" rel="noopener">dashboard</a>，此时应该可以看到你刚创建的项目。</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="travis1.png" alt="travis1"></p>
+<ul>
+<li>5.进入该项目的setting，配置环境变量</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="travis2.png" alt="travis2"></p>
+<blockquote>
+<p>GH_REF: Github Pages项目地址<code>github.com/[name]/[name].github.io.git</code>注意去掉 https://。<br>CO_REF: Coding Pages项目地址<code>e.coding.net/[name]/[name].coding.io/[name].coding.io.git</code>注意去掉 https://。<br>GH_TOKEN: Github Token，是通过上面第2步拿到的。<br>CO_TOKEN: Coding Token，是通过上面第3步拿到的。<br>P_BRANCH: 要上传的分支，这里我们要传到 master。<br>U_EMAIL: 你的 Github 邮箱。<br>U_NAME: 你的 Github 用户名。<br>U_NAME2: 你的 Coding 用户名，这个很关键，一定要设置正确。</p>
+</blockquote>
+<ul>
+<li>6.将博客源代码push到远程仓库，我们可以发现<code>Travis CI</code>会开启一次自动构建。</li>
+</ul>
+<h2 id="域名绑定"><a href="#域名绑定" class="headerlink" title="域名绑定"></a>域名绑定</h2><p>1.在腾讯云上购买一个域名，首年一般很便宜，大家可以先买一年试试，域名可以不备案，但需要实名认证。<br>2.开启Github Pages，在[name].github.io的setting中进行配置。</p>
+<p><img src= "/img/loading.gif" data-src="github2.png" alt="github2"></p>
+<p>3.开启Coding Pages, 在<code>项目/持续部署/静态网站</code>下进行配置。</p>
+<p><img src= "/img/loading.gif" data-src="coding2.png" alt="coding2"><br><img src= "/img/loading.gif" data-src="coding3.png" alt="coding3"></p>
+<p>4.配置域名解析</p>
+<p>进入刚刚购买域名的管理控制台，配置域名解析规则，境内CNAME到Coding Pages，境外CNAME到Github Pages.</p>
+]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>blog</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>mysql 索引</title>
     <url>/2020/02/04/mysql-%E7%B4%A2%E5%BC%95/</url>
     <content><![CDATA[<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引(key)是存储引擎用于快速找到记录的一种数据结构。它和一本书中目录的工作方式类似——当要查找一行记录时，先在索引中快速找到行所在的位置信息，然后再直接获取到那行记录。<br>在MySql中，索引是在存储引擎层而不是服务器层实现的，所以不同的存储引擎对索引的实现和支持都不相同。</p>
