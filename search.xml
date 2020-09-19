@@ -1473,6 +1473,33 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
+    <title>npm发包</title>
+    <url>/2020/09/19/npm%E5%8F%91%E5%8C%85/</url>
+    <content><![CDATA[<h1 id="npm发包"><a href="#npm发包" class="headerlink" title="npm发包"></a>npm发包</h1><h3 id="配置环境-安装node-js"><a href="#配置环境-安装node-js" class="headerlink" title="配置环境 安装node.js"></a>配置环境 安装node.js</h3><ul>
+<li>官网下载最新的node安装包，正常安装node.js</li>
+<li>安装完成后，执行 node -v, 查看是否正常安装</li>
+<li>执行：sudo npm update npm -g，将npm 升级到最新</li>
+<li>查看npm是否正常： npm -v</li>
+</ul>
+<h3 id="发包具体示例"><a href="#发包具体示例" class="headerlink" title="发包具体示例"></a>发包具体示例</h3><ul>
+<li>注册npm账号，填写 用户名、密码和邮箱</li>
+<li>找个位置，新建一个文件夹</li>
+<li>cd 进入文件夹，执行 npm init -y, 有需要改变的内容自己再去文件修改和添加</li>
+<li>使用 npm login，登录自己的 npm 账号</li>
+<li>使用 npm publish，发布自己的包到 npm</li>
+<li>查看自己发布的包是否成功，可以去别的项目执行 npm install 你发布的包名，下载成功</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">注意：</span><br><span class="line">1. 发布自己包之前，应先去 npm 官网搜索自己要发布的包名是否已经存在，已存在的包名会提交失败</span><br><span class="line">2. 自己发布的包更新时，每次都要到package.json, 将 version 修改，例如：从1.0.0改为1.0.1。然后再执行 npm publish进行更新</span><br><span class="line">整体步骤示例图片如下：</span><br></pre></td></tr></table></figure>
+
+<h5 id=""><a href="#" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-1.png" alt=""></h5><h3 id="查看自己发布的包"><a href="#查看自己发布的包" class="headerlink" title="查看自己发布的包"></a>查看自己发布的包</h3><ul>
+<li>打开npm官网，输入你的包名，如有结果则存在 (如图)</li>
+</ul>
+<h4 id="-1"><a href="#-1" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-2.png" alt=""></h4><ul>
+<li>点击个人头像 -&gt; Packages, 可查看自己已发布的所有包 (如图)</li>
+</ul>
+<h4 id="-2"><a href="#-2" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-3.png" alt=""></h4>]]></content>
+  </entry>
+  <entry>
     <title>React 内置 Hook 简介</title>
     <url>/2020/02/21/react-hooks/</url>
     <content><![CDATA[<p>React 内置 Hook 如下：</p>
@@ -1538,7 +1565,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   </entry>
   <entry>
     <title>storybook</title>
-    <url>/2020/09/16/storybook/</url>
+    <url>/2020/09/19/storybook/</url>
     <content><![CDATA[<h1 id="storybook"><a href="#storybook" class="headerlink" title="storybook"></a>storybook</h1><h3 id="Storybook简介"><a href="#Storybook简介" class="headerlink" title="Storybook简介"></a>Storybook简介</h3><p>  Storybook是一个辅助UI控件开发的工具。通过story创建独立的控件，让每个控件开发都有一个独立的开发调试环境。<br>  Storybook的运行不依赖于项目，开发人员不用担心由于开发环境、依赖问题导致不能开发控件。<br>  Storybook支持的框架覆盖主流的框架（React、Vue、Angular）。<br>  本文将介绍使用react的项目如何配置Storybook环境。</p>
 <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ul>
 <li><p>1、安装命令</p>
