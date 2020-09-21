@@ -1643,7 +1643,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   </entry>
   <entry>
     <title>npm发包</title>
-    <url>/2020/09/21/npm%E5%8F%91%E5%8C%85/</url>
+    <url>/2020/09/19/npm%E5%8F%91%E5%8C%85/</url>
     <content><![CDATA[<h1 id="npm发包"><a href="#npm发包" class="headerlink" title="npm发包"></a>npm发包</h1><h3 id="配置环境-安装node-js"><a href="#配置环境-安装node-js" class="headerlink" title="配置环境 安装node.js"></a>配置环境 安装node.js</h3><ul>
 <li>官网下载最新的node安装包，正常安装node.js</li>
 <li>安装完成后，执行 node -v, 查看是否正常安装</li>
@@ -1734,7 +1734,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   </entry>
   <entry>
     <title>storybook</title>
-    <url>/2020/09/21/storybook/</url>
+    <url>/2020/09/16/storybook/</url>
     <content><![CDATA[<h1 id="storybook"><a href="#storybook" class="headerlink" title="storybook"></a>storybook</h1><h3 id="Storybook简介"><a href="#Storybook简介" class="headerlink" title="Storybook简介"></a>Storybook简介</h3><p>  Storybook是一个辅助UI控件开发的工具。通过story创建独立的控件，让每个控件开发都有一个独立的开发调试环境。<br>  Storybook的运行不依赖于项目，开发人员不用担心由于开发环境、依赖问题导致不能开发控件。<br>  Storybook支持的框架覆盖主流的框架（React、Vue、Angular）。<br>  本文将介绍使用react的项目如何配置Storybook环境。</p>
 <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ul>
 <li><p>1、安装命令</p>
