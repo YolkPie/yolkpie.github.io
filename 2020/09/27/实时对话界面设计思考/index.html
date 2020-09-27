@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>实时对话界面设计思考 | YolkPie</title><meta name="description" content="日常生活中，我们经常会用到即时通讯软件，对聊天对话界面已经很熟悉了。打开聊天界面，最主要的三个UI元素有：头像、文字气泡、和对话缩略图。那我们有没有想过，为什么有的头像是圆形的，有的是方形的？气泡的极限值应该怎么定义？对话中的缩略图又有什么样的展示比例？"><meta name="keywords" content="设计,对话"><meta name="author" content="YolkPie"><meta name="copyright" content="YolkPie"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://yolkpie.github.io/2020/09/27/%E5%AE%9E%E6%97%B6%E5%AF%B9%E8%AF%9D%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="实时对话界面设计思考"><meta property="og:url" content="https://yolkpie.github.io/2020/09/27/%E5%AE%9E%E6%97%B6%E5%AF%B9%E8%AF%9D%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/"><meta property="og:site_name" content="YolkPie"><meta property="og:description" content="日常生活中，我们经常会用到即时通讯软件，对聊天对话界面已经很熟悉了。打开聊天界面，最主要的三个UI元素有：头像、文字气泡、和对话缩略图。那我们有没有想过，为什么有的头像是圆形的，有的是方形的？气泡的极限值应该怎么定义？对话中的缩略图又有什么样的展示比例？"><meta property="og:image" content="https://img10.360buyimg.com/imagetools/jfs/t1/115055/40/18966/2860947/5f703f85Ee882eb6b/482cfc741b348293.png"><meta property="article:published_time" content="2020-09-27T07:21:10.000Z"><meta property="article:modified_time" content="2020-09-27T07:32:49.849Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="prev" title="Taro(一)" href="https://yolkpie.github.io/2020/09/27/Taro/"><link rel="next" title="中台系统设计规范（一）关于系统布局" href="https://yolkpie.github.io/2020/09/21/%E4%B8%AD%E5%8F%B0%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%831/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="https://at.alicdn.com/t/font_1638514_cadwssqh3zv.css"><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">30</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">37</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">16</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相关链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我们</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#头像部分"><span class="toc-number">2.</span> <span class="toc-text">头像部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#媒介维度"><span class="toc-number">2.1.</span> <span class="toc-text">媒介维度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#产品调性"><span class="toc-number">2.2.</span> <span class="toc-text">产品调性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#文字气泡部分"><span class="toc-number">3.</span> <span class="toc-text">文字气泡部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#图片部分"><span class="toc-number">4.</span> <span class="toc-text">图片部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#正方形图："><span class="toc-number">4.1.</span> <span class="toc-text">正方形图：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#横向-长方形图："><span class="toc-number">4.2.</span> <span class="toc-text">横向-长方形图：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#竖向-长方形图："><span class="toc-number">4.3.</span> <span class="toc-text">竖向-长方形图：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#缩略图小结"><span class="toc-number">4.4.</span> <span class="toc-text">缩略图小结</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://img11.360buyimg.com/imagetools/jfs/t1/114376/21/18909/922749/5f703f88E416e7660/a12ca893e8307c74.png)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">YolkPie</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相关链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我们</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">实时对话界面设计思考</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-09-27 15:21:10"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2020-09-27</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-09-27 15:32:49"><i class="fas fa-history fa-fw"></i> 更新于 2020-09-27</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/%E8%AE%BE%E8%AE%A1/">设计</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta__icon"></i><span>字数总计:</span><span class="word-count">2.7k</span><span class="post-meta__separator">|</span><i class="far fa-clock fa-fw post-meta__icon"></i><span>阅读时长: 7 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="far fa-comments fa-fw post-meta__icon"></i><span>评论数:</span><a href="/2020/09/27/%E5%AE%9E%E6%97%B6%E5%AF%B9%E8%AF%9D%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>日常生活中，我们经常会用到即时通讯软件，对聊天对话界面已经很熟悉了。打开聊天界面，最主要的三个UI元素有：头像、文字气泡、和对话缩略图。那我们有没有想过，为什么有的头像是圆形的，有的是方形的？气泡的极限值应该怎么定义？对话中的缩略图又有什么样的展示比例？</p>
+<p>本次我们就从聊天界面中常见的头像、文字气泡、图片展示来分析总结一下，在设计即时聊天界面时应该注意哪些细节。</p>
+<h2 id="头像部分"><a href="#头像部分" class="headerlink" title="头像部分"></a>头像部分</h2><p>最近正好在做一个项目是有关消息列表和聊天对话的页面，那关于界面中的头像我们该如何定义呢？是用方形头像还是圆形头像？这两种形状在产品设计中都非常普遍，那到底应该根据什么因素来做抉择依据呢？交互设计包含五要素：用户、行为、目标、场景、媒介。本文我们主要从用户、媒介维度和场景来作分析。</p>
+<h3 id="媒介维度"><a href="#媒介维度" class="headerlink" title="媒介维度"></a>媒介维度</h3><p>媒介维度这里主要是展示形态的差异，要决定媒介的展示形态，我们需要对媒介本身的用户、行为、目标、产品调性(包括用户目标、行为和场景)进行分析。</p>
+<ol>
+<li><p><strong>方形</strong></p>
+<p>通常来讲方形均衡的四边、凸显的棱角给人一种敦实、稳重、可靠、有原则的信赖感。因为棱角的关系，人的视觉会相对分散，出了视觉中心，注意力也会像四个角转移，棱角越尖锐，视线扩散越明显。</p>
+<p><strong>方形的扩散性让图形内的注意力分布更为均衡，同时可以保持与人合适的距离感，让人的情绪相对冷静与克制。</strong></p>
+</li>
+<li><p><strong>圆形</strong></p>
+<p>圆形在方形的对比下就显得柔软、亲切、温和了。从感知上来讲，圆形具有收缩性更容易视觉聚焦，因为它只有1个中心点，而方形有更多分散的焦点，不容易聚焦。此外国外的视觉实验也明确指出：人的视网膜对于正圆形的处理速度要显著高于对边角的处理速度。所以，圆形相对其他图形而言，在聚焦效果上可以说又快又好，可以快速拉升人的情绪兴趣。</p>
+<p>所以圆形头像更多的运用在具有娱乐属性的社交产品上。</p>
+<p><img src= "/img/loading.gif" data-src="%E8%A7%86%E8%A7%89%E8%81%9A%E7%84%A6.png" alt="视觉聚焦"></p>
+</li>
+</ol>
+<h3 id="产品调性"><a href="#产品调性" class="headerlink" title="产品调性"></a>产品调性</h3><p>设计页面时，要考虑头像与周围信息的关系，它在页面中的信息层级是怎样的？是否是要凸显的要素？是否希望它抓取用户的视觉注意力？同时也需要根据产品调性来选择媒介的展示形态，要考虑头像所处的周围环境，以及头像与周围信息的关系（目标）和互动（行为）。看产品是偏活泼型或者陌生人社交性质的，还是偏严肃性的，或者熟人社交性的。</p>
+<ul>
+<li>对于活泼型或者陌生人社交性的产品来说，圆形的动感，更符合活泼的产品调性，圆形的聚焦性，可以快速帮助用户识别陌生人的关键特征信息（人脸），激发社交的兴趣；</li>
+<li>对于严肃性或者熟人社交产品来说，方形的稳重，与严肃的气质更加的贴合；</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="%E8%81%8A%E5%A4%A9%E7%95%8C%E9%9D%A2.png" alt="聊天界面"></p>
+<p>所以：</p>
+<ul>
+<li><p><strong>对于产品调性是娱乐互动型的（如游戏、教育、陌生人社交等），推荐使用圆形头像，可以更好的凸显用户的特征，激发他人的互动兴趣。</strong></p>
+</li>
+<li><p><strong>对于产品调性是专业严肃稳重型的（（如金融、政务，熟人社交等），推荐使用方形头像，可以更好的传达冷静、专业的用户气质，并传递更多的环境信息，赢得他人的信赖感。</strong></p>
+</li>
+</ul>
+<h2 id="文字气泡部分"><a href="#文字气泡部分" class="headerlink" title="文字气泡部分"></a>文字气泡部分</h2><p>文字气泡框我们很容易看出来有两个变量：a(气泡距左侧的边距)和b（气泡的宽度），当页面中有两个变量时我们就不能用常规的方法：固定其宽度，而是需要采用百分比的形式才较为合理。这样气泡在不同尺寸的手机上展示才是相对合适的。</p>
+<p><strong>那这个比例是多少呢？我的结论是：b/屏幕宽度=70%最为适宜</strong></p>
+<p>为什么是70%的比例呢？根据对齐原则，在750尺寸下，减去头像、安全间距和空白间距，我们需要让气泡在宽度最大时展示是整齐工整的。该比例是不是适用于所有的产品？当然不适用。因为每个产品的调性不一样，有的对话需要有头像，有的对话不需要头像 (比如一些app的人工智助手，对话过程中需要弱化头像信息，模拟真实的对话场景，就会取消智能助手的头像展示)。70%的比例只适合有头像的对话界面。这个比例不是固定的，是灵活可变的，我们只需要在不同的业务场景下最大限度展示更明确的信息即可。</p>
+<p><img src= "/img/loading.gif" data-src="%E8%81%8A%E5%A4%A9%E6%B0%94%E6%B3%A1@2x.png" alt="聊天气泡@2x"></p>
+<p>文字气泡的宽度适不适合用黄金比例展示呢，其实是不适合的。黄金比例公式如下：</p>
+<p><img src= "/img/loading.gif" data-src="%E9%BB%84%E9%87%91%E6%AF%94%E4%BE%8B@2x.png" alt="黄金比例@2x"></p>
+<p>根据计算，在长度750px的时候，根据黄金比例：长边/短边=1/0.618计算，除去安全间距和空白间距，文字气泡的最大宽度约为464px；展示效果如下：</p>
+<p>会造成错落不整齐的视觉效果。所以根据对齐性原则，我们需要让对话两方在气泡最大时展示是工整的。此时的气泡宽度占屏幕比恰好是70%；</p>
+<p><img src= "/img/loading.gif" data-src="%E9%BB%84%E9%87%91%E6%AF%94%E4%BE%8B%E6%B0%94%E6%B3%A1@2x.png" alt="黄金比例气泡@2x"></p>
+<h2 id="图片部分"><a href="#图片部分" class="headerlink" title="图片部分"></a>图片部分</h2><p>关于图片部分，本次主要分享一下聊天页面中，缩略图的展示规则。</p>
+<p>聊天过程中用户发送的图片各种各样大小不一，缩略图通常是将用户这些大小不一的图片进行缩小或者裁剪展示；一是为了节省屏幕空间，二是用缩略图展示图片内容，页面文字信息更加清晰整齐美观。如何设计一个合理的缩略图展示规则能最大可能的满足展示需求，又让整个聊天信息整齐美观呢？</p>
+<p>如果我们希望尽可能保留图片的长宽比样式，在聊天列表中错落有致地展示，则我们需要对横向和纵向图片的长和宽都做相应的阈值限制。</p>
+<p>以微博微信为例，我们分别像微博和微信发测试图片：</p>
+<h3 id="正方形图："><a href="#正方形图：" class="headerlink" title="正方形图："></a>正方形图：</h3><p><img src= "/img/loading.gif" data-src="%E6%AD%A3%E6%96%B9%E5%BD%A2%E5%9B%BE.png" alt="正方形图"></p>
+<p>分别向微博和微信发送一组不同尺寸的正方形，分别是：100x100 px    300x300px   600x600px  900x900px 大小不同的正方形：如下图，通过对缩略图测量，发现：</p>
+<ul>
+<li><p><strong>微信的处理方式：</strong></p>
+<p>微信的正方形缩略图大小完全一样，所以不论图片尺寸大小，只要是是正方形的图，微信统一展示限定的的宽高；</p>
+</li>
+<li><p><strong>微博的处理方式：</strong></p>
+<p>微博的展示规则则比微信细致一些，在图片大小小于阈值时，不满足我们限定的宽高，则原尺寸展示；在图片大小大于阈值时，则统一展示限定的宽高。</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="%E6%AD%A3%E6%96%B9%E5%BD%A2%E6%AF%94%E4%BE%8B.png" alt="正方形比例"></p>
+<h3 id="横向-长方形图："><a href="#横向-长方形图：" class="headerlink" title="横向-长方形图："></a>横向-长方形图：</h3><p><img src= "/img/loading.gif" data-src="%E6%A8%AA%E5%90%91-%E9%95%BF%E6%96%B9%E5%BD%A2.png" alt="横向-长方形"></p>
+<p>当我们分别向微博和微信发送一组不同尺寸的横向-长方形，分别是：2:1    3:1    4:3    16:9      21:9     超宽图的尺寸，发现：</p>
+<ul>
+<li><p><strong>微信的处理方式：</strong></p>
+<p>21:9  3:1 的图片的缩略图都未被裁减，除了超宽的图片，其他尺寸的图片都能都完整的被缩放；</p>
+</li>
+<li><p><strong>微博的处理方式：</strong></p>
+<p>微博同微信一样，21:9  3:1的图片也能被完整缩放；</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="%E6%A8%AA%E5%90%91-%E9%95%BF%E6%96%B9%E5%BD%A2%E7%A4%BA%E4%BE%8B.png" alt="横向-长方形示例"></p>
+<h3 id="竖向-长方形图："><a href="#竖向-长方形图：" class="headerlink" title="竖向-长方形图："></a>竖向-长方形图：</h3><p><img src= "/img/loading.gif" data-src="%E7%AB%96%E5%90%91-%E9%95%BF%E6%96%B9%E5%BD%A2.png" alt="竖向-长方形"></p>
+<p>当我们分别向微博和微信发送一组不同尺寸的竖向-长方形，分别是：3:4    9:16    1:2    9:16   1:3    和 超长图的尺寸，发现：</p>
+<ul>
+<li><p><strong>微信的处理方式：</strong></p>
+<p>9:21  1:3 的图片的缩略图都未被裁减，除了超高的图片，其他尺寸的图片都能都完整的被缩放；</p>
+</li>
+<li><p><strong>微博的处理方式：</strong></p>
+<p>微博同微信一样，9:21   1:3的图片也能被完整缩放；</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="%E7%AB%96%E5%90%91-%E9%95%BF%E6%96%B9%E5%BD%A2%E7%A4%BA%E4%BE%8B.png" alt="竖向-长方形示例"></p>
+<p><strong>对于横向-长方形 和 竖向-长方形的缩略图，微博和微信设定的展示规则是一样的，微博和微信对于阈值设定，都是以正方形作为基准，去限定的高度和宽度</strong>，意思就是： 比例较大的边等于正方形的边，这意味着在聊天过程中能产生最大显示面积的是正方形的图片，并且无需为正方形做特殊判断，缺点是，正方形的图片面积是聊天界面中最大的缩略图，其他比例的缩略图相对正方形都较小，似乎「有失公平」。但是这种方式设定的高度和宽度在一屏幕中可以展示更多的图片缩略图；</p>
+<p>但是对于正方形图片二者是有差别的：</p>
+<ul>
+<li><p>微信的正方形缩略图大小完全一样，所以不论图片尺寸大小，只要是是正方形的图，微信统一展示限定的的宽高；</p>
+</li>
+<li><p>微博的展示规则则比微信细致一些，在图片大小小于我们限定的宽高时，则原尺寸展示；在图片大小大于阈值时，则统一展示限定的宽高。</p>
+</li>
+</ul>
+<h3 id="缩略图小结"><a href="#缩略图小结" class="headerlink" title="缩略图小结"></a>缩略图小结</h3><p>设定多大的宽度阈值取决于我们的业务属性和使用场景。为了更好的兼顾用户不同大小的图片尽可能被完全展示，在阈值设定时，我们需要宽松一点，简化一个维度，用户多次发送图片时，也能尽可能整齐展示。</p>
+<p><strong>缩略图展示规则如下：</strong></p>
+<ul>
+<li>正方形图：固定宽高 x；小于固定宽高原尺寸展示；</li>
+<li>横向-长方形：固定宽度x；高度根据图片动态变化；最高x;</li>
+<li>竖向-长方形：固定高度 ；宽度根据文字动态变化；最宽x；</li>
+</ul>
+<p>参考文档：<a href="http://www.woshipm.com/pd/597974.html" target="_blank" rel="noopener">http://www.woshipm.com/pd/597974.html</a></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">YolkPie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yolkpie.github.io/2020/09/27/%E5%AE%9E%E6%97%B6%E5%AF%B9%E8%AF%9D%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/">https://yolkpie.github.io/2020/09/27/%E5%AE%9E%E6%97%B6%E5%AF%B9%E8%AF%9D%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yolkpie.github.io" target="_blank">YolkPie</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BE%E8%AE%A1/">设计</a><a class="post-meta__tags" href="/tags/%E5%AF%B9%E8%AF%9D/">对话</a></div><div class="post_share"><div class="social-share" data-image="https://m.360buyimg.com/img/jfs/t1/118880/20/18814/113416/5f6ded26Ec120c939/bd3281048222ce87.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/09/27/Taro/"><img class="prev-cover" data-src="https://m.360buyimg.com/img/jfs/t1/118880/20/18814/113416/5f6ded26Ec120c939/bd3281048222ce87.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Taro(一)</div></div></a></div><div class="next-post pull-right"><a href="/2020/09/21/%E4%B8%AD%E5%8F%B0%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%831/"><img class="next-cover" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/145460/20/9058/1031358/5f689a17E8c6105e3/313988d3a1a54d05.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">中台系统设计规范（一）关于系统布局</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/09/21/中台系统设计规范1/" title="中台系统设计规范（一）关于系统布局"><img class="relatedPosts_cover" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/145460/20/9058/1031358/5f689a17E8c6105e3/313988d3a1a54d05.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-09-21</div><div class="relatedPosts_title">中台系统设计规范（一）关于系统布局</div></div></a></div><div class="relatedPosts_item"><a href="/2020/05/21/色彩理论与搭配/" title="色彩理论与搭配"><img class="relatedPosts_cover" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/123300/4/2538/97455/5ec63661E0cdf0415/52fca025cb4f7250.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-05-21</div><div class="relatedPosts_title">色彩理论与搭配</div></div></a></div></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '6e1bb19099a60d063402',
+  clientSecret: '6fefeea17c4f73c838216b0aab539d37c7bbcdad',
+  repo: 'yolkpie.github.io',
+  owner: 'YolkPie',
+  admin: ['yujihu'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: true,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2020 By YolkPie</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fas fa-comments"></i></a><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="true" src="/js/third-party/piao.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/local-search.js"></script><div style="display:none"><script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1279214088&web_id=1279214088"></script></div></body></html>
