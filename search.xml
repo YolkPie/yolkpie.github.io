@@ -19,8 +19,8 @@
       </tags>
   </entry>
   <entry>
-    <title>Jest单元测试上</title>
-    <url>/2020/06/19/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E4%B8%8A/</url>
+    <title>Jest单元测试（上）</title>
+    <url>/2020/06/19/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%88%E4%B8%8A%EF%BC%89/</url>
     <content><![CDATA[<h2 id="为什么要进行单元测试"><a href="#为什么要进行单元测试" class="headerlink" title="为什么要进行单元测试"></a>为什么要进行单元测试</h2><p>测试是开发工作的一个重要环节，但是往往由于编写和维护测试代码的成本问题，编写测试代码这个环节往往是被忽略的。首先说说前端单元测试为什么是重要的。  </p>
 <p>仔细想一下，在我们的工作中是否经常遇到过下面的问题：</p>
 <ul>
@@ -204,6 +204,102 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> bot = &#123;</span><br><span class="line">    sayHello: <span class="function">(<span class="params">name</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">`Hello <span class="subst">$&#123;name&#125;</span>!`</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">describe(<span class="string">'bot'</span>, () =&gt; &#123;</span><br><span class="line">    it(<span class="string">'should say hello'</span>, () =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> spy = jest.spyOn(bot, <span class="string">'sayHello'</span>)</span><br><span class="line">        bot.sayHello(<span class="string">'Michael'</span>)</span><br><span class="line">        expect(spy).toHaveBeenCalledWith(<span class="string">'Michael'</span>)</span><br><span class="line">        <span class="comment">// 恢复 bot 对象原本的 sayHello 方法</span></span><br><span class="line">        spy.mockRestore()</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <p>我们通过 jest.spyOn（） 监听了 bot 的 sayHello 方法，它就像间谍一样监听了所有对 bot 中 sayHello 方法的调用。由于创建 spy 时，Jest 实际上修改了 bot 对象的 sayHello 属性，所以在断言完成后，我们还要通过 mockRestore 来恢复 bot 对象原本的 sayHello 方法。</p>
 <h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>测试只是一种工具和手段，代码质量是依靠设计和维护的。</p>
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>单元测试</tag>
+        <tag>Jest</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Jest单元测试（中）</title>
+    <url>/2020/09/29/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%88%E4%B8%AD%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="默认配置"><a href="#默认配置" class="headerlink" title="默认配置"></a>默认配置</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jest 的目标是在大部分 JavaScript 项目中实现开箱即用，因此本身有一些默认配置，即使我们不做任何配置也可以正确运行。如果想了解这些默认配置项具体是什么，可以通过下面的方式获取：</p>
+<ul>
+<li><p>查看 node_modules/jest-config/build/Default.js 文件中的 defaultOptions 对象</p>
+</li>
+<li><p>通过以下js获取。</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; defaults &#125; = <span class="built_in">require</span>(<span class="string">'jest-config'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//下面是用第二种方法获取到的 Jest 默认配置</span></span><br><span class="line">&#123;</span><br><span class="line">    automock: <span class="literal">false</span>,</span><br><span class="line">    bail: <span class="number">0</span>,</span><br><span class="line">    cache: <span class="literal">true</span>,</span><br><span class="line">    cacheDirectory: <span class="string">'/private/var/folders/3l/p3_nb2m13b9cgstcy0b3gx18ffrd_n/T/jest_80wf9x'</span>,</span><br><span class="line">    changedFilesWithAncestor: <span class="literal">false</span>,</span><br><span class="line">    clearMocks: <span class="literal">false</span>,</span><br><span class="line">    collectCoverage: <span class="literal">false</span>,</span><br><span class="line">    coveragePathIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    coverageProvider: <span class="string">'babel'</span>,</span><br><span class="line">    coverageReporters: [ <span class="string">'json'</span>, <span class="string">'text'</span>, <span class="string">'lcov'</span>, <span class="string">'clover'</span> ],</span><br><span class="line">    errorOnDeprecated: <span class="literal">false</span>,</span><br><span class="line">    expand: <span class="literal">false</span>,</span><br><span class="line">    forceCoverageMatch: [],</span><br><span class="line">    globals: &#123;&#125;,</span><br><span class="line">    haste: &#123; <span class="attr">computeSha1</span>: <span class="literal">false</span>, <span class="attr">throwOnModuleCollision</span>: <span class="literal">false</span> &#125;,</span><br><span class="line">    maxConcurrency: <span class="number">5</span>,</span><br><span class="line">    maxWorkers: <span class="string">'50%'</span>,</span><br><span class="line">    moduleDirectories: [ <span class="string">'node_modules'</span> ],</span><br><span class="line">    moduleFileExtensions: [ <span class="string">'js'</span>, <span class="string">'json'</span>, <span class="string">'jsx'</span>, <span class="string">'ts'</span>, <span class="string">'tsx'</span>, <span class="string">'node'</span> ],</span><br><span class="line">    moduleNameMapper: &#123;&#125;,</span><br><span class="line">    modulePathIgnorePatterns: [],</span><br><span class="line">    noStackTrace: <span class="literal">false</span>,</span><br><span class="line">    notify: <span class="literal">false</span>,</span><br><span class="line">    notifyMode: <span class="string">'failure-change'</span>,</span><br><span class="line">    prettierPath: <span class="string">'prettier'</span>,</span><br><span class="line">    resetMocks: <span class="literal">false</span>,</span><br><span class="line">    resetModules: <span class="literal">false</span>,</span><br><span class="line">    restoreMocks: <span class="literal">false</span>,</span><br><span class="line">    roots: [ <span class="string">'&lt;rootDir&gt;'</span> ],</span><br><span class="line">    runTestsByPath: <span class="literal">false</span>,</span><br><span class="line">    runner: <span class="string">'jest-runner'</span>,</span><br><span class="line">    setupFiles: [],</span><br><span class="line">    setupFilesAfterEnv: [],</span><br><span class="line">    skipFilter: <span class="literal">false</span>,</span><br><span class="line">    snapshotSerializers: [],</span><br><span class="line">    testEnvironment: <span class="string">'jest-environment-jsdom'</span>,</span><br><span class="line">    testEnvironmentOptions: &#123;&#125;,</span><br><span class="line">    testFailureExitCode: <span class="number">1</span>,</span><br><span class="line">    testLocationInResults: <span class="literal">false</span>,</span><br><span class="line">    testMatch: [ <span class="string">'**/__tests__/**/*.[jt]s?(x)'</span>, <span class="string">'**/?(*.)+(spec|test).[tj]s?(x)'</span> ],</span><br><span class="line">    testPathIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    testRegex: [],</span><br><span class="line">    testRunner: <span class="string">'jasmine2'</span>,</span><br><span class="line">    testSequencer: <span class="string">'@jest/test-sequencer'</span>,</span><br><span class="line">    testURL: <span class="string">'http://localhost'</span>,</span><br><span class="line">    timers: <span class="string">'real'</span>,</span><br><span class="line">    transformIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    useStderr: <span class="literal">false</span>,</span><br><span class="line">    watch: <span class="literal">false</span>,</span><br><span class="line">    watchPathIgnorePatterns: [],</span><br><span class="line">    watchman: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;很多，看起来也很头大。我们先将常用到的配置项做下归类，之后再配置对 Babel / webpack 等的支持，对这些配置项就会有大致的了解了。 Jest 配置详见： <a href="https://jestjs.io/docs/en/configuration.html" target="_blank" rel="noopener">Configuring Jest</a></p>
+<h3 id="Jest-配置项"><a href="#Jest-配置项" class="headerlink" title="Jest 配置项"></a>Jest 配置项</h3><ol>
+<li>mock<ul>
+<li>automock: 引入的模块会被自动mock</li>
+<li>clearMocks: 测试前自动清除 mock.calls 和 mock.instances 属性，等价于 jest.clearAllMocks()</li>
+<li>resetMocks: 测试前自动重置 mock 到初始状态，等价于 jest.resetAllMocks()</li>
+<li>restoreMocks: 测试前自动恢复 mock（？？和restMock的区别），等价于 jest.restoreAllMocks()</li>
+</ul>
+</li>
+<li>覆盖率<ul>
+<li>collectCoverage: 是否搜集测试时的覆盖率</li>
+<li>collectCoverageFrom: 哪些文件测试时需要进行覆盖率统计（数组，通过<a href="https://github.com/isaacs/node-glob#glob-primer" target="_blank" rel="noopener">glob 模式</a>匹配）</li>
+<li>coverageDirectory: 输出覆盖信息文件的目录</li>
+<li>coveragePathIgnorePatterns: 哪些文件测试时不需要进行覆盖率统计（数组，通过正则匹配）</li>
+<li>coverageReporters: 定义测试覆盖率报告的格式</li>
+<li>coverageThreshold: 覆盖率的阈值，可按照 global 和 glob 模式分组（单位为百分比，正值表示允许的覆盖率的最小值，负值表示不通过的百分比的最大值）</li>
+<li>forceCoverageMatch: 统计测试覆盖率时，测试文件默认被忽略，此项可以指定哪些文件需要被统计进来（数组，glob 模式）</li>
+</ul>
+</li>
+<li>转换器<ul>
+<li>transform: 匹配文件和对应的转换器</li>
+<li>transformIgnorePatterns: 转换时要排除的文件</li>
+</ul>
+</li>
+<li>bail<ul>
+<li>停止运行测试代码时出现错误的次数</li>
+</ul>
+</li>
+</ol>
+<h3 id="Jest-配置方式"><a href="#Jest-配置方式" class="headerlink" title="Jest 配置方式"></a>Jest 配置方式</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果我们想对 Jest 进行个性化配置，有以下方式：</p>
+<ol>
+<li><p>在项目中 package.json 文件中增加 “jest” 字段</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"my-project"</span>,</span><br><span class="line">    <span class="string">"jest"</span>: &#123;</span><br><span class="line">        <span class="string">"verbose"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过 jest.config.js  </p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    verbose: <span class="literal">true</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果以上两种方式不满足要求，想自定义配置文件的名称和格式，可在执行 jest 命令时增加 <code>--config &lt;path/to/file.js|cjs|mjs|json&gt;</code>，–config 选项可指定配置文件。需要注意的是如果采用json 文件，不能有 “jest” 键值。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"verbose"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="生成一个基础配置文件"><a href="#生成一个基础配置文件" class="headerlink" title="生成一个基础配置文件"></a>生成一个基础配置文件</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;除了手动添加配置文件外，我们可以通过 Jest 提供的 Jest CLI，运行 <code>jest --init</code> 命令，运行完成后，会生成一个 jest.config.js，这个文件里每个选项都有简短的说明。</p>
+<h3 id="使用-Babel"><a href="#使用-Babel" class="headerlink" title="使用 Babel"></a>使用 Babel</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由于我们配置的环境是 node，它的语法是CommonJS，因此使用ES6 语法 import 时会报错。</p>
+<ol>
+<li><p>安装依赖</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// babel 6</span></span><br><span class="line">npm install --save-dev babel-jest babel-core regenerator-runtime</span><br><span class="line"><span class="comment">// babel 7</span></span><br><span class="line">npm install --save-dev babel-jest babel-core@^<span class="number">7.0</span><span class="number">.0</span>-bridge<span class="number">.0</span> @babel/core regenerator-runtime</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在根目录下增加 .babelrc 文件</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="string">"presets"</span>: [<span class="string">"env"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>运行 <code>npm run test</code> 查看结果</p>
+</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;需要注意的是，安装 Jest 时，babel-jest 是会被自动安装的。当运行jest 命令时，babel-jest 会检测当前环境是否安装了 babel-core，如果安装了，会去取 .babelrc 的配置并执行 babel 对代码进行转化。 如果要避免这个行为，比如需要添加额外的预处理器，需要显式的重置 transform 配置项，因为一旦添加了 transform 配置，babel-jest 就不会自动载入了。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json 重置 transform</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"jest"</span>: &#123;</span><br><span class="line">        <span class="string">"transform"</span>: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加-TypeScript-支持"><a href="#添加-TypeScript-支持" class="headerlink" title="添加 TypeScript 支持"></a>添加 TypeScript 支持</h3><ol>
+<li><p>我们先创建一个 math.ts 文件：</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// math.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a: number, b: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接着创建测试文件 math.test.ts:</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// math.test.ts</span></span><br><span class="line"><span class="keyword">import</span> math <span class="keyword">from</span> <span class="string">'../src/math'</span></span><br><span class="line">describe(<span class="string">'Test Math Module'</span>, () =&gt; &#123;</span><br><span class="line">    test(<span class="string">'should return sum value when one plus another'</span>, () =&gt; &#123;</span><br><span class="line">        expect(sum(<span class="number">1</span>, <span class="number">2</span>)).toBe(<span class="number">3</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建 tsconfig.json 文件，添加 TypeScript 配置：</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// tsconfig.json</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"compilerOptions"</span>: &#123;</span><br><span class="line">        <span class="string">"target"</span>: <span class="string">"es5"</span>,</span><br><span class="line">        <span class="string">"strict"</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"include"</span>: [</span><br><span class="line">        <span class="string">"src/**/*"</span>,</span><br><span class="line">        <span class="string">"__test__/**/*"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"exclude"</span>: [</span><br><span class="line">        <span class="string">"node_modules"</span>,</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用 Jest 测试 TypeScript 代码需要借助 ts-jest 解析器，安装依赖：</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install -save-dev ts-jest typescript @types/jest</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置 Jest</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// jest.config.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    collectCoverage: <span class="literal">true</span>,</span><br><span class="line">    transform: &#123;</span><br><span class="line">        <span class="string">'^.+\\.tsx?$'</span>: <span class="string">'ts-jest'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行 <code>npm run test</code> 查看结果</p>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>测试</category>
@@ -1519,6 +1615,131 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       <tags>
         <tag>vue</tag>
         <tag>ssr</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>css垂直居中的方式</title>
+    <url>/2020/09/29/css%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%E7%9A%84%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;对于前端来说，用CSS实现垂直居中是常见的工作，但自从flex出现后，因为做的差不多都是移动端的页面，大家基本上都用flex了。为了方便大家写PC端样式时可以少走弯路，我把之前工作中用到过的和别人总结的垂直居中方式一并总结在这里。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;基本的DOM结构如下：</p>
+<pre><code><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line">    &lt;div id=<span class="string">"child"</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br></pre></td></tr></table></figure></code></pre><h2 id="margin-top-padding-top"><a href="#margin-top-padding-top" class="headerlink" title="margin-top / padding-top"></a>margin-top / padding-top</h2><ul>
+<li><p>示例</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.parent &#123;</span><br><span class="line">    width: <span class="number">300</span>px;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">&#125;</span><br><span class="line">.child &#123;</span><br><span class="line">    width: <span class="number">100</span>px;</span><br><span class="line">    height: <span class="number">100</span>px;</span><br><span class="line">    margin-top: <span class="number">50</span>px;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">---- 或者 ----</span><br><span class="line"></span><br><span class="line">.parent &#123;</span><br><span class="line">    width: <span class="number">300</span>px;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">    padding-top: <span class="number">50</span>px;</span><br><span class="line">    box-sizing: border-box;</span><br><span class="line">&#125;</span><br><span class="line">.child &#123;</span><br><span class="line">    width: <span class="number">100</span>px;</span><br><span class="line">    height: <span class="number">100</span>px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>兼容性</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/134743/34/11064/106929/5f728f81Ea80a9300/28f5d6b365a0926f.png" alt="margin兼容性"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本来我是不打算写这种方式的，但笨方法也是一种方法。</p>
+<h2 id="flex"><a href="#flex" class="headerlink" title="flex"></a>flex</h2><ul>
+<li>示例  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.parent &#123;</span><br><span class="line">    display: flex;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">    align-items: center;</span><br><span class="line">&#125;</span><br><span class="line">.child &#123;</span><br><span class="line">    width: <span class="number">100</span>px;</span><br><span class="line">    height: <span class="number">100</span>px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>兼容性</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/143413/30/9644/176104/5f71e12bE5ff9c425/76b6644fb23fd202.png" alt="flex兼容性"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;flex在移动端的兼容性都很好，但是如果要在PC端使用的话，IE 10 以下就不要考虑了，IE 10 和11 也有一些兼容性问题需要注意：<a href="https://caniuse.com/?search=flex" target="_blank" rel="noopener">flex兼容性</a>。</p>
+<h2 id="绝对定位-transform"><a href="#绝对定位-transform" class="headerlink" title="绝对定位 + transform"></a>绝对定位 + transform</h2><ul>
+<li><p>示例</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.parent &#123;</span><br><span class="line">    position: relative;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">&#125;</span><br><span class="line">.child &#123;</span><br><span class="line">    width: <span class="number">100</span>px;</span><br><span class="line">    height: <span class="number">100</span>px;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top: <span class="number">50</span>%;</span><br><span class="line">    transform: translate(<span class="number">0</span>, <span class="number">-50</span>%);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>兼容性<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/149912/26/9726/615389/5f728c2eE37d4379f/9ed28cd717b71f0f.jpg" alt="transform兼容性"></p>
+</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;transform是CSS 3的属性，自然对IE 8 及以下是不兼容的，IE 9 以上使用前缀就可以了。</p>
+<h2 id="绝对定位-负margin"><a href="#绝对定位-负margin" class="headerlink" title="绝对定位 + 负margin"></a>绝对定位 + 负margin</h2><ul>
+<li><p>示例</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.parent &#123;</span><br><span class="line">    position: relative;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">&#125;</span><br><span class="line">.child &#123;</span><br><span class="line">    width: <span class="number">100</span>px;</span><br><span class="line">    height: <span class="number">100</span>px;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top: <span class="number">50</span>%;</span><br><span class="line">    margin-top: <span class="number">-50</span>px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>兼容性</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/134743/34/11064/106929/5f728f81Ea80a9300/28f5d6b365a0926f.png" alt="负margin兼容性"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这种实现方式的兼容性没什么好质疑的，CSS 2 的属性，兼容到IE 6（虽然我们早就不考虑IE 678 的兼容性了）。这种方式不够灵活的一点是，margin值必须指定为自身高度的一半，这就意味着这种实现方式只适用于child高度明确的情况。负margin在工作中还有许多应用场景，比如在父级宽高一定的情况下扩充子级宽高，利用负margin做叠加，和padding配合实现左右div等高等等。总之，在写样式的时候要记得margin可以为负的哦。</p>
+<h2 id="table-cell"><a href="#table-cell" class="headerlink" title="table-cell"></a>table-cell</h2><ul>
+<li><p>示例</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.parent &#123;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">    display: table-cell;</span><br><span class="line">    vertical-align: middle;</span><br><span class="line">&#125;</span><br><span class="line">.child &#123;</span><br><span class="line">    width: <span class="number">100</span>px;</span><br><span class="line">    height: <span class="number">100</span>px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>兼容性</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/131536/2/11264/121529/5f72996eE7a195372/a618f17f7355f385.png" alt="table-cell兼容性"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这种实现方式不兼容IE 67，Firefox 2 有一些bug，但鉴于目前Firefox 2的版本占比为0，使用table-cell是不用考虑兼容性的问题的。这个例子只是展示table-cell这个属性在垂直居中中的作用，实际工作中我们常常使用table的一整套DOM。由于浏览器生成table会进行多次重排重绘，非常损耗性能，因此如果不是后台系统或者要展示比较规范的表格类型的数据的时候，尽量选择其他的实现方式。</p>
+<h2 id="绝对定位-margin-auto"><a href="#绝对定位-margin-auto" class="headerlink" title="绝对定位 + margin: auto"></a>绝对定位 + margin: auto</h2><ul>
+<li><p>示例</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.parent &#123;</span><br><span class="line">    position: relative;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">&#125;</span><br><span class="line">.child &#123;</span><br><span class="line">    width: <span class="number">100</span>px;</span><br><span class="line">    height: <span class="number">100</span>px;</span><br><span class="line">    position: absolute;</span><br><span class="line">    top: <span class="number">0</span>;</span><br><span class="line">    bottom: <span class="number">0</span>;</span><br><span class="line">    margin: auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>兼容性</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/117341/34/19063/116030/5f72dd25E6b06c156/7587b74748408b51.png" alt="margin:auto兼容性"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上图是margin: auto的兼容性。需要注意的是图中标“1”的浏览器，在怪异模式下是不支持margin:auto的。如果你对怪异模式很陌生，那么记得保证你的html页面开头是<!doctype html><html>这样的声明就行，这段声明可以保证你的页面以标准模式渲染。</p>
+<h2 id="grid"><a href="#grid" class="headerlink" title="grid"></a>grid</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;使用grid其实已经超出我们在开头规定的DOM结构的范围了，但是因为grid和flex相比，可以更轻易的实现二维布局，所以还是现在这里认识一下<br>吧。使用grid实现垂直居中的DOM结构如下：</p>
+<pre><code><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"child1"</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    &lt;div class="child"&gt;&lt;/</span>div&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"child2"</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br></pre></td></tr></table></figure></code></pre><p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;和之前规定的DOM结构相比，我们在在子级增加了两个辅助的div，通过设置子级三个div的高度来实现中间div的垂直居中。如果不设置grid-template-rows的话，三个子级div会是相同的高度，也是垂直居中的。</p>
+<pre><code><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.parent &#123;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">    display: grid;</span><br><span class="line">    grid-template-rows: <span class="number">50</span>px <span class="number">200</span>px <span class="number">50</span>px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></code></pre><ul>
+<li>兼容性</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/151511/20/1122/210584/5f72e54fEe1fe1377/b237b0fb200f4e77.png" alt="margin:auto兼容性"></p>
+<p> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;嗯，grid最大的问题就是兼容性。PC就不要考虑了，M的如果你的项目不需要兼容那些飘红的浏览器，就可以先用起来了。grid详细的兼容性在这里：<a href="https://caniuse.com/?search=grid" target="_blank" rel="noopener">grid兼容性</a>。</p>
+<h2 id="line-height-vertical-align"><a href="#line-height-vertical-align" class="headerlink" title="line-height + vertical-align"></a>line-height + vertical-align</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们都知道使用line-height实现文本的垂直居中，同样的，我们也可以使用line-height和vertical-align实现图片的垂直居中。</p>
+<pre><code><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"parent"</span>&gt;</span><br><span class="line">    &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">"child"</span> src=<span class="string">"demo.jpg"</span>&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;style&gt;</span></span><br><span class="line"><span class="regexp">    .parent &#123;</span></span><br><span class="line"><span class="regexp">        line-height: 300px;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">    .child &#123;</span></span><br><span class="line"><span class="regexp">        width: 100px;</span></span><br><span class="line"><span class="regexp">        height: 100px;</span></span><br><span class="line"><span class="regexp">        vertical-align: middle;</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&lt;/</span>style&gt;</span><br></pre></td></tr></table></figure></code></pre><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;按照line-height可以使inline元素垂直居中的思路，我们也可以利用line-height实现任意div的垂直居中，前提是设置其为 inline-block：</p>
+<pre><code><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">.parent &#123;</span><br><span class="line">    height: <span class="number">300</span>px;</span><br><span class="line">    line-height: <span class="number">300</span>px;</span><br><span class="line">&#125;</span><br><span class="line">.child &#123;</span><br><span class="line">    display: inline-block;</span><br><span class="line">    width: <span class="number">100</span>px;</span><br><span class="line">    height: <span class="number">100</span>px;</span><br><span class="line">    vertical-align: middle;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></code></pre><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;为什么要把line-height放到最后，是因为vertical-align:middle并不是真正的垂直居中（见下图），而且各个浏览器、IOS和安卓的渲染还有些差异，如果你的项目对还原设计稿的要求很高，这个方案就放弃吧。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/111590/26/19209/21454/5f72f305Ee1d903b0/9941c632da17521b.png" alt="垂直居中偏差"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（完结）</p>
+]]></content>
+      <categories>
+        <category>css</category>
+      </categories>
+      <tags>
+        <tag>垂直居中</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>css行高line-height的一些理解</title>
+    <url>/2020/09/29/css%E8%A1%8C%E9%AB%98line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在工作中遇到过设置行高不生效的问题，仔细研究后才知道自己对行高的理解远远不够，因此特地在这里总结一下。看一个比较简单的例子：</p>
+<pre><code><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    .parent &#123;</span><br><span class="line">        line-height: <span class="number">40</span>px;</span><br><span class="line">    &#125;</span><br><span class="line">    .child &#123;</span><br><span class="line">        line-height: <span class="number">20</span>px;</span><br><span class="line">        background-color: red;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br><span class="line"><span class="regexp">&lt;div class="parent"&gt;</span></span><br><span class="line"><span class="regexp">    &lt;span class="child"&gt;我的行高是20px我的行高是20px我的行高是20px我的行高是20px我的行高是20px我的行高是20px我的行高是20px我的行高是20px&lt;/</span>span&gt;</span><br><span class="line">    &lt;p <span class="class"><span class="keyword">class</span></span>=<span class="string">"child"</span>&gt;---我的行高是<span class="number">20</span>px我的行高是<span class="number">20</span>px我的行高是<span class="number">20</span>px我的行高是<span class="number">20</span>px我的行高是<span class="number">20</span>px我的行高是<span class="number">20</span>px我的行高是<span class="number">20</span>px我的行高是<span class="number">20</span>px---&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;</span><br></pre></td></tr></table></figure></code></pre><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在上面的一段代码中，父级div的line-height是40px，子级span和p的line-height为20px。按照我之前的理解，line-height就是设置字体行高的，设置什么是什么就是了，这种明确指定像素的情况，不就是20px嘛。好吧，看看结果：</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/149728/21/9503/71634/5f707f4aE06b483ea/4c4763d52b7292da.png" alt="简单的例子的结果"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yeah～，不是我认为的结果，p标签和span标签显示的行高完全是不同的。还是先熟悉下相关的概念吧。</p>
+<h2 id="要熟悉的概念"><a href="#要熟悉的概念" class="headerlink" title="要熟悉的概念"></a>要熟悉的概念</h2><h3 id="内联盒模型"><a href="#内联盒模型" class="headerlink" title="内联盒模型"></a>内联盒模型</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;一说到盒模型，我们都会立马想到 margin、padding、content、border、box-sizing等，但这个只是 CSS 中盒模型的块级盒模型（block box）。我们今天要说的是另外一个被我们忽略掉的内联盒模型（inline box）。内联盒指的是盒子内部的构建模型，作用上关键是内容区域（conetnt）。</p>
+<p><img src= "/img/loading.gif" data-src="https://pic2.zhimg.com/v2-52951e8e4d1bebb7a3d060a7674e6f81_1440w.jpg?source=172ae18b" alt="内联盒模型"></p>
+<ul>
+<li>内联盒子（inline box）分为内联盒子和匿名内联盒子。内联盒子不会让内容成块显示，而是排成一行。</li>
+<li>行框盒子（line box）每一行就是一个行框盒子，由许多内联盒子（inline box）组成。</li>
+<li>幽灵空白节点 （struct），每个行框盒子之前都有一个。</li>
+</ul>
+<h3 id="幽灵空白节点"><a href="#幽灵空白节点" class="headerlink" title="幽灵空白节点"></a>幽灵空白节点</h3><blockquote>
+<p>Each line box starts with a zero-width inline box with the element’s font and line height properties. We call that imaginary box a “strut”.</p>
+</blockquote>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;上面是规范中对幽灵空白节点的定义：每个行框盒子（line box）的前面都有一个0宽度的内联盒子（inline box），这个内联盒子有字体和行高的属性，被称做struct。因为这个内联盒子在页面上看不到，也无法通过脚本获取，但却真实存在，有点像文字节点一样（with the element’s font and line height properties）影响着页面的渲染，因此这个struct被我们成为“幽灵空白节点”。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;需要注意的是，幽灵空白节点的出现的前提是文档声明必须是 HTML5 文档声明（<!doctype html><html>），如果是 HTML5 之前的文档声明，幽灵空白节点是不存在的。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们先来看下幽灵空白节点吧。</p>
+<pre><code><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    .parent &#123;</span><br><span class="line">        background-color: lightgrey;</span><br><span class="line">    &#125;</span><br><span class="line">    .child1 &#123;</span><br><span class="line">        display: inline-block;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br><span class="line"><span class="regexp">&lt;div class="parent"&gt;</span></span><br><span class="line"><span class="regexp">    &lt;span class="child1"&gt;&lt;/</span>span&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;div class="parent"&gt;</span></span><br><span class="line"><span class="regexp">    &lt;p class="child2"&gt;&lt;/</span>p&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;</span></span><br></pre></td></tr></table></figure></code></pre><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;结果见下图。可以看到，父级div没有设置高度，span标签里没有文字，但最终的渲染结果是父级是有高度的，这个高度就是幽灵空白节点造成的。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/135899/16/10998/10438/5f715271E6ba5f83f/54a53b6f62b3ead9.png" alt="幽灵空白节点"></p>
+<p>眼尖的你可能会提出质疑：既然每个行框盒子之前都有一个空白幽灵节点，为什么要设置span标签为inline-blcok。嗯，这里再补充一段规范。</p>
+<blockquote>
+<p>Line boxes are created as needed to hold inline-level content within an inline formatting context.<br><strong><br>Line boxes that contain no text, no preserved white space, no inline elements with non-zero margins, padding, or borders, and no other in-flow content (such as images, inline blocks or inline tables), and do not end with a preserved newline must be treated as zero-height line boxes.<br></strong><br>for the purposes of determining the positions of any elements inside of them, and must be treated as not existing for any other purpose.</p>
+</blockquote>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;意思就是说：如果一个line box里没有文字、空格、非0的margin或padding或border的inline元素、或其他in-flow内容（比如图片、inline-block 或 inline-table元素），且不以保留的换行符结束的话，就会被视作高度为0的line box。换言之，如果只有一个空的span标签，是不会有空白幽灵节点出现的。</p>
+<h2 id="结论与理解"><a href="#结论与理解" class="headerlink" title="结论与理解"></a>结论与理解</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;先抛出网上大佬们给出的结论：</p>
+<ul>
+<li>行内元素的line-height属性是去设置该元素所在行框盒子（line box）的行高，行框盒子取其内部所有内联盒子的行高的最大值，定为当前行的行高</li>
+<li>换行后生成新的行框盒子，新生成的行的行高，重新在当前行包含的内联盒子的行高中取最大值</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;按照上面的结论，我们先画出内联盒模型：</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/136071/12/10921/81186/5f713c1dEfcf1719b/d2f96148dc90fa81.png" alt="内联盒模型"></p>
+<ul>
+<li>先解释span标签包裹的文字为什么行高是40px。由上文我们可以知道，幽灵空白节点和文本节点一样，有行高的属性，因为自身没有设置line-height， 因此继承了父级 div 的行高 40px。由span标签组成的inline box 的高度则由自身的行高决定，为20px。 这样，第一行的行框盒子line box的行高取struct和inline box的最大值，就是40px。如果要使span标签上的line-height 生效，那么按照最大值的原则，必须要给span大于40的行高才行。由于换行产生了新的行框盒子（line box），第二行和第三行的内联盒模型和第一行是一致的，行高同样为40px。</li>
+<li>至于p标签包裹的文字为什么行高是20px，就很好理解了，因为没有幽灵空白节点呗。</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们再看一个稍微复杂那么一点点的情况：</p>
+<pre><code><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    .parent &#123;</span><br><span class="line">    line-height: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">.child1 &#123;</span><br><span class="line">    line-height: <span class="number">20</span>px;</span><br><span class="line">    background-color: red;</span><br><span class="line">&#125;</span><br><span class="line">.child2 &#123;</span><br><span class="line">    line-height: <span class="number">40</span>px;</span><br><span class="line">    background-color: green;</span><br><span class="line">&#125;</span><br><span class="line">.child3 &#123;</span><br><span class="line">    line-height: <span class="number">80</span>px;</span><br><span class="line">    background-color: blue;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/style&gt;</span></span><br><span class="line"><span class="regexp">&lt;p class="parent"&gt;</span></span><br><span class="line"><span class="regexp">    &lt;span class="child1"&gt;我的行高是20px我的行高是20px我的行高是20px我的行高是20px我的行高是20px我的行高是20px&lt;/</span>span&gt;   </span><br><span class="line">    &lt;em <span class="class"><span class="keyword">class</span></span>=<span class="string">"child2"</span>&gt;我的行高是<span class="number">40</span>px我的行高是<span class="number">40</span>px我的行高是<span class="number">40</span>px我的行高是<span class="number">40</span>px我的行高是<span class="number">40</span>px我的行高是<span class="number">40</span>px&lt;<span class="regexp">/em&gt;   </span></span><br><span class="line"><span class="regexp">    &lt;b class="child3"&gt;我的行高是80px我的行高是80px我的行高是80px我的行高是80px我的行高是80px我的行高是80px&lt;/</span>b&gt;</span><br><span class="line">&lt;<span class="regexp">/p&gt;</span></span><br></pre></td></tr></table></figure></code></pre><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;结果见下图，如果你能清楚的解释原因，就说明我讲明白了。</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/131124/36/10700/81711/5f71db32E940ae3f0/e5b1ba96639168e2.png" alt="练习"></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（完结）</p>
+]]></content>
+      <categories>
+        <category>css</category>
+      </categories>
+      <tags>
+        <tag>line-height</tag>
       </tags>
   </entry>
   <entry>
