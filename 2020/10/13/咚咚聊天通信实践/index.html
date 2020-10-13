@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>咚咚聊天通信实践 | YolkPie</title><meta name="description" content="虚拟DOM的核心之一就是它的Diff算法，其中最为核心的就是核心Diff算法，只有在新旧虚拟DOM的子节点都是多个的时候，核心Diff算法才会派上用场。"><meta name="keywords" content="小程序"><meta name="author" content="YolkPie"><meta name="copyright" content="YolkPie"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://yolkpie.github.io/2020/10/13/%E5%92%9A%E5%92%9A%E8%81%8A%E5%A4%A9%E9%80%9A%E4%BF%A1%E5%AE%9E%E8%B7%B5/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="咚咚聊天通信实践"><meta property="og:url" content="https://yolkpie.github.io/2020/10/13/%E5%92%9A%E5%92%9A%E8%81%8A%E5%A4%A9%E9%80%9A%E4%BF%A1%E5%AE%9E%E8%B7%B5/"><meta property="og:site_name" content="YolkPie"><meta property="og:description" content="虚拟DOM的核心之一就是它的Diff算法，其中最为核心的就是核心Diff算法，只有在新旧虚拟DOM的子节点都是多个的时候，核心Diff算法才会派上用场。"><meta property="og:image" content="https://img12.360buyimg.com/imagetools/jfs/t1/153539/38/2109/32094/5f859c71Ea6de9fb8/7ca42e0d3981905f.jpg"><meta property="article:published_time" content="2020-10-13T09:57:54.000Z"><meta property="article:modified_time" content="2020-10-13T12:50:10.413Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="京麦小程序经验谈-二" href="https://yolkpie.github.io/2020/10/13/%E4%BA%AC%E9%BA%A6%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%8F%E9%AA%8C%E8%B0%88-%E4%BA%8C/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="https://at.alicdn.com/t/font_1638514_cadwssqh3zv.css"><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">38</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">39</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">17</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相关链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我们</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#咚咚聊天通信实践"><span class="toc-number">1.</span> <span class="toc-text">咚咚聊天通信实践</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建组群-createGroup"><span class="toc-number">2.</span> <span class="toc-text">创建组群-createGroup</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立通信-connect"><span class="toc-number">3.</span> <span class="toc-text">建立通信-connect</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监听事件"><span class="toc-number">4.</span> <span class="toc-text">监听事件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#拉取历史信息"><span class="toc-number">5.</span> <span class="toc-text">拉取历史信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#展示页面"><span class="toc-number">6.</span> <span class="toc-text">展示页面</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优化功能及注意事项"><span class="toc-number">7.</span> <span class="toc-text">优化功能及注意事项</span></a></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://img13.360buyimg.com/imagetools/jfs/t1/141779/13/10654/15022/5f859d02E78c5a402/effb7070752ffffe.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">YolkPie</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相关链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我们</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">咚咚聊天通信实践</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-10-13 17:57:54"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2020-10-13</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-10-13 20:50:10"><i class="fas fa-history fa-fw"></i> 更新于 2020-10-13</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">小程序</a></span></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta__icon"></i><span>字数总计:</span><span class="word-count">1.9k</span><span class="post-meta__separator">|</span><i class="far fa-clock fa-fw post-meta__icon"></i><span>阅读时长: 7 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="far fa-comments fa-fw post-meta__icon"></i><span>评论数:</span><a href="/2020/10/13/%E5%92%9A%E5%92%9A%E8%81%8A%E5%A4%A9%E9%80%9A%E4%BF%A1%E5%AE%9E%E8%B7%B5/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h3 id="咚咚聊天通信实践"><a href="#咚咚聊天通信实践" class="headerlink" title="咚咚聊天通信实践"></a>咚咚聊天通信实践</h3><p>前言：</p>
+<p>京东咚咚通信基于websocket实现双向通信，是在socket基础上进行封装。所以做过socket通信的人，对咚咚不用畏惧，其原理一致，咚咚使用起来功能更多，更简单，使用步骤即引入js,封装好的js会暴露给我们一些API，直接使用其方法就可以实现通信。<br>本文章主要介绍咚咚使用功能，功能方法处理，注意事项等。</p>
+<ol>
+<li>创建组群</li>
+<li>建立通信</li>
+<li>监听事件</li>
+<li>拉取历史信息</li>
+<li>展示页面</li>
+<li>优化功能及注意事项</li>
+</ol>
+<p>应用场景：</p>
+<p>项目应用场景比较多，医药的医患通信、律师的用户咨询、法院的咨询等等。</p>
+<h3 id="创建组群-createGroup"><a href="#创建组群-createGroup" class="headerlink" title="创建组群-createGroup"></a>创建组群-createGroup</h3><p>API提供了创建组群的方法，但是这一步骤均是由后端创建，然后返回前端聊天群组的ID，前端通过ID拉取聊天信息及建立独立通信。但是在开发之前，经常需要前端自己通过API创建群里，实现后续聊天功能。联调时调用后端创建群组。</p>
+<ol>
+<li>创建群组需要在建立通信之后，这也是我比较好奇的一点，这里的建立通信实际上指建立连接connect,这里获取了用户的pin及用户要使用的角色，登录的app,准备建立连接的tochat用户。获取基本信息后，基于此建立群组ID.</li>
+<li>建立群组ID之后要记录此ID，因为之后的发消息及接受消息，拉取记录都是基于此ID，一个用户可以创建多个群组，分别有不同的ID。<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">sdk.createGroup(&#123;</span><br><span class="line">        <span class="string">'gid'</span>: <span class="number">1111</span>,<span class="comment">//"群组id（更新必填）</span></span><br><span class="line">        <span class="string">'name'</span>: <span class="string">'群test'</span>,</span><br><span class="line">        <span class="string">'nickName'</span>: <span class="string">'aaa'</span>,</span><br><span class="line">        <span class="string">'intro'</span>: <span class="string">'群组介绍test'</span>,</span><br><span class="line">        <span class="string">'notice'</span>: <span class="string">'群公告group notice'</span>,</span><br><span class="line">        <span class="string">'approvalRule'</span>: <span class="string">'identity'</span>,</span><br><span class="line">        <span class="string">'sCode'</span>: <span class="string">''</span>,</span><br><span class="line">        <span class="string">'avatar'</span>: <span class="string">'群自定义头像'</span>,</span><br><span class="line">        <span class="string">'modifyFiled'</span>: <span class="number">1</span>,<span class="comment">//创建群</span></span><br><span class="line">        <span class="string">'canSearch'</span>: <span class="number">1</span>,<span class="comment">//1能，0不能被搜索到</span></span><br><span class="line">        <span class="string">'max'</span>: <span class="number">5</span>, <span class="comment">//群人数</span></span><br><span class="line">        <span class="string">'kind'</span>: <span class="number">1024</span>, <span class="comment">//群类型：(数字型), 512:内部群，1024:外部群；上行不填,服务器根据成员app赋值;</span></span><br><span class="line">        <span class="string">'invitation'</span>: <span class="string">'邀请语hi join us'</span>,</span><br><span class="line">        <span class="string">'invitees'</span>: [</span><br><span class="line">          &#123; <span class="string">'pin'</span>: <span class="string">'aaa'</span>, <span class="string">'app'</span>: <span class="string">'ee'</span>, <span class="string">'nickName'</span>:<span class="string">'咚咚'</span>&#125;,</span><br><span class="line">          &#123; <span class="string">'pin'</span>: <span class="string">'@im.jd.com'</span>, <span class="string">'app'</span>: <span class="string">'jd.waiter'</span>, <span class="string">'nickName'</span>:<span class="string">'京东客服'</span>&#125;</span><br><span class="line">        ],</span><br><span class="line">        <span class="string">'bizExt'</span>: &#123;</span><br><span class="line">          <span class="string">'accessType'</span>: <span class="string">''</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">pack</span>) </span>&#123;</span><br><span class="line">      &#125;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="建立通信-connect"><a href="#建立通信-connect" class="headerlink" title="建立通信-connect"></a>建立通信-connect</h3><ol>
+<li>建立连接之前，一定要登录账号，因为建立连接需要验证登录态，使用京东账号登录即可，但是此处需要创建连接的账号和登录账号一致。</li>
+<li>查看是否建立成功：<br>a.    打开控制台，查看网络连接，会有上行和下行两个消息，上行为发送的请求，下行为返回的请求结果。<br>b.    连接每30s会发送一次心跳以确认连接没有中断。此处可通过心跳监听通信连接情况</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.chatConfig = &#123;</span><br><span class="line">      pin: <span class="string">'aaa'</span>,<span class="comment">//当前登录用户的身份ID</span></span><br><span class="line">      appId: <span class="string">'open.5478494bd9d948.cc'</span>,<span class="comment">//当前登录用户角色</span></span><br><span class="line">      toChat: <span class="string">'@im.jd.com'</span>,<span class="comment">//和谁建立聊天？对方的身份ID(单人或群聊)</span></span><br><span class="line">      toAppId: <span class="string">'jd.waiter'</span>,<span class="comment">//对方的登录角色</span></span><br><span class="line">      clientType: <span class="string">'m'</span>,<span class="comment">//客户端类型，常量，可选值：m（移动WEB）/comet（PC WEB）/android（安卓客户端）/iOS（iOS客户端）</span></span><br><span class="line">      <span class="comment">//SDK链接的Websocket服务地址，默认为ws://ws0-dd.jd.com(内网可访问)。生产环境Websocket地址请咨询服务端获取</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">sdk.connect(<span class="keyword">this</span>.chatConfig, (socket) =&gt; &#123;</span><br><span class="line">      sdk.on(<span class="string">'open'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">        this_.showLoading = <span class="literal">false</span></span><br><span class="line">      &#125;)</span><br><span class="line">      sdk.on(<span class="string">'message'</span>, this_.onMessage)</span><br><span class="line">      sdk.on(<span class="string">'chat_message_ack'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(data,<span class="string">'发送成功已读chat_message_ack'</span>)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;, <span class="keyword">this</span>.groupId)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="监听事件"><a href="#监听事件" class="headerlink" title="监听事件"></a>监听事件</h3><ol>
+<li>事件监听需要在建立连接之后，监听事件包括：消息发送及返回、连接关闭、连接建立；</li>
+<li>监听到连接建立之后可以写一些提示用户信息的逻辑，开始计时、发送默认信息等操作。</li>
+<li>监听关闭之后，可以停止计时，发送提醒用户连接已经中断等操作。</li>
+<li>监听消息返回及发送，之后操作比较多，包括角色的处理安放、图片的处理、特殊类型接收后做特殊提示处理及展示。通信主要功能在此函数中实现。</li>
+</ol>
+<h3 id="拉取历史信息"><a href="#拉取历史信息" class="headerlink" title="拉取历史信息"></a>拉取历史信息</h3><ol>
+<li>历史信息拉取回来处理和消息处理是使用一个函数，此处多了分页拉取。</li>
+<li>分页拉取是记录当前拉取最后一个消息的id,然后再次调用拉取消息函数，传入此id,会返回此id之前的10条记录。每次拉取条数由入参控制，最初拉取消息的入参id为-1.消息会返回总条数，是否还有上一页等消息。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">sdk.pullHistoryMsg(<span class="keyword">this</span>.startMid, <span class="keyword">this</span>.pullCount, (res) =&gt; &#123;&#125;, <span class="keyword">this</span>.groupId)</span><br><span class="line"></span><br><span class="line">handleHistoryResult (res) &#123;</span><br><span class="line">      <span class="keyword">this</span>.pullHistoryLoading = <span class="literal">false</span></span><br><span class="line">      <span class="keyword">if</span> (res.msgs &amp;&amp; res.msgs.length) &#123;</span><br><span class="line">        <span class="keyword">let</span> historyList = res.msgs</span><br><span class="line">        <span class="comment">// 保存mid</span></span><br><span class="line">        <span class="keyword">const</span> _mid = historyList[historyList.length - <span class="number">1</span>].mid</span><br><span class="line">        <span class="comment">// 更新消息对应角色</span></span><br><span class="line">        <span class="keyword">const</span> &#123; chatList &#125; = <span class="keyword">this</span>.datacon</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (chatList.length) &#123;</span><br><span class="line">          <span class="keyword">this</span>.scrollToId = chatList[<span class="number">0</span>].id</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; historyList.length; i++) &#123;</span><br><span class="line">          <span class="keyword">let</span> msgItemPush = <span class="keyword">this</span>.combineRolesToMsg(historyList[i])</span><br><span class="line">          <span class="keyword">if</span> (msgItemPush) &#123;</span><br><span class="line">            chatList.unshift(msgItemPush)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (res.end) &#123;</span><br><span class="line">          <span class="keyword">this</span>.hasMoreHistory = <span class="literal">false</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">this</span>.hasMoreHistory = <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.startMid = _mid</span><br><span class="line">        <span class="keyword">this</span>.datacon.chatList = chatList</span><br><span class="line">        <span class="built_in">console</span>.log(chatList)</span><br><span class="line">        <span class="keyword">this</span>.scrollToChatItem(<span class="keyword">this</span>.scrollToId)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 没有更多历史消息</span></span><br><span class="line">        <span class="keyword">this</span>.hasMoreHistory = <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="展示页面"><a href="#展示页面" class="headerlink" title="展示页面"></a>展示页面</h3><p>1.图片处理<br>a. 图片的上传依赖后端服务器，当前咚咚没有提供图片上传地址，需要将本地选择的图片上传至自己服务器，然后再使用咚咚的发送图片API出入url,接收消息返回结果，此处返回图片的路径，大小、发送成功的时间戳、发送者等信息，然后做角色区分展示。</p>
+<pre><code class="js">sendImage (file) {
+      <span class="comment">// sdk.sendImageMsg({url:'https://img11.360buyimg.com/ddimg/jfs/t6436/303/516091211/296860/207778b9/594126c0Nfd1dcd58.png',size:1000}, (message) =&gt; {}, this.groupId)</span>
+
+      <span class="comment">// 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象</span>
+      <span class="keyword">if</span> (navigator.mediaDevices === <span class="literal">undefined</span>) {
+        navigator.mediaDevices = {};
+      }
+      <span class="keyword">if</span> (navigator.mediaDevices.getUserMedia === <span class="literal">undefined</span>) {
+        navigator.mediaDevices.getUserMedia = <span class="function"><span class="keyword">function</span> (<span class="params">constraints</span>) </span>{
+          <span class="comment">// 首先，如果有getUserMedia的话，就获得它</span>
+          <span class="keyword">var</span> getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+          <span class="comment">// 一些浏览器根本没实现它 - 那么就返回一个error到promise的reject来保持一个统一的接口</span>
+          <span class="keyword">if</span> (!getUserMedia) {
+            <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'getUserMedia is not implemented in this browser'</span>));
+          }
+
+          <span class="comment">// 否则，为老的navigator.getUserMedia方法包裹一个Promise</span>
+          <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>{
+            getUserMedia.call(navigator, constraints, resolve, reject);
+          });
+        }
+      }
+
+      <span class="keyword">const</span> constraints = {
+        video: <span class="literal">true</span>,
+        audio: <span class="literal">false</span>
+      };
+      <span class="keyword">let</span> videoPlaying = <span class="literal">false</span>;
+      <span class="keyword">let</span> v = <span class="built_in">document</span>.getElementById(<span class="string">'video'</span>);
+      <span class="keyword">let</span> promise = navigator.mediaDevices.getUserMedia(constraints);
+      promise.then(<span class="function"><span class="params">stream</span> =&gt;</span> {
+        <span class="comment">// 旧的浏览器可能没有srcObject</span>
+        <span class="keyword">if</span> (<span class="string">"srcObject"</span> <span class="keyword">in</span> v) {
+          v.srcObject = stream;
+        } <span class="keyword">else</span> {
+          <span class="comment">// 防止再新的浏览器里使用它，应为它已经不再支持了</span>
+          v.src = <span class="built_in">window</span>.URL.createObjectURL(stream);
+        }
+        v.onloadedmetadata = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>{
+          v.play();
+          videoPlaying = <span class="literal">true</span>;
+        };
+      }).catch(<span class="function"><span class="params">err</span> =&gt;</span> {
+        <span class="built_in">console</span>.error(err.name + <span class="string">": "</span> + err.message);
+      })
+      <span class="keyword">if</span> (videoPlaying) {
+        <span class="keyword">let</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">'canvasphoto'</span>);
+        canvas.width = v.videoWidth;
+        canvas.height = v.videoHeight;
+        canvas.getContext(<span class="string">'2d'</span>).drawImage(v, <span class="number">0</span>, <span class="number">0</span>);
+        <span class="keyword">let</span> data = canvas.toDataURL(<span class="string">'image/webp'</span>);
+        <span class="built_in">document</span>.getElementById(<span class="string">'photo'</span>).setAttribute(<span class="string">'src'</span>, data);
+      }
+    },</code></pre>
+<p>2.文本处理<br>a.    文本消息返回有角色和发送时间、文本消息等内容，直接展示就可以。<br>3.    特殊类型处理<br>a.    特殊类型是通信间的一种特殊通信模式，主要处理非正常文本展示的场景，例如点击某按钮发送订单链接、发送特殊标识，都可以使用发送空消息，但是type给予事先约定好的字符串即可，拿到相应type字符串，做相应前端处理即可。</p>
+<h3 id="优化功能及注意事项"><a href="#优化功能及注意事项" class="headerlink" title="优化功能及注意事项"></a>优化功能及注意事项</h3><ol>
+<li>消息通信必须建立连接</li>
+<li>图片上传需要自己服务器</li>
+<li>消息发送失败后处理，决定是否需要重新发送</li>
+<li>消息撤回复制等功能可以参考具体文档</li>
+<li>未读消息数量、用户是否已读、发送成功后页面自动滚动至最新信息处等功能需要前端自己处理，咚咚文档没有封装。</li>
+</ol>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">YolkPie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yolkpie.github.io/2020/10/13/%E5%92%9A%E5%92%9A%E8%81%8A%E5%A4%A9%E9%80%9A%E4%BF%A1%E5%AE%9E%E8%B7%B5/">https://yolkpie.github.io/2020/10/13/%E5%92%9A%E5%92%9A%E8%81%8A%E5%A4%A9%E9%80%9A%E4%BF%A1%E5%AE%9E%E8%B7%B5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yolkpie.github.io" target="_blank">YolkPie</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">小程序</a></div><div class="post_share"><div class="social-share" data-image="https://img12.360buyimg.com/imagetools/jfs/t1/153539/38/2109/32094/5f859c71Ea6de9fb8/7ca42e0d3981905f.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/10/13/%E4%BA%AC%E9%BA%A6%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%8F%E9%AA%8C%E8%B0%88-%E4%BA%8C/"><img class="next-cover" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/144925/27/970/59191/5eec6d42Eee359811/8b7bbdb996007587.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">京麦小程序经验谈-二</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2020/06/19/京东小程序上手/" title="京东小程序上手"><img class="relatedPosts_cover" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/144925/27/970/59191/5eec6d42Eee359811/8b7bbdb996007587.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-19</div><div class="relatedPosts_title">京东小程序上手</div></div></a></div><div class="relatedPosts_item"><a href="/2020/10/13/京麦小程序经验一/" title="京麦小程序经验一"><img class="relatedPosts_cover" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/144925/27/970/59191/5eec6d42Eee359811/8b7bbdb996007587.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-13</div><div class="relatedPosts_title">京麦小程序经验一</div></div></a></div><div class="relatedPosts_item"><a href="/2020/10/13/京麦小程序经验谈-二/" title="京麦小程序经验谈-二"><img class="relatedPosts_cover" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/144925/27/970/59191/5eec6d42Eee359811/8b7bbdb996007587.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-10-13</div><div class="relatedPosts_title">京麦小程序经验谈-二</div></div></a></div></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '6e1bb19099a60d063402',
+  clientSecret: '6fefeea17c4f73c838216b0aab539d37c7bbcdad',
+  repo: 'yolkpie.github.io',
+  owner: 'YolkPie',
+  admin: ['yujihu'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: true,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2020 By YolkPie</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fas fa-comments"></i></a><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="true" src="/js/third-party/piao.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/local-search.js"></script><div style="display:none"><script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1279214088&web_id=1279214088"></script></div></body></html>
