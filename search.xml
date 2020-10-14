@@ -2793,6 +2793,90 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
+    <title>京东小程序-爬坑路-一</title>
+    <url>/2020/10/13/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E7%88%AC%E5%9D%91%E8%B7%AF-%E4%B8%80/</url>
+    <content><![CDATA[<h3 id="京东小程序开发经验谈-一"><a href="#京东小程序开发经验谈-一" class="headerlink" title="京东小程序开发经验谈-一"></a>京东小程序开发经验谈-一</h3><p>简介：</p>
+<p>京麦小程序基于京东小程序，京东小程序又基于微信小程序。他们的关系（此处指功能）；微信小程序&gt;京东小程序&gt;京麦小程序。<br>京麦小程序支持的，京东小程序肯定支持，但是反过来，京东小程序支持的，京麦就不一定支持了，这也是我做京麦时参考京东小程序文档踩过的坑，都是心酸泪，因为京麦没有使用文档都是参考京东小程序文档，分享的问题适用于京东小程序和京麦小程序。<br>下面我就我做的-拍卖管理（京麦小程序）遇到的问题，和大家分享一下，如有错误之处，望指正。</p>
+<h3 id="新开Webview与H5"><a href="#新开Webview与H5" class="headerlink" title="新开Webview与H5"></a>新开Webview与H5</h3><ul>
+<li>1.使用时地址参数一定要转义，否则丢失参数；</li>
+<li>2.小程序新开webview页面播放视频会有问题，部分手机不兼容，使用jd.openJMWebView方法，打开H5页面；</li>
+</ul>
+<h3 id="网络请求POST"><a href="#网络请求POST" class="headerlink" title="网络请求POST"></a>网络请求POST</h3><ul>
+<li>1.网络请求post需要content-type设置成application/json；</li>
+<li>2.需要后端做处理才能按照正常的post请求返回结果，否则会返回空；</li>
+</ul>
+<h3 id="Rich-text富文本转义"><a href="#Rich-text富文本转义" class="headerlink" title="Rich-text富文本转义"></a>Rich-text富文本转义</h3><ul>
+<li>1.富文本目前没有文档支持，参考微信小程序试用，div\span\img标签试用没有问题，但是也有很多不支持。具体需要一个个尝试；</li>
+</ul>
+<h3 id="登录态问题"><a href="#登录态问题" class="headerlink" title="登录态问题"></a>登录态问题</h3><ul>
+<li>1.登录态总是会掉，需要匹配出具体接口返回值，给出提示，目前没有登录页面供再次登录，只能重新进入；</li>
+<li>2.小程序新开webview页面播放视频会有问题，部分手机不兼容，使用jd.openJMWebView方法，打开H5页面；</li>
+</ul>
+<h3 id="navigitative"><a href="#navigitative" class="headerlink" title="navigitative"></a>navigitative</h3><ul>
+<li>1.如果自定义的头部，在页面中再次定义头部时，不生效</li>
+</ul>
+<h3 id="数据缓存"><a href="#数据缓存" class="headerlink" title="数据缓存"></a>数据缓存</h3><ul>
+<li>1.使用jd.storage时，如果没有设置key而直接读取key时会报错，需要做容错处理，或者在页面开始就附一个初始值；</li>
+</ul>
+<h3 id="IOS省略行样式问题"><a href="#IOS省略行样式问题" class="headerlink" title="IOS省略行样式问题"></a>IOS省略行样式问题</h3><ul>
+<li>1.做一行超出隐藏时，需要设置text的display属性为block，不可以为inline-block,否则IOS不生效，安卓可以；</li>
+</ul>
+<h3 id="关于埋点"><a href="#关于埋点" class="headerlink" title="关于埋点"></a>关于埋点</h3><ul>
+<li>1.埋点需要引入京东已经封装好的js,然后调用js暴露的方法即可，可以分为手动埋点和自动埋点。具体参考文档；</li>
+<li>2.<a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram0.html" target="_blank" rel="noopener">京麦小程序埋点</a></li>
+</ul>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>开始使用版本为京麦5.6.0，当前问题也是在此版本基础上，如果后续京麦有升级，可能会避免部分问题，此分享仅供5.6.0版本参考，后续版本可自己尝试</p>
+]]></content>
+      <categories>
+        <category>小程序</category>
+      </categories>
+      <tags>
+        <tag>小程序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>京东小程序-爬坑路-二</title>
+    <url>/2020/10/13/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E7%88%AC%E5%9D%91%E8%B7%AF-%E4%BA%8C/</url>
+    <content><![CDATA[<h3 id="京东小程序开发经验谈-二"><a href="#京东小程序开发经验谈-二" class="headerlink" title="京东小程序开发经验谈-二"></a>京东小程序开发经验谈-二</h3><p>简介：</p>
+<p>京麦小程序基于京东小程序，京东小程序又基于微信小程序。他们的关系（此处指功能）；微信小程序&gt;京东小程序&gt;京麦小程序。<br>京麦小程序支持的，京东小程序肯定支持，但是反过来，京东小程序支持的，京麦就不一定支持了，这也是我做京麦时参考京东小程序文档踩过的坑，都是心酸泪，因为京麦没有使用文档都是参考京东小程序文档，分享的问题适用于京东小程序和京麦小程序。<br>继经验一后续开发继续经验总结，现在做如下汇总。</p>
+<h3 id="picker组件-三级联动（使用禁忌）"><a href="#picker组件-三级联动（使用禁忌）" class="headerlink" title="picker组件-三级联动（使用禁忌）"></a>picker组件-三级联动（使用禁忌）</h3><ul>
+<li>1.picker三级联动时，它的父元素，包括它本身，都不可以使用jd:if=某变量来动态的控制它的显示和隐藏，因为这会导致切换二级时，三级不跟随联动，其原因是绑定的column-change事件不生效，组件在动态渲染时不支持绑定函数，这个结果被京麦组件的同事认证，且微信小程序有相同的问题，动态渲染的组件不支持绑定事件函数，这个我不是很能理解，但是事实就是切换不生效；</li>
+<li>2.如果有需要就是要动态渲染，可以找别的方法来隐藏它，幸好，我的需要不需要去动态渲染；</li>
+</ul>
+<h3 id="picker及checkbox组件value值属性不可更改"><a href="#picker及checkbox组件value值属性不可更改" class="headerlink" title="picker及checkbox组件value值属性不可更改"></a>picker及checkbox组件value值属性不可更改</h3><ul>
+<li>1.我们在做单项选择picker时，使用场景是将选中的选项记录在一个公共变量里面，然后使用它，等到接口返回这个变量时，我们绑定到picker的value值上面。此时，绑定的值一定要和之前的picker渲染的值类型保持一致，如果表单提交需要修改选中值的类型，就在提交时做统一格式化处理，接口返回时也要再处理回来，否则绑定会不生效，此时picker会默认第一个选项，而不是已经选择的选项。</li>
+</ul>
+<h3 id="img标签及背景图的使用问题"><a href="#img标签及背景图的使用问题" class="headerlink" title="img标签及背景图的使用问题"></a>img标签及背景图的使用问题</h3><ul>
+<li>1.image标签不支持gif图片地址，同时IOS小程序里面不支持http的链接地址，图片会不显示。</li>
+<li>2.css背景图不可以使用相对路径（IOS），需要替换成https的链接</li>
+</ul>
+<h3 id="图片上传问题"><a href="#图片上传问题" class="headerlink" title="图片上传问题"></a>图片上传问题</h3><ul>
+<li>1.不要相信模拟器效果，要在真机上调试。模拟器选择图片返回base64地址，真机却不是。</li>
+<li>2.京麦小程序会抽取相册本地地址，返回本地链接，生成链接为jdfile://*.png *为数字和字母的随机串，且，不论图片是Gif、png、jpg何种格式，生成链接都是.png后缀，因此不可以用生成链接判断是何种类型。</li>
+<li>3.安卓上传图片经过压缩处理，很快。但是选择多张时不同手机有不同问题，选择9张，总是显示3张成功，考虑不支持同时压缩多张照片。</li>
+<li>4.IOS可以选择9张照片，但是IOS上传图片会很慢，可能没有压缩的原因，点击原图和不点击原图都没有区别。同时，IOS如果图片没有在本地而在云端，会获取地址失败而无法上传</li>
+</ul>
+<h3 id="Scroll-view标签问题"><a href="#Scroll-view标签问题" class="headerlink" title="Scroll-view标签问题"></a>Scroll-view标签问题</h3><ul>
+<li>1.不要相信模拟器的效果，要在真机上试试，scroll-view在使用X方向的滚动时，模拟器就没有效果，不能实现滚动，真机可以</li>
+</ul>
+<h3 id="原生组件问题"><a href="#原生组件问题" class="headerlink" title="原生组件问题"></a>原生组件问题</h3><ul>
+<li>1.Textarea标签不可以放在scroll-view里面，会导致文本框固定定位的bug,一直在页面中间位置。</li>
+<li>2.Textarea不可以使用fixed定位，如果使用需要给它增加特殊属性。</li>
+<li>3.高版本的安卓或者IOS对于textarea的auto-foucs不生效</li>
+<li>4.Textarea是原生组件，高于任何层级，因此，如果页面有点击蒙层，或者confirm等浮层出现，textarea都会在它们之上，无法避免，提供的cover-view组件也不好用，使用限制更多。所以，页面有蒙层谨慎使用原生组件</li>
+<li>5.关于原生组件层级问题，微信小程序也有，避免方法五花八门，我使用的textarea就是在页面的时候将其隐藏，用一个div占位，掩人耳目，等到点击div时，去触发textarea的显示。不用时将其隐藏，避免其他蒙层出现时textarea在其上悬浮。</li>
+<li>6.Video、canvas等原生组件也有层级最高问题，目前没有解决</li>
+</ul>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>开始使用版本为京麦5.6.0，当前问题也是在此版本基础上，如果后续京麦有升级，可能会避免部分问题，此分享仅供5.6.0版本参考，后续版本可自己尝试</p>
+]]></content>
+      <categories>
+        <category>小程序</category>
+      </categories>
+      <tags>
+        <tag>小程序</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>京东小程序上手</title>
     <url>/2020/06/19/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B/</url>
     <content><![CDATA[<h3 id="京东小程序上手"><a href="#京东小程序上手" class="headerlink" title="京东小程序上手"></a>京东小程序上手</h3><p>官网：<a href="https://mp.jd.com/" target="_blank" rel="noopener">https://mp.jd.com</a></p>
@@ -3054,90 +3138,6 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <li><a href="https://cf.jd.com/pages/viewpage.action?pageId=226255440" target="_blank" rel="noopener">接入京东小程序</a></li>
 <li><a href="http://taro-docs-in.jd.com/taro/docs/README.html" target="_blank" rel="noopener">Taro官方文档</a></li>
 </ul>
-]]></content>
-      <categories>
-        <category>小程序</category>
-      </categories>
-      <tags>
-        <tag>小程序</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>京麦小程序经验一</title>
-    <url>/2020/10/13/%E4%BA%AC%E9%BA%A6%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%8F%E9%AA%8C%E4%B8%80/</url>
-    <content><![CDATA[<h3 id="京麦小程序开发经验谈-一"><a href="#京麦小程序开发经验谈-一" class="headerlink" title="京麦小程序开发经验谈-一"></a>京麦小程序开发经验谈-一</h3><p>简介：</p>
-<p>京麦小程序基于京东小程序，京东小程序又基于微信小程序。他们的关系（此处指功能）；微信小程序&gt;京东小程序&gt;京麦小程序。<br>京麦小程序支持的，京东小程序肯定支持，但是反过来，京东小程序支持的，京麦就不一定支持了，这也是我做京麦时参考京东小程序文档踩过的坑，都是心酸泪，因为京麦没有使用文档都是参考京东小程序文档。<br>下面我就我做的-拍卖管理（京麦小程序）遇到的问题，和大家分享一下，如有错误之处，望指正。</p>
-<h3 id="新开Webview与H5"><a href="#新开Webview与H5" class="headerlink" title="新开Webview与H5"></a>新开Webview与H5</h3><ul>
-<li>1.使用时地址参数一定要转义，否则丢失参数；</li>
-<li>2.小程序新开webview页面播放视频会有问题，部分手机不兼容，使用jd.openJMWebView方法，打开H5页面；</li>
-</ul>
-<h3 id="网络请求POST"><a href="#网络请求POST" class="headerlink" title="网络请求POST"></a>网络请求POST</h3><ul>
-<li>1.网络请求post需要content-type设置成application/json；</li>
-<li>2.需要后端做处理才能按照正常的post请求返回结果，否则会返回空；</li>
-</ul>
-<h3 id="Rich-text富文本转义"><a href="#Rich-text富文本转义" class="headerlink" title="Rich-text富文本转义"></a>Rich-text富文本转义</h3><ul>
-<li>1.富文本目前没有文档支持，参考微信小程序试用，div\span\img标签试用没有问题，但是也有很多不支持。具体需要一个个尝试；</li>
-</ul>
-<h3 id="登录态问题"><a href="#登录态问题" class="headerlink" title="登录态问题"></a>登录态问题</h3><ul>
-<li>1.登录态总是会掉，需要匹配出具体接口返回值，给出提示，目前没有登录页面供再次登录，只能重新进入；</li>
-<li>2.小程序新开webview页面播放视频会有问题，部分手机不兼容，使用jd.openJMWebView方法，打开H5页面；</li>
-</ul>
-<h3 id="navigitative"><a href="#navigitative" class="headerlink" title="navigitative"></a>navigitative</h3><ul>
-<li>1.如果自定义的头部，在页面中再次定义头部时，不生效</li>
-</ul>
-<h3 id="数据缓存"><a href="#数据缓存" class="headerlink" title="数据缓存"></a>数据缓存</h3><ul>
-<li>1.使用jd.storage时，如果没有设置key而直接读取key时会报错，需要做容错处理，或者在页面开始就附一个初始值；</li>
-</ul>
-<h3 id="IOS省略行样式问题"><a href="#IOS省略行样式问题" class="headerlink" title="IOS省略行样式问题"></a>IOS省略行样式问题</h3><ul>
-<li>1.做一行超出隐藏时，需要设置text的display属性为block，不可以为inline-block,否则IOS不生效，安卓可以；</li>
-</ul>
-<h3 id="关于埋点"><a href="#关于埋点" class="headerlink" title="关于埋点"></a>关于埋点</h3><ul>
-<li>1.埋点需要引入京东已经封装好的js,然后调用js暴露的方法即可，可以分为手动埋点和自动埋点。具体参考文档；</li>
-<li>2.<a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram0.html" target="_blank" rel="noopener">京麦小程序埋点</a></li>
-</ul>
-<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>开始使用版本为京麦5.6.0，当前问题也是在此版本基础上，如果后续京麦有升级，可能会避免部分问题，此分享仅供5.6.0版本参考，后续版本可自己尝试</p>
-]]></content>
-      <categories>
-        <category>小程序</category>
-      </categories>
-      <tags>
-        <tag>小程序</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>京麦小程序经验谈-二</title>
-    <url>/2020/10/13/%E4%BA%AC%E9%BA%A6%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%BB%8F%E9%AA%8C%E8%B0%88-%E4%BA%8C/</url>
-    <content><![CDATA[<h3 id="京麦小程序开发经验谈-二"><a href="#京麦小程序开发经验谈-二" class="headerlink" title="京麦小程序开发经验谈-二"></a>京麦小程序开发经验谈-二</h3><p>简介：</p>
-<p>京麦小程序基于京东小程序，京东小程序又基于微信小程序。他们的关系（此处指功能）；微信小程序&gt;京东小程序&gt;京麦小程序。<br>京麦小程序支持的，京东小程序肯定支持，但是反过来，京东小程序支持的，京麦就不一定支持了，这也是我做京麦时参考京东小程序文档踩过的坑，都是心酸泪，因为京麦没有使用文档都是参考京东小程序文档。<br>继经验一后续开发继续经验总结，现在做如下汇总。</p>
-<h3 id="picker组件-三级联动（使用禁忌）"><a href="#picker组件-三级联动（使用禁忌）" class="headerlink" title="picker组件-三级联动（使用禁忌）"></a>picker组件-三级联动（使用禁忌）</h3><ul>
-<li>1.picker三级联动时，它的父元素，包括它本身，都不可以使用jd:if=某变量来动态的控制它的显示和隐藏，因为这会导致切换二级时，三级不跟随联动，其原因是绑定的column-change事件不生效，组件在动态渲染时不支持绑定函数，这个结果被京麦组件的同事认证，且微信小程序有相同的问题，动态渲染的组件不支持绑定事件函数，这个我不是很能理解，但是事实就是切换不生效；</li>
-<li>2.如果有需要就是要动态渲染，可以找别的方法来隐藏它，幸好，我的需要不需要去动态渲染；</li>
-</ul>
-<h3 id="picker及checkbox组件value值属性不可更改"><a href="#picker及checkbox组件value值属性不可更改" class="headerlink" title="picker及checkbox组件value值属性不可更改"></a>picker及checkbox组件value值属性不可更改</h3><ul>
-<li>1.我们在做单项选择picker时，使用场景是将选中的选项记录在一个公共变量里面，然后使用它，等到接口返回这个变量时，我们绑定到picker的value值上面。此时，绑定的值一定要和之前的picker渲染的值类型保持一致，如果表单提交需要修改选中值的类型，就在提交时做统一格式化处理，接口返回时也要再处理回来，否则绑定会不生效，此时picker会默认第一个选项，而不是已经选择的选项。</li>
-</ul>
-<h3 id="img标签及背景图的使用问题"><a href="#img标签及背景图的使用问题" class="headerlink" title="img标签及背景图的使用问题"></a>img标签及背景图的使用问题</h3><ul>
-<li>1.image标签不支持gif图片地址，同时IOS小程序里面不支持http的链接地址，图片会不显示。</li>
-<li>2.css背景图不可以使用相对路径（IOS），需要替换成https的链接</li>
-</ul>
-<h3 id="图片上传问题"><a href="#图片上传问题" class="headerlink" title="图片上传问题"></a>图片上传问题</h3><ul>
-<li>1.不要相信模拟器效果，要在真机上调试。模拟器选择图片返回base64地址，真机却不是。</li>
-<li>2.京麦小程序会抽取相册本地地址，返回本地链接，生成链接为jdfile://*.png *为数字和字母的随机串，且，不论图片是Gif、png、jpg何种格式，生成链接都是.png后缀，因此不可以用生成链接判断是何种类型。</li>
-<li>3.安卓上传图片经过压缩处理，很快。但是选择多张时不同手机有不同问题，选择9张，总是显示3张成功，考虑不支持同时压缩多张照片。</li>
-<li>4.IOS可以选择9张照片，但是IOS上传图片会很慢，可能没有压缩的原因，点击原图和不点击原图都没有区别。同时，IOS如果图片没有在本地而在云端，会获取地址失败而无法上传</li>
-</ul>
-<h3 id="Scroll-view标签问题"><a href="#Scroll-view标签问题" class="headerlink" title="Scroll-view标签问题"></a>Scroll-view标签问题</h3><ul>
-<li>1.不要相信模拟器的效果，要在真机上试试，scroll-view在使用X方向的滚动时，模拟器就没有效果，不能实现滚动，真机可以</li>
-</ul>
-<h3 id="原生组件问题"><a href="#原生组件问题" class="headerlink" title="原生组件问题"></a>原生组件问题</h3><ul>
-<li>1.Textarea标签不可以放在scroll-view里面，会导致文本框固定定位的bug,一直在页面中间位置。</li>
-<li>2.Textarea不可以使用fixed定位，如果使用需要给它增加特殊属性。</li>
-<li>3.高版本的安卓或者IOS对于textarea的auto-foucs不生效</li>
-<li>4.Textarea是原生组件，高于任何层级，因此，如果页面有点击蒙层，或者confirm等浮层出现，textarea都会在它们之上，无法避免，提供的cover-view组件也不好用，使用限制更多。所以，页面有蒙层谨慎使用原生组件</li>
-<li>5.关于原生组件层级问题，微信小程序也有，避免方法五花八门，我使用的textarea就是在页面的时候将其隐藏，用一个div占位，掩人耳目，等到点击div时，去触发textarea的显示。不用时将其隐藏，避免其他蒙层出现时textarea在其上悬浮。</li>
-<li>6.Video、canvas等原生组件也有层级最高问题，目前没有解决</li>
-</ul>
-<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>开始使用版本为京麦5.6.0，当前问题也是在此版本基础上，如果后续京麦有升级，可能会避免部分问题，此分享仅供5.6.0版本参考，后续版本可自己尝试</p>
 ]]></content>
       <categories>
         <category>小程序</category>
@@ -3767,119 +3767,6 @@ window.requestAnimationFrame(changePosition);
       </categories>
       <tags>
         <tag>FE</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>咚咚聊天通信实践</title>
-    <url>/2020/10/13/%E5%92%9A%E5%92%9A%E8%81%8A%E5%A4%A9%E9%80%9A%E4%BF%A1%E5%AE%9E%E8%B7%B5/</url>
-    <content><![CDATA[<h3 id="咚咚聊天通信实践"><a href="#咚咚聊天通信实践" class="headerlink" title="咚咚聊天通信实践"></a>咚咚聊天通信实践</h3><p>前言：</p>
-<p>京东咚咚通信基于websocket实现双向通信，是在socket基础上进行封装。所以做过socket通信的人，对咚咚不用畏惧，其原理一致，咚咚使用起来功能更多，更简单，使用步骤即引入js,封装好的js会暴露给我们一些API，直接使用其方法就可以实现通信。<br>本文章主要介绍咚咚使用功能，功能方法处理，注意事项等。</p>
-<ol>
-<li>创建组群</li>
-<li>建立通信</li>
-<li>监听事件</li>
-<li>拉取历史信息</li>
-<li>展示页面</li>
-<li>优化功能及注意事项</li>
-</ol>
-<p>应用场景：</p>
-<p>项目应用场景比较多，医药的医患通信、律师的用户咨询、法院的咨询等等。</p>
-<h3 id="创建组群-createGroup"><a href="#创建组群-createGroup" class="headerlink" title="创建组群-createGroup"></a>创建组群-createGroup</h3><p>API提供了创建组群的方法，但是这一步骤均是由后端创建，然后返回前端聊天群组的ID，前端通过ID拉取聊天信息及建立独立通信。但是在开发之前，经常需要前端自己通过API创建群里，实现后续聊天功能。联调时调用后端创建群组。</p>
-<ol>
-<li>创建群组需要在建立通信之后，这也是我比较好奇的一点，这里的建立通信实际上指建立连接connect,这里获取了用户的pin及用户要使用的角色，登录的app,准备建立连接的tochat用户。获取基本信息后，基于此建立群组ID.</li>
-<li>建立群组ID之后要记录此ID，因为之后的发消息及接受消息，拉取记录都是基于此ID，一个用户可以创建多个群组，分别有不同的ID。<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">sdk.createGroup(&#123;</span><br><span class="line">        <span class="string">'gid'</span>: <span class="number">1111</span>,<span class="comment">//"群组id（更新必填）</span></span><br><span class="line">        <span class="string">'name'</span>: <span class="string">'群test'</span>,</span><br><span class="line">        <span class="string">'nickName'</span>: <span class="string">'aaa'</span>,</span><br><span class="line">        <span class="string">'intro'</span>: <span class="string">'群组介绍test'</span>,</span><br><span class="line">        <span class="string">'notice'</span>: <span class="string">'群公告group notice'</span>,</span><br><span class="line">        <span class="string">'approvalRule'</span>: <span class="string">'identity'</span>,</span><br><span class="line">        <span class="string">'sCode'</span>: <span class="string">''</span>,</span><br><span class="line">        <span class="string">'avatar'</span>: <span class="string">'群自定义头像'</span>,</span><br><span class="line">        <span class="string">'modifyFiled'</span>: <span class="number">1</span>,<span class="comment">//创建群</span></span><br><span class="line">        <span class="string">'canSearch'</span>: <span class="number">1</span>,<span class="comment">//1能，0不能被搜索到</span></span><br><span class="line">        <span class="string">'max'</span>: <span class="number">5</span>, <span class="comment">//群人数</span></span><br><span class="line">        <span class="string">'kind'</span>: <span class="number">1024</span>, <span class="comment">//群类型：(数字型), 512:内部群，1024:外部群；上行不填,服务器根据成员app赋值;</span></span><br><span class="line">        <span class="string">'invitation'</span>: <span class="string">'邀请语hi join us'</span>,</span><br><span class="line">        <span class="string">'invitees'</span>: [</span><br><span class="line">          &#123; <span class="string">'pin'</span>: <span class="string">'aaa'</span>, <span class="string">'app'</span>: <span class="string">'ee'</span>, <span class="string">'nickName'</span>:<span class="string">'咚咚'</span>&#125;,</span><br><span class="line">          &#123; <span class="string">'pin'</span>: <span class="string">'@im.jd.com'</span>, <span class="string">'app'</span>: <span class="string">'jd.waiter'</span>, <span class="string">'nickName'</span>:<span class="string">'京东客服'</span>&#125;</span><br><span class="line">        ],</span><br><span class="line">        <span class="string">'bizExt'</span>: &#123;</span><br><span class="line">          <span class="string">'accessType'</span>: <span class="string">''</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;, <span class="function"><span class="keyword">function</span> (<span class="params">pack</span>) </span>&#123;</span><br><span class="line">      &#125;)</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h3 id="建立通信-connect"><a href="#建立通信-connect" class="headerlink" title="建立通信-connect"></a>建立通信-connect</h3><ol>
-<li>建立连接之前，一定要登录账号，因为建立连接需要验证登录态，使用京东账号登录即可，但是此处需要创建连接的账号和登录账号一致。</li>
-<li>查看是否建立成功：<br>a.    打开控制台，查看网络连接，会有上行和下行两个消息，上行为发送的请求，下行为返回的请求结果。<br>b.    连接每30s会发送一次心跳以确认连接没有中断。此处可通过心跳监听通信连接情况</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">this</span>.chatConfig = &#123;</span><br><span class="line">      pin: <span class="string">'aaa'</span>,<span class="comment">//当前登录用户的身份ID</span></span><br><span class="line">      appId: <span class="string">'open.5478494bd9d948.cc'</span>,<span class="comment">//当前登录用户角色</span></span><br><span class="line">      toChat: <span class="string">'@im.jd.com'</span>,<span class="comment">//和谁建立聊天？对方的身份ID(单人或群聊)</span></span><br><span class="line">      toAppId: <span class="string">'jd.waiter'</span>,<span class="comment">//对方的登录角色</span></span><br><span class="line">      clientType: <span class="string">'m'</span>,<span class="comment">//客户端类型，常量，可选值：m（移动WEB）/comet（PC WEB）/android（安卓客户端）/iOS（iOS客户端）</span></span><br><span class="line">      <span class="comment">//SDK链接的Websocket服务地址，默认为ws://ws0-dd.jd.com(内网可访问)。生产环境Websocket地址请咨询服务端获取</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">sdk.connect(<span class="keyword">this</span>.chatConfig, (socket) =&gt; &#123;</span><br><span class="line">      sdk.on(<span class="string">'open'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">        this_.showLoading = <span class="literal">false</span></span><br><span class="line">      &#125;)</span><br><span class="line">      sdk.on(<span class="string">'message'</span>, this_.onMessage)</span><br><span class="line">      sdk.on(<span class="string">'chat_message_ack'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(data,<span class="string">'发送成功已读chat_message_ack'</span>)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;, <span class="keyword">this</span>.groupId)</span><br></pre></td></tr></table></figure>
-
-
-<h3 id="监听事件"><a href="#监听事件" class="headerlink" title="监听事件"></a>监听事件</h3><ol>
-<li>事件监听需要在建立连接之后，监听事件包括：消息发送及返回、连接关闭、连接建立；</li>
-<li>监听到连接建立之后可以写一些提示用户信息的逻辑，开始计时、发送默认信息等操作。</li>
-<li>监听关闭之后，可以停止计时，发送提醒用户连接已经中断等操作。</li>
-<li>监听消息返回及发送，之后操作比较多，包括角色的处理安放、图片的处理、特殊类型接收后做特殊提示处理及展示。通信主要功能在此函数中实现。</li>
-</ol>
-<h3 id="拉取历史信息"><a href="#拉取历史信息" class="headerlink" title="拉取历史信息"></a>拉取历史信息</h3><ol>
-<li>历史信息拉取回来处理和消息处理是使用一个函数，此处多了分页拉取。</li>
-<li>分页拉取是记录当前拉取最后一个消息的id,然后再次调用拉取消息函数，传入此id,会返回此id之前的10条记录。每次拉取条数由入参控制，最初拉取消息的入参id为-1.消息会返回总条数，是否还有上一页等消息。</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">sdk.pullHistoryMsg(<span class="keyword">this</span>.startMid, <span class="keyword">this</span>.pullCount, (res) =&gt; &#123;&#125;, <span class="keyword">this</span>.groupId)</span><br><span class="line"></span><br><span class="line">handleHistoryResult (res) &#123;</span><br><span class="line">      <span class="keyword">this</span>.pullHistoryLoading = <span class="literal">false</span></span><br><span class="line">      <span class="keyword">if</span> (res.msgs &amp;&amp; res.msgs.length) &#123;</span><br><span class="line">        <span class="keyword">let</span> historyList = res.msgs</span><br><span class="line">        <span class="comment">// 保存mid</span></span><br><span class="line">        <span class="keyword">const</span> _mid = historyList[historyList.length - <span class="number">1</span>].mid</span><br><span class="line">        <span class="comment">// 更新消息对应角色</span></span><br><span class="line">        <span class="keyword">const</span> &#123; chatList &#125; = <span class="keyword">this</span>.datacon</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (chatList.length) &#123;</span><br><span class="line">          <span class="keyword">this</span>.scrollToId = chatList[<span class="number">0</span>].id</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; historyList.length; i++) &#123;</span><br><span class="line">          <span class="keyword">let</span> msgItemPush = <span class="keyword">this</span>.combineRolesToMsg(historyList[i])</span><br><span class="line">          <span class="keyword">if</span> (msgItemPush) &#123;</span><br><span class="line">            chatList.unshift(msgItemPush)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (res.end) &#123;</span><br><span class="line">          <span class="keyword">this</span>.hasMoreHistory = <span class="literal">false</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">this</span>.hasMoreHistory = <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.startMid = _mid</span><br><span class="line">        <span class="keyword">this</span>.datacon.chatList = chatList</span><br><span class="line">        <span class="built_in">console</span>.log(chatList)</span><br><span class="line">        <span class="keyword">this</span>.scrollToChatItem(<span class="keyword">this</span>.scrollToId)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 没有更多历史消息</span></span><br><span class="line">        <span class="keyword">this</span>.hasMoreHistory = <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="展示页面"><a href="#展示页面" class="headerlink" title="展示页面"></a>展示页面</h3><p>1.图片处理<br>a. 图片的上传依赖后端服务器，当前咚咚没有提供图片上传地址，需要将本地选择的图片上传至自己服务器，然后再使用咚咚的发送图片API出入url,接收消息返回结果，此处返回图片的路径，大小、发送成功的时间戳、发送者等信息，然后做角色区分展示。</p>
-<pre><code class="js">sendImage (file) {
-      <span class="comment">// sdk.sendImageMsg({url:'https://img11.360buyimg.com/ddimg/jfs/t6436/303/516091211/296860/207778b9/594126c0Nfd1dcd58.png',size:1000}, (message) =&gt; {}, this.groupId)</span>
-
-      <span class="comment">// 老的浏览器可能根本没有实现 mediaDevices，所以我们可以先设置一个空的对象</span>
-      <span class="keyword">if</span> (navigator.mediaDevices === <span class="literal">undefined</span>) {
-        navigator.mediaDevices = {};
-      }
-      <span class="keyword">if</span> (navigator.mediaDevices.getUserMedia === <span class="literal">undefined</span>) {
-        navigator.mediaDevices.getUserMedia = <span class="function"><span class="keyword">function</span> (<span class="params">constraints</span>) </span>{
-          <span class="comment">// 首先，如果有getUserMedia的话，就获得它</span>
-          <span class="keyword">var</span> getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-
-          <span class="comment">// 一些浏览器根本没实现它 - 那么就返回一个error到promise的reject来保持一个统一的接口</span>
-          <span class="keyword">if</span> (!getUserMedia) {
-            <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'getUserMedia is not implemented in this browser'</span>));
-          }
-
-          <span class="comment">// 否则，为老的navigator.getUserMedia方法包裹一个Promise</span>
-          <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> (<span class="params">resolve, reject</span>) </span>{
-            getUserMedia.call(navigator, constraints, resolve, reject);
-          });
-        }
-      }
-
-      <span class="keyword">const</span> constraints = {
-        video: <span class="literal">true</span>,
-        audio: <span class="literal">false</span>
-      };
-      <span class="keyword">let</span> videoPlaying = <span class="literal">false</span>;
-      <span class="keyword">let</span> v = <span class="built_in">document</span>.getElementById(<span class="string">'video'</span>);
-      <span class="keyword">let</span> promise = navigator.mediaDevices.getUserMedia(constraints);
-      promise.then(<span class="function"><span class="params">stream</span> =&gt;</span> {
-        <span class="comment">// 旧的浏览器可能没有srcObject</span>
-        <span class="keyword">if</span> (<span class="string">"srcObject"</span> <span class="keyword">in</span> v) {
-          v.srcObject = stream;
-        } <span class="keyword">else</span> {
-          <span class="comment">// 防止再新的浏览器里使用它，应为它已经不再支持了</span>
-          v.src = <span class="built_in">window</span>.URL.createObjectURL(stream);
-        }
-        v.onloadedmetadata = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>{
-          v.play();
-          videoPlaying = <span class="literal">true</span>;
-        };
-      }).catch(<span class="function"><span class="params">err</span> =&gt;</span> {
-        <span class="built_in">console</span>.error(err.name + <span class="string">": "</span> + err.message);
-      })
-      <span class="keyword">if</span> (videoPlaying) {
-        <span class="keyword">let</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">'canvasphoto'</span>);
-        canvas.width = v.videoWidth;
-        canvas.height = v.videoHeight;
-        canvas.getContext(<span class="string">'2d'</span>).drawImage(v, <span class="number">0</span>, <span class="number">0</span>);
-        <span class="keyword">let</span> data = canvas.toDataURL(<span class="string">'image/webp'</span>);
-        <span class="built_in">document</span>.getElementById(<span class="string">'photo'</span>).setAttribute(<span class="string">'src'</span>, data);
-      }
-    },</code></pre>
-<p>2.文本处理<br>a.    文本消息返回有角色和发送时间、文本消息等内容，直接展示就可以。<br>3.    特殊类型处理<br>a.    特殊类型是通信间的一种特殊通信模式，主要处理非正常文本展示的场景，例如点击某按钮发送订单链接、发送特殊标识，都可以使用发送空消息，但是type给予事先约定好的字符串即可，拿到相应type字符串，做相应前端处理即可。</p>
-<h3 id="优化功能及注意事项"><a href="#优化功能及注意事项" class="headerlink" title="优化功能及注意事项"></a>优化功能及注意事项</h3><ol>
-<li>消息通信必须建立连接</li>
-<li>图片上传需要自己服务器</li>
-<li>消息发送失败后处理，决定是否需要重新发送</li>
-<li>消息撤回复制等功能可以参考具体文档</li>
-<li>未读消息数量、用户是否已读、发送成功后页面自动滚动至最新信息处等功能需要前端自己处理，咚咚文档没有封装。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>小程序</category>
-      </categories>
-      <tags>
-        <tag>小程序</tag>
       </tags>
   </entry>
   <entry>
