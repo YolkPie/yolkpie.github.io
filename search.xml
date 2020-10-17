@@ -697,7 +697,196 @@
 </ul>
 <p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/93445/39/7473/158350/5dfb2d3dEcd279015/cab4ef9c8243289e.jpg" alt=""></p>
 <p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/97728/16/7375/181825/5dfb2d9dEce97b447/7a456dadbee16f13.jpg" alt=""></p>
-<h2 id="四、CLI-原理及不同端的运行机制"><a href="#四、CLI-原理及不同端的运行机制" class="headerlink" title="四、CLI 原理及不同端的运行机制"></a>四、CLI 原理及不同端的运行机制</h2><h3 id="4-1-taro-cli-包"><a href="#4-1-taro-cli-包" class="headerlink" title="4.1 taro-cli 包"></a>4.1 taro-cli 包</h3><h4 id="4-1-1-Taro-命令"><a href="#4-1-1-Taro-命令" class="headerlink" title="4.1.1 Taro 命令"></a>4.1.1 Taro 命令</h4><blockquote>
+]]></content>
+  </entry>
+  <entry>
+    <title>Taro(三)</title>
+    <url>/2020/10/17/Taro(%E4%B8%89)/</url>
+    <content><![CDATA[<h2 id="七、小程序运行时"><a href="#七、小程序运行时" class="headerlink" title="七、小程序运行时"></a>七、小程序运行时</h2><p>为了使 Taro 组件转换成小程序组件并运行在小程序环境下， Taro 主要做了两个方面的工作：编译以及运行时适配。编译过程会做很多工作，例如：将 JSX 转换成小程序 .wxml 模板，生成小程序的配置文件、页面及组件的代码等等。编译生成好的代码仍然不能直接运行在小程序环境里，那运行时又是如何与之协同工作的呢？…</p>
+<h3 id="7-1-注册程序、页面以及自定义组件"><a href="#7-1-注册程序、页面以及自定义组件" class="headerlink" title="7.1 注册程序、页面以及自定义组件"></a>7.1 注册程序、页面以及自定义组件</h3><p>在小程序中会区分程序、页面以及组件，通过调用对应的函数，并传入包含生命周期回调、事件处理函数等配置内容的 object 参数来进行注册：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Component(&#123;</span><br><span class="line">  data: &#123;&#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    handleClick() &#123;&#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>而在 Taro 里，它们都是一个组件类：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CustomComponent</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  state = &#123; &#125;</span><br><span class="line">  handleClick () &#123; &#125;</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>那么 Taro 的组件类是如何转换成小程序的程序、页面或组件的呢？</li>
+<li>例如，有一个组件：customComponent，编译过程会在组件底部添加一行这样的代码（此处代码作示例用，与实际项目生成的代码不尽相同）：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Component(createComponent(customComponent));</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>createComponent 方法是整个运行时的入口，在运行的时候，会根据传入的组件类，返回一个组件的配置对象<blockquote>
+<p>在小程序里，程序的功能及配置与页面和组件差异较大，因此运行时提供了两个方法 createApp 和 createComponent 来分别创建程序和组件（页面）。createApp 的实现非常简单</p>
+</blockquote>
+</li>
+</ul>
+<p>createComponent 方法主要做了这样几件事情：</p>
+<ul>
+<li>将组件的 state 转换成小程序组件配置对象的 data</li>
+<li>将组件的生命周期对应到小程序组件的生命周期</li>
+<li>将组件的事件处理函数对应到小程序的事件处理函数</li>
+</ul>
+<h3 id="7-2-组件-state-转换"><a href="#7-2-组件-state-转换" class="headerlink" title="7.2 组件 state 转换"></a>7.2 组件 state 转换</h3><p>其实在 Taro（React） 组件里，除了组件的 state，JSX 里还可以访问 props 、render 函数里定义的值、以及任何作用域上的成员。而在小程序中，与模板绑定的数据均来自对应页面（或组件）的 data。因此 JSX 模板里访问到的数据都会对应到小程序组件的 data 上。接下来我们通过列表渲染的例子来说明 state 和 data 是如何对应的…</p>
+<p>在 JSX 里访问 state</p>
+<blockquote>
+<p>在小程序的组件上使用 wx:for 绑定一个数组，就可以实现循环渲染。例如，在 Taro 里你可能会这么写：</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  state = &#123;</span><br><span class="line">    list: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">  &#125;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;View&gt;</span><br><span class="line">        &#123;<span class="keyword">this</span>.state.list.map(<span class="function"><span class="params">item</span> =&gt;</span> <span class="xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span>&#123;item&#125;<span class="tag">&lt;/<span class="name">View</span>&gt;</span></span>)&#125;</span><br><span class="line">      &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>编译后的小程序组件模板：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;view&gt;</span><br><span class="line">  &lt;view wx:<span class="keyword">for</span>=<span class="string">"&#123;&#123;list&#125;&#125;"</span> wx:<span class="keyword">for</span>-item=<span class="string">"item"</span>&gt;</span><br><span class="line">    &#123;&#123; item &#125;&#125;</span><br><span class="line">  &lt;<span class="regexp">/view&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>view&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其中 state.list 只需直接对应到小程序（页面）组件的 data.list 上即可…</p>
+<p>在 render 里生成了新的变量</p>
+<p>然而事情通常没有那么简单，在 Taro 里也可以这么用</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  state = &#123;</span><br><span class="line">    list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">  &#125;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;View&gt;</span><br><span class="line">        &#123;<span class="keyword">this</span>.state.list.map(<span class="function"><span class="params">item</span> =&gt;</span> ++item).map(<span class="function"><span class="params">item</span> =&gt;</span> <span class="xml"><span class="tag">&lt;<span class="name">View</span>&gt;</span>&#123;item&#125;<span class="tag">&lt;/<span class="name">View</span>&gt;</span></span>)&#125;</span><br><span class="line">      &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>编译后的小程序组件模板是这样的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;view&gt;</span><br><span class="line">  &lt;view wx:<span class="keyword">for</span>=<span class="string">"&#123;&#123;$anonymousCallee_1&#125;&#125;"</span> wx:<span class="keyword">for</span>-item=<span class="string">"item"</span>&gt;&#123;&#123;item&#125;&#125;&lt;<span class="regexp">/view&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>view&gt;...</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在编译时会给 Taro 组件创建一个 _createData 的方法，里面会生成 $anonymousCallee_1 这个变量， $anonymousCallee<strong>1 是由编译器生成的，对 this.state.list 进行相关操作后的变量。 $anonymousCallee</strong>1 最终会被放到组件的 data 中给模板调用：</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> $anonymousCallee_1 = <span class="keyword">this</span>.state.list.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> ++item;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>render 里 return 之前的所有定义变量或者对 props、state 计算产生新变量的操作，都会被编译到 _createData 方法里执行，这一点在前面 JSX 编译成小程序模板的相关文章中已经提到。每当 Taro 调用 this.setState API 来更新数据时，都会调用生成的 _createData 来获取最新数据…</p>
+</blockquote>
+<h3 id="7-3-将组件的生命周期对应到小程序组件的生命周期"><a href="#7-3-将组件的生命周期对应到小程序组件的生命周期" class="headerlink" title="7.3 将组件的生命周期对应到小程序组件的生命周期"></a>7.3 将组件的生命周期对应到小程序组件的生命周期</h3><blockquote>
+<p>初始化过程里的生命周期对应很简单，在小程序的生命周期回调函数里调用 Taro 组件里对应的生命周期函数即可，例如：小程序组件 ready 的回调函数里会调用 Taro 组件的 componentDidMount 方法。它们的执行过程和对应关系如下图…</p>
+</blockquote>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/88595/18/7355/40049/5dfb4602E7f9b20b7/8a7e4b779f5c9422.jpg" alt=""></p>
+<p>小程序页面的 componentWillMount 有一点特殊，会有两种初始化方式。由于小程序的页面需要等到 onLoad 之后才可以获取到页面的路由参数，因此如果是启动页面，会等到 onLoad 时才会触发。而对于小程序内部通过 navigateTo 等 API 跳转的页面，Taro 做了一个兼容，调用 navigateTo 时将页面参数存储在一个全局对象中，在页面 attached 的时候从全局对象里取到，这样就不用等到页面 onLoad 即可获取到路由参数，触发 componentWillMount 生命周期…</p>
+<p>状态更新</p>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/106521/3/7426/31329/5dfb463bE58b19784/746931b709b55cfb.jpg" alt=""></p>
+<ul>
+<li>Taro 组件的 setState 行为最终会对应到小程序的 setData。Taro 引入了如 nextTick ，编译时识别模板中用到的数据，在 setData 前进行数据差异比较等方式来提高 setState 的性能。</li>
+<li>如上图，组件调用 setState 方法之后，并不会立刻执行组件更新逻辑，而是会将最新的 state 暂存入一个数组中，等 nextTick 回调时才会计算最新的 state 进行组件更新。这样即使连续多次的调用 setState 并不会触发多次的视图更新。在小程序中 nextTick 是这么实现的…</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> nextTick = <span class="function">(<span class="params">fn, ...args</span>) =&gt;</span> &#123;</span><br><span class="line">  fn = <span class="keyword">typeof</span> fn === <span class="string">'function'</span> ? fn.bind(<span class="literal">null</span>, ...args) : fn</span><br><span class="line">  <span class="keyword">const</span> timerFunc = wx.nextTick ? wx.nextTick : setTimeout</span><br><span class="line">  timerFunc(fn)</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure>
+
+<p>除了计算出最新的组件 state ，在组件状态更新过程里还会调用前面提到过的 _createData 方法，得到最终小程序组件的 data，并调用小程序的 setData 方法来进行组件的更新</p>
+<h3 id="7-4-事件处理函数对应"><a href="#7-4-事件处理函数对应" class="headerlink" title="7.4 事件处理函数对应"></a>7.4 事件处理函数对应</h3><p>在小程序的组件里，事件响应函数需要配置在 methods 字段里。而在 JSX 里，事件是这样绑定的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;View onClick=&#123;<span class="keyword">this</span>.handleClick&#125;&gt;&lt;<span class="regexp">/View&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>编译的过程会将 JSX 转换成小程序模板：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;view bindclick=<span class="string">"handleClick"</span>&gt;&lt;<span class="regexp">/view&gt;...</span></span><br></pre></td></tr></table></figure>
+
+<p>在 createComponent 方法里，会将事件响应函数 handleClick 添加到 methods 字段中，并且在响应函数里调用真正的 this.handleClick 方法。</p>
+<p>在编译过程中，会提取模板中绑定过的方法，并存到组件的 $events 字段里，这样在运行时就可以只将用到的事件响应函数配置到小程序组件的 methods 字段中。</p>
+<p>在运行时通过 processEvent 这个方法来处理事件的对应，省略掉处理过程，就是这样的…</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">processEvent</span>(<span class="params">eventHandlerName, obj</span>) </span>&#123;</span><br><span class="line">  obj[eventHandlerName] = <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    scope[eventHandlerName].apply(callScope, realArgs);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法的核心作用就是解析出事件响应函数执行时真正的作用域 callScope 以及传入的参数。在 JSX 里，我们可以像下面这样通过 bind 传入参数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;View onClick=&#123;<span class="keyword">this</span>.handleClick.bind(<span class="keyword">this</span>, arga, argb)&#125;&gt;&lt;<span class="regexp">/View&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>小程序不支持通过 bind 的方式传入参数，但是小程序可以用 data 开头的方式，将数据传递到 event.currentTarget.dataset 中。编译过程会将 bind 方式传递的参数对应到 dataset 中，processEvent 函数会从 dataset 里取到传入的参数传给真正的事件响应函数。</p>
+<p>至此，经过编译之后的 Taro 组件终于可以运行在小程序环境里了…</p>
+<h3 id="7-5-对-API-进行-Promise-化的处理"><a href="#7-5-对-API-进行-Promise-化的处理" class="headerlink" title="7.5 对 API 进行 Promise 化的处理"></a>7.5 对 API 进行 Promise 化的处理</h3><blockquote>
+<p>Taro 对小程序的所有 API 进行了一个分类整理，将其中的异步 API 做了一层 Promise 化的封装。例如，wx.getStorage 经过下面的处理对应到 Taro.getStorage(此处代码作示例用，与实际源代码不尽相同)</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Taro[<span class="string">'getStorage'</span>] = <span class="function"><span class="params">options</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> obj = <span class="built_in">Object</span>.assign(&#123;&#125;, options)</span><br><span class="line">  <span class="keyword">const</span> p = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">	[<span class="string">'fail'</span>, <span class="string">'success'</span>, <span class="string">'complete'</span>].forEach(<span class="function">(<span class="params">k</span>) =&gt;</span> &#123;</span><br><span class="line">	  obj[k] = <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">	    options[k] &amp;&amp; options[k](res)</span><br><span class="line">	    <span class="keyword">if</span> (k === <span class="string">'success'</span>) &#123;</span><br><span class="line">		  resolve(res)</span><br><span class="line">	    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (k === <span class="string">'fail'</span>) &#123;</span><br><span class="line">		  reject(res)</span><br><span class="line">	    &#125;</span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	wx[<span class="string">'getStorage'</span>](obj)</span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> p</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure>
+
+<p>就可以这么调用了：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 小程序的调用方式</span></span><br><span class="line">Taro.getStorage(&#123;</span><br><span class="line">  key: <span class="string">'test'</span>,</span><br><span class="line">  success() &#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// 在 Taro 里也可以这样调用</span></span><br><span class="line">Taro.getStorage(&#123;</span><br><span class="line">  key: <span class="string">'test'</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// success</span></span><br><span class="line">&#125;)...</span><br></pre></td></tr></table></figure>
+
+<h2 id="八、H5-运行时"><a href="#八、H5-运行时" class="headerlink" title="八、H5 运行时"></a>八、H5 运行时</h2><h3 id="8-1-H5-运行时解析"><a href="#8-1-H5-运行时解析" class="headerlink" title="8.1 H5 运行时解析"></a>8.1 H5 运行时解析</h3><blockquote>
+<p>首先，我们选用 Nerv 作为 Web 端的运行时框架。你可能会有问题：同样是类 React 框架，为何我们不直接用 React，而是用 Nerv 呢？<br>为了更快更稳。开发过程中前端框架本身有可能会出现问题。如果是第三方框架，很有可能无法得到及时的修复，导致整个项目的进度受影响。Nerv 就不一样。作为团队自研的产品，出现任何问题我们都可以在团队内部快速得到解决。与此同时，Nerv 也具有与 React 相同的 API，同样使用 Virtual DOM 技术进行优化，正常使用与 React 并没有区别，完全可以满足我们的需要。</p>
+</blockquote>
+<p>使用 Taro 之后，我们书写的是类似于下图的代码…</p>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/85585/15/7357/213299/5dfb48dbE72b5b45a/30977175349dae04.png" alt=""></p>
+<p>我们注意到，就算是转换过的代码，也依然存在着 view、button 等在 Web 开发中并不存在的组件。如何在 Web 端正常使用这些组件？这是我们碰到的第一个问题</p>
+<h3 id="8-1-1-组件实现"><a href="#8-1-1-组件实现" class="headerlink" title="8.1.1 组件实现"></a>8.1.1 组件实现</h3><p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/94514/10/7444/106813/5dfb4900Ecaea3260/acbb909c42c72547.png" alt=""></p>
+<p>作为开发者，你第一反应或许会尝试在编译阶段下功夫，尝试直接使用效果类似的 Web 组件替代：用 div 替代 view，用 img 替代 image，以此类推。</p>
+<p>费劲心机搞定标签转换之后，上面这个差异似乎是解决了。但很快你就会碰到一些更加棘手的问题：hover-start-time、hover-stay-time 等等这些常规 Web 开发中并不存在的属性要如何处理？</p>
+<p>回顾一下：在前面讲到多端转换的时候，我们说到了 babel。在 Taro 中，我们使用 babylon 生成 AST，babel-traverse 去修改和移动 AST 中的节点。但 babel 所做的工作远远不止这些。</p>
+<p>我们不妨去 babel 的 playground 看一看代码在转译前后的对比：在使用了@babel/preset-env 的 BUILT-INS 之后，简单的一句源码 new Map()，在 babel 编译后却变成了好几行代码…</p>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/107508/31/1180/104356/5dfb4930Eca3a9a65/17016a525139f5d7.png" alt=""></p>
+<p>注意看这几个文件：core-js/modules/web.dom.iterable，core-js/modules/es6.array.iterator，core-js/modules/es6.map。我们可以在 core-js 的 Git 仓库找到他们的真身。很明显，这几个模块就是对应的 es 特性运行时的实现。</p>
+<p>从某种角度上讲，我们要做的事情和 babel 非常像。babel 把基于新版 ECMAScript 规范的代码转换为基于旧 ECMAScript 规范的代码，而 Taro 希望把基于 React 语法的代码转换为小程序的语法。我们从 babel 受到了启发：既然 babel 可以通过运行时框架来实现新特性，那我们也同样可以通过运行时代码，实现上面这些 Web 开发中不存在的功能。</p>
+<p>举个例子。对于 view 组件，首先它是个普通的类 React 组件，它把它的子组件如实展示出来…</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Nerv, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'nervjs'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">View</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;&#123;<span class="keyword">this</span>.props.children&#125;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;...</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>接下来，我们需要对 hover-start-time 做处理。与 Taro 其他地方的命名规范一致，我们这个 View 组件接受的属性名将会是驼峰命名法：hoverStartTime。hoverStartTime 参数决定我们将在 View 组件触发 touch 事件多久后改变组件的样式…</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 示例代码</span></span><br><span class="line">render() &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;</span><br><span class="line">    hoverStartTime = <span class="number">50</span>,</span><br><span class="line">    onTouchStart</span><br><span class="line">  &#125; = <span class="keyword">this</span>.props;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> _onTouchStart = <span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// @TODO 触发touch样式改变</span></span><br><span class="line">    &#125;, hoverStartTime);</span><br><span class="line">    onTouchStart &amp;&amp; onTouchStart(e);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div onTouchStart=&#123;_onTouchStart&#125;&gt;</span><br><span class="line">      &#123;<span class="keyword">this</span>.props.children&#125;</span><br><span class="line">    &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;...</span></span><br></pre></td></tr></table></figure>
+
+<p>再稍加修饰，我们就能得到一个功能完整的 Web 版 View 组件</p>
+<p>view 可以说是小程序最简单的组件之一了。text 的实现甚至比上面的代码还要简单得多。但这并不说明组件的实现之路上就没有障碍。复杂如 swiper，scroll-view，tabbar，我们需要花费大量的精力分析小程序原生组件的 API，交互行为，极端值处理，接受的属性等等，再通过 Web 技术实现。…</p>
+<h3 id="8-2-API-适配"><a href="#8-2-API-适配" class="headerlink" title="8.2 API 适配"></a>8.2 API 适配</h3><blockquote>
+<p>除了组件，小程序下有一些 API 也是 Web 开发中所不具备的。比如小程序框架内置的 wx.request/wx.getStorage 等 API；但在 Web 开发中，我们使用的是 fetch/localStorage 等内置的函数或者对象</p>
+</blockquote>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/106825/8/7473/124175/5dfb4985E4d2133de/82548ed913b69f37.png" alt=""></p>
+<p>小程序的 API 实现是个巨大的黑盒，我们仅仅知道如何使用它，使用它会得到什么结果，但对它内部的实现一无所知。</p>
+<p>如何让 Web 端也能使用小程序框架中提供的这些功能？既然已经知道这个黑盒的入参出参情况，那我们自己打造一个黑盒就好了。</p>
+<p>换句话说，我们依然通过运行时框架来实现这些 Web 端不存在的能力。</p>
+<p>具体说来，我们同样需要分析小程序原生 API，最后通过 Web 技术实现。有兴趣可以在 Git 仓库中看到这些原生 API 的实现。下面以 wx.setStorage 为例进行简单解析。</p>
+<p>wx.setStorage 是一个异步接口，可以把 key: value 数据存储在本地缓存。很容易联想到，在 Web 开发中也有类似的数据存储概念，这就是 localStorage。到这里，我们的目标已经十分明确：我们需要借助于 localStorage，实现一个与 wx.setStorage 相同的 API。…</p>
+<blockquote>
+<p>而在 Web 中，如果我们需要往本地存储写入数据，使用的 API 是 localStorage.setItem(key, value)。我们很容易就可以构思出这个函数的雏形</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 示例代码 */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setStorage</span>(<span class="params">&#123; key, value &#125;</span>) </span>&#123;</span><br><span class="line">  localStorage.setItem(key, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们顺手做点优化，把基于异步回调的 API 都给做了一层 Promise 包装，这可以让代码的流程处理更加方便。所以这段代码看起来会像下面这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 示例代码 */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setStorage</span>(<span class="params">&#123; key, value &#125;</span>) </span>&#123;</span><br><span class="line">  localStorage.setItem(key, value);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve(&#123; <span class="attr">errMsg</span>: <span class="string">'setStorage:ok'</span> &#125;);</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure>
+
+<p>看起来很完美，但开发的道路不会如此平坦。我们还需要处理其余的入参：success、fail 和 complete。success 回调会在操作成功完成时调用，fail 会在操作失败的时候执行，complete 则无论如何都会执行。setStorage 函数只会在 key 值是 String 类型时有正确的行为，所以我们为这个函数添加了一个简单的类型判断，并在异常情况下执行 fail 回调。经过这轮变动，这段代码看起来会像下面这样…</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 示例代码 */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setStorage</span>(<span class="params">&#123; key, value, success, fail, complete &#125;</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> res = &#123; <span class="attr">errMsg</span>: <span class="string">'setStorage:ok'</span> &#125;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> key === <span class="string">'string'</span>) &#123;</span><br><span class="line">    localStorage.setItem(key, value);</span><br><span class="line">    success &amp;&amp; success(res);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    fail &amp;&amp; fail(res);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.reject(res);</span><br><span class="line">  &#125;</span><br><span class="line">  complete &amp;&amp; complete(res);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve(&#123; <span class="attr">errMsg</span>: <span class="string">'setStorage:ok'</span> &#125;);</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure>
+
+<p>把这个 API 实现挂载到 Taro 模块之后，我们就可以通过 Taro.setStorage 来调用这个 API 了。</p>
+<p>当然，也有一些 API 是 Web 端无论如何无法实现的，比如 wx.login，又或者 wx.scanCode。我们维护了一个 API 实现情况的列表，在实际的多端项目开发中应该尽可能避免使用它们…</p>
+<h3 id="8-3-路由"><a href="#8-3-路由" class="headerlink" title="8.3 路由"></a>8.3 路由</h3><blockquote>
+<p>作为小程序的一大能力，小程序框架中以栈的形式维护了当前所有的页面，由框架统一管理。用户只需要调用 wx.navigateTo,wx.navigateBack,wx.redirectTo 等官方 API，就可以实现页面的跳转、回退、重定向，而不需要关心页面栈的细节。但是作为多端项目，当我们…</p>
+</blockquote>
+<p>小程序的路由比较轻量。使用时，我们先通过 app.json 为小程序配置页面列表:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"pages"</span>: [</span><br><span class="line">    <span class="string">"pages/index/index"</span>,</span><br><span class="line">    <span class="string">"pages/logs/logs"</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在运行时，小程序内维护了一个页面栈，始终展示栈顶的页面（Page 对象）。当用户进行跳转、后退等操作时，相应的会使页面栈进行入栈、出栈等操作<br>同时，在页面栈发生路由变化时，还会触发相应页面的生命周期</p>
+</blockquote>
+<p>对于 Web 端单页应用路由，我们则以 react-router 为例进行说明</p>
+<ul>
+<li>首先，react-router 开始通过 history 工具监听页面路径的变化。</li>
+<li>在页面路径发生变化时，react-router 会根据新的 location 对象，触发 UI 层的更新。</li>
+<li>至于 UI 层如何更新，则是取决于我们在 Route 组件中对页面路径和组件的绑定，甚至可以实现嵌套路由。</li>
+<li>可以说，react-router 的路由方案是组件级别的。</li>
+<li>具体到 Taro，为了保持跟小程序的行为一致，我们不需要细致到组件级别的路由方案，但需要为每次路由保存完整的页面栈。</li>
+<li>实现形式上，我们参考 react-router：监听页面路径变化，再触发 UI 更新。这是 React 的精髓之一，单向数据流…</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/85653/15/7454/12059/5dfb4a06Ed6a96cb0/9f223d0aecac549c.png" alt=""></p>
+<blockquote>
+<p>@tarojs/router 包中包含了一个轻量的 history 实现。history 中维护了一个栈，用来记录页面历史的变化。对历史记录的监听，依赖两个事件：hashchange 和 popstate。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 示例代码 */</span></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"hashchange"</span>, () =&gt; &#123;&#125;);</span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">"popstate"</span>, () =&gt; &#123;&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对于使用 Hash 模式的页面路由，每次页面跳转都会依次触发 popstate 和 hashchange 事件。由于在 popstate 的回调中可以取到当前页面的 state，我们选择它作为主要跳转逻辑的容器。</li>
+<li>作为 UI 层，@tarojs/router 包提供了一个 Router 组件，维护页面栈。与小程序类似，用户不需要手动调用 Router 组件，而是由 Taro 自动处理。</li>
+<li>对于历史栈来说，无非就是三种操作：push, pop，还有 replace。在历史栈变动时触发 Router 的回调，就可以让 Router 也同步变化。这就是 Taro 中路由的基本原理…</li>
+</ul>
+<h3 id="8-4-Redux-处理"><a href="#8-4-Redux-处理" class="headerlink" title="8.4 Redux 处理"></a>8.4 Redux 处理</h3><ul>
+<li>每当提到 React 的数据流，我们就不得不提到 Redux。通过合并 Reducer，Redux 可以让大型应用中的数据流更加规则、可预测。</li>
+<li>我们在 Taro 中加入了 Redux 的支持，通过导入@tarojs/redux，即可在小程序端使用 Redux 的功能。</li>
+<li>对于 Web 端，我们尝试直接使用 nerv-redux 包提供支持，但这会带来一些问题…</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Nerv <span class="keyword">from</span> <span class="string">'nervjs'</span></span><br><span class="line"><span class="keyword">import</span> &#123; connect &#125; <span class="keyword">from</span> <span class="string">'nerv-redux'</span></span><br><span class="line"></span><br><span class="line">@connect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;&#125;)</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Index</span> <span class="keyword">extends</span> <span class="title">Nerv</span>.<span class="title">Componnet</span> </span>&#123;</span><br><span class="line">  componentDidShow() &#123; <span class="built_in">console</span>.log(<span class="string">'didShow'</span>) &#125;</span><br><span class="line">  componentDidMount() &#123; <span class="built_in">console</span>.log(<span class="string">'didMount'</span>) &#125;</span><br><span class="line">  render() &#123; <span class="keyword">return</span> <span class="string">''</span> &#125;</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>回想一下前面讲的 componentDidShow 的实现：我们继承，并且改写 componentDidMount。</li>
+<li>但是对于使用 Redux 的页面来说，我们继承的类，是经过@connect 修饰过的一个高阶组件。</li>
+<li>问题就出在这里：这个高阶组件的签名里并没有 componentDidShow 这一个函数。所以我们的 componentDidMount 内，理所当然是取不到 componentDidShow 的。</li>
+<li>为了解决这个问题，我们对 react-redux 代码进行了一些小改装，这就是@taro/redux-h5 的由来…</li>
+</ul>
+<h2 id="九、更多参考"><a href="#九、更多参考" class="headerlink" title="九、更多参考"></a>九、更多参考</h2><p>Taro 官方文档 <a href="https://taro.aotu.io/home/in.html" target="_blank" rel="noopener">https://taro.aotu.io/home/in.html</a></p>
+<h2 id="十、官方文档"><a href="#十、官方文档" class="headerlink" title="十、官方文档"></a>十、官方文档</h2><p>Taro 小册子 <a href="https://git.jd.com/huangli47/taro-ebook/tree/master/ebook" target="_blank" rel="noopener">https://git.jd.com/huangli47/taro-ebook/tree/master/ebook</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Taro(二)</title>
+    <url>/2020/10/17/Taro(%E4%BA%8C)/</url>
+    <content><![CDATA[<h2 id="四、CLI-原理及不同端的运行机制"><a href="#四、CLI-原理及不同端的运行机制" class="headerlink" title="四、CLI 原理及不同端的运行机制"></a>四、CLI 原理及不同端的运行机制</h2><h3 id="4-1-taro-cli-包"><a href="#4-1-taro-cli-包" class="headerlink" title="4.1 taro-cli 包"></a>4.1 taro-cli 包</h3><h4 id="4-1-1-Taro-命令"><a href="#4-1-1-Taro-命令" class="headerlink" title="4.1.1 Taro 命令"></a>4.1.1 Taro 命令</h4><blockquote>
 <p>taro-cli 包位于 Taro 工程的 Packages 目录下，通过 npm install -g @tarojs/cli 全局安装后，将会生成一个 Taro 命令。主要负责项目初始化、编译、构建等。直接在命令行输入 Taro ，会看到如下提示…</p>
 </blockquote>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">➜ taro</span><br><span class="line">👽 Taro v0<span class="number">.0</span><span class="number">.63</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  Usage: taro &lt;command&gt; [options]</span><br><span class="line"></span><br><span class="line">  Options:</span><br><span class="line"></span><br><span class="line">    -V, --version       output the version number</span><br><span class="line">    -h, --help          output usage information</span><br><span class="line"></span><br><span class="line">  Commands:</span><br><span class="line"></span><br><span class="line">    init [projectName]  Init a project <span class="keyword">with</span> <span class="keyword">default</span> templete</span><br><span class="line">    build               Build a project <span class="keyword">with</span> options</span><br><span class="line">    update              Update packages <span class="keyword">of</span> taro</span><br><span class="line">    help [cmd]          display help <span class="keyword">for</span> [cmd]...</span><br></pre></td></tr></table></figure>
@@ -800,7 +989,123 @@
 <p>在业务代码编译成小程序的代码过程中，有一步是将页面入口 JS 的 Config 属性解析出来，并写入 *.json 文件，供小程序使用。那么这一步是怎么实现的呢？这里将这部分功能的关键代码抽取出来：</p>
 </blockquote>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. babel-traverse方法， 遍历和更新节点</span></span><br><span class="line">traverse(ast, &#123;</span><br><span class="line">  ClassProperty(astPath) &#123; <span class="comment">// 遍历类的属性声明</span></span><br><span class="line">    <span class="keyword">const</span> node = astPath.node</span><br><span class="line">    <span class="keyword">if</span> (node.key.name === <span class="string">'config'</span>) &#123; <span class="comment">// 类的属性名为 config</span></span><br><span class="line">      configObj = traverseObjectNode(node)</span><br><span class="line">      astPath.remove() <span class="comment">// 将该方法移除掉</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 遍历，解析为 JSON 对象</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">traverseObjectNode</span>(<span class="params">node, obj</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (node.type === <span class="string">'ClassProperty'</span> || node.type === <span class="string">'ObjectProperty'</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> properties = node.value.properties</span><br><span class="line">      obj = &#123;&#125;</span><br><span class="line">      properties.forEach(<span class="function">(<span class="params">p, index</span>) =&gt;</span> &#123;</span><br><span class="line">        obj[p.key.name] = traverseObjectNode(p.value)</span><br><span class="line">      &#125;)</span><br><span class="line">      <span class="keyword">return</span> obj</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (node.type === <span class="string">'ObjectExpression'</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> properties = node.properties</span><br><span class="line">    obj = &#123;&#125;</span><br><span class="line">    properties.forEach(<span class="function">(<span class="params">p, index</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// const t = require('babel-types')  AST 节点的 Lodash 式工具库</span></span><br><span class="line">      <span class="keyword">const</span> key = t.isIdentifier(p.key) ? p.key.name : p.key.value</span><br><span class="line">      obj[key] = traverseObjectNode(p.value)</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> obj</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (node.type === <span class="string">'ArrayExpression'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> node.elements.map(<span class="function"><span class="params">item</span> =&gt;</span> traverseObjectNode(item))</span><br><span class="line"> ...</span><br></pre></td></tr></table></figure>
-]]></content>
+
+<h2 id="五、Taro-组件库及-API-的设计与适配"><a href="#五、Taro-组件库及-API-的设计与适配" class="headerlink" title="五、Taro 组件库及 API 的设计与适配"></a>五、Taro 组件库及 API 的设计与适配</h2><h3 id="5-1-多端差异"><a href="#5-1-多端差异" class="headerlink" title="5.1 多端差异"></a>5.1 多端差异</h3><h4 id="5-1-1-组件差异"><a href="#5-1-1-组件差异" class="headerlink" title="5.1.1 组件差异"></a>5.1.1 组件差异</h4><p>小程序、H5 以及快应用都可以划分为 XML 类，React Native 归为 JSX 类，两种语言风牛马不相及，给适配设置了非常大的障碍。XML 类有个明显的特点是关注点分离（Separation of Concerns），即语义层（XML）、视觉层（CSS）、交互层（JavaScript）三者分离的松耦合形式，JSX 类则要把三者混为一体，用脚本来包揽三者的工作…</p>
+<p>不同端的组件的差异还体现在定制程度上</p>
+<ul>
+<li>H5 标签（组件）提供最基础的功能——布局、表单、媒体、图形等等；</li>
+<li>小程序组件相对 H5 有了一定程度的定制，我们可以把小程序组件看作一套类似于 H5 的 UI 组件库；</li>
+<li>React Native 端组件也同样如此，而且基本是专“组”专用的，比如要触发点击事件就得用 Touchable 或者 Text 组件，要渲染文本就得用 Text 组件（虽然小程序也提供了 Text 组件，但它的文本仍然可以直接放到 view 之类的组件里）…</li>
+</ul>
+<h4 id="5-1-2-API-差异"><a href="#5-1-2-API-差异" class="headerlink" title="5.1.2 API 差异"></a>5.1.2 API 差异</h4><p>各端 API 的差异具有定制化、接口不一、能力限制的特点</p>
+<ul>
+<li>定制化：各端所提供的 API 都是经过量身打造的，比如小程序的开放接口类 API，完全是针对小程序所处的微信环境打造的，其提供的功能以及外在表现都已由框架提供实现，用户上手可用，毋须关心内部实现。</li>
+<li>接口不一：相同的功能，在不同端下的调用方式以及调用参数等也不一样，比如 socket，小程序中用 wx.connectSocket 来连接，H5 则用 new WebSocket() 来连接，这样的例子我们可以找到很多个。</li>
+<li>能力限制：各端之间的差异可以进行定制适配，然而并不是所有的 API（此处特指小程序 API，因为多端适配是向小程序看齐的）在各个端都能通过定制适配来实现，因为不同端所能提供的端能力“大异小同”，这是在适配过程中不可抗拒、不可抹平的差异…</li>
+</ul>
+<h3 id="5-2-多端适配"><a href="#5-2-多端适配" class="headerlink" title="5.2 多端适配"></a>5.2 多端适配</h3><h4 id="5-2-1-样式处理"><a href="#5-2-1-样式处理" class="headerlink" title="5.2.1 样式处理"></a>5.2.1 样式处理</h4><p>H5 端使用官方提供的 WEUI 进行适配，React Native 端则在组件内添加样式，并通过脚本来控制一些状态类的样式，框架核心在编译的时候把源代码的 class 所指向的样式通过 css-to-react-native 进行转译，所得 StyleSheet 样式传入组件的 style 参数，组件内部会对样式进行二次处理，得到最终的样式…</p>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/104718/12/7499/47989/5dfb3fedE9cfe19c7/d29edbfd298253d4.png" alt=""></p>
+<p>为什么需要对样式进行二次处理？</p>
+<blockquote>
+<p>部分组件是直接把传入 style 的样式赋给最外层的 React Native 原生组件，但部分经过层层封装的组件则不然，我们要把容器样式、内部样式和文本样式离析。为了方便解释，我们把这类组件简化为以下的形式：</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;View style=&#123;wrapperStyle&#125;&gt;</span><br><span class="line">  &lt;View style=&#123;containerStyle&#125;&gt;</span><br><span class="line">    &lt;Text style=&#123;textStyle&#125;&gt;Hello World&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>View&gt;</span><br><span class="line">&lt;<span class="regexp">/View&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>假设组件有样式 margin-top、background-color 和 font-size，转译传入组件后，就要把分别把它们传到 wrapperStyle、containerStyle 和 textStyle，可参考 ScrollView 的 style 和 contentContainerStyle…</p>
+</blockquote>
+<h4 id="5-2-2-组件封装"><a href="#5-2-2-组件封装" class="headerlink" title="5.2.2 组件封装"></a>5.2.2 组件封装</h4><blockquote>
+<p>组件的封装则是一个“仿制”的过程，利用端提供的原材料，加工成通用的组件，暴露相对统一的调用方式。我们用 <Button /> 这个组件来举例，在小程序端它也许是长这样子的</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;button</span><br><span class="line">  size=<span class="string">"mini"</span></span><br><span class="line">  plain=&#123;&#123; plain &#125;&#125;</span><br><span class="line">  loading=&#123;&#123; loading &#125;&#125;</span><br><span class="line">  hover-<span class="class"><span class="keyword">class</span></span>=<span class="string">"you-hover-me"</span></span><br><span class="line">&gt;&lt;<span class="regexp">/button&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果要实现 H5 端这么一个按钮，大概会像下面这样，在组件内部把小程序的按钮特性实现一遍，然后暴露跟小程序一致的调用方式，就完成了 H5 端一个组件的设计</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;button</span><br><span class="line">  &#123;...omit(<span class="keyword">this</span>.props, [<span class="string">'hoverClass'</span>, <span class="string">'onTouchStart'</span>, <span class="string">'onTouchEnd'</span>])&#125;</span><br><span class="line">  className=&#123;cls&#125;</span><br><span class="line">  style=&#123;style&#125;</span><br><span class="line">  onClick=&#123;onClick&#125;</span><br><span class="line">  disabled=&#123;disabled&#125;</span><br><span class="line">  onTouchStart=&#123;_onTouchStart&#125;</span><br><span class="line">  onTouchEnd=&#123;_onTouchEnd&#125;</span><br><span class="line">&gt;</span><br><span class="line">  &#123;loading &amp;&amp; <span class="xml"><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">'weui-loading'</span> /&gt;</span></span>&#125;</span><br><span class="line">  &#123;children&#125;</span><br><span class="line">&lt;<span class="regexp">/button&gt;...</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>其他端的组件适配相对 H5 端来说会更曲折复杂一些，因为 H5 跟小程序的语言较为相似，而其他端需要整合特定端的各种组件，以及利用端组件的特性来实现，比如在 React Native 中实现这个按钮，则需要用到 &lt;Touchable* /&gt;、<View />、<Text />，要实现动画则需要用上 &lt;Animated.View /&gt;，还有就是相对于 H5 和小程序比较容易实现的 touch 事件，在 React Native 中则需要用上 PanResponder 来进行“仿真”，总之就是，因“端”制宜，一切为了最后只需一行代码通行多端！</li>
+<li>除了属性支持外，事件回调的参数也需要进行统一，为此，需要在内部进行处理，比如 Input 的 onInput 事件，需要给它造一个类似小程序相同事件的回调参数，比如 { target: { value: text }, detail: { value: text } }，这样，开发者们就可以像下面这样处理回调事件，无需关心中间发生了什么…</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">onInputHandler</span>(<span class="params">&#123; target, detail &#125;</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(target.value, detail.value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="六、JSX-转换微信小程序模板的实现"><a href="#六、JSX-转换微信小程序模板的实现" class="headerlink" title="六、JSX 转换微信小程序模板的实现"></a>六、JSX 转换微信小程序模板的实现</h2><h3 id="6-1-代码的本质"><a href="#6-1-代码的本质" class="headerlink" title="6.1 代码的本质"></a>6.1 代码的本质</h3><blockquote>
+<p>不管是任意语言的代码，其实它们都有两个共同点</p>
+</blockquote>
+<ul>
+<li>它们都是由字符串构成的文本</li>
+<li>它们都要遵循自己的语言规范</li>
+</ul>
+<p>第一点很好理解，既然代码是字符串构成的，我们要修改/编译代码的最简单的方法就是使用字符串的各种正则表达式。例如我们要将 JSON 中一个键名 foo 改为 bar，只要写一个简单的正则表达式就能做到：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">jsonStr.replace(<span class="regexp">/(?&lt;=")foo(?="\s*:)/i</span>, <span class="string">'bar'</span>)...</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>编译就是把一段字符串改成另外一段字符串</p>
+</blockquote>
+<h3 id="6-2-Babel"><a href="#6-2-Babel" class="headerlink" title="6.2 Babel"></a>6.2 Babel</h3><blockquote>
+<p>JavaScript 社区其实有非常多 parser 实现，比如 Acorn、Esprima、Recast、Traceur、Cherow 等等。但我们还是选择使用 Babel，主要有以下几个原因</p>
+</blockquote>
+<ul>
+<li>Babel 可以解析还没有进入 ECMAScript 规范的语法。例如装饰器这样的提案，虽然现在没有进入标准但是已经广泛使用有一段时间了；</li>
+<li>Babel 提供插件机制解析 TypeScript、Flow、JSX 这样的 JavaScript 超集，不必单独处理这些语言；</li>
+<li>Babel 拥有庞大的生态，有非常多的文档和样例代码可供参考；</li>
+<li>除去 parser 本身，Babel 还提供各种方便的工具库可以优化、生成、调试代码…</li>
+</ul>
+<p>Babylon（ @babel/parser）</p>
+<blockquote>
+<p>Babylon 就是 Babel 的 parser。它可以把一段符合规范的 JavaScript 代码输出成一个符合 Esprima 规范的 AST。 大部分 parser 生成的 AST 数据结构都遵循 Esprima 规范，包括 ESLint 的 parser ESTree。这就意味着我们熟悉了 Esprima 规范的 AST 数据结构还能去写 ESLint 插件</p>
+</blockquote>
+<p>我们可以尝试解析 n * n 这句简单的表达式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> babylon <span class="keyword">from</span> <span class="string">"babylon"</span>;</span><br><span class="line"><span class="keyword">const</span> code = <span class="string">`n * n`</span>;</span><br><span class="line">babylon.parse(code);...</span><br></pre></td></tr></table></figure>
+
+<p>最终 Babylon 会解析成这样的数据结构：<br><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/85776/36/7301/115301/5dfb42c2Eccb38a5f/aa0004a25a7ee488.png" alt=""><br>你也可以使用 ASTExploroer 快速地查看代码的 AST</p>
+<p>Babel-traverse (@babel/traverse)</p>
+<blockquote>
+<p>babel-traverse 可以遍历由 Babylon 生成的抽象语法树，并把抽象语法树的各个节点从拓扑数据结构转化成一颗路径（Path）树，Path 表示两个节点之间连接的响应式（Reactive）对象，它拥有添加、删除、替换节点等方法。当你调用这些修改树的方法之后，路径信息也会被更新。除此之外，Path 还提供了一些操作作用域（Scope） 和标识符绑定（Identifier Binding） 的方法可以去做处理一些更精细复杂的需求。可以说 babel-traverse 是使用 Babel 作为编译器最核心的模块…</p>
+</blockquote>
+<p>让我们尝试一下把一段代码中的 n _ n 变为 x _ x</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> babylon <span class="keyword">from</span> <span class="string">"@babel/parser"</span>;</span><br><span class="line"><span class="keyword">import</span> traverse <span class="keyword">from</span> <span class="string">"babel-traverse"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> code = <span class="string">`function square(n) &#123;</span></span><br><span class="line"><span class="string">  return n * n;</span></span><br><span class="line"><span class="string">&#125;`</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> ast = babylon.parse(code);</span><br><span class="line"></span><br><span class="line">traverse(ast, &#123;</span><br><span class="line">  enter(path) &#123;</span><br><span class="line">    <span class="keyword">if</span> (</span><br><span class="line">      path.node.type === <span class="string">"Identifier"</span> &amp;&amp;</span><br><span class="line">      path.node.name === <span class="string">"n"</span></span><br><span class="line">    ) &#123;</span><br><span class="line">      path.node.name = <span class="string">"x"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);...</span><br></pre></td></tr></table></figure>
+
+<p>Babel-types（@babel/types）</p>
+<blockquote>
+<p>babel-types 是一个用于 AST 节点的 Lodash 式工具库，它包含了构造、验证以及变换 AST 节点的方法。 该工具库包含考虑周到的工具方法，对编写处理 AST 逻辑非常有用。例如我们之前在 babel-traverse 中改变标识符 n 的代码可以简写为：</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> traverse <span class="keyword">from</span> <span class="string">"babel-traverse"</span>;</span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> t <span class="keyword">from</span> <span class="string">"babel-types"</span>;</span><br><span class="line"></span><br><span class="line">traverse(ast, &#123;</span><br><span class="line">  enter(path) &#123;</span><br><span class="line">    <span class="keyword">if</span> (t.isIdentifier(path.node, &#123; <span class="attr">name</span>: <span class="string">"n"</span> &#125;)) &#123;</span><br><span class="line">      path.node.name = <span class="string">"x"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>可以发现使用 babel-types 能提高我们转换代码的可读性，在配合 TypeScript 这样的静态类型语言后，babel-types 的方法还能提供类型校验的功能，能有效地提高我们转换代码的健壮性和可靠性…</p>
+</blockquote>
+<h3 id="6-3-实践例子"><a href="#6-3-实践例子" class="headerlink" title="6.3 实践例子"></a>6.3 实践例子</h3><p>以一个简单 Page 页面为例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Taro, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'@tarojs/taro'</span></span><br><span class="line"><span class="keyword">import</span> &#123; View, Text &#125; <span class="keyword">from</span> <span class="string">'@tarojs/components'</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Home</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  config = &#123;</span><br><span class="line">    navigationBarTitleText: <span class="string">'首页'</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  state = &#123;</span><br><span class="line">    numbers: [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handleClick = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.props.onTest()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">const</span> oddNumbers = <span class="keyword">this</span>.state.numbers.filter(<span class="function"><span class="params">number</span> =&gt;</span> number &amp; <span class="number">2</span>)</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;ScrollView className=<span class="string">'home'</span> scrollTop=&#123;<span class="literal">false</span>&#125;&gt;</span><br><span class="line">        奇数：</span><br><span class="line">        &#123;</span><br><span class="line">          oddNumbers.map(<span class="function"><span class="params">number</span> =&gt;</span> <span class="xml"><span class="tag">&lt;<span class="name">Text</span> <span class="attr">onClick</span>=<span class="string">&#123;this.handleClick&#125;</span>&gt;</span>&#123;number&#125;<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span>)</span><br><span class="line">        &#125;</span><br><span class="line">        偶数：</span><br><span class="line">        &#123;</span><br><span class="line">          numbers.map(<span class="function"><span class="params">number</span> =&gt;</span> number % <span class="number">2</span> === <span class="number">0</span> &amp;&amp; <span class="xml"><span class="tag">&lt;<span class="name">Text</span> <span class="attr">onClick</span>=<span class="string">&#123;this.handleClick&#125;</span>&gt;</span>&#123;number&#125;<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span>)</span><br><span class="line">        &#125;</span><br><span class="line">      &lt;<span class="regexp">/ScrollView&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;...</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-3-1-设计思路"><a href="#6-3-1-设计思路" class="headerlink" title="6.3.1 设计思路"></a>6.3.1 设计思路</h4><ul>
+<li>Taro 的结构主要分两个方面：运行时和编译时。运行时负责把编译后到代码运行在本不能运行的对应环境中，你可以把 Taro 运行时理解为前端开发当中 polyfill。举例来说，小程序新建一个页面是使用 Page 方法传入一个字面量对象，并不支持使用类。如果全部依赖编译时的话，那么我们要做到事情大概就是把类转化成对象，把 state 变为 data，把生命周期例如 componentDidMount 转化成 onReady，把事件由可能的类函数（Class method）和类属性函数(Class property function) 转化成字面量对象方法（Object property function）等等。</li>
+<li>但这显然会让我们的编译时工作变得非常繁重，在一个类异常复杂时出错的概率也会变高。但我们有更好的办法：实现一个 createPage 方法，接受一个类作为参数，返回一个小程序 Page 方法所需要的字面量对象。这样不仅简化了编译时的工作，我们还可以在 createPage 对编译时产出的类做各种操作和优化。通过运行时把工作分离了之后，再编译时我们只需要在文件底部加上一行代码 Page(createPage(componentName)) 即可…</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/85776/36/7301/115301/5dfb42c2Eccb38a5f/aa0004a25a7ee488.png" alt=""></p>
+<ul>
+<li>回到一开始那段代码，我们定义了一个类属性 config，config 是一个对象表达式（Object Expression），这个对象表达式只接受键值为标识符（Identifier）或字符串，而键名只能是基本类型。这样简单的情况我们只需要把这个对象表达式转换为 JSON 即可。另外一个类属性 state 在 Page 当中有点像是小程序的 data，但它在多数情况不是完整的 data。这里我们不用做过多的操作，babel 的插件 transform-class-proerties 会把它编译到类的构造器中。函数 handleClick 我们交给运行时处理，有兴趣的同学可以跳到 Taro 运行时原理查看具体技术细节。</li>
+<li>再来看我们的 render()函数，它的第一行代码通过 filter 把数字数组的所有偶数项都过滤掉，真正用来循环的是 oddNumbers，而 oddNumbers 并没有在 this.state 中，所以我们必须手动把它加入到 this.state。和 React 一样，Taro 每次更新都会调用 render 函数，但和 React 不同的是，React 的 render 是一个创建虚拟 DOM 的方法，而 Taro 的 render 会被重命名为 _createData，它是一个创建数据的方法：在 JSX 使用过的数据都在这里被创建最后放到小程序 Page 或 Component 工厂方法中的 data。最终我们的 render 方法会被编译为…</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">_createData() &#123;</span><br><span class="line">  <span class="keyword">this</span>.__state = <span class="built_in">arguments</span>[<span class="number">0</span>] || <span class="keyword">this</span>.state || &#123;&#125;;</span><br><span class="line">  <span class="keyword">this</span>.__props = <span class="built_in">arguments</span>[<span class="number">1</span>] || <span class="keyword">this</span>.props || &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> oddNumbers = <span class="keyword">this</span>.__state.numbers.filter(<span class="function"><span class="params">number</span> =&gt;</span> number &amp; <span class="number">2</span>);</span><br><span class="line">  <span class="built_in">Object</span>.assign(<span class="keyword">this</span>.__state, &#123;</span><br><span class="line">    oddNumbers: oddNumbers</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>.__state;</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-3-2-WXML-和-JSX"><a href="#6-3-2-WXML-和-JSX" class="headerlink" title="6.3.2 WXML 和 JSX"></a>6.3.2 WXML 和 JSX</h4><p>在 Taro 里 render 的所有 JSX 元素都会在 JavaScript 文件中被移除，它们最终将会编译成小程序的 WXML。每个 WXML 元素和 HTML 元素一样，我们可以把它定义为三种类型：Element、Text、Comment。其中 Text 只有一个属性: 内容（content），它对应的 AST 类型是 JSXText，我们只需要将前文源码中对应字符串的奇数和偶数转换成 Text 即可。而对于 Comment 而言我们可以将它们全部清除，不参与 WXML 的编译。Element 类型有它的名字（tagName）、children、属性（attributes），其中 children 可能是任意 WXML 类型，属性是一个对象，键值和键名都是字符串。我们将把重点放在如何转换成为 WXML 的 Element 类型。</p>
+<p>首先我们可以先看 <View className='home'>，它在 AST 中是一个 JSXElement，它的结构和我们定义 Element 类型差不多。我们先将 JSXElement 的 ScrollView 从驼峰式的 JSX 命名转化为短横线（kebab case）风格，className 和 scrollTop 的值分别代表了 JSXAttribute 值的两种类型：StringLiteral 和 JSXExpressionContainer，className 是简单的 StringLiteral 处理起来很方便，scrollTop 处理起来稍微麻烦点，我们需要用两个花括号{} 把内容包起来…</p>
+<p>接下来我们再思考一下每一个 JSXElement 出现的位置，你可以发现其实它的父元素只有几种可能性：return、循环、条件（逻辑）表达式。而在上一篇文章中我们提到，babel-traverse 遍历的 AST 类型是响应式的——也就是说只要我们按照 JSXElement 父元素类型的顺序穷举处理这几种可能性，把各种可能性大结果应用到 JSX 元素之后删除掉原来的表达式，最后就可以把一个复杂的 JSX 表达式转换为一个简单的 WXML 数据结构。…</p>
+<p>我们先看第一个循环：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">oddNumbers.map(<span class="function"><span class="params">number</span> =&gt;</span> <span class="xml"><span class="tag">&lt;<span class="name">Text</span> <span class="attr">onClick</span>=<span class="string">&#123;this.handleClick&#125;</span>&gt;</span>&#123;number&#125;<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span>);</span><br></pre></td></tr></table></figure>
+
+<p>Text 的父元素是一个 map 函数（CallExpression），我们可以把函数的 callee: oddNumbers 作为 wx:for 的值，并把它放到 state 中，匿名函数的第一个参数是 wx:for-item 的值，函数的第二个参数应该是 wx:for-index 的值，但代码中没有传所以我们可以不管它。然后我们把这两个 wx: 开头的参数作为 attribute 传入 Text 元素就完成了循环的处理。而对于 onClick 而言，在 Taro 中 on 开头的元素参数都是事件，所以我们只要把 this. 去掉即可。Text 元素的 children 是一个 JSXExpressionContainer，我们按照之前的处理方式处理即可。最后这行我们生成出来的数据结构应该是这样…</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  type: <span class="string">'element'</span>,</span><br><span class="line">  tagName: <span class="string">'text'</span>,</span><br><span class="line">  attributes: [</span><br><span class="line">    &#123; <span class="attr">bindtap</span>: <span class="string">'handleClick'</span> &#125;,</span><br><span class="line">    &#123; <span class="string">'wx:for'</span>: <span class="string">'&#123;&#123;oddNumbers&#125;&#125;'</span> &#125;,</span><br><span class="line">    &#123; <span class="string">'wx:for-item'</span>: <span class="string">'number'</span> &#125;</span><br><span class="line">  ],</span><br><span class="line">  children: [</span><br><span class="line">    &#123; <span class="attr">type</span>: <span class="string">'text'</span>, <span class="attr">content</span>: <span class="string">'&#123;&#123;number&#125;&#125;'</span> &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;...</span><br></pre></td></tr></table></figure>
+
+<p>有了这个数据结构生成一段 WXML 就非常简单了</p>
+<p>再来看第二个循环表达式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">numbers.map(<span class="function"><span class="params">number</span> =&gt;</span> number % <span class="number">2</span> === <span class="number">0</span> &amp;&amp; <span class="xml"><span class="tag">&lt;<span class="name">Text</span> <span class="attr">onClick</span>=<span class="string">&#123;this.handleClick&#125;</span>&gt;</span>&#123;number&#125;<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span>)...</span><br></pre></td></tr></table></figure>
+
+<p>它比第一个循环表达式多了一个逻辑表达式（Logical Operators），我们知道 expr1 &amp;&amp; expr2 意味着如果 expr1 能转换成 true 则返回 expr2，也就是说我们只要把 number % 2 === 0 作为值生成一个键名 wx:if 的 JSXAttribute 即可。但由于 wx:if 和 wx:for 同时作用于一个元素可能会出现问题，所以我们应该生成一个 block 元素，把 wx:if 挂载到 block 元素，原元素则全部作为 children 传入 block 元素中。这时 babel-traverse 会检测到新的元素 block，它的父元素是一个 map 循环函数，因此我们可以按照第一个循环表达式的处理方法来处理这个表达式。</p>
+<p>这里我们可以思考一下 this.props.text || this.props.children 的解决方案。当用户在 JSX 中使用 || 作为逻辑表达式时很可能是 this.props.text 和 this.props.children 都有可能作为结果返回。这里 Taro 将它编译成了 this.props.text ? this.props.text: this.props.children，按照条件表达式（三元表达式）的逻辑，也就是说会生成两个 block，一个 wx:if 和一个 wx:else：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;block wx:<span class="keyword">if</span>=<span class="string">"&#123;&#123;text&#125;&#125;"</span>&gt;&#123;&#123;text&#125;&#125;&lt;<span class="regexp">/block&gt;</span></span><br><span class="line"><span class="regexp">&lt;block wx:else&gt;</span></span><br><span class="line"><span class="regexp">    &lt;slot&gt;&lt;/</span>slot&gt;</span><br><span class="line">&lt;<span class="regexp">/block&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
     <title>ThreadPoolExecutor源码解析</title>
@@ -2718,81 +3023,6 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
-    <title>中台系统设计（二）关于字体</title>
-    <url>/2020/09/30/%E4%B8%AD%E5%8F%B0%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%832/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>字体是界面设计中最基本的构成之一，是页面中重要的元素。对用户的阅读体验有着至关重要的作用。选择字体是一个具有创造性和情感的过程，因为不同的字体传达出不同的情感，展示不一样的品牌调性。在制定规范时科学的定义字体规范系统，不仅能够有效的表达出不同的设计风格，还能通过定义字体的字型、字阶、字重、字体颜色、字体行高间距，有效帮助设计师在设计界面时使用字体达到统一性和整体性，保证界面有良好的阅读体验。</p>
-<p><img src= "/img/loading.gif" data-src="%E5%AD%97%E4%BD%93.jpg" alt="字体"></p>
-<h2 id="字体属性"><a href="#字体属性" class="headerlink" title="字体属性"></a>字体属性</h2><p>以下分别是Sketch、ps、Figma的字符面板，从以下三款流行的设计软件就可以看出字体的一些属性：分别是：字形、字体、字型。</p>
-<p><img src= "/img/loading.gif" data-src="%E4%B8%BB%E6%B5%81%E8%AE%BE%E8%AE%A1%E8%BD%AF%E4%BB%B6%E5%AD%97%E7%AC%A6%E9%9D%A2%E6%9D%BF.png" alt="中台系统设计（二）关于字体和按钮"></p>
-<ul>
-<li>Font 译为：字型，是指字的粗细、宽度和样式，是一套具有同样风格和尺寸的字形。（如：Regular_16pt_SF-UI）</li>
-<li>Typeface 译为：字体，是指一整套的字形，一个或多个字型的多尺寸的集合，例如「SF-UI」里有不同粗细（Regular、Blod、Light）和不同宽度（12pt、14pt、20pt）。</li>
-<li>Glyph ：译为：字形，是指单个字的形体或是字体的骨骼。 同一字可以有不同的字形，而不影响其表达的意思，例如汉字中的「令」字，第三笔可以是一点或一撇， 最末两笔可以作「ㄗ」或「マ」。</li>
-</ul>
-<p><strong>Font 和 Typeface 常常被混淆，其实可以这样理解，前者指一种设计，后者指具体的产品。</strong></p>
-<p><img src= "/img/loading.gif" data-src="Font%E3%80%81Typeface%E3%80%81Glyph%E7%9A%84%E5%85%B3%E7%B3%BB.png" alt="Font、Typeface、Glyph的关系"></p>
-<h2 id="系统字体选择"><a href="#系统字体选择" class="headerlink" title="系统字体选择"></a>系统字体选择</h2><p>在选用系统字体时需要考虑在不同系统的兼容性，大家都知道在不同的操作系统及不同的游览器中默认显示的字体是不一样的，并且相同字体在不同操作系统里面渲染的效果也不尽相同。在做字体规范时需要提供一套系统完整的字族，里面不仅需要包含系统默认的界面字体，还需要一套有利于屏幕显示的备用字体，方便维护不同系统及浏览器的实现，保证在任何场景保持良好的阅读性和可读性。</p>
-<p><img src= "/img/loading.gif" data-src="%E7%B3%BB%E7%BB%9F%E5%AD%97%E4%BD%93.png" alt="系统字体"></p>
-<ul>
-<li><p><strong>-apple-system是在以WebKit为内核的浏览器</strong>，比如苹果的Safari中调用苹果系统macOS、iOS、watchOS、tvOS中默认字体，目前一般情况下英文使用的是San Francisco，中文使用的是PingFang。<strong>BlinkMacSystemFont是在Chrome中调用苹果系统的字体。</strong></p>
-</li>
-<li><p>Segoe UI针对Windows and Windows Phone等系统。PingFang SC是苹果为中国用户打造了一款全新中文字体，整体样式看上去更加简洁，字族共6个字体：极细体、纤细体、细体、常规体、中黑体、中粗体。Hiragino Sans GB是是Hiragino KakuGothic的简体中文版，有常规体和粗体两种，冬青黑体是一款清新的专业印刷字体，其小字在屏幕显示时足够清晰。Microsoft YaHei是从Vista开始，微软提供了这款新的字体，它是一款无衬线的黑体类字体，并且拥有Regular、Bold两种粗细的字重，字重有效提高了字体的层级显示效果。目前这款字体已经成为Windows游览器中最值得使用的中文字体。从Win8开始，微软雅黑又加入了Light这款更细的字重，对于喜欢细字体的设计或开发人员又多了一个新的选择。</p>
-</li>
-<li><p><strong>Helvetica Neue、sans-serif主要是系统备用兜底字体。</strong>Helvetica Neue在没有El Capitan versions系统的电脑中是最流行的，所以作为兜底，sans-serif也是常见的兜底字体；</p>
-</li>
-<li><p>‘Apple Color Emoji’, ‘Segoe UI Emoji’, ‘Segoe UI Symbol’ 针对在macOS和Windows显示emoji，主要是系统的emoji。</p>
-</li>
-</ul>
-<p>附：在Web设计中使用UI系统字体快读实用指南<a href="https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/" target="_blank" rel="noopener">https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/</a></p>
-<h2 id="定义字体规范"><a href="#定义字体规范" class="headerlink" title="定义字体规范"></a>定义字体规范</h2><h3 id="字体大小-字号"><a href="#字体大小-字号" class="headerlink" title="字体大小-字号"></a>字体大小-字号</h3><p>字号大小决定了信息的层级和主次关系，合理有序的字号设置能让界面信息清晰易读、层次分明，相反，糟糕无序的字号使用会让界面混乱不堪，影响阅读体验。</p>
-<p>我们确定正文字号后，辅助文字信息层级低的内容和标题也就随之确定了。那这个正文字号到底该定义多少呢？参考一些主流的网站，大部分网站的正文都采用了14px的文字大小。也有一些网站是12px的文字大小。对于为什么设置14px大小的文字作为正文文字，蚂蚁金服的Ant Design的设计规范中对此做了说明。Ant Desugn3.0的时候对主字号进行了研究：<strong>基于电脑显示器阅读距离（50 cm）以及最佳阅读角度（0.3）对 Ant Design 的主字体进行了一次升级，从原先的 12 上升至 14，以保证在多数常用显示器上的用户阅读效率最佳。</strong></p>
-<p><img src= "/img/loading.gif" data-src="%E6%AD%A3%E6%96%87%E5%AD%97%E4%BD%93.png" alt="正文字体"></p>
-<p>我们再说说为什么网页上的字号要定义偶数字号呢？因为Windows自带的点阵宋体从Vista开始只提供12px、14px、16px三个大小的点阵。所以，如果13px、15px、17px虽然每个字的空间大了1px但是点阵却没变，从视觉上会显得略稀疏，可能导致显示效果不佳。所以我们在网页设计时，尽量采用偶数字号作为字体大小。</p>
-<h3 id="字阶行高"><a href="#字阶行高" class="headerlink" title="字阶行高"></a>字阶行高</h3><p>字阶和行高决定着一套字体系统的动态和秩序。字阶指的是一系列有规律的不同尺寸的字体，行高可以理解成一个包裹在字体外面的无形的盒子。行高=字号+行间距；</p>
-<p><img src= "/img/loading.gif" data-src="%E5%AD%97%E9%98%B6%E5%92%8C%E8%A1%8C%E9%AB%98.png" alt="字阶和行高"></p>
-<p><strong>在一个系统设计中（展示型页面除外），建议字阶的选择尽量控制在 3-5 种之间，保持克制的原则。</strong></p>
-<p>关于字体的行高，默认是字号的1.5倍。有时候跟我们的品牌调性也会适当缩小和增大行高。</p>
-<p><img src= "/img/loading.gif" data-src="%E8%A1%8C%E9%AB%98.png" alt="行高"></p>
-<h3 id="字重"><a href="#字重" class="headerlink" title="字重"></a>字重</h3><p>Weight：译为字重，是指字体笔画的粗细，字体中很重要一个概念，不同字重传递出来视觉感受完全不一样。一般在字体家族名后面注名Thin、Light、Regular、Blod、Black、Heavy等。不同的字体设计师划分的字重各有不同，例如「苹方」字体就有6种不同的字重。</p>
-<p>轻字重：传递出轻盈放松的视觉感受，常配合粗的字重使用，在一些辅助信息，说明文案时候使用；</p>
-<p>重字重：视觉感受庄重，很重要，常用在重点强调的文字，页面大标题，数字，引导行动操作点上等；</p>
-<p><strong>字号和字重共同作用下，界面中的信息才能体现出主次关系，信息层次才会明确。</strong></p>
-<p>字重的选择同样基于秩序、稳定、克制的原则，多数情况下，只需要出现regular和medium两种情况下，分别对应代码中的 400 和 500 。在英文字体加粗的情况下会采用 semibold 的字体重量，对应代码中的600。</p>
-<p><strong>注意仿粗字：</strong>在用PS进行界面设计时，不要用软件自带的文本加粗，它不仅破坏了字体本身的美感，还改变了文字原本的字宽，小字体下会模糊不清，合理的方式是使用字体本身的字重来控制粗细。</p>
-<p><strong>注意超细体的字体</strong>：字重超细的字体要谨慎使用。如果你设计的文本是装饰性或者网站品牌调性是需要细体展示的，可以用细体文字，前提也是不能影响文字的阅读。如果是需要用户能清晰阅读的，就要特别慎重。</p>
-<h3 id="字体颜色"><a href="#字体颜色" class="headerlink" title="字体颜色"></a>字体颜色</h3><p>文本颜色如果和背景颜色太接近就会难以阅读，且字阶颜色相近就达不到信息层级清晰的效果，且参考ACAG的标准，将正文文本、标题、背景之间保持在7:1以上的对比度。规范如下：</p>
-<p><img src= "/img/loading.gif" data-src="%E6%96%87%E5%AD%97%E9%A2%9C%E8%89%B2.png" alt="文字颜色"></p>
-<h2 id="常用的选择字体网站"><a href="#常用的选择字体网站" class="headerlink" title="常用的选择字体网站"></a>常用的选择字体网站</h2><h3 id="Adobe-Fonts"><a href="#Adobe-Fonts" class="headerlink" title="Adobe Fonts"></a>Adobe Fonts</h3><p>网址：<a href="https://fonts.adobe.com/" target="_blank" rel="noopener">https://fonts.adobe.com/</a></p>
-<p>第一个是Adonbe旗下的Adobe Font，该网站的西文字体比较全，而且会有一些推荐的字体包：设计师常用的字体、UX字体包、适合印刷的字体等；可以快速找到想要的字体，而且还可以改变字体大小，实时预览。缺点就是该网站的字体大部分都是要收费的，我们可以通过购买使用喜欢的字体，毕竟这是个知识付费的时代。</p>
-<p>![Adobe 字体](Adobe 字体.png)</p>
-<h3 id="Google-Fonts"><a href="#Google-Fonts" class="headerlink" title="Google Fonts"></a>Google Fonts</h3><p>网址：<a href="http://www.googlefonts.cn/" target="_blank" rel="noopener">http://www.googlefonts.cn/</a></p>
-<p>Google Fonts的下载功能非常便捷，我们可以免费下载所有喜欢的字体，Google Fonts包含超过1400种不同的字体，其中包含最著名的：Open Sans和Roboto字体，他们是Android系统使用的默认字体。</p>
-<p>![Google Font](Google Font.png)</p>
-<h3 id="求字体网"><a href="#求字体网" class="headerlink" title="求字体网"></a>求字体网</h3><p>网址：<a href="http://www.qiuziti.com/fontlist" target="_blank" rel="noopener">http://www.qiuziti.com/fontlist</a></p>
-<p>设计师在做设计时常常会遇到某些网站或海报使用的字体特别喜欢，但是苦恼无法获取改字体的信息导致无法下载使用，求字体网解决了此痛点。你可以将喜欢的字体进行截图并上传到网站进行字体识别，识别出具体的字体后，会提供出字体下载链接或者字体信息，解决设计师们喜欢某个字体而找不到的烦恼。</p>
-<p><img src= "/img/loading.gif" data-src="%E6%B1%82%E5%AD%97%E4%BD%93%E7%BD%91.png" alt="求字体网"></p>
-<h3 id="字由-amp-iFonts-字体网站"><a href="#字由-amp-iFonts-字体网站" class="headerlink" title="字由 &amp; iFonts 字体网站"></a>字由 &amp; iFonts 字体网站</h3><p>字由网站：<a href="https://www.hellofont.cn/" target="_blank" rel="noopener">https://www.hellofont.cn/</a></p>
-<p>iFonts网站：<a href="https://51ifonts.com/clientdown" target="_blank" rel="noopener">https://51ifonts.com/clientdown</a></p>
-<p>字由 和 iFonts也是比较推荐的两个软件。字由网站将全部字体进行整理分类方便用户快捷寻找字体，并且有个分类是免费商用字体库，避免了设计师因为不清楚字体版权导致版权纠纷问题。此有网站有两大亮点，第一是此网站在设计师选用字体时有个实际运用预览效果，直观的看到字体在实际使用效果，第二是网站提供客户端下载，在客户端中点击下载以后可直接进行在设计工具中直接使用。</p>
-<p><img src= "/img/loading.gif" data-src="%E5%AD%97%E4%BD%93%E5%AE%A2%E6%88%B7%E7%AB%AF.png" alt="字体客户端"></p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>中台系统设计定义规范时：</p>
-<ul>
-<li>需要有体系化的思路：对于标题文字、次要文字、辅助文字、文字链接等文字类型作统一的定义，在项目在根据实际情况调整我们的设计规范。</li>
-<li>避免没有意义的增加各种字号，增加系统的字阶等，减少相近大小的字号设定。</li>
-<li>在需要拉开差距的时候可以尝试在字阶中选择差异较大的字体大小，会让字阶之间产生一种微妙的韵律感。</li>
-</ul>
-<p>参考：<a href="https://ant.design/index-cn" target="_blank" rel="noopener">https://ant.design/index-cn</a></p>
-]]></content>
-      <categories>
-        <category>设计</category>
-      </categories>
-      <tags>
-        <tag>设计</tag>
-        <tag>规范</tag>
-        <tag>中台</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>京东小程序-爬坑路-一</title>
     <url>/2020/10/13/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E7%88%AC%E5%9D%91%E8%B7%AF-%E4%B8%80/</url>
     <content><![CDATA[<h3 id="京东小程序开发经验谈-一"><a href="#京东小程序开发经验谈-一" class="headerlink" title="京东小程序开发经验谈-一"></a>京东小程序开发经验谈-一</h3><p>简介：</p>
@@ -2868,6 +3098,276 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <li>6.Video、canvas等原生组件也有层级最高问题，目前没有解决</li>
 </ul>
 <h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>开始使用版本为京麦5.6.0，当前问题也是在此版本基础上，如果后续京麦有升级，可能会避免部分问题，此分享仅供5.6.0版本参考，后续版本可自己尝试</p>
+]]></content>
+      <categories>
+        <category>小程序</category>
+      </categories>
+      <tags>
+        <tag>小程序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>京东小程序上手</title>
+    <url>/2020/06/19/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B/</url>
+    <content><![CDATA[<h3 id="京东小程序上手"><a href="#京东小程序上手" class="headerlink" title="京东小程序上手"></a>京东小程序上手</h3><p>官网：<a href="https://mp.jd.com/" target="_blank" rel="noopener">https://mp.jd.com</a></p>
+<p>简介：</p>
+<ul>
+<li>京东小程序 是一种全新的开放模式，可以被便捷地获取和传播。它令终端用户获取更好的使用体验，为商家实现线上线下的交易闭环，给开发者提供一种快速开发方式。</li>
+<li>京东小程序只需一次开发即可运行在京东 APP、京东金融 APP、京麦 APP 三端。京东 APP、京东金融 APP 会开放特定的能力，对优质小程序还会开放多个高流量入口，包含扫码、搜索、消息等多种方式触达。而京麦 APP 小程序主要用于商家工具插件的开发定制。<br>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/107303/25/14976/412607/5eaa4a5eE2f1e3361/7d683f2da11a6589.png" alt=""></li>
+</ul>
+<h3 id="体验京东小程序"><a href="#体验京东小程序" class="headerlink" title="体验京东小程序"></a>体验京东小程序</h3><p>京东小程序开发平台为开发者提供快捷API、及组件预览工具，可在项目开始前对京东小程序开发进行了解。</p>
+<ul>
+<li>使用京东APP扫描下方小程序码可以预览该 Demo</li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/67027/16/10678/172663/5d81cf50E90cfad52/e47514f2ffd7aeac.jpg" alt=""></p>
+<ul>
+<li>使用京麦APP扫描下方小程序码可以预览该 Demo</li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/69950/29/10582/253200/5d80d0a7Ee67af940/f87d7b1208040c86.png" alt=""></p>
+<ul>
+<li>使用京东金融APP扫描下方小程序码可以预览该 Demo</li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/52275/30/11065/236344/5d81cfc4E9506400b/f5f2e1b323428b15.png" alt=""></p>
+<h3 id="开发者内测申请"><a href="#开发者内测申请" class="headerlink" title="开发者内测申请"></a>开发者内测申请</h3><p>京东小程序采用京东 pin 登录，初次登录京东小程序平台需要填写邀请码，若无邀请码可点击下方获取邀请码申请。</p>
+<p>邀请码通过验证之后，需要按照入驻指引进行详细的主体信息登记，完善身份信息。</p>
+<p>审核通过后，可以进入京东小程序控制台，创建小程序。</p>
+<h3 id="开发前准备工作"><a href="#开发前准备工作" class="headerlink" title="开发前准备工作"></a>开发前准备工作</h3><ul>
+<li><a href="https://mp.jd.com/" target="_blank" rel="noopener">创建京东小程序</a></li>
+</ul>
+<p>进入京东小程序平台，创建京东小程序，一个账号下最多可以创建10个京东小程序。小程序创建成功后，可在我的小程序页查看小程序的AppID，AppID是小程序的唯一标识。</p>
+<ul>
+<li>安装京东小程序开发者工具</li>
+</ul>
+<p>京东小程序开发者工具是类似与微信开发者工具的IDE，方便预览和调试京东小程序。新建项目时需要填写AppID。</p>
+<ul>
+<li><a href="https://mp.jd.com/docs/design/" target="_blank" rel="noopener">设计规范</a></li>
+</ul>
+<p>京东小程序有自己一套关于颜色字体、图片&amp;图标等的设计规范。</p>
+<ul>
+<li><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">开发指南</a></li>
+</ul>
+<p>在正式开发之前，需要了解京东小程序的框架、组件、API及相关工具。其中框架和组件与微信小程序类似，如果有过微信小程序的开发经验，可以轻松上手。同时提供丰富的京东原生API，可以方便的调起京东提供的能力，如获取用户信息，本地存储，支付功能等。</p>
+<h3 id="开发京东小程序"><a href="#开发京东小程序" class="headerlink" title="开发京东小程序"></a><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">开发京东小程序</a></h3><p>打开京东小程序开发者工具，新建项目，填写AppID等。生成项目的目录结构与微信小程序类似。</p>
+<p>一个完整的小程序源码包含app.json、app.js、以及各个页面组成。</p>
+<p>app.json、app.js，必须放在项目的根目录，如下：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>必需</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>app.js</td>
+<td>是</td>
+<td>小程序主逻辑文件</td>
+</tr>
+<tr>
+<td>app.json</td>
+<td>是</td>
+<td>小程序全局公共配置</td>
+</tr>
+<tr>
+<td>app.jxss</td>
+<td>否</td>
+<td>小程序全局公共样式表，作用于每个页面</td>
+</tr>
+</tbody></table>
+<p>单个小程序页面由如下四个文件组成：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>必需</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>js</td>
+<td>是</td>
+<td>页面逻辑</td>
+</tr>
+<tr>
+<td>jxml</td>
+<td>是</td>
+<td>页面结构</td>
+</tr>
+<tr>
+<td>json</td>
+<td>否</td>
+<td>页面配置</td>
+</tr>
+<tr>
+<td>jxss</td>
+<td>否</td>
+<td>页面样式表</td>
+</tr>
+</tbody></table>
+<p><strong>注意：为了方便开发者减少配置项，描述页面的四个文件必须具有相同的路径与文件名</strong></p>
+<p>下面是一个小程序的文件结构示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">├── app.js</span><br><span class="line">├── app.json</span><br><span class="line">├── app.jxss</span><br><span class="line">└── pages</span><br><span class="line">    │── index</span><br><span class="line">    │   ├—— index.jxml</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── index.json</span><br><span class="line">    │   └── index.jxss</span><br><span class="line">    └── detail</span><br><span class="line">        ├── detail.jxml</span><br><span class="line">        └── detail.js</span><br></pre></td></tr></table></figure>
+
+<p>为了体验京东小程序开发，我用京东小程序开发了一个简单版的辅助服务频道页。</p>
+<ul>
+<li>h5: <a href="https://fzfw.m.jd.com/" target="_blank" rel="noopener">https://fzfw.m.jd.com/</a></li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/s200x200_jfs/t1/115234/37/5178/9125/5eb260b3E31b296ba/8ea68b50dcaacef7.png" alt=""></p>
+<ul>
+<li>京东小程序：openapp.jdmobile://virtual?params={ “category”: “jump”,”des”: “vapp”,”appId”:”aof243422f121024a1”, “vapptype”: “2”}</li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/s200x200_jfs/t1/111155/18/5271/113448/5eb26107E990a41ec/4f0fa893d3a6ceac.jpg" alt=""></p>
+<h3 id="开发过程中遇到的问题"><a href="#开发过程中遇到的问题" class="headerlink" title="开发过程中遇到的问题"></a>开发过程中遇到的问题</h3><ul>
+<li>1.修改代码不会自动重启小程序；</li>
+<li>2.添加新模块需要重启开发者工具；</li>
+<li>3.图片url省略协议（开头为//）时，真机调试会转为单个/开头，导致无法显示图片；</li>
+<li>4.无法真机调试；</li>
+<li>5.有时无法查看页面元素；</li>
+<li>6.网络请求中无法查看图片相关请求;</li>
+<li>7.新建page不方便;</li>
+<li>8.开发者工具中无法显示webview的内容。</li>
+</ul>
+<h3 id="开放能力"><a href="#开放能力" class="headerlink" title="开放能力"></a><a href="https://mp.jd.com/docs/dev/API/interface/ability.html" target="_blank" rel="noopener">开放能力</a></h3><p>京东小程序将营销、交易、支付、会员等各项业务能力以接口的形式开放给开发者，以满足开发者的业务诉求，同时减轻开发者的工作量</p>
+<p>目前京东能力中心为开发者提供了如下能力：</p>
+<ul>
+<li>登录：用户授权登录后，开发者可以获得用户的唯一标识</li>
+<li>手机号授权：在获得用户授权后，且在充分保护用户隐私的前提下，获取用户手机号</li>
+<li>用户信息：开发者可以在获得用户授权的前提下获得用户的相关的信息</li>
+<li>分享：用户可以便捷的分享小程序给微信好友，或分享至朋友圈</li>
+<li>关注：将关注按钮移至顶部导航栏，方便用户更便捷的进行关注操作</li>
+<li>支付能力：唤起京东支付组件，用户确认收款方和金额后选择支付方式</li>
+<li>会员能力：与京东PLUS能力深度结合</li>
+<li>账号信息：获取当前小程序信息</li>
+<li>跳转：<ul>
+<li>小程序跳转小程序</li>
+<li>小程序跳转至宿主APP页面</li>
+</ul>
+</li>
+<li>唤起：<ul>
+<li>APP内唤起小程序</li>
+<li>APP外唤起小程序</li>
+</ul>
+</li>
+<li>位置：通过用户授权获取用户当前地理位置信息</li>
+<li>二维码<ul>
+<li>标准二维码：开发者可以生成标准二维码，用户通过京东app扫描标准二维码，即可打开相关小程序</li>
+<li>多码合一：开发者可以将现有二维码和小程序进行绑定。当用户使用京东app扫码时，可以打开相关小程序</li>
+</ul>
+</li>
+<li>设置<ul>
+<li>在小程序设置页里控制授权状态</li>
+<li>获取用户当前设置</li>
+</ul>
+</li>
+</ul>
+<h3 id="跳转与唤起"><a href="#跳转与唤起" class="headerlink" title="跳转与唤起"></a>跳转与唤起</h3><h4 id="小程序跳转小程序"><a href="#小程序跳转小程序" class="headerlink" title="小程序跳转小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram0.html" target="_blank" rel="noopener">小程序跳转小程序</a></h4><p>当开发者拥有多个小程序时，可以通过小程序间互相跳转，完善小程序生态。</p>
+<ul>
+<li><p>打开指定的小程序</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateToMiniProgram(&#123;</span><br><span class="line">  appId: <span class="string">''</span>,                             <span class="comment">// 要打开的小程序 appId</span></span><br><span class="line">  path: <span class="string">'pages/my/my?from=detail'</span>,       <span class="comment">// 打开的页面路径，如果为空则打开首页</span></span><br><span class="line">  extraData: &#123;                           <span class="comment">// 传递的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到传递的数据</span></span><br><span class="line">    foo: <span class="string">'bar'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  envVersion: <span class="string">'release'</span>,                 <span class="comment">// 要打开的小程序版本，包括：开发版、体验版、正式版，仅在当前小程序为开发版或体验版时此参数有效；如果当前小程序是正式版，则打开的小程序必定是正式版。</span></span><br><span class="line">  success(res) &#123;&#125;,                       <span class="comment">// 调用成功的回调函数</span></span><br><span class="line">  fail(err) &#123;&#125;,                          <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                          <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li><p>返回到上一个小程序：只有在当前小程序是被其他小程序打开时可以调用成功</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateBackMiniProgram(&#123;</span><br><span class="line">  extraData: &#123;                           <span class="comment">// 传递的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到传递的数据</span></span><br><span class="line">    name: <span class="string">'cortana'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;&#125;,                       <span class="comment">// 调用成功的回调</span></span><br><span class="line">  fail(err) &#123;&#125;,                          <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                          <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="小程序跳转到宿主页面"><a href="#小程序跳转到宿主页面" class="headerlink" title="小程序跳转到宿主页面"></a><a href="https://mp.jd.com/docs/dev/API/interface/toNative.html" target="_blank" rel="noopener">小程序跳转到宿主页面</a></h4><p>京东小程序支持跳转到宿主app原生页面、H5页面。</p>
+<ul>
+<li>不支持跳转到宿主外部和打开外部APP</li>
+<li>需要提前知道要跳转到的目标页面的openapp协议或route协议地址</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateToNative(&#123;</span><br><span class="line">  dataParam: &#123;                            <span class="comment">// 跳转的参数</span></span><br><span class="line">    url: <span class="string">'openapp.jdmobile://virtual'</span>,    <span class="comment">// 目标页面的openapp协议地址，目前仅支持openapp协议和route协议</span></span><br><span class="line">    params: &#123;                             <span class="comment">// 携带的自定义参数，key value 格式</span></span><br><span class="line">        category:<span class="string">"jump"</span>,</span><br><span class="line">        des:<span class="string">"jdmpCenter"</span>,</span><br><span class="line">        param:&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;&#125;,                        <span class="comment">// 调用成功的回调函数</span></span><br><span class="line">  fail(err) &#123;&#125;,                           <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                           <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="宿主app内的H5页面打开指定的小程序"><a href="#宿主app内的H5页面打开指定的小程序" class="headerlink" title="宿主app内的H5页面打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主app内的H5页面打开指定的小程序</a></h4><p>宿主app内的原生页面和h5页面，都可以直接通过openapp协议的地址来打开指定的小程序。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.localtion.href = <span class="string">`openapp.jdmobile://virtual?params=&#123;"category":"jump","des":"jdmp","appId":"aoxxxxxxxx","vapptype":"1","path":"page/index/index","param":&#123;"xx":"xxxx","xx":"xxx"&#125;&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>appId</td>
+<td>string</td>
+<td>是</td>
+<td>要打开的小程序的原始id，可从小程序控制台获取</td>
+</tr>
+<tr>
+<td>vapptype</td>
+<td>string</td>
+<td>是</td>
+<td>打开的小程序的类型，1 对应线上正式小程序 2 体验版小程序 3 真机调试（暂未开放）</td>
+</tr>
+<tr>
+<td>path</td>
+<td>string</td>
+<td>是</td>
+<td>要打开的小程序的某个页面，空的时候，默认打开小程序首页</td>
+</tr>
+<tr>
+<td>param</td>
+<td>string</td>
+<td>是</td>
+<td>自定义字段，{} 里面可以自由配置key，value，这些key值，可在小程序onLaunch的生命周期回调中获取</td>
+</tr>
+</tbody></table>
+<h4 id="宿主app内的原生页面打开指定的小程序"><a href="#宿主app内的原生页面打开指定的小程序" class="headerlink" title="宿主app内的原生页面打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主app内的原生页面打开指定的小程序</a></h4><p>与h5打开页面类似，直接通过openapp协议的地址来打开指定的小程序</p>
+<h4 id="宿主外部环境，如微信APP、浏览器打开指定的小程序"><a href="#宿主外部环境，如微信APP、浏览器打开指定的小程序" class="headerlink" title="宿主外部环境，如微信APP、浏览器打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主外部环境，如微信APP、浏览器打开指定的小程序</a></h4><p>外部环境，需要将目标小程序拼接成如下链接格式，通过通用唤起中间页来打开制定的小程序:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;h5static.jd.com&#x2F;vapp&#x2F;appdau&#x2F;index.html?appId&#x3D;xxxxxxx&amp;type&#x3D;1&amp;path&#x3D;page%2findex%2findex.html%3fname%3daa</span><br></pre></td></tr></table></figure>
+
+<p>其中，appId和type同openapp协议的 appId 和 vapptype 完全一致，path后面的路径，需要url encode，path中的?后面的自定义参数值，同上述 openapp 协议中param 字段一样，可在 app.js 中 onLaunch 回调中获取。</p>
+<h3 id="使用Taro开发京东小程序"><a href="#使用Taro开发京东小程序" class="headerlink" title="使用Taro开发京东小程序"></a><a href="https://jelly.jd.com/exp/detail?id=5dc95ebeb73b47015299a89f" target="_blank" rel="noopener">使用Taro开发京东小程序</a></h3><p>Taro 是京东零售-用户体验设计部-多终端研发部推出的一套遵循 React 语法规范的多端统一开发解决方案，也是京东小程序官方推荐的开发框架。</p>
+<p>使用 Taro 开发不但能更规范、更有效率地编码， 畅享 React 生态的各种工具。更重要的是只需编写一份代码，即可运行在各种平台：京东/微信/百度/支付宝/字节跳动/QQ小程序、快应用、H5、React-Native 等。</p>
+<ul>
+<li>1.安装 Taro 的 CLI 工具：<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g @tarojs/cli</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>已安装 Taro 的同学请注意更新 Taro 版本，Taro 自 1.3.20 后支持转换京东小程序。</p>
+</blockquote>
+<ul>
+<li><p>2.使用 CLI 创建项目：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g @tarojs/cli</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>3.安装京东小程序开发依赖</p>
+</li>
+</ul>
+<p>因为小程序处于内测阶段，CLI 工具默认没有安装京东小程序相关开发依赖，所以需要手动安装。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install @tarojs/taro-jd</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>4.配置执行脚本</li>
+</ul>
+<p>在 package.json 中添加如下两条开启京东小程序项目的脚本：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"build:jd"</span>: <span class="string">"taro build --type jd"</span>,</span><br><span class="line">    <span class="attr">"dev:jd"</span>: <span class="string">"npm run build:jd -- --watch"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>5.本地开发</li>
+</ul>
+<p>进入项目根目录，运行<code>npm run dev:jd</code>，使用 CLI 编译项目，根据 <a href="http://taro-docs-in.jd.com/taro/" target="_blank" rel="noopener">Taro 文档</a>进行开发。</p>
+<p>Taro 遵循 React 语法规范，它采用与 React 一致的组件化思想，组件生命周期与 React 保持一致，同时支持使用 JSX 语法，让代码具有更丰富的表现力，使用 Taro 进行开发可以获得和 React 一致的开发体验。</p>
+<ul>
+<li>6.调试</li>
+</ul>
+<p>使用京东小程序开发者工具进行调试，打开 IDE 工具，点击“新建项目”，项目路径指向 Taro 项目根目录中的输出目录 dist。</p>
+<p>开发者可以给编译命令带上 watch 参数：taro build –type jd –watch，Taro 即会监听源代码的变化，及时编译项目并输出到 dist 目录。</p>
+<p>但是目前 IDE 还没有监听文件变化而重新进行编译，因此每次改动源代码后需要手动点击 IDE 的编译按钮以刷新页面。</p>
+<ul>
+<li>7.注册页面</li>
+</ul>
+<p>当创建了新页面之后，我们还要告诉应用我们创建的这个页面，也就是在应用注册这个页面，打开 src/app.jsx ，在对应 App 组件的 config.pages 属性里面添加刚刚创建的帖子详情页的路径。</p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="https://mp.jd.com/docs/introduction/" target="_blank" rel="noopener">京东小程序官网-介绍</a></li>
+<li><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">京东小程序官网-开发</a></li>
+<li><a href="https://jelly.jd.com/exp/detail?id=5dc95ebeb73b47015299a89f" target="_blank" rel="noopener">使用 Taro 快速开发京东小程序</a></li>
+<li><a href="https://juejin.im/post/5ea0e8efe51d4546d171110a" target="_blank" rel="noopener">一杯茶的时间，上手 Taro 京东小程序开发</a></li>
+<li><a href="https://cf.jd.com/pages/viewpage.action?pageId=226255440" target="_blank" rel="noopener">接入京东小程序</a></li>
+<li><a href="http://taro-docs-in.jd.com/taro/docs/README.html" target="_blank" rel="noopener">Taro官方文档</a></li>
+</ul>
 ]]></content>
       <categories>
         <category>小程序</category>
@@ -3189,276 +3689,6 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
-    <title>京东小程序上手</title>
-    <url>/2020/06/19/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B/</url>
-    <content><![CDATA[<h3 id="京东小程序上手"><a href="#京东小程序上手" class="headerlink" title="京东小程序上手"></a>京东小程序上手</h3><p>官网：<a href="https://mp.jd.com/" target="_blank" rel="noopener">https://mp.jd.com</a></p>
-<p>简介：</p>
-<ul>
-<li>京东小程序 是一种全新的开放模式，可以被便捷地获取和传播。它令终端用户获取更好的使用体验，为商家实现线上线下的交易闭环，给开发者提供一种快速开发方式。</li>
-<li>京东小程序只需一次开发即可运行在京东 APP、京东金融 APP、京麦 APP 三端。京东 APP、京东金融 APP 会开放特定的能力，对优质小程序还会开放多个高流量入口，包含扫码、搜索、消息等多种方式触达。而京麦 APP 小程序主要用于商家工具插件的开发定制。<br>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/107303/25/14976/412607/5eaa4a5eE2f1e3361/7d683f2da11a6589.png" alt=""></li>
-</ul>
-<h3 id="体验京东小程序"><a href="#体验京东小程序" class="headerlink" title="体验京东小程序"></a>体验京东小程序</h3><p>京东小程序开发平台为开发者提供快捷API、及组件预览工具，可在项目开始前对京东小程序开发进行了解。</p>
-<ul>
-<li>使用京东APP扫描下方小程序码可以预览该 Demo</li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/67027/16/10678/172663/5d81cf50E90cfad52/e47514f2ffd7aeac.jpg" alt=""></p>
-<ul>
-<li>使用京麦APP扫描下方小程序码可以预览该 Demo</li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/69950/29/10582/253200/5d80d0a7Ee67af940/f87d7b1208040c86.png" alt=""></p>
-<ul>
-<li>使用京东金融APP扫描下方小程序码可以预览该 Demo</li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/52275/30/11065/236344/5d81cfc4E9506400b/f5f2e1b323428b15.png" alt=""></p>
-<h3 id="开发者内测申请"><a href="#开发者内测申请" class="headerlink" title="开发者内测申请"></a>开发者内测申请</h3><p>京东小程序采用京东 pin 登录，初次登录京东小程序平台需要填写邀请码，若无邀请码可点击下方获取邀请码申请。</p>
-<p>邀请码通过验证之后，需要按照入驻指引进行详细的主体信息登记，完善身份信息。</p>
-<p>审核通过后，可以进入京东小程序控制台，创建小程序。</p>
-<h3 id="开发前准备工作"><a href="#开发前准备工作" class="headerlink" title="开发前准备工作"></a>开发前准备工作</h3><ul>
-<li><a href="https://mp.jd.com/" target="_blank" rel="noopener">创建京东小程序</a></li>
-</ul>
-<p>进入京东小程序平台，创建京东小程序，一个账号下最多可以创建10个京东小程序。小程序创建成功后，可在我的小程序页查看小程序的AppID，AppID是小程序的唯一标识。</p>
-<ul>
-<li>安装京东小程序开发者工具</li>
-</ul>
-<p>京东小程序开发者工具是类似与微信开发者工具的IDE，方便预览和调试京东小程序。新建项目时需要填写AppID。</p>
-<ul>
-<li><a href="https://mp.jd.com/docs/design/" target="_blank" rel="noopener">设计规范</a></li>
-</ul>
-<p>京东小程序有自己一套关于颜色字体、图片&amp;图标等的设计规范。</p>
-<ul>
-<li><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">开发指南</a></li>
-</ul>
-<p>在正式开发之前，需要了解京东小程序的框架、组件、API及相关工具。其中框架和组件与微信小程序类似，如果有过微信小程序的开发经验，可以轻松上手。同时提供丰富的京东原生API，可以方便的调起京东提供的能力，如获取用户信息，本地存储，支付功能等。</p>
-<h3 id="开发京东小程序"><a href="#开发京东小程序" class="headerlink" title="开发京东小程序"></a><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">开发京东小程序</a></h3><p>打开京东小程序开发者工具，新建项目，填写AppID等。生成项目的目录结构与微信小程序类似。</p>
-<p>一个完整的小程序源码包含app.json、app.js、以及各个页面组成。</p>
-<p>app.json、app.js，必须放在项目的根目录，如下：</p>
-<table>
-<thead>
-<tr>
-<th>文件</th>
-<th>必需</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>app.js</td>
-<td>是</td>
-<td>小程序主逻辑文件</td>
-</tr>
-<tr>
-<td>app.json</td>
-<td>是</td>
-<td>小程序全局公共配置</td>
-</tr>
-<tr>
-<td>app.jxss</td>
-<td>否</td>
-<td>小程序全局公共样式表，作用于每个页面</td>
-</tr>
-</tbody></table>
-<p>单个小程序页面由如下四个文件组成：</p>
-<table>
-<thead>
-<tr>
-<th>文件</th>
-<th>必需</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>js</td>
-<td>是</td>
-<td>页面逻辑</td>
-</tr>
-<tr>
-<td>jxml</td>
-<td>是</td>
-<td>页面结构</td>
-</tr>
-<tr>
-<td>json</td>
-<td>否</td>
-<td>页面配置</td>
-</tr>
-<tr>
-<td>jxss</td>
-<td>否</td>
-<td>页面样式表</td>
-</tr>
-</tbody></table>
-<p><strong>注意：为了方便开发者减少配置项，描述页面的四个文件必须具有相同的路径与文件名</strong></p>
-<p>下面是一个小程序的文件结构示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">├── app.js</span><br><span class="line">├── app.json</span><br><span class="line">├── app.jxss</span><br><span class="line">└── pages</span><br><span class="line">    │── index</span><br><span class="line">    │   ├—— index.jxml</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── index.json</span><br><span class="line">    │   └── index.jxss</span><br><span class="line">    └── detail</span><br><span class="line">        ├── detail.jxml</span><br><span class="line">        └── detail.js</span><br></pre></td></tr></table></figure>
-
-<p>为了体验京东小程序开发，我用京东小程序开发了一个简单版的辅助服务频道页。</p>
-<ul>
-<li>h5: <a href="https://fzfw.m.jd.com/" target="_blank" rel="noopener">https://fzfw.m.jd.com/</a></li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/s200x200_jfs/t1/115234/37/5178/9125/5eb260b3E31b296ba/8ea68b50dcaacef7.png" alt=""></p>
-<ul>
-<li>京东小程序：openapp.jdmobile://virtual?params={ “category”: “jump”,”des”: “vapp”,”appId”:”aof243422f121024a1”, “vapptype”: “2”}</li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/s200x200_jfs/t1/111155/18/5271/113448/5eb26107E990a41ec/4f0fa893d3a6ceac.jpg" alt=""></p>
-<h3 id="开发过程中遇到的问题"><a href="#开发过程中遇到的问题" class="headerlink" title="开发过程中遇到的问题"></a>开发过程中遇到的问题</h3><ul>
-<li>1.修改代码不会自动重启小程序；</li>
-<li>2.添加新模块需要重启开发者工具；</li>
-<li>3.图片url省略协议（开头为//）时，真机调试会转为单个/开头，导致无法显示图片；</li>
-<li>4.无法真机调试；</li>
-<li>5.有时无法查看页面元素；</li>
-<li>6.网络请求中无法查看图片相关请求;</li>
-<li>7.新建page不方便;</li>
-<li>8.开发者工具中无法显示webview的内容。</li>
-</ul>
-<h3 id="开放能力"><a href="#开放能力" class="headerlink" title="开放能力"></a><a href="https://mp.jd.com/docs/dev/API/interface/ability.html" target="_blank" rel="noopener">开放能力</a></h3><p>京东小程序将营销、交易、支付、会员等各项业务能力以接口的形式开放给开发者，以满足开发者的业务诉求，同时减轻开发者的工作量</p>
-<p>目前京东能力中心为开发者提供了如下能力：</p>
-<ul>
-<li>登录：用户授权登录后，开发者可以获得用户的唯一标识</li>
-<li>手机号授权：在获得用户授权后，且在充分保护用户隐私的前提下，获取用户手机号</li>
-<li>用户信息：开发者可以在获得用户授权的前提下获得用户的相关的信息</li>
-<li>分享：用户可以便捷的分享小程序给微信好友，或分享至朋友圈</li>
-<li>关注：将关注按钮移至顶部导航栏，方便用户更便捷的进行关注操作</li>
-<li>支付能力：唤起京东支付组件，用户确认收款方和金额后选择支付方式</li>
-<li>会员能力：与京东PLUS能力深度结合</li>
-<li>账号信息：获取当前小程序信息</li>
-<li>跳转：<ul>
-<li>小程序跳转小程序</li>
-<li>小程序跳转至宿主APP页面</li>
-</ul>
-</li>
-<li>唤起：<ul>
-<li>APP内唤起小程序</li>
-<li>APP外唤起小程序</li>
-</ul>
-</li>
-<li>位置：通过用户授权获取用户当前地理位置信息</li>
-<li>二维码<ul>
-<li>标准二维码：开发者可以生成标准二维码，用户通过京东app扫描标准二维码，即可打开相关小程序</li>
-<li>多码合一：开发者可以将现有二维码和小程序进行绑定。当用户使用京东app扫码时，可以打开相关小程序</li>
-</ul>
-</li>
-<li>设置<ul>
-<li>在小程序设置页里控制授权状态</li>
-<li>获取用户当前设置</li>
-</ul>
-</li>
-</ul>
-<h3 id="跳转与唤起"><a href="#跳转与唤起" class="headerlink" title="跳转与唤起"></a>跳转与唤起</h3><h4 id="小程序跳转小程序"><a href="#小程序跳转小程序" class="headerlink" title="小程序跳转小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram0.html" target="_blank" rel="noopener">小程序跳转小程序</a></h4><p>当开发者拥有多个小程序时，可以通过小程序间互相跳转，完善小程序生态。</p>
-<ul>
-<li><p>打开指定的小程序</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateToMiniProgram(&#123;</span><br><span class="line">  appId: <span class="string">''</span>,                             <span class="comment">// 要打开的小程序 appId</span></span><br><span class="line">  path: <span class="string">'pages/my/my?from=detail'</span>,       <span class="comment">// 打开的页面路径，如果为空则打开首页</span></span><br><span class="line">  extraData: &#123;                           <span class="comment">// 传递的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到传递的数据</span></span><br><span class="line">    foo: <span class="string">'bar'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  envVersion: <span class="string">'release'</span>,                 <span class="comment">// 要打开的小程序版本，包括：开发版、体验版、正式版，仅在当前小程序为开发版或体验版时此参数有效；如果当前小程序是正式版，则打开的小程序必定是正式版。</span></span><br><span class="line">  success(res) &#123;&#125;,                       <span class="comment">// 调用成功的回调函数</span></span><br><span class="line">  fail(err) &#123;&#125;,                          <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                          <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
-<li><p>返回到上一个小程序：只有在当前小程序是被其他小程序打开时可以调用成功</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateBackMiniProgram(&#123;</span><br><span class="line">  extraData: &#123;                           <span class="comment">// 传递的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到传递的数据</span></span><br><span class="line">    name: <span class="string">'cortana'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;&#125;,                       <span class="comment">// 调用成功的回调</span></span><br><span class="line">  fail(err) &#123;&#125;,                          <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                          <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h4 id="小程序跳转到宿主页面"><a href="#小程序跳转到宿主页面" class="headerlink" title="小程序跳转到宿主页面"></a><a href="https://mp.jd.com/docs/dev/API/interface/toNative.html" target="_blank" rel="noopener">小程序跳转到宿主页面</a></h4><p>京东小程序支持跳转到宿主app原生页面、H5页面。</p>
-<ul>
-<li>不支持跳转到宿主外部和打开外部APP</li>
-<li>需要提前知道要跳转到的目标页面的openapp协议或route协议地址</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateToNative(&#123;</span><br><span class="line">  dataParam: &#123;                            <span class="comment">// 跳转的参数</span></span><br><span class="line">    url: <span class="string">'openapp.jdmobile://virtual'</span>,    <span class="comment">// 目标页面的openapp协议地址，目前仅支持openapp协议和route协议</span></span><br><span class="line">    params: &#123;                             <span class="comment">// 携带的自定义参数，key value 格式</span></span><br><span class="line">        category:<span class="string">"jump"</span>,</span><br><span class="line">        des:<span class="string">"jdmpCenter"</span>,</span><br><span class="line">        param:&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;&#125;,                        <span class="comment">// 调用成功的回调函数</span></span><br><span class="line">  fail(err) &#123;&#125;,                           <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                           <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<h4 id="宿主app内的H5页面打开指定的小程序"><a href="#宿主app内的H5页面打开指定的小程序" class="headerlink" title="宿主app内的H5页面打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主app内的H5页面打开指定的小程序</a></h4><p>宿主app内的原生页面和h5页面，都可以直接通过openapp协议的地址来打开指定的小程序。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.localtion.href = <span class="string">`openapp.jdmobile://virtual?params=&#123;"category":"jump","des":"jdmp","appId":"aoxxxxxxxx","vapptype":"1","path":"page/index/index","param":&#123;"xx":"xxxx","xx":"xxx"&#125;&#125;`</span></span><br></pre></td></tr></table></figure>
-
-<p>参数说明：</p>
-<table>
-<thead>
-<tr>
-<th>参数名</th>
-<th>类型</th>
-<th>必填</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>appId</td>
-<td>string</td>
-<td>是</td>
-<td>要打开的小程序的原始id，可从小程序控制台获取</td>
-</tr>
-<tr>
-<td>vapptype</td>
-<td>string</td>
-<td>是</td>
-<td>打开的小程序的类型，1 对应线上正式小程序 2 体验版小程序 3 真机调试（暂未开放）</td>
-</tr>
-<tr>
-<td>path</td>
-<td>string</td>
-<td>是</td>
-<td>要打开的小程序的某个页面，空的时候，默认打开小程序首页</td>
-</tr>
-<tr>
-<td>param</td>
-<td>string</td>
-<td>是</td>
-<td>自定义字段，{} 里面可以自由配置key，value，这些key值，可在小程序onLaunch的生命周期回调中获取</td>
-</tr>
-</tbody></table>
-<h4 id="宿主app内的原生页面打开指定的小程序"><a href="#宿主app内的原生页面打开指定的小程序" class="headerlink" title="宿主app内的原生页面打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主app内的原生页面打开指定的小程序</a></h4><p>与h5打开页面类似，直接通过openapp协议的地址来打开指定的小程序</p>
-<h4 id="宿主外部环境，如微信APP、浏览器打开指定的小程序"><a href="#宿主外部环境，如微信APP、浏览器打开指定的小程序" class="headerlink" title="宿主外部环境，如微信APP、浏览器打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主外部环境，如微信APP、浏览器打开指定的小程序</a></h4><p>外部环境，需要将目标小程序拼接成如下链接格式，通过通用唤起中间页来打开制定的小程序:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;h5static.jd.com&#x2F;vapp&#x2F;appdau&#x2F;index.html?appId&#x3D;xxxxxxx&amp;type&#x3D;1&amp;path&#x3D;page%2findex%2findex.html%3fname%3daa</span><br></pre></td></tr></table></figure>
-
-<p>其中，appId和type同openapp协议的 appId 和 vapptype 完全一致，path后面的路径，需要url encode，path中的?后面的自定义参数值，同上述 openapp 协议中param 字段一样，可在 app.js 中 onLaunch 回调中获取。</p>
-<h3 id="使用Taro开发京东小程序"><a href="#使用Taro开发京东小程序" class="headerlink" title="使用Taro开发京东小程序"></a><a href="https://jelly.jd.com/exp/detail?id=5dc95ebeb73b47015299a89f" target="_blank" rel="noopener">使用Taro开发京东小程序</a></h3><p>Taro 是京东零售-用户体验设计部-多终端研发部推出的一套遵循 React 语法规范的多端统一开发解决方案，也是京东小程序官方推荐的开发框架。</p>
-<p>使用 Taro 开发不但能更规范、更有效率地编码， 畅享 React 生态的各种工具。更重要的是只需编写一份代码，即可运行在各种平台：京东/微信/百度/支付宝/字节跳动/QQ小程序、快应用、H5、React-Native 等。</p>
-<ul>
-<li>1.安装 Taro 的 CLI 工具：<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g @tarojs/cli</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<blockquote>
-<p>已安装 Taro 的同学请注意更新 Taro 版本，Taro 自 1.3.20 后支持转换京东小程序。</p>
-</blockquote>
-<ul>
-<li><p>2.使用 CLI 创建项目：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g @tarojs/cli</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>3.安装京东小程序开发依赖</p>
-</li>
-</ul>
-<p>因为小程序处于内测阶段，CLI 工具默认没有安装京东小程序相关开发依赖，所以需要手动安装。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install @tarojs/taro-jd</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>4.配置执行脚本</li>
-</ul>
-<p>在 package.json 中添加如下两条开启京东小程序项目的脚本：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"build:jd"</span>: <span class="string">"taro build --type jd"</span>,</span><br><span class="line">    <span class="attr">"dev:jd"</span>: <span class="string">"npm run build:jd -- --watch"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>5.本地开发</li>
-</ul>
-<p>进入项目根目录，运行<code>npm run dev:jd</code>，使用 CLI 编译项目，根据 <a href="http://taro-docs-in.jd.com/taro/" target="_blank" rel="noopener">Taro 文档</a>进行开发。</p>
-<p>Taro 遵循 React 语法规范，它采用与 React 一致的组件化思想，组件生命周期与 React 保持一致，同时支持使用 JSX 语法，让代码具有更丰富的表现力，使用 Taro 进行开发可以获得和 React 一致的开发体验。</p>
-<ul>
-<li>6.调试</li>
-</ul>
-<p>使用京东小程序开发者工具进行调试，打开 IDE 工具，点击“新建项目”，项目路径指向 Taro 项目根目录中的输出目录 dist。</p>
-<p>开发者可以给编译命令带上 watch 参数：taro build –type jd –watch，Taro 即会监听源代码的变化，及时编译项目并输出到 dist 目录。</p>
-<p>但是目前 IDE 还没有监听文件变化而重新进行编译，因此每次改动源代码后需要手动点击 IDE 的编译按钮以刷新页面。</p>
-<ul>
-<li>7.注册页面</li>
-</ul>
-<p>当创建了新页面之后，我们还要告诉应用我们创建的这个页面，也就是在应用注册这个页面，打开 src/app.jsx ，在对应 App 组件的 config.pages 属性里面添加刚刚创建的帖子详情页的路径。</p>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
-<li><a href="https://mp.jd.com/docs/introduction/" target="_blank" rel="noopener">京东小程序官网-介绍</a></li>
-<li><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">京东小程序官网-开发</a></li>
-<li><a href="https://jelly.jd.com/exp/detail?id=5dc95ebeb73b47015299a89f" target="_blank" rel="noopener">使用 Taro 快速开发京东小程序</a></li>
-<li><a href="https://juejin.im/post/5ea0e8efe51d4546d171110a" target="_blank" rel="noopener">一杯茶的时间，上手 Taro 京东小程序开发</a></li>
-<li><a href="https://cf.jd.com/pages/viewpage.action?pageId=226255440" target="_blank" rel="noopener">接入京东小程序</a></li>
-<li><a href="http://taro-docs-in.jd.com/taro/docs/README.html" target="_blank" rel="noopener">Taro官方文档</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>小程序</category>
-      </categories>
-      <tags>
-        <tag>小程序</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>前端动画详解</title>
     <url>/2020/04/30/%E5%89%8D%E7%AB%AF%E5%8A%A8%E7%94%BB%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="动画的多种实现方式与性能对比"><a href="#动画的多种实现方式与性能对比" class="headerlink" title="动画的多种实现方式与性能对比"></a>动画的多种实现方式与性能对比</h2><p>首先我们来了解一下Web有哪些动画形式</p>
@@ -3767,6 +3997,81 @@ window.requestAnimationFrame(changePosition);
       </categories>
       <tags>
         <tag>FE</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>中台系统设计（二）关于字体</title>
+    <url>/2020/09/30/%E4%B8%AD%E5%8F%B0%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%832/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>字体是界面设计中最基本的构成之一，是页面中重要的元素。对用户的阅读体验有着至关重要的作用。选择字体是一个具有创造性和情感的过程，因为不同的字体传达出不同的情感，展示不一样的品牌调性。在制定规范时科学的定义字体规范系统，不仅能够有效的表达出不同的设计风格，还能通过定义字体的字型、字阶、字重、字体颜色、字体行高间距，有效帮助设计师在设计界面时使用字体达到统一性和整体性，保证界面有良好的阅读体验。</p>
+<p><img src= "/img/loading.gif" data-src="%E5%AD%97%E4%BD%93.jpg" alt="字体"></p>
+<h2 id="字体属性"><a href="#字体属性" class="headerlink" title="字体属性"></a>字体属性</h2><p>以下分别是Sketch、ps、Figma的字符面板，从以下三款流行的设计软件就可以看出字体的一些属性：分别是：字形、字体、字型。</p>
+<p><img src= "/img/loading.gif" data-src="%E4%B8%BB%E6%B5%81%E8%AE%BE%E8%AE%A1%E8%BD%AF%E4%BB%B6%E5%AD%97%E7%AC%A6%E9%9D%A2%E6%9D%BF.png" alt="中台系统设计（二）关于字体和按钮"></p>
+<ul>
+<li>Font 译为：字型，是指字的粗细、宽度和样式，是一套具有同样风格和尺寸的字形。（如：Regular_16pt_SF-UI）</li>
+<li>Typeface 译为：字体，是指一整套的字形，一个或多个字型的多尺寸的集合，例如「SF-UI」里有不同粗细（Regular、Blod、Light）和不同宽度（12pt、14pt、20pt）。</li>
+<li>Glyph ：译为：字形，是指单个字的形体或是字体的骨骼。 同一字可以有不同的字形，而不影响其表达的意思，例如汉字中的「令」字，第三笔可以是一点或一撇， 最末两笔可以作「ㄗ」或「マ」。</li>
+</ul>
+<p><strong>Font 和 Typeface 常常被混淆，其实可以这样理解，前者指一种设计，后者指具体的产品。</strong></p>
+<p><img src= "/img/loading.gif" data-src="Font%E3%80%81Typeface%E3%80%81Glyph%E7%9A%84%E5%85%B3%E7%B3%BB.png" alt="Font、Typeface、Glyph的关系"></p>
+<h2 id="系统字体选择"><a href="#系统字体选择" class="headerlink" title="系统字体选择"></a>系统字体选择</h2><p>在选用系统字体时需要考虑在不同系统的兼容性，大家都知道在不同的操作系统及不同的游览器中默认显示的字体是不一样的，并且相同字体在不同操作系统里面渲染的效果也不尽相同。在做字体规范时需要提供一套系统完整的字族，里面不仅需要包含系统默认的界面字体，还需要一套有利于屏幕显示的备用字体，方便维护不同系统及浏览器的实现，保证在任何场景保持良好的阅读性和可读性。</p>
+<p><img src= "/img/loading.gif" data-src="%E7%B3%BB%E7%BB%9F%E5%AD%97%E4%BD%93.png" alt="系统字体"></p>
+<ul>
+<li><p><strong>-apple-system是在以WebKit为内核的浏览器</strong>，比如苹果的Safari中调用苹果系统macOS、iOS、watchOS、tvOS中默认字体，目前一般情况下英文使用的是San Francisco，中文使用的是PingFang。<strong>BlinkMacSystemFont是在Chrome中调用苹果系统的字体。</strong></p>
+</li>
+<li><p>Segoe UI针对Windows and Windows Phone等系统。PingFang SC是苹果为中国用户打造了一款全新中文字体，整体样式看上去更加简洁，字族共6个字体：极细体、纤细体、细体、常规体、中黑体、中粗体。Hiragino Sans GB是是Hiragino KakuGothic的简体中文版，有常规体和粗体两种，冬青黑体是一款清新的专业印刷字体，其小字在屏幕显示时足够清晰。Microsoft YaHei是从Vista开始，微软提供了这款新的字体，它是一款无衬线的黑体类字体，并且拥有Regular、Bold两种粗细的字重，字重有效提高了字体的层级显示效果。目前这款字体已经成为Windows游览器中最值得使用的中文字体。从Win8开始，微软雅黑又加入了Light这款更细的字重，对于喜欢细字体的设计或开发人员又多了一个新的选择。</p>
+</li>
+<li><p><strong>Helvetica Neue、sans-serif主要是系统备用兜底字体。</strong>Helvetica Neue在没有El Capitan versions系统的电脑中是最流行的，所以作为兜底，sans-serif也是常见的兜底字体；</p>
+</li>
+<li><p>‘Apple Color Emoji’, ‘Segoe UI Emoji’, ‘Segoe UI Symbol’ 针对在macOS和Windows显示emoji，主要是系统的emoji。</p>
+</li>
+</ul>
+<p>附：在Web设计中使用UI系统字体快读实用指南<a href="https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/" target="_blank" rel="noopener">https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/</a></p>
+<h2 id="定义字体规范"><a href="#定义字体规范" class="headerlink" title="定义字体规范"></a>定义字体规范</h2><h3 id="字体大小-字号"><a href="#字体大小-字号" class="headerlink" title="字体大小-字号"></a>字体大小-字号</h3><p>字号大小决定了信息的层级和主次关系，合理有序的字号设置能让界面信息清晰易读、层次分明，相反，糟糕无序的字号使用会让界面混乱不堪，影响阅读体验。</p>
+<p>我们确定正文字号后，辅助文字信息层级低的内容和标题也就随之确定了。那这个正文字号到底该定义多少呢？参考一些主流的网站，大部分网站的正文都采用了14px的文字大小。也有一些网站是12px的文字大小。对于为什么设置14px大小的文字作为正文文字，蚂蚁金服的Ant Design的设计规范中对此做了说明。Ant Desugn3.0的时候对主字号进行了研究：<strong>基于电脑显示器阅读距离（50 cm）以及最佳阅读角度（0.3）对 Ant Design 的主字体进行了一次升级，从原先的 12 上升至 14，以保证在多数常用显示器上的用户阅读效率最佳。</strong></p>
+<p><img src= "/img/loading.gif" data-src="%E6%AD%A3%E6%96%87%E5%AD%97%E4%BD%93.png" alt="正文字体"></p>
+<p>我们再说说为什么网页上的字号要定义偶数字号呢？因为Windows自带的点阵宋体从Vista开始只提供12px、14px、16px三个大小的点阵。所以，如果13px、15px、17px虽然每个字的空间大了1px但是点阵却没变，从视觉上会显得略稀疏，可能导致显示效果不佳。所以我们在网页设计时，尽量采用偶数字号作为字体大小。</p>
+<h3 id="字阶行高"><a href="#字阶行高" class="headerlink" title="字阶行高"></a>字阶行高</h3><p>字阶和行高决定着一套字体系统的动态和秩序。字阶指的是一系列有规律的不同尺寸的字体，行高可以理解成一个包裹在字体外面的无形的盒子。行高=字号+行间距；</p>
+<p><img src= "/img/loading.gif" data-src="%E5%AD%97%E9%98%B6%E5%92%8C%E8%A1%8C%E9%AB%98.png" alt="字阶和行高"></p>
+<p><strong>在一个系统设计中（展示型页面除外），建议字阶的选择尽量控制在 3-5 种之间，保持克制的原则。</strong></p>
+<p>关于字体的行高，默认是字号的1.5倍。有时候跟我们的品牌调性也会适当缩小和增大行高。</p>
+<p><img src= "/img/loading.gif" data-src="%E8%A1%8C%E9%AB%98.png" alt="行高"></p>
+<h3 id="字重"><a href="#字重" class="headerlink" title="字重"></a>字重</h3><p>Weight：译为字重，是指字体笔画的粗细，字体中很重要一个概念，不同字重传递出来视觉感受完全不一样。一般在字体家族名后面注名Thin、Light、Regular、Blod、Black、Heavy等。不同的字体设计师划分的字重各有不同，例如「苹方」字体就有6种不同的字重。</p>
+<p>轻字重：传递出轻盈放松的视觉感受，常配合粗的字重使用，在一些辅助信息，说明文案时候使用；</p>
+<p>重字重：视觉感受庄重，很重要，常用在重点强调的文字，页面大标题，数字，引导行动操作点上等；</p>
+<p><strong>字号和字重共同作用下，界面中的信息才能体现出主次关系，信息层次才会明确。</strong></p>
+<p>字重的选择同样基于秩序、稳定、克制的原则，多数情况下，只需要出现regular和medium两种情况下，分别对应代码中的 400 和 500 。在英文字体加粗的情况下会采用 semibold 的字体重量，对应代码中的600。</p>
+<p><strong>注意仿粗字：</strong>在用PS进行界面设计时，不要用软件自带的文本加粗，它不仅破坏了字体本身的美感，还改变了文字原本的字宽，小字体下会模糊不清，合理的方式是使用字体本身的字重来控制粗细。</p>
+<p><strong>注意超细体的字体</strong>：字重超细的字体要谨慎使用。如果你设计的文本是装饰性或者网站品牌调性是需要细体展示的，可以用细体文字，前提也是不能影响文字的阅读。如果是需要用户能清晰阅读的，就要特别慎重。</p>
+<h3 id="字体颜色"><a href="#字体颜色" class="headerlink" title="字体颜色"></a>字体颜色</h3><p>文本颜色如果和背景颜色太接近就会难以阅读，且字阶颜色相近就达不到信息层级清晰的效果，且参考ACAG的标准，将正文文本、标题、背景之间保持在7:1以上的对比度。规范如下：</p>
+<p><img src= "/img/loading.gif" data-src="%E6%96%87%E5%AD%97%E9%A2%9C%E8%89%B2.png" alt="文字颜色"></p>
+<h2 id="常用的选择字体网站"><a href="#常用的选择字体网站" class="headerlink" title="常用的选择字体网站"></a>常用的选择字体网站</h2><h3 id="Adobe-Fonts"><a href="#Adobe-Fonts" class="headerlink" title="Adobe Fonts"></a>Adobe Fonts</h3><p>网址：<a href="https://fonts.adobe.com/" target="_blank" rel="noopener">https://fonts.adobe.com/</a></p>
+<p>第一个是Adonbe旗下的Adobe Font，该网站的西文字体比较全，而且会有一些推荐的字体包：设计师常用的字体、UX字体包、适合印刷的字体等；可以快速找到想要的字体，而且还可以改变字体大小，实时预览。缺点就是该网站的字体大部分都是要收费的，我们可以通过购买使用喜欢的字体，毕竟这是个知识付费的时代。</p>
+<p>![Adobe 字体](Adobe 字体.png)</p>
+<h3 id="Google-Fonts"><a href="#Google-Fonts" class="headerlink" title="Google Fonts"></a>Google Fonts</h3><p>网址：<a href="http://www.googlefonts.cn/" target="_blank" rel="noopener">http://www.googlefonts.cn/</a></p>
+<p>Google Fonts的下载功能非常便捷，我们可以免费下载所有喜欢的字体，Google Fonts包含超过1400种不同的字体，其中包含最著名的：Open Sans和Roboto字体，他们是Android系统使用的默认字体。</p>
+<p>![Google Font](Google Font.png)</p>
+<h3 id="求字体网"><a href="#求字体网" class="headerlink" title="求字体网"></a>求字体网</h3><p>网址：<a href="http://www.qiuziti.com/fontlist" target="_blank" rel="noopener">http://www.qiuziti.com/fontlist</a></p>
+<p>设计师在做设计时常常会遇到某些网站或海报使用的字体特别喜欢，但是苦恼无法获取改字体的信息导致无法下载使用，求字体网解决了此痛点。你可以将喜欢的字体进行截图并上传到网站进行字体识别，识别出具体的字体后，会提供出字体下载链接或者字体信息，解决设计师们喜欢某个字体而找不到的烦恼。</p>
+<p><img src= "/img/loading.gif" data-src="%E6%B1%82%E5%AD%97%E4%BD%93%E7%BD%91.png" alt="求字体网"></p>
+<h3 id="字由-amp-iFonts-字体网站"><a href="#字由-amp-iFonts-字体网站" class="headerlink" title="字由 &amp; iFonts 字体网站"></a>字由 &amp; iFonts 字体网站</h3><p>字由网站：<a href="https://www.hellofont.cn/" target="_blank" rel="noopener">https://www.hellofont.cn/</a></p>
+<p>iFonts网站：<a href="https://51ifonts.com/clientdown" target="_blank" rel="noopener">https://51ifonts.com/clientdown</a></p>
+<p>字由 和 iFonts也是比较推荐的两个软件。字由网站将全部字体进行整理分类方便用户快捷寻找字体，并且有个分类是免费商用字体库，避免了设计师因为不清楚字体版权导致版权纠纷问题。此有网站有两大亮点，第一是此网站在设计师选用字体时有个实际运用预览效果，直观的看到字体在实际使用效果，第二是网站提供客户端下载，在客户端中点击下载以后可直接进行在设计工具中直接使用。</p>
+<p><img src= "/img/loading.gif" data-src="%E5%AD%97%E4%BD%93%E5%AE%A2%E6%88%B7%E7%AB%AF.png" alt="字体客户端"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>中台系统设计定义规范时：</p>
+<ul>
+<li>需要有体系化的思路：对于标题文字、次要文字、辅助文字、文字链接等文字类型作统一的定义，在项目在根据实际情况调整我们的设计规范。</li>
+<li>避免没有意义的增加各种字号，增加系统的字阶等，减少相近大小的字号设定。</li>
+<li>在需要拉开差距的时候可以尝试在字阶中选择差异较大的字体大小，会让字阶之间产生一种微妙的韵律感。</li>
+</ul>
+<p>参考：<a href="https://ant.design/index-cn" target="_blank" rel="noopener">https://ant.design/index-cn</a></p>
+]]></content>
+      <categories>
+        <category>设计</category>
+      </categories>
+      <tags>
+        <tag>设计</tag>
+        <tag>规范</tag>
+        <tag>中台</tag>
       </tags>
   </entry>
   <entry>
