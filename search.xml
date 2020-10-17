@@ -529,7 +529,7 @@
   </entry>
   <entry>
     <title>Taro(一)</title>
-    <url>/2020/09/27/Taro/</url>
+    <url>/2020/09/27/Taro(%E4%B8%80)/</url>
     <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
 <p>Taro 是一套遵循 React 语法规范的 多端开发 解决方案。</p>
 </blockquote>
@@ -2877,276 +2877,6 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
-    <title>京东小程序上手</title>
-    <url>/2020/06/19/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B/</url>
-    <content><![CDATA[<h3 id="京东小程序上手"><a href="#京东小程序上手" class="headerlink" title="京东小程序上手"></a>京东小程序上手</h3><p>官网：<a href="https://mp.jd.com/" target="_blank" rel="noopener">https://mp.jd.com</a></p>
-<p>简介：</p>
-<ul>
-<li>京东小程序 是一种全新的开放模式，可以被便捷地获取和传播。它令终端用户获取更好的使用体验，为商家实现线上线下的交易闭环，给开发者提供一种快速开发方式。</li>
-<li>京东小程序只需一次开发即可运行在京东 APP、京东金融 APP、京麦 APP 三端。京东 APP、京东金融 APP 会开放特定的能力，对优质小程序还会开放多个高流量入口，包含扫码、搜索、消息等多种方式触达。而京麦 APP 小程序主要用于商家工具插件的开发定制。<br>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/107303/25/14976/412607/5eaa4a5eE2f1e3361/7d683f2da11a6589.png" alt=""></li>
-</ul>
-<h3 id="体验京东小程序"><a href="#体验京东小程序" class="headerlink" title="体验京东小程序"></a>体验京东小程序</h3><p>京东小程序开发平台为开发者提供快捷API、及组件预览工具，可在项目开始前对京东小程序开发进行了解。</p>
-<ul>
-<li>使用京东APP扫描下方小程序码可以预览该 Demo</li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/67027/16/10678/172663/5d81cf50E90cfad52/e47514f2ffd7aeac.jpg" alt=""></p>
-<ul>
-<li>使用京麦APP扫描下方小程序码可以预览该 Demo</li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/69950/29/10582/253200/5d80d0a7Ee67af940/f87d7b1208040c86.png" alt=""></p>
-<ul>
-<li>使用京东金融APP扫描下方小程序码可以预览该 Demo</li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/52275/30/11065/236344/5d81cfc4E9506400b/f5f2e1b323428b15.png" alt=""></p>
-<h3 id="开发者内测申请"><a href="#开发者内测申请" class="headerlink" title="开发者内测申请"></a>开发者内测申请</h3><p>京东小程序采用京东 pin 登录，初次登录京东小程序平台需要填写邀请码，若无邀请码可点击下方获取邀请码申请。</p>
-<p>邀请码通过验证之后，需要按照入驻指引进行详细的主体信息登记，完善身份信息。</p>
-<p>审核通过后，可以进入京东小程序控制台，创建小程序。</p>
-<h3 id="开发前准备工作"><a href="#开发前准备工作" class="headerlink" title="开发前准备工作"></a>开发前准备工作</h3><ul>
-<li><a href="https://mp.jd.com/" target="_blank" rel="noopener">创建京东小程序</a></li>
-</ul>
-<p>进入京东小程序平台，创建京东小程序，一个账号下最多可以创建10个京东小程序。小程序创建成功后，可在我的小程序页查看小程序的AppID，AppID是小程序的唯一标识。</p>
-<ul>
-<li>安装京东小程序开发者工具</li>
-</ul>
-<p>京东小程序开发者工具是类似与微信开发者工具的IDE，方便预览和调试京东小程序。新建项目时需要填写AppID。</p>
-<ul>
-<li><a href="https://mp.jd.com/docs/design/" target="_blank" rel="noopener">设计规范</a></li>
-</ul>
-<p>京东小程序有自己一套关于颜色字体、图片&amp;图标等的设计规范。</p>
-<ul>
-<li><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">开发指南</a></li>
-</ul>
-<p>在正式开发之前，需要了解京东小程序的框架、组件、API及相关工具。其中框架和组件与微信小程序类似，如果有过微信小程序的开发经验，可以轻松上手。同时提供丰富的京东原生API，可以方便的调起京东提供的能力，如获取用户信息，本地存储，支付功能等。</p>
-<h3 id="开发京东小程序"><a href="#开发京东小程序" class="headerlink" title="开发京东小程序"></a><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">开发京东小程序</a></h3><p>打开京东小程序开发者工具，新建项目，填写AppID等。生成项目的目录结构与微信小程序类似。</p>
-<p>一个完整的小程序源码包含app.json、app.js、以及各个页面组成。</p>
-<p>app.json、app.js，必须放在项目的根目录，如下：</p>
-<table>
-<thead>
-<tr>
-<th>文件</th>
-<th>必需</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>app.js</td>
-<td>是</td>
-<td>小程序主逻辑文件</td>
-</tr>
-<tr>
-<td>app.json</td>
-<td>是</td>
-<td>小程序全局公共配置</td>
-</tr>
-<tr>
-<td>app.jxss</td>
-<td>否</td>
-<td>小程序全局公共样式表，作用于每个页面</td>
-</tr>
-</tbody></table>
-<p>单个小程序页面由如下四个文件组成：</p>
-<table>
-<thead>
-<tr>
-<th>文件</th>
-<th>必需</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>js</td>
-<td>是</td>
-<td>页面逻辑</td>
-</tr>
-<tr>
-<td>jxml</td>
-<td>是</td>
-<td>页面结构</td>
-</tr>
-<tr>
-<td>json</td>
-<td>否</td>
-<td>页面配置</td>
-</tr>
-<tr>
-<td>jxss</td>
-<td>否</td>
-<td>页面样式表</td>
-</tr>
-</tbody></table>
-<p><strong>注意：为了方便开发者减少配置项，描述页面的四个文件必须具有相同的路径与文件名</strong></p>
-<p>下面是一个小程序的文件结构示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">├── app.js</span><br><span class="line">├── app.json</span><br><span class="line">├── app.jxss</span><br><span class="line">└── pages</span><br><span class="line">    │── index</span><br><span class="line">    │   ├—— index.jxml</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── index.json</span><br><span class="line">    │   └── index.jxss</span><br><span class="line">    └── detail</span><br><span class="line">        ├── detail.jxml</span><br><span class="line">        └── detail.js</span><br></pre></td></tr></table></figure>
-
-<p>为了体验京东小程序开发，我用京东小程序开发了一个简单版的辅助服务频道页。</p>
-<ul>
-<li>h5: <a href="https://fzfw.m.jd.com/" target="_blank" rel="noopener">https://fzfw.m.jd.com/</a></li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/s200x200_jfs/t1/115234/37/5178/9125/5eb260b3E31b296ba/8ea68b50dcaacef7.png" alt=""></p>
-<ul>
-<li>京东小程序：openapp.jdmobile://virtual?params={ “category”: “jump”,”des”: “vapp”,”appId”:”aof243422f121024a1”, “vapptype”: “2”}</li>
-</ul>
-<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/s200x200_jfs/t1/111155/18/5271/113448/5eb26107E990a41ec/4f0fa893d3a6ceac.jpg" alt=""></p>
-<h3 id="开发过程中遇到的问题"><a href="#开发过程中遇到的问题" class="headerlink" title="开发过程中遇到的问题"></a>开发过程中遇到的问题</h3><ul>
-<li>1.修改代码不会自动重启小程序；</li>
-<li>2.添加新模块需要重启开发者工具；</li>
-<li>3.图片url省略协议（开头为//）时，真机调试会转为单个/开头，导致无法显示图片；</li>
-<li>4.无法真机调试；</li>
-<li>5.有时无法查看页面元素；</li>
-<li>6.网络请求中无法查看图片相关请求;</li>
-<li>7.新建page不方便;</li>
-<li>8.开发者工具中无法显示webview的内容。</li>
-</ul>
-<h3 id="开放能力"><a href="#开放能力" class="headerlink" title="开放能力"></a><a href="https://mp.jd.com/docs/dev/API/interface/ability.html" target="_blank" rel="noopener">开放能力</a></h3><p>京东小程序将营销、交易、支付、会员等各项业务能力以接口的形式开放给开发者，以满足开发者的业务诉求，同时减轻开发者的工作量</p>
-<p>目前京东能力中心为开发者提供了如下能力：</p>
-<ul>
-<li>登录：用户授权登录后，开发者可以获得用户的唯一标识</li>
-<li>手机号授权：在获得用户授权后，且在充分保护用户隐私的前提下，获取用户手机号</li>
-<li>用户信息：开发者可以在获得用户授权的前提下获得用户的相关的信息</li>
-<li>分享：用户可以便捷的分享小程序给微信好友，或分享至朋友圈</li>
-<li>关注：将关注按钮移至顶部导航栏，方便用户更便捷的进行关注操作</li>
-<li>支付能力：唤起京东支付组件，用户确认收款方和金额后选择支付方式</li>
-<li>会员能力：与京东PLUS能力深度结合</li>
-<li>账号信息：获取当前小程序信息</li>
-<li>跳转：<ul>
-<li>小程序跳转小程序</li>
-<li>小程序跳转至宿主APP页面</li>
-</ul>
-</li>
-<li>唤起：<ul>
-<li>APP内唤起小程序</li>
-<li>APP外唤起小程序</li>
-</ul>
-</li>
-<li>位置：通过用户授权获取用户当前地理位置信息</li>
-<li>二维码<ul>
-<li>标准二维码：开发者可以生成标准二维码，用户通过京东app扫描标准二维码，即可打开相关小程序</li>
-<li>多码合一：开发者可以将现有二维码和小程序进行绑定。当用户使用京东app扫码时，可以打开相关小程序</li>
-</ul>
-</li>
-<li>设置<ul>
-<li>在小程序设置页里控制授权状态</li>
-<li>获取用户当前设置</li>
-</ul>
-</li>
-</ul>
-<h3 id="跳转与唤起"><a href="#跳转与唤起" class="headerlink" title="跳转与唤起"></a>跳转与唤起</h3><h4 id="小程序跳转小程序"><a href="#小程序跳转小程序" class="headerlink" title="小程序跳转小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram0.html" target="_blank" rel="noopener">小程序跳转小程序</a></h4><p>当开发者拥有多个小程序时，可以通过小程序间互相跳转，完善小程序生态。</p>
-<ul>
-<li><p>打开指定的小程序</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateToMiniProgram(&#123;</span><br><span class="line">  appId: <span class="string">''</span>,                             <span class="comment">// 要打开的小程序 appId</span></span><br><span class="line">  path: <span class="string">'pages/my/my?from=detail'</span>,       <span class="comment">// 打开的页面路径，如果为空则打开首页</span></span><br><span class="line">  extraData: &#123;                           <span class="comment">// 传递的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到传递的数据</span></span><br><span class="line">    foo: <span class="string">'bar'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  envVersion: <span class="string">'release'</span>,                 <span class="comment">// 要打开的小程序版本，包括：开发版、体验版、正式版，仅在当前小程序为开发版或体验版时此参数有效；如果当前小程序是正式版，则打开的小程序必定是正式版。</span></span><br><span class="line">  success(res) &#123;&#125;,                       <span class="comment">// 调用成功的回调函数</span></span><br><span class="line">  fail(err) &#123;&#125;,                          <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                          <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
-<li><p>返回到上一个小程序：只有在当前小程序是被其他小程序打开时可以调用成功</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateBackMiniProgram(&#123;</span><br><span class="line">  extraData: &#123;                           <span class="comment">// 传递的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到传递的数据</span></span><br><span class="line">    name: <span class="string">'cortana'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;&#125;,                       <span class="comment">// 调用成功的回调</span></span><br><span class="line">  fail(err) &#123;&#125;,                          <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                          <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h4 id="小程序跳转到宿主页面"><a href="#小程序跳转到宿主页面" class="headerlink" title="小程序跳转到宿主页面"></a><a href="https://mp.jd.com/docs/dev/API/interface/toNative.html" target="_blank" rel="noopener">小程序跳转到宿主页面</a></h4><p>京东小程序支持跳转到宿主app原生页面、H5页面。</p>
-<ul>
-<li>不支持跳转到宿主外部和打开外部APP</li>
-<li>需要提前知道要跳转到的目标页面的openapp协议或route协议地址</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateToNative(&#123;</span><br><span class="line">  dataParam: &#123;                            <span class="comment">// 跳转的参数</span></span><br><span class="line">    url: <span class="string">'openapp.jdmobile://virtual'</span>,    <span class="comment">// 目标页面的openapp协议地址，目前仅支持openapp协议和route协议</span></span><br><span class="line">    params: &#123;                             <span class="comment">// 携带的自定义参数，key value 格式</span></span><br><span class="line">        category:<span class="string">"jump"</span>,</span><br><span class="line">        des:<span class="string">"jdmpCenter"</span>,</span><br><span class="line">        param:&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;&#125;,                        <span class="comment">// 调用成功的回调函数</span></span><br><span class="line">  fail(err) &#123;&#125;,                           <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                           <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<h4 id="宿主app内的H5页面打开指定的小程序"><a href="#宿主app内的H5页面打开指定的小程序" class="headerlink" title="宿主app内的H5页面打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主app内的H5页面打开指定的小程序</a></h4><p>宿主app内的原生页面和h5页面，都可以直接通过openapp协议的地址来打开指定的小程序。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.localtion.href = <span class="string">`openapp.jdmobile://virtual?params=&#123;"category":"jump","des":"jdmp","appId":"aoxxxxxxxx","vapptype":"1","path":"page/index/index","param":&#123;"xx":"xxxx","xx":"xxx"&#125;&#125;`</span></span><br></pre></td></tr></table></figure>
-
-<p>参数说明：</p>
-<table>
-<thead>
-<tr>
-<th>参数名</th>
-<th>类型</th>
-<th>必填</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>appId</td>
-<td>string</td>
-<td>是</td>
-<td>要打开的小程序的原始id，可从小程序控制台获取</td>
-</tr>
-<tr>
-<td>vapptype</td>
-<td>string</td>
-<td>是</td>
-<td>打开的小程序的类型，1 对应线上正式小程序 2 体验版小程序 3 真机调试（暂未开放）</td>
-</tr>
-<tr>
-<td>path</td>
-<td>string</td>
-<td>是</td>
-<td>要打开的小程序的某个页面，空的时候，默认打开小程序首页</td>
-</tr>
-<tr>
-<td>param</td>
-<td>string</td>
-<td>是</td>
-<td>自定义字段，{} 里面可以自由配置key，value，这些key值，可在小程序onLaunch的生命周期回调中获取</td>
-</tr>
-</tbody></table>
-<h4 id="宿主app内的原生页面打开指定的小程序"><a href="#宿主app内的原生页面打开指定的小程序" class="headerlink" title="宿主app内的原生页面打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主app内的原生页面打开指定的小程序</a></h4><p>与h5打开页面类似，直接通过openapp协议的地址来打开指定的小程序</p>
-<h4 id="宿主外部环境，如微信APP、浏览器打开指定的小程序"><a href="#宿主外部环境，如微信APP、浏览器打开指定的小程序" class="headerlink" title="宿主外部环境，如微信APP、浏览器打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主外部环境，如微信APP、浏览器打开指定的小程序</a></h4><p>外部环境，需要将目标小程序拼接成如下链接格式，通过通用唤起中间页来打开制定的小程序:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;h5static.jd.com&#x2F;vapp&#x2F;appdau&#x2F;index.html?appId&#x3D;xxxxxxx&amp;type&#x3D;1&amp;path&#x3D;page%2findex%2findex.html%3fname%3daa</span><br></pre></td></tr></table></figure>
-
-<p>其中，appId和type同openapp协议的 appId 和 vapptype 完全一致，path后面的路径，需要url encode，path中的?后面的自定义参数值，同上述 openapp 协议中param 字段一样，可在 app.js 中 onLaunch 回调中获取。</p>
-<h3 id="使用Taro开发京东小程序"><a href="#使用Taro开发京东小程序" class="headerlink" title="使用Taro开发京东小程序"></a><a href="https://jelly.jd.com/exp/detail?id=5dc95ebeb73b47015299a89f" target="_blank" rel="noopener">使用Taro开发京东小程序</a></h3><p>Taro 是京东零售-用户体验设计部-多终端研发部推出的一套遵循 React 语法规范的多端统一开发解决方案，也是京东小程序官方推荐的开发框架。</p>
-<p>使用 Taro 开发不但能更规范、更有效率地编码， 畅享 React 生态的各种工具。更重要的是只需编写一份代码，即可运行在各种平台：京东/微信/百度/支付宝/字节跳动/QQ小程序、快应用、H5、React-Native 等。</p>
-<ul>
-<li>1.安装 Taro 的 CLI 工具：<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g @tarojs/cli</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<blockquote>
-<p>已安装 Taro 的同学请注意更新 Taro 版本，Taro 自 1.3.20 后支持转换京东小程序。</p>
-</blockquote>
-<ul>
-<li><p>2.使用 CLI 创建项目：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g @tarojs/cli</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>3.安装京东小程序开发依赖</p>
-</li>
-</ul>
-<p>因为小程序处于内测阶段，CLI 工具默认没有安装京东小程序相关开发依赖，所以需要手动安装。</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install @tarojs/taro-jd</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>4.配置执行脚本</li>
-</ul>
-<p>在 package.json 中添加如下两条开启京东小程序项目的脚本：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"build:jd"</span>: <span class="string">"taro build --type jd"</span>,</span><br><span class="line">    <span class="attr">"dev:jd"</span>: <span class="string">"npm run build:jd -- --watch"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>5.本地开发</li>
-</ul>
-<p>进入项目根目录，运行<code>npm run dev:jd</code>，使用 CLI 编译项目，根据 <a href="http://taro-docs-in.jd.com/taro/" target="_blank" rel="noopener">Taro 文档</a>进行开发。</p>
-<p>Taro 遵循 React 语法规范，它采用与 React 一致的组件化思想，组件生命周期与 React 保持一致，同时支持使用 JSX 语法，让代码具有更丰富的表现力，使用 Taro 进行开发可以获得和 React 一致的开发体验。</p>
-<ul>
-<li>6.调试</li>
-</ul>
-<p>使用京东小程序开发者工具进行调试，打开 IDE 工具，点击“新建项目”，项目路径指向 Taro 项目根目录中的输出目录 dist。</p>
-<p>开发者可以给编译命令带上 watch 参数：taro build –type jd –watch，Taro 即会监听源代码的变化，及时编译项目并输出到 dist 目录。</p>
-<p>但是目前 IDE 还没有监听文件变化而重新进行编译，因此每次改动源代码后需要手动点击 IDE 的编译按钮以刷新页面。</p>
-<ul>
-<li>7.注册页面</li>
-</ul>
-<p>当创建了新页面之后，我们还要告诉应用我们创建的这个页面，也就是在应用注册这个页面，打开 src/app.jsx ，在对应 App 组件的 config.pages 属性里面添加刚刚创建的帖子详情页的路径。</p>
-<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
-<li><a href="https://mp.jd.com/docs/introduction/" target="_blank" rel="noopener">京东小程序官网-介绍</a></li>
-<li><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">京东小程序官网-开发</a></li>
-<li><a href="https://jelly.jd.com/exp/detail?id=5dc95ebeb73b47015299a89f" target="_blank" rel="noopener">使用 Taro 快速开发京东小程序</a></li>
-<li><a href="https://juejin.im/post/5ea0e8efe51d4546d171110a" target="_blank" rel="noopener">一杯茶的时间，上手 Taro 京东小程序开发</a></li>
-<li><a href="https://cf.jd.com/pages/viewpage.action?pageId=226255440" target="_blank" rel="noopener">接入京东小程序</a></li>
-<li><a href="http://taro-docs-in.jd.com/taro/docs/README.html" target="_blank" rel="noopener">Taro官方文档</a></li>
-</ul>
-]]></content>
-      <categories>
-        <category>小程序</category>
-      </categories>
-      <tags>
-        <tag>小程序</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>函数式编程</title>
     <url>/2020/02/04/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h3 id="一、JS引擎的工作原理"><a href="#一、JS引擎的工作原理" class="headerlink" title="一、JS引擎的工作原理"></a>一、<a href="https://www.cnblogs.com/onepixel/p/5090799.html" target="_blank" rel="noopener">JS引擎的工作原理</a></h3><p>先引入几个概念：<code>执行环境栈</code>、<code>执行环境</code>、<code>全局对象</code>、<code>变量对象</code>、<code>活动对象</code>、<code>作用域</code>和<code>作用域链</code></p>
@@ -3456,6 +3186,276 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </categories>
       <tags>
         <tag>functional</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>京东小程序上手</title>
+    <url>/2020/06/19/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B/</url>
+    <content><![CDATA[<h3 id="京东小程序上手"><a href="#京东小程序上手" class="headerlink" title="京东小程序上手"></a>京东小程序上手</h3><p>官网：<a href="https://mp.jd.com/" target="_blank" rel="noopener">https://mp.jd.com</a></p>
+<p>简介：</p>
+<ul>
+<li>京东小程序 是一种全新的开放模式，可以被便捷地获取和传播。它令终端用户获取更好的使用体验，为商家实现线上线下的交易闭环，给开发者提供一种快速开发方式。</li>
+<li>京东小程序只需一次开发即可运行在京东 APP、京东金融 APP、京麦 APP 三端。京东 APP、京东金融 APP 会开放特定的能力，对优质小程序还会开放多个高流量入口，包含扫码、搜索、消息等多种方式触达。而京麦 APP 小程序主要用于商家工具插件的开发定制。<br>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/107303/25/14976/412607/5eaa4a5eE2f1e3361/7d683f2da11a6589.png" alt=""></li>
+</ul>
+<h3 id="体验京东小程序"><a href="#体验京东小程序" class="headerlink" title="体验京东小程序"></a>体验京东小程序</h3><p>京东小程序开发平台为开发者提供快捷API、及组件预览工具，可在项目开始前对京东小程序开发进行了解。</p>
+<ul>
+<li>使用京东APP扫描下方小程序码可以预览该 Demo</li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/67027/16/10678/172663/5d81cf50E90cfad52/e47514f2ffd7aeac.jpg" alt=""></p>
+<ul>
+<li>使用京麦APP扫描下方小程序码可以预览该 Demo</li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/69950/29/10582/253200/5d80d0a7Ee67af940/f87d7b1208040c86.png" alt=""></p>
+<ul>
+<li>使用京东金融APP扫描下方小程序码可以预览该 Demo</li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img30.360buyimg.com/jos/s200x200_jfs/t1/52275/30/11065/236344/5d81cfc4E9506400b/f5f2e1b323428b15.png" alt=""></p>
+<h3 id="开发者内测申请"><a href="#开发者内测申请" class="headerlink" title="开发者内测申请"></a>开发者内测申请</h3><p>京东小程序采用京东 pin 登录，初次登录京东小程序平台需要填写邀请码，若无邀请码可点击下方获取邀请码申请。</p>
+<p>邀请码通过验证之后，需要按照入驻指引进行详细的主体信息登记，完善身份信息。</p>
+<p>审核通过后，可以进入京东小程序控制台，创建小程序。</p>
+<h3 id="开发前准备工作"><a href="#开发前准备工作" class="headerlink" title="开发前准备工作"></a>开发前准备工作</h3><ul>
+<li><a href="https://mp.jd.com/" target="_blank" rel="noopener">创建京东小程序</a></li>
+</ul>
+<p>进入京东小程序平台，创建京东小程序，一个账号下最多可以创建10个京东小程序。小程序创建成功后，可在我的小程序页查看小程序的AppID，AppID是小程序的唯一标识。</p>
+<ul>
+<li>安装京东小程序开发者工具</li>
+</ul>
+<p>京东小程序开发者工具是类似与微信开发者工具的IDE，方便预览和调试京东小程序。新建项目时需要填写AppID。</p>
+<ul>
+<li><a href="https://mp.jd.com/docs/design/" target="_blank" rel="noopener">设计规范</a></li>
+</ul>
+<p>京东小程序有自己一套关于颜色字体、图片&amp;图标等的设计规范。</p>
+<ul>
+<li><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">开发指南</a></li>
+</ul>
+<p>在正式开发之前，需要了解京东小程序的框架、组件、API及相关工具。其中框架和组件与微信小程序类似，如果有过微信小程序的开发经验，可以轻松上手。同时提供丰富的京东原生API，可以方便的调起京东提供的能力，如获取用户信息，本地存储，支付功能等。</p>
+<h3 id="开发京东小程序"><a href="#开发京东小程序" class="headerlink" title="开发京东小程序"></a><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">开发京东小程序</a></h3><p>打开京东小程序开发者工具，新建项目，填写AppID等。生成项目的目录结构与微信小程序类似。</p>
+<p>一个完整的小程序源码包含app.json、app.js、以及各个页面组成。</p>
+<p>app.json、app.js，必须放在项目的根目录，如下：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>必需</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>app.js</td>
+<td>是</td>
+<td>小程序主逻辑文件</td>
+</tr>
+<tr>
+<td>app.json</td>
+<td>是</td>
+<td>小程序全局公共配置</td>
+</tr>
+<tr>
+<td>app.jxss</td>
+<td>否</td>
+<td>小程序全局公共样式表，作用于每个页面</td>
+</tr>
+</tbody></table>
+<p>单个小程序页面由如下四个文件组成：</p>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>必需</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>js</td>
+<td>是</td>
+<td>页面逻辑</td>
+</tr>
+<tr>
+<td>jxml</td>
+<td>是</td>
+<td>页面结构</td>
+</tr>
+<tr>
+<td>json</td>
+<td>否</td>
+<td>页面配置</td>
+</tr>
+<tr>
+<td>jxss</td>
+<td>否</td>
+<td>页面样式表</td>
+</tr>
+</tbody></table>
+<p><strong>注意：为了方便开发者减少配置项，描述页面的四个文件必须具有相同的路径与文件名</strong></p>
+<p>下面是一个小程序的文件结构示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">├── app.js</span><br><span class="line">├── app.json</span><br><span class="line">├── app.jxss</span><br><span class="line">└── pages</span><br><span class="line">    │── index</span><br><span class="line">    │   ├—— index.jxml</span><br><span class="line">    │   ├── index.js</span><br><span class="line">    │   ├── index.json</span><br><span class="line">    │   └── index.jxss</span><br><span class="line">    └── detail</span><br><span class="line">        ├── detail.jxml</span><br><span class="line">        └── detail.js</span><br></pre></td></tr></table></figure>
+
+<p>为了体验京东小程序开发，我用京东小程序开发了一个简单版的辅助服务频道页。</p>
+<ul>
+<li>h5: <a href="https://fzfw.m.jd.com/" target="_blank" rel="noopener">https://fzfw.m.jd.com/</a></li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/s200x200_jfs/t1/115234/37/5178/9125/5eb260b3E31b296ba/8ea68b50dcaacef7.png" alt=""></p>
+<ul>
+<li>京东小程序：openapp.jdmobile://virtual?params={ “category”: “jump”,”des”: “vapp”,”appId”:”aof243422f121024a1”, “vapptype”: “2”}</li>
+</ul>
+<p>&emsp;&emsp;<img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/s200x200_jfs/t1/111155/18/5271/113448/5eb26107E990a41ec/4f0fa893d3a6ceac.jpg" alt=""></p>
+<h3 id="开发过程中遇到的问题"><a href="#开发过程中遇到的问题" class="headerlink" title="开发过程中遇到的问题"></a>开发过程中遇到的问题</h3><ul>
+<li>1.修改代码不会自动重启小程序；</li>
+<li>2.添加新模块需要重启开发者工具；</li>
+<li>3.图片url省略协议（开头为//）时，真机调试会转为单个/开头，导致无法显示图片；</li>
+<li>4.无法真机调试；</li>
+<li>5.有时无法查看页面元素；</li>
+<li>6.网络请求中无法查看图片相关请求;</li>
+<li>7.新建page不方便;</li>
+<li>8.开发者工具中无法显示webview的内容。</li>
+</ul>
+<h3 id="开放能力"><a href="#开放能力" class="headerlink" title="开放能力"></a><a href="https://mp.jd.com/docs/dev/API/interface/ability.html" target="_blank" rel="noopener">开放能力</a></h3><p>京东小程序将营销、交易、支付、会员等各项业务能力以接口的形式开放给开发者，以满足开发者的业务诉求，同时减轻开发者的工作量</p>
+<p>目前京东能力中心为开发者提供了如下能力：</p>
+<ul>
+<li>登录：用户授权登录后，开发者可以获得用户的唯一标识</li>
+<li>手机号授权：在获得用户授权后，且在充分保护用户隐私的前提下，获取用户手机号</li>
+<li>用户信息：开发者可以在获得用户授权的前提下获得用户的相关的信息</li>
+<li>分享：用户可以便捷的分享小程序给微信好友，或分享至朋友圈</li>
+<li>关注：将关注按钮移至顶部导航栏，方便用户更便捷的进行关注操作</li>
+<li>支付能力：唤起京东支付组件，用户确认收款方和金额后选择支付方式</li>
+<li>会员能力：与京东PLUS能力深度结合</li>
+<li>账号信息：获取当前小程序信息</li>
+<li>跳转：<ul>
+<li>小程序跳转小程序</li>
+<li>小程序跳转至宿主APP页面</li>
+</ul>
+</li>
+<li>唤起：<ul>
+<li>APP内唤起小程序</li>
+<li>APP外唤起小程序</li>
+</ul>
+</li>
+<li>位置：通过用户授权获取用户当前地理位置信息</li>
+<li>二维码<ul>
+<li>标准二维码：开发者可以生成标准二维码，用户通过京东app扫描标准二维码，即可打开相关小程序</li>
+<li>多码合一：开发者可以将现有二维码和小程序进行绑定。当用户使用京东app扫码时，可以打开相关小程序</li>
+</ul>
+</li>
+<li>设置<ul>
+<li>在小程序设置页里控制授权状态</li>
+<li>获取用户当前设置</li>
+</ul>
+</li>
+</ul>
+<h3 id="跳转与唤起"><a href="#跳转与唤起" class="headerlink" title="跳转与唤起"></a>跳转与唤起</h3><h4 id="小程序跳转小程序"><a href="#小程序跳转小程序" class="headerlink" title="小程序跳转小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram0.html" target="_blank" rel="noopener">小程序跳转小程序</a></h4><p>当开发者拥有多个小程序时，可以通过小程序间互相跳转，完善小程序生态。</p>
+<ul>
+<li><p>打开指定的小程序</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateToMiniProgram(&#123;</span><br><span class="line">  appId: <span class="string">''</span>,                             <span class="comment">// 要打开的小程序 appId</span></span><br><span class="line">  path: <span class="string">'pages/my/my?from=detail'</span>,       <span class="comment">// 打开的页面路径，如果为空则打开首页</span></span><br><span class="line">  extraData: &#123;                           <span class="comment">// 传递的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到传递的数据</span></span><br><span class="line">    foo: <span class="string">'bar'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  envVersion: <span class="string">'release'</span>,                 <span class="comment">// 要打开的小程序版本，包括：开发版、体验版、正式版，仅在当前小程序为开发版或体验版时此参数有效；如果当前小程序是正式版，则打开的小程序必定是正式版。</span></span><br><span class="line">  success(res) &#123;&#125;,                       <span class="comment">// 调用成功的回调函数</span></span><br><span class="line">  fail(err) &#123;&#125;,                          <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                          <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li><p>返回到上一个小程序：只有在当前小程序是被其他小程序打开时可以调用成功</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateBackMiniProgram(&#123;</span><br><span class="line">  extraData: &#123;                           <span class="comment">// 传递的数据，目标小程序可在 App.onLaunch()，App.onShow() 中获取到传递的数据</span></span><br><span class="line">    name: <span class="string">'cortana'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;&#125;,                       <span class="comment">// 调用成功的回调</span></span><br><span class="line">  fail(err) &#123;&#125;,                          <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                          <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="小程序跳转到宿主页面"><a href="#小程序跳转到宿主页面" class="headerlink" title="小程序跳转到宿主页面"></a><a href="https://mp.jd.com/docs/dev/API/interface/toNative.html" target="_blank" rel="noopener">小程序跳转到宿主页面</a></h4><p>京东小程序支持跳转到宿主app原生页面、H5页面。</p>
+<ul>
+<li>不支持跳转到宿主外部和打开外部APP</li>
+<li>需要提前知道要跳转到的目标页面的openapp协议或route协议地址</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">jd.navigateToNative(&#123;</span><br><span class="line">  dataParam: &#123;                            <span class="comment">// 跳转的参数</span></span><br><span class="line">    url: <span class="string">'openapp.jdmobile://virtual'</span>,    <span class="comment">// 目标页面的openapp协议地址，目前仅支持openapp协议和route协议</span></span><br><span class="line">    params: &#123;                             <span class="comment">// 携带的自定义参数，key value 格式</span></span><br><span class="line">        category:<span class="string">"jump"</span>,</span><br><span class="line">        des:<span class="string">"jdmpCenter"</span>,</span><br><span class="line">        param:&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;&#125;,                        <span class="comment">// 调用成功的回调函数</span></span><br><span class="line">  fail(err) &#123;&#125;,                           <span class="comment">// 调用失败的回调函数</span></span><br><span class="line">  complete() &#123;&#125;                           <span class="comment">// 调用结束的回调函数（调用成功、失败都会执行）</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="宿主app内的H5页面打开指定的小程序"><a href="#宿主app内的H5页面打开指定的小程序" class="headerlink" title="宿主app内的H5页面打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主app内的H5页面打开指定的小程序</a></h4><p>宿主app内的原生页面和h5页面，都可以直接通过openapp协议的地址来打开指定的小程序。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.localtion.href = <span class="string">`openapp.jdmobile://virtual?params=&#123;"category":"jump","des":"jdmp","appId":"aoxxxxxxxx","vapptype":"1","path":"page/index/index","param":&#123;"xx":"xxxx","xx":"xxx"&#125;&#125;`</span></span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>必填</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>appId</td>
+<td>string</td>
+<td>是</td>
+<td>要打开的小程序的原始id，可从小程序控制台获取</td>
+</tr>
+<tr>
+<td>vapptype</td>
+<td>string</td>
+<td>是</td>
+<td>打开的小程序的类型，1 对应线上正式小程序 2 体验版小程序 3 真机调试（暂未开放）</td>
+</tr>
+<tr>
+<td>path</td>
+<td>string</td>
+<td>是</td>
+<td>要打开的小程序的某个页面，空的时候，默认打开小程序首页</td>
+</tr>
+<tr>
+<td>param</td>
+<td>string</td>
+<td>是</td>
+<td>自定义字段，{} 里面可以自由配置key，value，这些key值，可在小程序onLaunch的生命周期回调中获取</td>
+</tr>
+</tbody></table>
+<h4 id="宿主app内的原生页面打开指定的小程序"><a href="#宿主app内的原生页面打开指定的小程序" class="headerlink" title="宿主app内的原生页面打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主app内的原生页面打开指定的小程序</a></h4><p>与h5打开页面类似，直接通过openapp协议的地址来打开指定的小程序</p>
+<h4 id="宿主外部环境，如微信APP、浏览器打开指定的小程序"><a href="#宿主外部环境，如微信APP、浏览器打开指定的小程序" class="headerlink" title="宿主外部环境，如微信APP、浏览器打开指定的小程序"></a><a href="https://mp.jd.com/docs/dev/API/interface/openMiniProgram.html" target="_blank" rel="noopener">宿主外部环境，如微信APP、浏览器打开指定的小程序</a></h4><p>外部环境，需要将目标小程序拼接成如下链接格式，通过通用唤起中间页来打开制定的小程序:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;h5static.jd.com&#x2F;vapp&#x2F;appdau&#x2F;index.html?appId&#x3D;xxxxxxx&amp;type&#x3D;1&amp;path&#x3D;page%2findex%2findex.html%3fname%3daa</span><br></pre></td></tr></table></figure>
+
+<p>其中，appId和type同openapp协议的 appId 和 vapptype 完全一致，path后面的路径，需要url encode，path中的?后面的自定义参数值，同上述 openapp 协议中param 字段一样，可在 app.js 中 onLaunch 回调中获取。</p>
+<h3 id="使用Taro开发京东小程序"><a href="#使用Taro开发京东小程序" class="headerlink" title="使用Taro开发京东小程序"></a><a href="https://jelly.jd.com/exp/detail?id=5dc95ebeb73b47015299a89f" target="_blank" rel="noopener">使用Taro开发京东小程序</a></h3><p>Taro 是京东零售-用户体验设计部-多终端研发部推出的一套遵循 React 语法规范的多端统一开发解决方案，也是京东小程序官方推荐的开发框架。</p>
+<p>使用 Taro 开发不但能更规范、更有效率地编码， 畅享 React 生态的各种工具。更重要的是只需编写一份代码，即可运行在各种平台：京东/微信/百度/支付宝/字节跳动/QQ小程序、快应用、H5、React-Native 等。</p>
+<ul>
+<li>1.安装 Taro 的 CLI 工具：<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g @tarojs/cli</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>已安装 Taro 的同学请注意更新 Taro 版本，Taro 自 1.3.20 后支持转换京东小程序。</p>
+</blockquote>
+<ul>
+<li><p>2.使用 CLI 创建项目：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g @tarojs/cli</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>3.安装京东小程序开发依赖</p>
+</li>
+</ul>
+<p>因为小程序处于内测阶段，CLI 工具默认没有安装京东小程序相关开发依赖，所以需要手动安装。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install @tarojs/taro-jd</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>4.配置执行脚本</li>
+</ul>
+<p>在 package.json 中添加如下两条开启京东小程序项目的脚本：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"scripts"</span>: &#123;</span><br><span class="line">    <span class="attr">"build:jd"</span>: <span class="string">"taro build --type jd"</span>,</span><br><span class="line">    <span class="attr">"dev:jd"</span>: <span class="string">"npm run build:jd -- --watch"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>5.本地开发</li>
+</ul>
+<p>进入项目根目录，运行<code>npm run dev:jd</code>，使用 CLI 编译项目，根据 <a href="http://taro-docs-in.jd.com/taro/" target="_blank" rel="noopener">Taro 文档</a>进行开发。</p>
+<p>Taro 遵循 React 语法规范，它采用与 React 一致的组件化思想，组件生命周期与 React 保持一致，同时支持使用 JSX 语法，让代码具有更丰富的表现力，使用 Taro 进行开发可以获得和 React 一致的开发体验。</p>
+<ul>
+<li>6.调试</li>
+</ul>
+<p>使用京东小程序开发者工具进行调试，打开 IDE 工具，点击“新建项目”，项目路径指向 Taro 项目根目录中的输出目录 dist。</p>
+<p>开发者可以给编译命令带上 watch 参数：taro build –type jd –watch，Taro 即会监听源代码的变化，及时编译项目并输出到 dist 目录。</p>
+<p>但是目前 IDE 还没有监听文件变化而重新进行编译，因此每次改动源代码后需要手动点击 IDE 的编译按钮以刷新页面。</p>
+<ul>
+<li>7.注册页面</li>
+</ul>
+<p>当创建了新页面之后，我们还要告诉应用我们创建的这个页面，也就是在应用注册这个页面，打开 src/app.jsx ，在对应 App 组件的 config.pages 属性里面添加刚刚创建的帖子详情页的路径。</p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="https://mp.jd.com/docs/introduction/" target="_blank" rel="noopener">京东小程序官网-介绍</a></li>
+<li><a href="https://mp.jd.com/docs/dev/" target="_blank" rel="noopener">京东小程序官网-开发</a></li>
+<li><a href="https://jelly.jd.com/exp/detail?id=5dc95ebeb73b47015299a89f" target="_blank" rel="noopener">使用 Taro 快速开发京东小程序</a></li>
+<li><a href="https://juejin.im/post/5ea0e8efe51d4546d171110a" target="_blank" rel="noopener">一杯茶的时间，上手 Taro 京东小程序开发</a></li>
+<li><a href="https://cf.jd.com/pages/viewpage.action?pageId=226255440" target="_blank" rel="noopener">接入京东小程序</a></li>
+<li><a href="http://taro-docs-in.jd.com/taro/docs/README.html" target="_blank" rel="noopener">Taro官方文档</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>小程序</category>
+      </categories>
+      <tags>
+        <tag>小程序</tag>
       </tags>
   </entry>
   <entry>
