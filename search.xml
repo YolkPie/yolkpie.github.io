@@ -214,102 +214,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Jest单元测试（中）</title>
-    <url>/2020/09/29/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%88%E4%B8%AD%EF%BC%89/</url>
-    <content><![CDATA[<h3 id="默认配置"><a href="#默认配置" class="headerlink" title="默认配置"></a>默认配置</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jest 的目标是在大部分 JavaScript 项目中实现开箱即用，因此本身有一些默认配置，即使我们不做任何配置也可以正确运行。如果想了解这些默认配置项具体是什么，可以通过下面的方式获取：</p>
-<ul>
-<li><p>查看 node_modules/jest-config/build/Default.js 文件中的 defaultOptions 对象</p>
-</li>
-<li><p>通过以下js获取。</p>
-  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; defaults &#125; = <span class="built_in">require</span>(<span class="string">'jest-config'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//下面是用第二种方法获取到的 Jest 默认配置</span></span><br><span class="line">&#123;</span><br><span class="line">    automock: <span class="literal">false</span>,</span><br><span class="line">    bail: <span class="number">0</span>,</span><br><span class="line">    cache: <span class="literal">true</span>,</span><br><span class="line">    cacheDirectory: <span class="string">'/private/var/folders/3l/p3_nb2m13b9cgstcy0b3gx18ffrd_n/T/jest_80wf9x'</span>,</span><br><span class="line">    changedFilesWithAncestor: <span class="literal">false</span>,</span><br><span class="line">    clearMocks: <span class="literal">false</span>,</span><br><span class="line">    collectCoverage: <span class="literal">false</span>,</span><br><span class="line">    coveragePathIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    coverageProvider: <span class="string">'babel'</span>,</span><br><span class="line">    coverageReporters: [ <span class="string">'json'</span>, <span class="string">'text'</span>, <span class="string">'lcov'</span>, <span class="string">'clover'</span> ],</span><br><span class="line">    errorOnDeprecated: <span class="literal">false</span>,</span><br><span class="line">    expand: <span class="literal">false</span>,</span><br><span class="line">    forceCoverageMatch: [],</span><br><span class="line">    globals: &#123;&#125;,</span><br><span class="line">    haste: &#123; <span class="attr">computeSha1</span>: <span class="literal">false</span>, <span class="attr">throwOnModuleCollision</span>: <span class="literal">false</span> &#125;,</span><br><span class="line">    maxConcurrency: <span class="number">5</span>,</span><br><span class="line">    maxWorkers: <span class="string">'50%'</span>,</span><br><span class="line">    moduleDirectories: [ <span class="string">'node_modules'</span> ],</span><br><span class="line">    moduleFileExtensions: [ <span class="string">'js'</span>, <span class="string">'json'</span>, <span class="string">'jsx'</span>, <span class="string">'ts'</span>, <span class="string">'tsx'</span>, <span class="string">'node'</span> ],</span><br><span class="line">    moduleNameMapper: &#123;&#125;,</span><br><span class="line">    modulePathIgnorePatterns: [],</span><br><span class="line">    noStackTrace: <span class="literal">false</span>,</span><br><span class="line">    notify: <span class="literal">false</span>,</span><br><span class="line">    notifyMode: <span class="string">'failure-change'</span>,</span><br><span class="line">    prettierPath: <span class="string">'prettier'</span>,</span><br><span class="line">    resetMocks: <span class="literal">false</span>,</span><br><span class="line">    resetModules: <span class="literal">false</span>,</span><br><span class="line">    restoreMocks: <span class="literal">false</span>,</span><br><span class="line">    roots: [ <span class="string">'&lt;rootDir&gt;'</span> ],</span><br><span class="line">    runTestsByPath: <span class="literal">false</span>,</span><br><span class="line">    runner: <span class="string">'jest-runner'</span>,</span><br><span class="line">    setupFiles: [],</span><br><span class="line">    setupFilesAfterEnv: [],</span><br><span class="line">    skipFilter: <span class="literal">false</span>,</span><br><span class="line">    snapshotSerializers: [],</span><br><span class="line">    testEnvironment: <span class="string">'jest-environment-jsdom'</span>,</span><br><span class="line">    testEnvironmentOptions: &#123;&#125;,</span><br><span class="line">    testFailureExitCode: <span class="number">1</span>,</span><br><span class="line">    testLocationInResults: <span class="literal">false</span>,</span><br><span class="line">    testMatch: [ <span class="string">'**/__tests__/**/*.[jt]s?(x)'</span>, <span class="string">'**/?(*.)+(spec|test).[tj]s?(x)'</span> ],</span><br><span class="line">    testPathIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    testRegex: [],</span><br><span class="line">    testRunner: <span class="string">'jasmine2'</span>,</span><br><span class="line">    testSequencer: <span class="string">'@jest/test-sequencer'</span>,</span><br><span class="line">    testURL: <span class="string">'http://localhost'</span>,</span><br><span class="line">    timers: <span class="string">'real'</span>,</span><br><span class="line">    transformIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    useStderr: <span class="literal">false</span>,</span><br><span class="line">    watch: <span class="literal">false</span>,</span><br><span class="line">    watchPathIgnorePatterns: [],</span><br><span class="line">    watchman: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;很多，看起来也很头大。我们先将常用到的配置项做下归类，之后再配置对 Babel / webpack 等的支持，对这些配置项就会有大致的了解了。 Jest 配置详见： <a href="https://jestjs.io/docs/en/configuration.html" target="_blank" rel="noopener">Configuring Jest</a></p>
-<h3 id="Jest-配置项"><a href="#Jest-配置项" class="headerlink" title="Jest 配置项"></a>Jest 配置项</h3><ol>
-<li>mock<ul>
-<li>automock: 引入的模块会被自动mock</li>
-<li>clearMocks: 测试前自动清除 mock.calls 和 mock.instances 属性，等价于 jest.clearAllMocks()</li>
-<li>resetMocks: 测试前自动重置 mock 到初始状态，等价于 jest.resetAllMocks()</li>
-<li>restoreMocks: 测试前自动恢复 mock（？？和restMock的区别），等价于 jest.restoreAllMocks()</li>
-</ul>
-</li>
-<li>覆盖率<ul>
-<li>collectCoverage: 是否搜集测试时的覆盖率</li>
-<li>collectCoverageFrom: 哪些文件测试时需要进行覆盖率统计（数组，通过<a href="https://github.com/isaacs/node-glob#glob-primer" target="_blank" rel="noopener">glob 模式</a>匹配）</li>
-<li>coverageDirectory: 输出覆盖信息文件的目录</li>
-<li>coveragePathIgnorePatterns: 哪些文件测试时不需要进行覆盖率统计（数组，通过正则匹配）</li>
-<li>coverageReporters: 定义测试覆盖率报告的格式</li>
-<li>coverageThreshold: 覆盖率的阈值，可按照 global 和 glob 模式分组（单位为百分比，正值表示允许的覆盖率的最小值，负值表示不通过的百分比的最大值）</li>
-<li>forceCoverageMatch: 统计测试覆盖率时，测试文件默认被忽略，此项可以指定哪些文件需要被统计进来（数组，glob 模式）</li>
-</ul>
-</li>
-<li>转换器<ul>
-<li>transform: 匹配文件和对应的转换器</li>
-<li>transformIgnorePatterns: 转换时要排除的文件</li>
-</ul>
-</li>
-<li>bail<ul>
-<li>停止运行测试代码时出现错误的次数</li>
-</ul>
-</li>
-</ol>
-<h3 id="Jest-配置方式"><a href="#Jest-配置方式" class="headerlink" title="Jest 配置方式"></a>Jest 配置方式</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果我们想对 Jest 进行个性化配置，有以下方式：</p>
-<ol>
-<li><p>在项目中 package.json 文件中增加 “jest” 字段</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"my-project"</span>,</span><br><span class="line">    <span class="string">"jest"</span>: &#123;</span><br><span class="line">        <span class="string">"verbose"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过 jest.config.js  </p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    verbose: <span class="literal">true</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>如果以上两种方式不满足要求，想自定义配置文件的名称和格式，可在执行 jest 命令时增加 <code>--config &lt;path/to/file.js|cjs|mjs|json&gt;</code>，–config 选项可指定配置文件。需要注意的是如果采用json 文件，不能有 “jest” 键值。</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"verbose"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h3 id="生成一个基础配置文件"><a href="#生成一个基础配置文件" class="headerlink" title="生成一个基础配置文件"></a>生成一个基础配置文件</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;除了手动添加配置文件外，我们可以通过 Jest 提供的 Jest CLI，运行 <code>jest --init</code> 命令，运行完成后，会生成一个 jest.config.js，这个文件里每个选项都有简短的说明。</p>
-<h3 id="使用-Babel"><a href="#使用-Babel" class="headerlink" title="使用 Babel"></a>使用 Babel</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由于我们配置的环境是 node，它的语法是CommonJS，因此使用ES6 语法 import 时会报错。</p>
-<ol>
-<li><p>安装依赖</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// babel 6</span></span><br><span class="line">npm install --save-dev babel-jest babel-core regenerator-runtime</span><br><span class="line"><span class="comment">// babel 7</span></span><br><span class="line">npm install --save-dev babel-jest babel-core@^<span class="number">7.0</span><span class="number">.0</span>-bridge<span class="number">.0</span> @babel/core regenerator-runtime</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在根目录下增加 .babelrc 文件</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="string">"presets"</span>: [<span class="string">"env"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>运行 <code>npm run test</code> 查看结果</p>
-</li>
-</ol>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;需要注意的是，安装 Jest 时，babel-jest 是会被自动安装的。当运行jest 命令时，babel-jest 会检测当前环境是否安装了 babel-core，如果安装了，会去取 .babelrc 的配置并执行 babel 对代码进行转化。 如果要避免这个行为，比如需要添加额外的预处理器，需要显式的重置 transform 配置项，因为一旦添加了 transform 配置，babel-jest 就不会自动载入了。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json 重置 transform</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"jest"</span>: &#123;</span><br><span class="line">        <span class="string">"transform"</span>: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="添加-TypeScript-支持"><a href="#添加-TypeScript-支持" class="headerlink" title="添加 TypeScript 支持"></a>添加 TypeScript 支持</h3><ol>
-<li><p>我们先创建一个 math.ts 文件：</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// math.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a: number, b: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>接着创建测试文件 math.test.ts:</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// math.test.ts</span></span><br><span class="line"><span class="keyword">import</span> math <span class="keyword">from</span> <span class="string">'../src/math'</span></span><br><span class="line">describe(<span class="string">'Test Math Module'</span>, () =&gt; &#123;</span><br><span class="line">    test(<span class="string">'should return sum value when one plus another'</span>, () =&gt; &#123;</span><br><span class="line">        expect(sum(<span class="number">1</span>, <span class="number">2</span>)).toBe(<span class="number">3</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建 tsconfig.json 文件，添加 TypeScript 配置：</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// tsconfig.json</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"compilerOptions"</span>: &#123;</span><br><span class="line">        <span class="string">"target"</span>: <span class="string">"es5"</span>,</span><br><span class="line">        <span class="string">"strict"</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"include"</span>: [</span><br><span class="line">        <span class="string">"src/**/*"</span>,</span><br><span class="line">        <span class="string">"__test__/**/*"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"exclude"</span>: [</span><br><span class="line">        <span class="string">"node_modules"</span>,</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用 Jest 测试 TypeScript 代码需要借助 ts-jest 解析器，安装依赖：</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install -save-dev ts-jest typescript @types/jest</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置 Jest</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// jest.config.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    collectCoverage: <span class="literal">true</span>,</span><br><span class="line">    transform: &#123;</span><br><span class="line">        <span class="string">'^.+\\.tsx?$'</span>: <span class="string">'ts-jest'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>运行 <code>npm run test</code> 查看结果</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>测试</category>
-      </categories>
-      <tags>
-        <tag>单元测试</tag>
-        <tag>Jest</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>nuxt.js</title>
     <url>/2020/02/04/NuxtJS/</url>
     <content><![CDATA[<h2 id="Nuxt-js是什么？"><a href="#Nuxt-js是什么？" class="headerlink" title="Nuxt.js是什么？"></a>Nuxt.js是什么？</h2><blockquote>
@@ -2519,6 +2423,211 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
+    <title>Jest单元测试（中）</title>
+    <url>/2020/09/29/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%88%E4%B8%AD%EF%BC%89/</url>
+    <content><![CDATA[<h3 id="默认配置"><a href="#默认配置" class="headerlink" title="默认配置"></a>默认配置</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Jest 的目标是在大部分 JavaScript 项目中实现开箱即用，因此本身有一些默认配置，即使我们不做任何配置也可以正确运行。如果想了解这些默认配置项具体是什么，可以通过下面的方式获取：</p>
+<ul>
+<li><p>查看 node_modules/jest-config/build/Default.js 文件中的 defaultOptions 对象</p>
+</li>
+<li><p>通过以下js获取。</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; defaults &#125; = <span class="built_in">require</span>(<span class="string">'jest-config'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//下面是用第二种方法获取到的 Jest 默认配置</span></span><br><span class="line">&#123;</span><br><span class="line">    automock: <span class="literal">false</span>,</span><br><span class="line">    bail: <span class="number">0</span>,</span><br><span class="line">    cache: <span class="literal">true</span>,</span><br><span class="line">    cacheDirectory: <span class="string">'/private/var/folders/3l/p3_nb2m13b9cgstcy0b3gx18ffrd_n/T/jest_80wf9x'</span>,</span><br><span class="line">    changedFilesWithAncestor: <span class="literal">false</span>,</span><br><span class="line">    clearMocks: <span class="literal">false</span>,</span><br><span class="line">    collectCoverage: <span class="literal">false</span>,</span><br><span class="line">    coveragePathIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    coverageProvider: <span class="string">'babel'</span>,</span><br><span class="line">    coverageReporters: [ <span class="string">'json'</span>, <span class="string">'text'</span>, <span class="string">'lcov'</span>, <span class="string">'clover'</span> ],</span><br><span class="line">    errorOnDeprecated: <span class="literal">false</span>,</span><br><span class="line">    expand: <span class="literal">false</span>,</span><br><span class="line">    forceCoverageMatch: [],</span><br><span class="line">    globals: &#123;&#125;,</span><br><span class="line">    haste: &#123; <span class="attr">computeSha1</span>: <span class="literal">false</span>, <span class="attr">throwOnModuleCollision</span>: <span class="literal">false</span> &#125;,</span><br><span class="line">    maxConcurrency: <span class="number">5</span>,</span><br><span class="line">    maxWorkers: <span class="string">'50%'</span>,</span><br><span class="line">    moduleDirectories: [ <span class="string">'node_modules'</span> ],</span><br><span class="line">    moduleFileExtensions: [ <span class="string">'js'</span>, <span class="string">'json'</span>, <span class="string">'jsx'</span>, <span class="string">'ts'</span>, <span class="string">'tsx'</span>, <span class="string">'node'</span> ],</span><br><span class="line">    moduleNameMapper: &#123;&#125;,</span><br><span class="line">    modulePathIgnorePatterns: [],</span><br><span class="line">    noStackTrace: <span class="literal">false</span>,</span><br><span class="line">    notify: <span class="literal">false</span>,</span><br><span class="line">    notifyMode: <span class="string">'failure-change'</span>,</span><br><span class="line">    prettierPath: <span class="string">'prettier'</span>,</span><br><span class="line">    resetMocks: <span class="literal">false</span>,</span><br><span class="line">    resetModules: <span class="literal">false</span>,</span><br><span class="line">    restoreMocks: <span class="literal">false</span>,</span><br><span class="line">    roots: [ <span class="string">'&lt;rootDir&gt;'</span> ],</span><br><span class="line">    runTestsByPath: <span class="literal">false</span>,</span><br><span class="line">    runner: <span class="string">'jest-runner'</span>,</span><br><span class="line">    setupFiles: [],</span><br><span class="line">    setupFilesAfterEnv: [],</span><br><span class="line">    skipFilter: <span class="literal">false</span>,</span><br><span class="line">    snapshotSerializers: [],</span><br><span class="line">    testEnvironment: <span class="string">'jest-environment-jsdom'</span>,</span><br><span class="line">    testEnvironmentOptions: &#123;&#125;,</span><br><span class="line">    testFailureExitCode: <span class="number">1</span>,</span><br><span class="line">    testLocationInResults: <span class="literal">false</span>,</span><br><span class="line">    testMatch: [ <span class="string">'**/__tests__/**/*.[jt]s?(x)'</span>, <span class="string">'**/?(*.)+(spec|test).[tj]s?(x)'</span> ],</span><br><span class="line">    testPathIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    testRegex: [],</span><br><span class="line">    testRunner: <span class="string">'jasmine2'</span>,</span><br><span class="line">    testSequencer: <span class="string">'@jest/test-sequencer'</span>,</span><br><span class="line">    testURL: <span class="string">'http://localhost'</span>,</span><br><span class="line">    timers: <span class="string">'real'</span>,</span><br><span class="line">    transformIgnorePatterns: [ <span class="string">'/node_modules/'</span> ],</span><br><span class="line">    useStderr: <span class="literal">false</span>,</span><br><span class="line">    watch: <span class="literal">false</span>,</span><br><span class="line">    watchPathIgnorePatterns: [],</span><br><span class="line">    watchman: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;很多，看起来也很头大。我们先将常用到的配置项做下归类，之后再配置对 Babel / webpack 等的支持，对这些配置项就会有大致的了解了。 Jest 配置详见： <a href="https://jestjs.io/docs/en/configuration.html" target="_blank" rel="noopener">Configuring Jest</a></p>
+<h3 id="Jest-配置项"><a href="#Jest-配置项" class="headerlink" title="Jest 配置项"></a>Jest 配置项</h3><ol>
+<li>mock<ul>
+<li>automock: 引入的模块会被自动mock</li>
+<li>clearMocks: 测试前自动清除 mock.calls 和 mock.instances 属性，等价于 jest.clearAllMocks()</li>
+<li>resetMocks: 测试前自动重置 mock 到初始状态，等价于 jest.resetAllMocks()</li>
+<li>restoreMocks: 测试前自动恢复 mock（？？和restMock的区别），等价于 jest.restoreAllMocks()</li>
+</ul>
+</li>
+<li>覆盖率<ul>
+<li>collectCoverage: 是否搜集测试时的覆盖率</li>
+<li>collectCoverageFrom: 哪些文件测试时需要进行覆盖率统计（数组，通过<a href="https://github.com/isaacs/node-glob#glob-primer" target="_blank" rel="noopener">glob 模式</a>匹配）</li>
+<li>coverageDirectory: 输出覆盖信息文件的目录</li>
+<li>coveragePathIgnorePatterns: 哪些文件测试时不需要进行覆盖率统计（数组，通过正则匹配）</li>
+<li>coverageReporters: 定义测试覆盖率报告的格式</li>
+<li>coverageThreshold: 覆盖率的阈值，可按照 global 和 glob 模式分组（单位为百分比，正值表示允许的覆盖率的最小值，负值表示不通过的百分比的最大值）</li>
+<li>forceCoverageMatch: 统计测试覆盖率时，测试文件默认被忽略，此项可以指定哪些文件需要被统计进来（数组，glob 模式）</li>
+</ul>
+</li>
+<li>转换器<ul>
+<li>transform: 匹配文件和对应的转换器</li>
+<li>transformIgnorePatterns: 转换时要排除的文件</li>
+</ul>
+</li>
+<li>bail<ul>
+<li>停止运行测试代码时出现错误的次数</li>
+</ul>
+</li>
+</ol>
+<h3 id="Jest-配置方式"><a href="#Jest-配置方式" class="headerlink" title="Jest 配置方式"></a>Jest 配置方式</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果我们想对 Jest 进行个性化配置，有以下方式：</p>
+<ol>
+<li><p>在项目中 package.json 文件中增加 “jest” 字段</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"my-project"</span>,</span><br><span class="line">    <span class="string">"jest"</span>: &#123;</span><br><span class="line">        <span class="string">"verbose"</span>: <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过 jest.config.js  </p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    verbose: <span class="literal">true</span>,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果以上两种方式不满足要求，想自定义配置文件的名称和格式，可在执行 jest 命令时增加 <code>--config &lt;path/to/file.js|cjs|mjs|json&gt;</code>，–config 选项可指定配置文件。需要注意的是如果采用json 文件，不能有 “jest” 键值。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">"verbose"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="生成一个基础配置文件"><a href="#生成一个基础配置文件" class="headerlink" title="生成一个基础配置文件"></a>生成一个基础配置文件</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;除了手动添加配置文件外，我们可以通过 Jest 提供的 Jest CLI，运行 <code>jest --init</code> 命令，运行完成后，会生成一个 jest.config.js，这个文件里每个选项都有简短的说明。</p>
+<h3 id="使用-Babel"><a href="#使用-Babel" class="headerlink" title="使用 Babel"></a>使用 Babel</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由于我们配置的环境是 node，它的语法是CommonJS，因此使用ES6 语法 import 时会报错。</p>
+<ol>
+<li><p>安装依赖</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// babel 6</span></span><br><span class="line">npm install --save-dev babel-jest babel-core regenerator-runtime</span><br><span class="line"><span class="comment">// babel 7</span></span><br><span class="line">npm install --save-dev babel-jest babel-core@^<span class="number">7.0</span><span class="number">.0</span>-bridge<span class="number">.0</span> @babel/core regenerator-runtime</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在根目录下增加 .babelrc 文件</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line"><span class="string">"presets"</span>: [<span class="string">"env"</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>运行 <code>npm run test</code> 查看结果</p>
+</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;需要注意的是，安装 Jest 时，babel-jest 是会被自动安装的。当运行jest 命令时，babel-jest 会检测当前环境是否安装了 babel-core，如果安装了，会去取 .babelrc 的配置并执行 babel 对代码进行转化。 如果要避免这个行为，比如需要添加额外的预处理器，需要显式的重置 transform 配置项，因为一旦添加了 transform 配置，babel-jest 就不会自动载入了。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// package.json 重置 transform</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"jest"</span>: &#123;</span><br><span class="line">        <span class="string">"transform"</span>: &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加-TypeScript-支持"><a href="#添加-TypeScript-支持" class="headerlink" title="添加 TypeScript 支持"></a>添加 TypeScript 支持</h3><ol>
+<li><p>我们先创建一个 math.ts 文件：</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// math.ts</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">sum</span>(<span class="params">a: number, b: number</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a + b</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接着创建测试文件 math.test.ts:</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// math.test.ts</span></span><br><span class="line"><span class="keyword">import</span> math <span class="keyword">from</span> <span class="string">'../src/math'</span></span><br><span class="line">describe(<span class="string">'Test Math Module'</span>, () =&gt; &#123;</span><br><span class="line">    test(<span class="string">'should return sum value when one plus another'</span>, () =&gt; &#123;</span><br><span class="line">        expect(sum(<span class="number">1</span>, <span class="number">2</span>)).toBe(<span class="number">3</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建 tsconfig.json 文件，添加 TypeScript 配置：</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// tsconfig.json</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"compilerOptions"</span>: &#123;</span><br><span class="line">        <span class="string">"target"</span>: <span class="string">"es5"</span>,</span><br><span class="line">        <span class="string">"strict"</span>: <span class="literal">true</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">"include"</span>: [</span><br><span class="line">        <span class="string">"src/**/*"</span>,</span><br><span class="line">        <span class="string">"__test__/**/*"</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="string">"exclude"</span>: [</span><br><span class="line">        <span class="string">"node_modules"</span>,</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用 Jest 测试 TypeScript 代码需要借助 ts-jest 解析器，安装依赖：</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm install -save-dev ts-jest typescript @types/jest</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置 Jest</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// jest.config.js</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    collectCoverage: <span class="literal">true</span>,</span><br><span class="line">    transform: &#123;</span><br><span class="line">        <span class="string">'^.+\\.tsx?$'</span>: <span class="string">'ts-jest'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行 <code>npm run test</code> 查看结果</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>单元测试</tag>
+        <tag>Jest</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>npm发包</title>
+    <url>/2020/09/19/npm%E5%8F%91%E5%8C%85/</url>
+    <content><![CDATA[<h1 id="npm发包"><a href="#npm发包" class="headerlink" title="npm发包"></a>npm发包</h1><h3 id="配置环境-安装node-js"><a href="#配置环境-安装node-js" class="headerlink" title="配置环境 安装node.js"></a>配置环境 安装node.js</h3><ul>
+<li>官网下载最新的node安装包，正常安装node.js</li>
+<li>安装完成后，执行 node -v, 查看是否正常安装</li>
+<li>执行：sudo npm update npm -g，将npm 升级到最新</li>
+<li>查看npm是否正常： npm -v</li>
+</ul>
+<h3 id="发包具体示例"><a href="#发包具体示例" class="headerlink" title="发包具体示例"></a>发包具体示例</h3><ul>
+<li>注册npm账号，填写 用户名、密码和邮箱</li>
+<li>找个位置，新建一个文件夹</li>
+<li>cd 进入文件夹，执行 npm init -y, 有需要改变的内容自己再去文件修改和添加</li>
+<li>使用 npm login，登录自己的 npm 账号</li>
+<li>使用 npm publish，发布自己的包到 npm</li>
+<li>查看自己发布的包是否成功，可以去别的项目执行 npm install 你发布的包名，下载成功</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">注意：</span><br><span class="line">1. 发布自己包之前，应先去 npm 官网搜索自己要发布的包名是否已经存在，已存在的包名会提交失败</span><br><span class="line">2. 自己发布的包更新时，每次都要到package.json, 将 version 修改，例如：从1.0.0改为1.0.1。然后再执行 npm publish进行更新</span><br><span class="line">整体步骤示例图片如下：</span><br></pre></td></tr></table></figure>
+
+<h5 id=""><a href="#" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-1.png" alt=""></h5><h3 id="查看自己发布的包"><a href="#查看自己发布的包" class="headerlink" title="查看自己发布的包"></a>查看自己发布的包</h3><ul>
+<li>打开npm官网，输入你的包名，如有结果则存在 (如图)</li>
+</ul>
+<h4 id="-1"><a href="#-1" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-2.png" alt=""></h4><ul>
+<li>点击个人头像 -&gt; Packages, 可查看自己已发布的所有包 (如图)</li>
+</ul>
+<h4 id="-2"><a href="#-2" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-3.jpg" alt=""></h4>]]></content>
+  </entry>
+  <entry>
+    <title>nginx location 使用指南</title>
+    <url>/2020/02/04/nginx-location-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h2 id="什么是location"><a href="#什么是location" class="headerlink" title="什么是location"></a>什么是location</h2><ul>
+<li>它是nginx基于http协议跟外界沟通的桥梁，用来匹配并执行一个规范化的URI，任何http请求都需要经过它的“同意”才能通过nginx的大门</li>
+<li>它长什么样子呢，比如我们常见的一种配置<a id="more"></a>
+
+</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /hello &#123;</span><br><span class="line">   <span class="attribute">return</span> <span class="number">200</span> <span class="string">'hello world'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>/xxxx 除了这种还有没有其他的写法？ 是不是没有？ 要想知道有没有其他的写法是不是要从系统层面（api）去了解一下，才能扩展 <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location" target="_blank" rel="noopener">官方</a></li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">location [ = | ~ | ~* | ^~ ] uri &#123; ... &#125;</span><br><span class="line">location @name &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>语法规则很简单，一个location关键字，后面跟着可选的修饰符，后面是要匹配的字符，花括号中是要执行的操作。</p>
+<ul>
+<li>修饰符<br>= 表示精确匹配。只有请求的url路径与后面的字符串完全相等时，才会命中。<br>~ 表示该规则是使用正则定义的，区分大小写。<br><del>* 表示该规则是使用正则定义的，不区分大小写。<br>^</del> 表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找</li>
+</ul>
+<h2 id="精确匹配"><a href="#精确匹配" class="headerlink" title="精确匹配"></a>精确匹配</h2><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> = /a &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>精确匹配一个字都不能错, /a 可以，但是 /a/ 就不行</p>
+<h2 id="普通匹配-和"><a href="#普通匹配-和" class="headerlink" title="普通匹配    / 和  ^~"></a>普通匹配    / 和  ^~</h2><ul>
+<li>/   我们经常使用，是以其后设置的uri作为前缀来匹配请求的</li>
+<li>^~  不常用的 也是以其后设置的uri作为前缀来匹配请求的</li>
+<li>从概念上讲他们是一样的，实际使用也是一样的，但是他们有哪些细微差别呢？ 这个稍后讲</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们访问  /b 或者 /bc 或者 /ba 都是可以访问的</p>
+<p>验证一下 / ,^~ 是前缀匹配，我们可以试一下 /x/b 看看能不能访问？</p>
+<h2 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配"></a>正则匹配</h2><ul>
+<li>~  区分大小写  ，在其后的uri就变成了正则表达式</li>
+<li>~* 不区分大小写，在其后的uri就变成了正则表达式</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~* /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面说普通匹配的时候 我们使用了location /b ,这里正则也使用了 /b 如果同时存在，他们先使用那个呢？ 为什么？这个呢也稍后讲</p>
+<p>还有普通匹配试了 /x/b 返回状态404 ， 那使用正则模式呢，状态是多少？ 正则模式 /b 可以是第一个 也可是是最后一个</p>
+<p>正则是不是完事了？咦，不对 好像少了点什么？ 说好的正则 我堂堂 \d \w [a-z] \d{9,11} 哪里去了，是不是感觉少了点东西</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">location  ~ "/(\d&#123;1,11&#125;)" &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"hi paimai,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是不是这样  我们拍卖单品页是不是这样的  paimai.jd.com/123456789<br>是不是很完美？ 有没有问题?<br>前面我们正则部分我们说了  普通模式 /b 和正则模式 /b 区别 ，回顾一下<br>我之前写的时候就遇到过这样的问题  paimai.jd.com/album/123456789 也被匹配到了</p>
+<p>那么问题来了 正则模式里面怎么精确匹配</p>
+<p>^/a 的意思就是，匹配以/a开头的字符串<br>.html$   的意思就是 以.html结尾</p>
+<p>再重新写一下单品页的匹配方式</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">location ~* "^/(\d&#123;9,11&#125;)$" &#123;</span><br><span class="line">    <span class="attribute">default_type</span> text/html;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"hi paimai,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>使用正则定义的location在配置文件中出现的顺序很重要。因为找到第一个匹配的正则后，查找就停止了，后面定义的正则就是再匹配也没有机会了。</p>
+<p>到这里正则模式才算完了^_^</p>
+<h2 id="模式"><a href="#模式" class="headerlink" title="@ 模式"></a>@ 模式</h2><ul>
+<li>这里内部的意思是指外部用户看不到的location</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> @/d &#123;</span><br><span class="line">   <span class="attribute">return</span> <span class="number">200</span> <span class="string">"paimai"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以试着访问一下</p>
+<p>正确使用<br>error_page 404 @/d</p>
+<h2 id="刚刚我们在说-普通匹配-和正则匹配里面-放了两个-这个稍后讲-的问题"><a href="#刚刚我们在说-普通匹配-和正则匹配里面-放了两个-这个稍后讲-的问题" class="headerlink" title="刚刚我们在说  普通匹配 和正则匹配里面 放了两个 这个稍后讲 的问题"></a>刚刚我们在说  普通匹配 和正则匹配里面 放了两个 这个稍后讲 的问题</h2><ol>
+<li>/ 和  ^~ 普通模式里面，两个同时存在的时候 使用的是那个location,是不是有个优先级的问题</li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>/ 和  ~  普通模式 和 匹配模式 同时存在 /b 的时候，优先使用的是那个location </li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ~/,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>^~ 和  ~ 的优先级呢</li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ~/,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得出的结论</p>
+<p>普通匹配优先级要低于正则匹配，而^~的匹配优先级要高于正则匹配</p>
+]]></content>
+      <categories>
+        <category>服务器</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>mysql 索引</title>
     <url>/2020/02/04/mysql-%E7%B4%A2%E5%BC%95/</url>
     <content><![CDATA[<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引(key)是存储引擎用于快速找到记录的一种数据结构。它和一本书中目录的工作方式类似——当要查找一行记录时，先在索引中快速找到行所在的位置信息，然后再直接获取到那行记录。<br>在MySql中，索引是在存储引擎层而不是服务器层实现的，所以不同的存储引擎对索引的实现和支持都不相同。</p>
@@ -2672,115 +2781,6 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
         <tag>mysql</tag>
         <tag>索引</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>nginx location 使用指南</title>
-    <url>/2020/02/04/nginx-location-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h2 id="什么是location"><a href="#什么是location" class="headerlink" title="什么是location"></a>什么是location</h2><ul>
-<li>它是nginx基于http协议跟外界沟通的桥梁，用来匹配并执行一个规范化的URI，任何http请求都需要经过它的“同意”才能通过nginx的大门</li>
-<li>它长什么样子呢，比如我们常见的一种配置<a id="more"></a>
-
-</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /hello &#123;</span><br><span class="line">   <span class="attribute">return</span> <span class="number">200</span> <span class="string">'hello world'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>/xxxx 除了这种还有没有其他的写法？ 是不是没有？ 要想知道有没有其他的写法是不是要从系统层面（api）去了解一下，才能扩展 <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location" target="_blank" rel="noopener">官方</a></li>
-</ul>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">location [ = | ~ | ~* | ^~ ] uri &#123; ... &#125;</span><br><span class="line">location @name &#123; ... &#125;</span><br></pre></td></tr></table></figure>
-
-<p>语法规则很简单，一个location关键字，后面跟着可选的修饰符，后面是要匹配的字符，花括号中是要执行的操作。</p>
-<ul>
-<li>修饰符<br>= 表示精确匹配。只有请求的url路径与后面的字符串完全相等时，才会命中。<br>~ 表示该规则是使用正则定义的，区分大小写。<br><del>* 表示该规则是使用正则定义的，不区分大小写。<br>^</del> 表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找</li>
-</ul>
-<h2 id="精确匹配"><a href="#精确匹配" class="headerlink" title="精确匹配"></a>精确匹配</h2><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> = /a &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>精确匹配一个字都不能错, /a 可以，但是 /a/ 就不行</p>
-<h2 id="普通匹配-和"><a href="#普通匹配-和" class="headerlink" title="普通匹配    / 和  ^~"></a>普通匹配    / 和  ^~</h2><ul>
-<li>/   我们经常使用，是以其后设置的uri作为前缀来匹配请求的</li>
-<li>^~  不常用的 也是以其后设置的uri作为前缀来匹配请求的</li>
-<li>从概念上讲他们是一样的，实际使用也是一样的，但是他们有哪些细微差别呢？ 这个稍后讲</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们访问  /b 或者 /bc 或者 /ba 都是可以访问的</p>
-<p>验证一下 / ,^~ 是前缀匹配，我们可以试一下 /x/b 看看能不能访问？</p>
-<h2 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配"></a>正则匹配</h2><ul>
-<li>~  区分大小写  ，在其后的uri就变成了正则表达式</li>
-<li>~* 不区分大小写，在其后的uri就变成了正则表达式</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~* /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面说普通匹配的时候 我们使用了location /b ,这里正则也使用了 /b 如果同时存在，他们先使用那个呢？ 为什么？这个呢也稍后讲</p>
-<p>还有普通匹配试了 /x/b 返回状态404 ， 那使用正则模式呢，状态是多少？ 正则模式 /b 可以是第一个 也可是是最后一个</p>
-<p>正则是不是完事了？咦，不对 好像少了点什么？ 说好的正则 我堂堂 \d \w [a-z] \d{9,11} 哪里去了，是不是感觉少了点东西</p>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">location  ~ "/(\d&#123;1,11&#125;)" &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"hi paimai,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>是不是这样  我们拍卖单品页是不是这样的  paimai.jd.com/123456789<br>是不是很完美？ 有没有问题?<br>前面我们正则部分我们说了  普通模式 /b 和正则模式 /b 区别 ，回顾一下<br>我之前写的时候就遇到过这样的问题  paimai.jd.com/album/123456789 也被匹配到了</p>
-<p>那么问题来了 正则模式里面怎么精确匹配</p>
-<p>^/a 的意思就是，匹配以/a开头的字符串<br>.html$   的意思就是 以.html结尾</p>
-<p>再重新写一下单品页的匹配方式</p>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">location ~* "^/(\d&#123;9,11&#125;)$" &#123;</span><br><span class="line">    <span class="attribute">default_type</span> text/html;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"hi paimai,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>使用正则定义的location在配置文件中出现的顺序很重要。因为找到第一个匹配的正则后，查找就停止了，后面定义的正则就是再匹配也没有机会了。</p>
-<p>到这里正则模式才算完了^_^</p>
-<h2 id="模式"><a href="#模式" class="headerlink" title="@ 模式"></a>@ 模式</h2><ul>
-<li>这里内部的意思是指外部用户看不到的location</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> @/d &#123;</span><br><span class="line">   <span class="attribute">return</span> <span class="number">200</span> <span class="string">"paimai"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们可以试着访问一下</p>
-<p>正确使用<br>error_page 404 @/d</p>
-<h2 id="刚刚我们在说-普通匹配-和正则匹配里面-放了两个-这个稍后讲-的问题"><a href="#刚刚我们在说-普通匹配-和正则匹配里面-放了两个-这个稍后讲-的问题" class="headerlink" title="刚刚我们在说  普通匹配 和正则匹配里面 放了两个 这个稍后讲 的问题"></a>刚刚我们在说  普通匹配 和正则匹配里面 放了两个 这个稍后讲 的问题</h2><ol>
-<li>/ 和  ^~ 普通模式里面，两个同时存在的时候 使用的是那个location,是不是有个优先级的问题</li>
-</ol>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>/ 和  ~  普通模式 和 匹配模式 同时存在 /b 的时候，优先使用的是那个location </li>
-</ol>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ~/,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>^~ 和  ~ 的优先级呢</li>
-</ol>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ~/,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>得出的结论</p>
-<p>普通匹配优先级要低于正则匹配，而^~的匹配优先级要高于正则匹配</p>
-]]></content>
-      <categories>
-        <category>服务器</category>
-      </categories>
-      <tags>
-        <tag>nginx</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>npm发包</title>
-    <url>/2020/09/19/npm%E5%8F%91%E5%8C%85/</url>
-    <content><![CDATA[<h1 id="npm发包"><a href="#npm发包" class="headerlink" title="npm发包"></a>npm发包</h1><h3 id="配置环境-安装node-js"><a href="#配置环境-安装node-js" class="headerlink" title="配置环境 安装node.js"></a>配置环境 安装node.js</h3><ul>
-<li>官网下载最新的node安装包，正常安装node.js</li>
-<li>安装完成后，执行 node -v, 查看是否正常安装</li>
-<li>执行：sudo npm update npm -g，将npm 升级到最新</li>
-<li>查看npm是否正常： npm -v</li>
-</ul>
-<h3 id="发包具体示例"><a href="#发包具体示例" class="headerlink" title="发包具体示例"></a>发包具体示例</h3><ul>
-<li>注册npm账号，填写 用户名、密码和邮箱</li>
-<li>找个位置，新建一个文件夹</li>
-<li>cd 进入文件夹，执行 npm init -y, 有需要改变的内容自己再去文件修改和添加</li>
-<li>使用 npm login，登录自己的 npm 账号</li>
-<li>使用 npm publish，发布自己的包到 npm</li>
-<li>查看自己发布的包是否成功，可以去别的项目执行 npm install 你发布的包名，下载成功</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">注意：</span><br><span class="line">1. 发布自己包之前，应先去 npm 官网搜索自己要发布的包名是否已经存在，已存在的包名会提交失败</span><br><span class="line">2. 自己发布的包更新时，每次都要到package.json, 将 version 修改，例如：从1.0.0改为1.0.1。然后再执行 npm publish进行更新</span><br><span class="line">整体步骤示例图片如下：</span><br></pre></td></tr></table></figure>
-
-<h5 id=""><a href="#" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-1.png" alt=""></h5><h3 id="查看自己发布的包"><a href="#查看自己发布的包" class="headerlink" title="查看自己发布的包"></a>查看自己发布的包</h3><ul>
-<li>打开npm官网，输入你的包名，如有结果则存在 (如图)</li>
-</ul>
-<h4 id="-1"><a href="#-1" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-2.png" alt=""></h4><ul>
-<li>点击个人头像 -&gt; Packages, 可查看自己已发布的所有包 (如图)</li>
-</ul>
-<h4 id="-2"><a href="#-2" class="headerlink" title=""></a><img src= "/img/loading.gif" data-src="npm-3.jpg" alt=""></h4>]]></content>
   </entry>
   <entry>
     <title>React 内置 Hook 简介</title>
@@ -4262,6 +4262,103 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
         <tag>微信小程序</tag>
         <tag>canvas</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>微信小程序暗黑模式</title>
+    <url>/2020/11/01/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%9A%97%E9%BB%91%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<blockquote>
+<p>WXS（WeiXin Script）是小程序的一套脚本语言，结合 WXML，可以构建出页面的结构。</p>
+<p>WXS 与 JavaScript 是不同的语言，有自己的语法，并不和 JavaScript 一致。</p>
+<p>增强 wxml 标签的表达能力</p>
+<p>WXS 对性能的贡献就只有一点：与 WXML 是在同一个线程运行的，避免了跨线程通信的开销。</p>
+<p>号称 『wxs 目前在 iOS 设备的效率，会比JS快 2~20倍。在 Android 则无差异</p>
+</blockquote>
+<h1 id="WXS模块"><a href="#WXS模块" class="headerlink" title="WXS模块"></a>WXS模块</h1><p>每一个 .wxs 文件和 <code>&lt;wxs&gt;</code> 标签都是一个单独的模块。</p>
+<p>每个模块都有自己独立的作用域。即在一个模块里面定义的变量与函数，默认为私有的，对其他模块不可见。</p>
+<p>一个模块要想对外暴露其内部的私有变量与函数，只能通过 module.exports 实现。</p>
+<h2 id="module-对象"><a href="#module-对象" class="headerlink" title="module 对象"></a>module 对象</h2><p>eg:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// /page/tools.wxs</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = <span class="string">"'hello world' from tools.wxs"</span>;</span><br><span class="line"><span class="keyword">var</span> bar = <span class="function"><span class="keyword">function</span> (<span class="params">d</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对象形式导出</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  FOO: foo,</span><br><span class="line">  bar: bar,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 单独导出某一个</span></span><br><span class="line"><span class="built_in">module</span>.exports.msg = <span class="string">"some msg"</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="require"><a href="#require" class="headerlink" title="require"></a>require</h2><p>在 wxs 中引用其它 wxs 文件文件模块，可以使用 require 函数，引用的时候需要注意以下几点问题：</p>
+<ol>
+<li>只能引用 .wxs 文件模块，且必须使用相对路径。</li>
+<li>wxs 模块均为单例，wxs 模块在第一次被引用时，会自动初始化为单例对象。多个页面，多个地方，多次引用，使用的都是同一个 wxs 模块对象。</li>
+<li>如果一个 wxs 模块在定义之后，一直没有被引用，则该模块不会被解析与运行。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> tools = <span class="built_in">require</span>(<span class="string">"./cat.wxs"</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(tools.tip);</span><br><span class="line"><span class="built_in">console</span>.log(tools.msg);</span><br></pre></td></tr></table></figure>
+
+<h2 id="标签"><a href="#标签" class="headerlink" title=" 标签"></a><wxs> 标签</h2><p><code>&lt;wxs&gt;</code> 标签有两个属性，一个是 module，一个是 src.</p>
+<p>此标签可以使用单标签闭合的写法</p>
+<h3 id="module-属性"><a href="#module-属性" class="headerlink" title="module 属性"></a>module 属性</h3><p>当前 <code>&lt;wxs&gt;</code> 标签的模块名。必填字段。</p>
+<p>在单个 wxml 文件内，建议其值唯一。有重复模块名则按照先后顺序覆盖（后者覆盖前者）。不同文件之间的 wxs 模块名不会相互覆盖。</p>
+<p>module 属性值的命名必须符合下面两个规则：</p>
+<ol>
+<li>首字符必须是：字母（a-zA-Z），下划线（_）</li>
+<li>剩余字符可以是：字母（a-zA-Z），下划线（_）， 数字（0-9）</li>
+</ol>
+<h3 id="src-属性"><a href="#src-属性" class="headerlink" title="src 属性"></a>src 属性</h3><p>引用 .wxs 文件的相对路径。仅当本标签为单闭合标签或标签的内容为空时有效</p>
+<p>src 属性可以用来引用其他的 wxs 文件模块。</p>
+<p>引用的时候，要注意如下几点：</p>
+<ol>
+<li>只能引用 .wxs 文件模块，且必须使用相对路径。</li>
+<li>wxs 模块均为单例，wxs 模块在第一次被引用时，会自动初始化为单例对象。多个页面，多个地方，多次引用，使用的都是同一个 wxs 模块对象。</li>
+<li>如果一个 wxs 模块在定义之后，一直没有被引用，则该模块不会被解析与运行。</li>
+</ol>
+<p>这里的规则同 require 函数。</p>
+<p><code>&lt;wxs&gt;</code> 模块只能在定义模块的 WXML 文件中被访问到。使用 <code>&lt;include&gt;</code> 或 <code>&lt;import&gt;</code> 时，<code>&lt;wxs&gt;</code> 模块不会被引入到对应的 WXML 文件中。</p>
+<p><code>&lt;template&gt;</code> 标签中，只能使用定义该 <code>&lt;template&gt;</code> 的 WXML 文件中定义的 <code>&lt;wxs&gt;</code> 模块.</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ol>
+<li>WXS 中的变量均为值的引用。</li>
+<li>没有声明的变量直接赋值使用，会被定义为全局变量。</li>
+<li>如果只声明变量而不赋值，则默认值为 undefined。</li>
+<li>var表现与javascript一致，会有变量提升</li>
+</ol>
+<p>…<br>其余的都与JavaScript相差不大，不再赘述。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>&lt;wxs&gt;</code> 模块只能在定义模块的 WXML 文件中被访问到。使用 <code>&lt;include&gt;</code> 或 <code>&lt;import&gt;</code> 时，<code>&lt;wxs&gt;</code> 模块不会被引入到对应的 WXML 文件中。</li>
+<li>&lt;<code>template&gt;</code> 标签中，只能使用定义该 <code>&lt;template&gt;</code> 的 WXML 文件中定义的 <code>&lt;wxs&gt;</code> 模块。</li>
+<li><em>不支持es6语法</em></li>
+</ol>
+<h1 id="小程序暗黑模式"><a href="#小程序暗黑模式" class="headerlink" title="小程序暗黑模式"></a>小程序暗黑模式</h1><p>当app.json中配置darkmode为true时，小程序部分配置项可通过变量的形式配置，在变量配置文件中定义不同主题下的颜色或图标，方法如下：</p>
+<ol>
+<li>在app.json中配置 themeLocation，指定变量配置文件 theme.json 路径，例如：在根目录下新增theme.json，需要配置”themeLocation”:”theme.json”</li>
+<li>在theme.json中定义相关变量；</li>
+<li>在app.json中以@开头引用变量。</li>
+</ol>
+<p>支持通过变量配置的属性：</p>
+<p>全局配置的 window 属性与页面配置下的属性</p>
+<ol>
+<li>navigationBarBackgroundColor</li>
+<li>navigationBarTextStyle</li>
+<li>backgroundColor</li>
+<li>backgroundTextStyle</li>
+<li>backgroundColorTop</li>
+<li>backgroundColorBottom</li>
+</ol>
+<p>全局配置 window.tabBar 的属性</p>
+<ol>
+<li>color</li>
+<li>selectedColor</li>
+<li>backgroundColor</li>
+<li>borderStyle</li>
+<li>list</li>
+<li>iconPath</li>
+<li>selectedIconPat</li>
+</ol>
+<p>相关配置：</p>
+<p>app.json</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">"themeLocation": "theme.json",</span><br><span class="line">"darkmode": true,</span><br><span class="line">"window": &#123;</span><br><span class="line">  "navigationBarBackgroundColor": "@navBgColor",</span><br><span class="line">  "navigationBarTextStyle": "@navTxtStyle",</span><br><span class="line">  "backgroundColor": "@bgColor",</span><br><span class="line">  "backgroundTextStyle": "@bgTxtStyle",</span><br><span class="line">  "backgroundColorTop": "@bgColorTop",</span><br><span class="line">  "backgroundColorBottom": "@bgColorBottom"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>theme.json</p>
+<p>必须包含 light、dark 属性</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"light"</span>: &#123;</span><br><span class="line">    <span class="attr">"navBgColor"</span>: <span class="string">"#f6f6f6"</span>,</span><br><span class="line">    <span class="attr">"navTxtStyle"</span>: <span class="string">"black"</span>,</span><br><span class="line">    <span class="attr">"bgColor"</span>: <span class="string">"#ffffff"</span>,</span><br><span class="line">    <span class="attr">"bgTxtStyle"</span>: <span class="string">"light"</span>,</span><br><span class="line">    <span class="attr">"bgColorTop"</span>: <span class="string">"#eeeeee"</span>,</span><br><span class="line">    <span class="attr">"bgColorBottom"</span>: <span class="string">"#efefef"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"dark"</span>: &#123;</span><br><span class="line">    <span class="attr">"navBgColor"</span>: <span class="string">"#191919"</span>,</span><br><span class="line">    <span class="attr">"navTxtStyle"</span>: <span class="string">"white"</span>,</span><br><span class="line">    <span class="attr">"bgColor"</span>: <span class="string">"#1f1f1f"</span>,</span><br><span class="line">    <span class="attr">"bgTxtStyle"</span>: <span class="string">"dark"</span>,</span><br><span class="line">    <span class="attr">"bgColorTop"</span>: <span class="string">"#191919"</span>,</span><br><span class="line">    <span class="attr">"bgColorBottom"</span>: <span class="string">"#1f1f1f"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Attention：</p>
+<ol>
+<li>在小程序中，若使用编译打包的形式，直接在app.js中写入时，如果打包出来的 theme.json 引入报错，可采用在 config 中 copy theme.json 文件 的方式</li>
+<li>必须配置darkmode和themeLocation才会生效</li>
+</ol>
+]]></content>
   </entry>
   <entry>
     <title>数据库中的锁</title>
