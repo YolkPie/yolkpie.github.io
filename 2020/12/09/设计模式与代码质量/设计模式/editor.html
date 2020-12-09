@@ -1,0 +1,14 @@
+<p><strong>编辑器插件</strong></p>
+<blockquote>
+<p>需求: 有前进，后退，改变字体，大小，颜色功能</p>
+</blockquote>
+<blockquote>
+<p>分析：<br>1、一般一个页面只有一个，不需要频繁创建<br>2、编辑器可能还要涉及到复杂的配置，需要精细化创建</p>
+</blockquote>
+<blockquote>
+<p>建造者模式</p>
+</blockquote>
+<pre><code class="js"><span class="comment">// html 初始化--&gt; 事件绑定 --&gt; 前进后退模块 --&gt;数据记录模块 --&gt; 字体控制模块 --&gt; 数据渲染模块</span>
+<span class="comment">// 前进后退： 一般都是数据驱动思维，</span>
+[{<span class="attr">color</span>:<span class="string">'red'</span>, <span class="attr">content</span>:<span class="string">'hello'</span>}, {<span class="attr">color</span>:<span class="string">'green'</span>, <span class="attr">content</span>:<span class="string">'hello'</span>}]
+</code></pre>

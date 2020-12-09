@@ -1,0 +1,82 @@
+<p><strong>观察者模式</strong></p>
+<blockquote>
+<p>需求：抽奖转盘，特点是越转越快，<br>模块分析： 奖品初始化html –&gt; 最终结果选定 –&gt; 转动控制 –&gt; 转动效果 </p>
+<blockquote>
+<p>转动控制模块 调用 转动效果模块，<br>转动效果只负责转动效果; 转完之后，询问控制模块接下来怎么转;<br>转动效果模块接收消息体{moveTime: 10, speed: 200} 多长时间内转动几个奖品 –&gt; setInterval 异步了，<br>转动控制与转动效果的沟通问题在于：转动控制不知道什么时候转动效果结束，因为转动速度是不恒定的</p>
+</blockquote>
+</blockquote>
+<pre><code class="js"><span class="comment">// 观察者三要素：队列，注册，触发</span>
+<span class="function"><span class="keyword">function</span> <span class="title">observer</span>(<span class="params">params</span>)</span>{
+  <span class="comment">// 1、队列</span>
+  <span class="keyword">this</span>.message = {
+
+  }
+}
+<span class="comment">// 2、注册</span>
+observer.prototype.regist = <span class="function"><span class="keyword">function</span>(<span class="params">type, fn</span>)</span>{
+  <span class="keyword">this</span>.message[key] = fn;
+}
+<span class="comment">// 3、触发</span>
+observer.prototype.fire = <span class="function"><span class="keyword">function</span>(<span class="params">type</span>)</span>{
+  <span class="keyword">this</span>.message[key]();
+}
+
+<span class="keyword">var</span> observerObj = <span class="keyword">new</span> observer();
+
+<span class="keyword">var</span> _domArr = [];
+<span class="function"><span class="keyword">function</span> <span class="title">htmlInt</span>(<span class="params">params</span>)</span>{
+  <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++){
+    _domArr.push(<span class="built_in">document</span>.body.append(<span class="string">`&lt;div&gt;<span class="subst">${i}</span>&lt;/div&gt;`</span>));
+  }
+}
+<span class="function"><span class="keyword">function</span> <span class="title">getResult</span>(<span class="params">params</span>)</span>{
+  <span class="keyword">let</span> _num = <span class="built_in">Math</span>.random() * <span class="number">10</span> + <span class="number">40</span>; <span class="comment">// 40是基础动画圈数</span>
+  <span class="keyword">return</span> <span class="built_in">Math</span>.floor(_num, <span class="number">0</span>);
+}
+<span class="function"><span class="keyword">function</span> <span class="title">moveControll</span>(<span class="params">params</span>)</span>{
+  <span class="keyword">let</span> result = getResult();
+  <span class="keyword">let</span> _circle = <span class="built_in">Math</span>.floor(result/<span class="number">10</span>, <span class="number">0</span>);<span class="comment">// 基础动画圈</span>
+  <span class="keyword">let</span> _runCircle = <span class="number">0</span>; <span class="comment">// 已经转了多少圈</span>
+  <span class="keyword">let</span> stopNum = result%<span class="number">10</span>; <span class="comment">// 最终停留的奖品数</span>
+  <span class="keyword">let</span> _speed = <span class="number">200</span>; <span class="comment">// 转速</span>
+  observerObj.regist(<span class="string">'finish'</span>, () =&gt; {
+    <span class="keyword">let</span> _time = <span class="number">0</span>; <span class="comment">// 应该转几个数</span>
+    _speed -=<span class="number">50</span>; <span class="comment">// 转一圈 速度加快50</span>
+    _runCircle++; <span class="comment">// 已转的圈数</span>
+    <span class="keyword">if</span>(_runCircle &lt;= _circle){ <span class="comment">// 未达到指定的圈数</span>
+      _time = <span class="number">10</span>; <span class="comment">// 继续转10个数</span>
+    } <span class="keyword">else</span> {
+      _time = stopNum;
+    }
+
+    move({<span class="attr">moveTime</span>: _time, <span class="attr">speed</span>: _speed});
+  });
+}
+<span class="comment">// 动画效果：1，2，3，4，5...10 依次高亮显示</span>
+<span class="function"><span class="keyword">function</span> <span class="title">move</span>(<span class="params">config</span>)</span>{
+  <span class="keyword">let</span> nowIn = <span class="number">0</span>;
+  <span class="keyword">let</span> rmNum = <span class="number">9</span>; <span class="comment">// 移除效果的索引</span>
+  <span class="keyword">let</span> timer = setInterval(<span class="function"><span class="params">()</span> =&gt;</span> {
+    <span class="comment">// 单独处理第10个跳第1个的情况</span>
+    <span class="keyword">if</span>(nowIn == <span class="number">0</span>){  <span class="comment">// 代码相似了，可以优化了</span>
+      _domArr[<span class="number">9</span>].setAttribute(<span class="string">'class'</span>, <span class="string">'item'</span>);
+      _domArr[nowIn].setAttribute(<span class="string">'class'</span>, <span class="string">'item item-on'</span>);
+    } <span class="keyword">else</span>{
+      _domArr[nowIn<span class="number">-1</span>].setAttribute(<span class="string">'class'</span>, <span class="string">'item'</span>);
+      _domArr[nowIn].setAttribute(<span class="string">'class'</span>, <span class="string">'item item-on'</span>);
+    }
+
+    <span class="comment">// 享元模式 </span>
+    <span class="comment">// if(nowIn != 9){</span>
+    <span class="comment">//   rmNum = nowIn--</span>
+    <span class="comment">// }</span>
+    <span class="comment">// _domArr[rmNum].setAttribute('class', 'item');</span>
+    <span class="comment">// _domArr[nowIn].setAttribute('class', 'item item-on');</span>
+
+    nowIn++;
+    <span class="keyword">if</span>(nowIn == config.moveTime){
+      clearInterval(timer);
+      observerObj.fire(<span class="string">'finish'</span>);
+    }
+  }, config.speed);
+}</code></pre>

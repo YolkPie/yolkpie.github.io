@@ -1,0 +1,16 @@
+<p><strong>弹框提示插件</strong></p>
+<blockquote>
+<p>分析： 因为一个页面的消息提示可能会很多，添加成功，添加失败，网络出错<br>会需要频繁创建对象，所以考虑用工厂模式实现</p>
+</blockquote>
+<pre><code class="js"><span class="comment">// 工厂模式实现 调用如下</span>
+pop(<span class="string">'message'</span>)
+<span class="comment">// OR</span>
+pop.confirm(<span class="string">'message'</span>)
+
+<span class="comment">// 建造者模式实现，调用如下</span>
+pop(<span class="string">'message'</span>)
+<span class="comment">// OR</span>
+<span class="keyword">let</span> popObj = <span class="keyword">new</span> pop(<span class="string">'message'</span>)
+popObj.show();
+
+<span class="comment">// 哪个用起来更方便， 虽然看起来只少了一个new</span></code></pre>

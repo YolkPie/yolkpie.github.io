@@ -1,0 +1,32 @@
+<p><strong>球类工厂</strong></p>
+<blockquote>
+<p>需求：我们要生产不同类型的球：basketball  footerball tennis(网球)…</p>
+</blockquote>
+<pre><code class="js"><span class="comment">// 球类工厂</span>
+<span class="function"><span class="keyword">function</span> <span class="title">ballFactory</span>(<span class="params">type</span>)</span>{
+
+  <span class="keyword">switch</span>(type){
+    <span class="keyword">case</span> <span class="string">'football'</span>:
+      <span class="keyword">return</span> <span class="keyword">new</span> football();
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'basketball'</span>:
+      <span class="keyword">return</span> <span class="keyword">new</span> basketball();
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'tennis'</span>:
+      <span class="keyword">return</span> <span class="keyword">new</span> tennis();
+      <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+      <span class="keyword">break</span>;
+  }
+
+  <span class="comment">// 可以在局部 </span>
+  <span class="function"><span class="keyword">function</span> <span class="title">football</span>(<span class="params"></span>)</span>{} 
+  <span class="function"><span class="keyword">function</span> <span class="title">basketball</span>(<span class="params"></span>)</span>{}
+  <span class="function"><span class="keyword">function</span> <span class="title">tennis</span>(<span class="params"></span>)</span>{}
+}
+
+<span class="comment">// 可以在原型链上</span>
+ball.prototype.football = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{}
+ball.prototype.basketball = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{}
+ball.prototype.tennis = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{}
+</code></pre>

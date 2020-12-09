@@ -1,0 +1,19 @@
+<p><strong>function 还可能是一个类</strong></p>
+<blockquote>
+<p>如何保证function被当作类调用，而不是当成方法调用？<br>关键点就在this上, 我们都知道this是方法执行时的上下文环境，<br>如果是一个类，那this就应当指向当前类的实例</p>
+</blockquote>
+<pre><code class="js"><span class="function"><span class="keyword">function</span> <span class="title">vue</span>(<span class="params"></span>)</span>{
+  <span class="keyword">if</span>(<span class="keyword">this</span> <span class="keyword">instanceof</span> vue){ <span class="comment">// 通过instanceof vue 判断this 是不是vue实例</span>
+    <span class="comment">// 类实例</span>
+  } <span class="keyword">else</span> {
+    <span class="comment">// 当作一个方法调用</span>
+    <span class="comment">// return new vue(); // 这样即使当一个方法调用 ，拿到的还是一个vue的实例</span>
+
+    <span class="comment">// 像一些框架之类的都会有这种措施  vue是这样</span>
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'vue is a constructor and should be called with the `new` keyword '</span>)
+  }
+}
+
+vue(); <span class="comment">// 直接调用时，this ---&gt; window</span>
+<span class="keyword">new</span> vue(); <span class="comment">// new 操作符调用时， this 指向vue实例 通过instanceof vue 可以判断</span>
+</code></pre>

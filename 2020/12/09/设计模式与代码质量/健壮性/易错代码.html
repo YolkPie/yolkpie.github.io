@@ -1,0 +1,9 @@
+<p>一般有两种方法: </p>
+<ul>
+<li>模拟一个这样的数据结构<pre><code class="js"><span class="keyword">let</span> item = (res.list || [])[<span class="number">0</span>];
+<span class="keyword">let</span> attrA = (item || {}).attrA;</code></pre>
+</li>
+<li>用&amp;&amp;操作符 先判断为空的情况<pre><code class="js"><span class="keyword">let</span> item = res.list &amp;&amp; res.list[<span class="number">0</span>]  <span class="comment">// 使用与操作符 判断为空的情况</span>
+<span class="keyword">let</span> attrA = item &amp;&amp; item.attrA;</code></pre>
+</li>
+</ul>

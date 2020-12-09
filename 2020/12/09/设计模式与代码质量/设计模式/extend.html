@@ -1,0 +1,21 @@
+<p><strong>jquery.extend 享元模式实现</strong></p>
+<blockquote>
+<p>extend实现的功能：<br>  $.extend({a:1}) // 会把对象扩展到$对象上$.a = 1; 为jquery对象扩展方法属性使用<br>  $.extend({a:1},{b:2}) // ==&gt; {a:1,b:2}</p>
+</blockquote>
+<pre><code class="js"><span class="comment">// 不用设计模式时，是这样实现的</span>
+$.extend = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+  <span class="comment">// 享元模式，提取不同点：</span>
+  <span class="comment">// 1、for in 的对象不同，</span>
+  <span class="comment">// 2、接收的对象不同</span>
+  <span class="keyword">let</span> source = <span class="built_in">arguments</span>[<span class="number">0</span>];
+  <span class="keyword">let</span> target = <span class="keyword">this</span>;
+  <span class="keyword">if</span>(<span class="built_in">arguments</span>.length === <span class="number">2</span>){
+    source = <span class="built_in">arguments</span>[<span class="number">1</span>];
+    target = <span class="built_in">arguments</span>[<span class="number">0</span>];
+  }
+  <span class="keyword">for</span>(<span class="keyword">let</span> item <span class="keyword">in</span> source){
+    target[item] = source[item]
+  }
+
+}</code></pre>
+<p><strong>总结应用场景： 两个if else 分支中，两段代码块非常相似时，就可以用享元模式了</strong></p>

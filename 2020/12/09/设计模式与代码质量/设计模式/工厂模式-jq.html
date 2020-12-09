@@ -1,0 +1,13 @@
+<p><strong>Jquery如何实现工厂模式的</strong></p>
+<pre><code class="js"><span class="comment">// 静态函数 jquery的实现</span>
+<span class="function"><span class="keyword">function</span> <span class="title">jquery</span>(<span class="params">params</span>)</span>{
+  <span class="keyword">return</span> <span class="keyword">new</span> jquery.fn.init(params);
+}
+jquery.fn = {};
+jquery.fn.init = <span class="function"><span class="keyword">function</span> (<span class="params">params</span>) </span>{};
+<span class="built_in">window</span>.$ = jquery;
+
+$(<span class="string">'.className'</span>);<span class="comment">// 实际是通过new jquery静态属性fn上的init方法</span></code></pre>
+<blockquote>
+<p>jquery是通过挂载一个静态属性实现的</p>
+</blockquote>
