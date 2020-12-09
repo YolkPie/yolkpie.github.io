@@ -1,0 +1,11 @@
+<pre><code class="js"><span class="comment">// 必传参数：  el template</span>
+<span class="comment">// 如何保证必传值不为空： 提供一个默认配置，把new时的入参与默认配置做合并</span>
+<span class="function"><span class="keyword">function</span> <span class="title">Vue</span>(<span class="params">config</span>)</span>{
+  <span class="keyword">let</span> _default = {
+    el: <span class="built_in">document</span>, 
+    template:<span class="string">'&lt;div&gt;&lt;/div&gt;'</span>
+  }
+  <span class="keyword">for</span>(<span class="keyword">let</span> key <span class="keyword">in</span> config){
+    _default[key] = config[key] || _default[key];
+  }
+}</code></pre>

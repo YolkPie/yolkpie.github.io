@@ -1,0 +1,14 @@
+<p><strong>Vue2 数组的双向绑定</strong></p>
+<pre><code class="js">
+<span class="comment">// 数组：利用装饰者模式，给数组的 push pop </span>
+<span class="keyword">let</span> arr = [<span class="string">'push'</span>, <span class="string">'pop'</span>, <span class="string">'shift'</span>]
+<span class="keyword">let</span> arrProto = <span class="built_in">Array</span>.prototype;
+<span class="keyword">let</span> arrCopy = <span class="built_in">Object</span>.create(arrProto); <span class="comment">// 为了不污染旧原型链，提前拷贝一份出来</span>
+arr.forEach(<span class="function"><span class="params">method</span> =&gt;</span> {
+  arrCopy[method] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>{
+    <span class="keyword">let</span> _ref = arrProto[method].apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);
+    dep.notify();<span class="comment">// 触发更新</span>
+  }
+})
+<span class="comment">// 把data里的所有数组，都变成这里的这个arrCopy</span>
+<span class="comment">// 主要是一些技巧</span></code></pre>

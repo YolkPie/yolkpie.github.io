@@ -1,0 +1,11 @@
+<pre><code class="js"><span class="comment">// vue-router install 方法</span>
+<span class="function"><span class="keyword">function</span> <span class="title">install</span>(<span class="params">Vue</span>)</span>{
+  <span class="keyword">let</span> _router = {}; <span class="comment">// 局部变量</span>
+  <span class="comment">// 屏蔽了set方法，使你给$router赋值时无效</span>
+  <span class="built_in">Object</span>.defineProperty(Vue.prototype, <span class="string">'$router'</span>, {
+    <span class="keyword">get</span>: function <span class="keyword">get</span> () { 
+      <span class="comment">// return this._routerRoot._router // 源码是这样的</span>
+      <span class="keyword">return</span> _router;
+    }
+  });
+}</code></pre>

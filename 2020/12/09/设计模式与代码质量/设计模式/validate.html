@@ -1,0 +1,73 @@
+<p><strong>表单验证工具</strong></p>
+<blockquote>
+<p>需求：写一个表单验证工具，给我要验证的input 值 value 变化时，应用对应的规则，自动验证<br>分析：<br>  1、首先是包含的模块：dom初始化模块 –&gt; 事件绑定模块 –&gt; 验证模块 –&gt; 消息提示模块<br>  2、一个页面上可能有多个需要验证的dom，所以适合工厂模式</p>
+</blockquote>
+<pre><code class="js"><span class="comment">// 1、防JQuery</span>
+<span class="function"><span class="keyword">function</span> <span class="title">t</span>(<span class="params">dom, msgDom</span>)</span>{
+  <span class="keyword">return</span> <span class="keyword">new</span> t.init(dom, msgDom);
+}
+t.init = <span class="function"><span class="keyword">function</span>(<span class="params">dom, msgDom</span>)</span>{
+  <span class="keyword">this</span>.dom = dom;
+  <span class="keyword">this</span>.msgDom = msgDom;
+  <span class="keyword">this</span>.validateArr = [];
+}
+<span class="comment">// 2、思考以后的扩展性，想想模块是否需要细化， 模块越细，扩展越方便</span>
+<span class="comment">// 验证模块变化最大，细化</span>
+<span class="comment">// 开启验证模块，验证队列模块</span>
+t.init.prototype.initBind = <span class="function"><span class="keyword">function</span>(<span class="params">params</span>)</span>{
+  <span class="keyword">let</span> self = <span class="keyword">this</span>;
+  <span class="keyword">this</span>.dom.onblur = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{
+    self.run(<span class="keyword">this</span>.value)
+  }
+}
+
+t.init.prototype.add = <span class="function"><span class="keyword">function</span>(<span class="params">fn</span>)</span>{
+  <span class="keyword">if</span>(<span class="keyword">typeof</span> fn === <span class="string">'function'</span>){
+    <span class="keyword">this</span>.validateArr.push(fn);
+  } <span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">typeof</span> fn === <span class="string">'string'</span>){
+    <span class="comment">// 预置的验证规则 下面这样写，可读性差，代码不清楚</span>
+    <span class="comment">// 引入设计模式解决</span>
+    <span class="comment">// if(fn === 'isPhone'){</span>
+    <span class="comment">//   this.validateArr.push(()=&gt;{/*手机号验证*/})</span>
+    <span class="comment">// } else if(fn === 'isNumber'){</span>
+    <span class="comment">//   this.validateArr.push(()=&gt;{/**是否是数字*/}) </span>
+    <span class="comment">// }</span>
+
+    <span class="comment">// 策略模式解决 </span>
+    <span class="comment">// 简单if-else可以很好解决</span>
+    <span class="keyword">let</span> strage = {
+      isPhone:<span class="function"><span class="keyword">function</span>(<span class="params">params</span>)</span>{},
+      isNumber: <span class="function"><span class="keyword">function</span>(<span class="params">params</span>)</span>{},
+      <span class="comment">// 更多验证规则</span>
+    }
+    <span class="keyword">this</span>.validateArr.push(strage[fn]);
+
+    <span class="comment">// 这里涉及的逻辑比较简单，如果逻辑更复杂一点，可能这一个简单的策略就无法解决</span>
+    <span class="comment">// 比如：由单一的条件变化，变成几个组合条件变化</span>
+
+    <span class="comment">// 状态模式</span>
+    <span class="comment">// 核心：根据对象不同的状态，让对象展示不同的行为， 相当于加了状态管理的策略模式</span>
+  }
+}
+
+t.init.prototype.run = <span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>{
+  <span class="keyword">while</span>(<span class="keyword">this</span>.validateArr.length &gt; <span class="number">0</span>){
+    <span class="comment">// _result 是约定好的验证结果的数据结构</span>
+    <span class="comment">// {success: true|false, msg:''}</span>
+    <span class="keyword">let</span> _result = <span class="keyword">this</span>.validateArr.shift().run(value);
+    <span class="keyword">if</span>(!_result.success){
+      <span class="keyword">this</span>.sendMsg(_result.msg);
+      <span class="keyword">break</span>;
+    }
+  }
+}
+
+t.init.prototype.sendMsg = <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>)</span>{
+  <span class="keyword">this</span>.msgDom.innerHtml = msg;
+}
+
+<span class="comment">// 后期的使用   职责链模式</span>
+t(<span class="string">'input'</span>, <span class="string">'errorMsg'</span>)
+  .add(<span class="string">'isPhone'</span>)
+  .add(<span class="function"><span class="params">()</span> =&gt;</span> {<span class="comment">/**自定义验证1 */</span>})
+  .add(<span class="function"><span class="params">()</span> =&gt;</span> {<span class="comment">/**自定义验证2 */</span>})</code></pre>

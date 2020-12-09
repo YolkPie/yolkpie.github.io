@@ -1,0 +1,9 @@
+<p><strong>参数类型</strong></p>
+<pre><code class="js"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>)</span>{
+  <span class="comment">// 1、基础参数类型判断</span>
+  <span class="keyword">if</span>(<span class="keyword">typeof</span> a === <span class="string">'number'</span> &amp;&amp; <span class="keyword">typeof</span> b === <span class="string">'number'</span>){
+    <span class="keyword">return</span> a + b;
+  } <span class="keyword">else</span> {
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'a or b is not a number'</span>)
+  }
+}</code></pre>

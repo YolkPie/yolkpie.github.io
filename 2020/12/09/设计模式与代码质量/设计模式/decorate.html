@@ -1,0 +1,29 @@
+<p><strong>装饰者模式</strong></p>
+<blockquote>
+<p>目的：不重写方法的扩展方法<br>应用场景：当一个方法需要扩展，但又不方便或不能去修改方法时 是公共的方法 或他人的方法 或原生方法 或第三方模块的方法<br>简单理解 在不去修改原方法的情况下，扩展方法的功能</p>
+</blockquote>
+<blockquote>
+<p>需求： 删除按钮–&gt; 点击可以删除 —&gt; 但没有提示  —&gt; 好多删除按钮都是这样实现，产品需求是要给出删除提示<br>分析：在原来的删除功能基础上，扩展出提示功能</p>
+<blockquote>
+<p>1、全部改写  2、找到原来定义，修改原方法，增加提示</p>
+</blockquote>
+</blockquote>
+<pre><code class="js"><span class="function"><span class="keyword">function</span> <span class="title">decorate</span>(<span class="params">dom, fn</span>)</span>{
+  <span class="comment">// 健壮性校验</span>
+  <span class="keyword">if</span>(<span class="keyword">typeof</span> dom.onClick === <span class="string">'function'</span>){
+    <span class="comment">// 装饰者 三步走</span>
+    <span class="comment">// 1、重写原方法，或定义新方法;</span>
+    <span class="comment">// 2、提取老方法，并调用</span>
+    <span class="comment">// 3、加入新方法</span>
+
+    <span class="keyword">let</span> _oldFn = dom.onClick; <span class="comment">// 在方法被重写前提取</span>
+    dom.onClick = <span class="function"><span class="keyword">function</span>(<span class="params">params</span>)</span>{
+      _oldFn.call(<span class="keyword">this</span>);
+      fn.call(<span class="keyword">this</span>);
+    }
+  }
+}
+<span class="comment">// 使用</span>
+decorate(<span class="string">'btnDel'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">params</span>)</span>{
+  <span class="built_in">console</span>.log(<span class="string">'删除成功'</span>)
+});</code></pre>

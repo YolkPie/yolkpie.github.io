@@ -1,0 +1,15 @@
+<pre><code class="js"><span class="comment">// Class1 是一个类</span>
+<span class="function"><span class="keyword">function</span> <span class="title">Class1</span>(<span class="params"></span>)</span>{
+
+}
+<span class="comment">// 这里有个方法fn 参数要求是Class1的实例</span>
+<span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params">obj</span>)</span>{
+  <span class="keyword">if</span>(obj <span class="keyword">instanceof</span> Class1){
+    <span class="comment">// dosomthing</span>
+  } <span class="keyword">else</span> {
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'obj 必须是 Class1的实例'</span>)
+  }
+}</code></pre>
+<blockquote>
+<p>这种情况在实际开发中可能用到的比较少，<br>但在自己造轮子的时候，这种情况就会非常多</p>
+</blockquote>

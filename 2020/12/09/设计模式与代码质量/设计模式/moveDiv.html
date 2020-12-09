@@ -1,0 +1,26 @@
+<p><strong>移动Div</strong></p>
+<blockquote>
+<p>需求2：一个div 实现 上、下、左、右、左上、左下、….这样移动<br>  moveDiv(‘left’) // 左移<br>  moveDiv(‘left’,’top’) // 左上移</p>
+</blockquote>
+<pre><code class="js"><span class="comment">// 用状态模式实现</span>
+<span class="comment">// 这时候moveDiv就成了一个类了，不是一个方法了</span>
+<span class="function"><span class="keyword">function</span> <span class="title">moveDiv</span>(<span class="params">params</span>)</span>{
+  <span class="keyword">this</span>.stateArr = [];<span class="comment">//因为存在复合运动的行为，所以需要一个数组去存储数据</span>
+}
+moveDiv.prototype.run = <span class="function"><span class="keyword">function</span>(<span class="params">params</span>)</span>{
+  <span class="comment">// arguments 类数组  将类数组转成真正数组</span>
+  <span class="comment">// 这里有几种方法把类数组转成数组？</span>
+  <span class="keyword">this</span>.stateArr = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);
+  <span class="comment">// 策略模式</span>
+  <span class="keyword">let</span> strage = {
+    left: moveLeft,
+    right:moveRight,
+    top:moveTop
+  };
+  <span class="keyword">this</span>.stateArr.forEach(<span class="function"><span class="params">state</span> =&gt;</span> {
+    strage[state]();
+  });
+}
+<span class="keyword">let</span> moveObj = <span class="keyword">new</span> moveDiv();
+moveObj.run(<span class="string">'left'</span>, <span class="string">'top'</span>);</code></pre>
+<p>  使用设计模式之后，这个模块的代码更简洁更易读了</p>
