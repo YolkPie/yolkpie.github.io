@@ -1371,6 +1371,301 @@
       </tags>
   </entry>
   <entry>
+    <title>Vue3迁移指南</title>
+    <url>/2020/09/27/Vue3%E8%BF%81%E7%A7%BB%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>Vue 3</code>已经正式发布，我们现有的项目基本都是基于<code>Vue 2</code>进行开发的，如何由<code>Vue 2.x</code>迁移到<code>Vue 3.x</code>，<a href="https://v3.cn.vuejs.org/guide/migration/introduction.html#%E6%A6%82%E8%A7%88" target="_blank" rel="noopener">官方文档</a>已经提供了迁移指南，本文是对官方迁移指南的总结。</p>
+<h2 id="重大改变"><a href="#重大改变" class="headerlink" title="重大改变"></a>重大改变</h2><p><code>Vue 3</code>相较于<code>Vue 2</code>有许多<code>Break Change</code>的重大改变，是我们在迁移时需要重点关注的：</p>
+<h3 id="全局API"><a href="#全局API" class="headerlink" title="全局API"></a>全局API</h3><ul>
+<li>变更为使用应用程序实例</li>
+<li>全局和内部API可以被<code>tree shaking</code></li>
+</ul>
+<h3 id="模版指令"><a href="#模版指令" class="headerlink" title="模版指令"></a>模版指令</h3><ul>
+<li><code>v-model</code>用法的变更</li>
+<li><code>v-for</code>节点上<code>key</code>用法的变更</li>
+<li><code>v-if</code>和<code>v-for</code>优先级的变更</li>
+<li><code>v-bind=&quot;object&quot;</code>合并策略的变更</li>
+<li><code>v-for</code>中的<code>ref</code>不再注册为<code>ref</code>数组</li>
+</ul>
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><ul>
+<li>只能使用普通函数创建功能组件</li>
+<li><code>functional</code>属性及选项被遗弃</li>
+<li>使用<code>defineAsyncComponent</code>创建异步组件</li>
+</ul>
+<h3 id="渲染函数"><a href="#渲染函数" class="headerlink" title="渲染函数"></a>渲染函数</h3><ul>
+<li>渲染函数的API变更</li>
+<li><code>$scopedSlots</code>property已删除，所有插槽都通过<code>$slots</code>作为函数暴露</li>
+<li>自定义指令的API和组组件的生命周期保持一致</li>
+<li>某些过渡<code>class</code>被重命名</li>
+<li>组件的<code>watch</code>选项和实例的<code>$watch</code>方法不再支持点分隔字符串路径</li>
+<li>应用程序容器的<code>innerHTML</code>将替换为根组件模版</li>
+</ul>
+<h3 id="其他改变"><a href="#其他改变" class="headerlink" title="其他改变"></a>其他改变</h3><ul>
+<li><code>destroyed</code>生命周期被重命名为<code>unmounted</code>，<code>beforeDestroy</code>被重命名为<code>beforeUnmount</code></li>
+<li>组件的默认属性不能访问<code>this</code></li>
+<li><code>data</code>选项应使用声明为函数</li>
+<li><code>mixin</code>的<code>data</code>与组件的<code>data</code>选项只进行简单的合并</li>
+<li><code>attribute</code>强制行为的变更</li>
+<li><code>&lt;template&gt;</code>在没有特殊的指令标记时，将被视为普通的元素，而不是渲染其内容</li>
+</ul>
+<h3 id="移除API"><a href="#移除API" class="headerlink" title="移除API"></a>移除API</h3><ul>
+<li>按键修饰符</li>
+<li>移除<code>$on</code>，<code>$off</code>和<code>$once</code>实例方法</li>
+<li>移除过滤器，建议使用计算属性或方法</li>
+<li>移除<code>inline-template</code>属性</li>
+<li>移除<code>$destroy</code>实例方法</li>
+</ul>
+<h2 id="全局API——createApp"><a href="#全局API——createApp" class="headerlink" title="全局API——createApp"></a>全局API——<code>createApp</code></h2><p><code>Vue 2.x</code>有许多全局API和配置，这些API和配置可以全局改变<code>Vue</code>的行为。例如，要创建全局组件，可以使用<code>Vue.component</code>。</p>
+<p>从技术上讲，<code>Vue 2</code>没有“app”的概念，我们定义的应用程序只是通过<code>new Vue()</code>创建的根<code>Vue</code>实例。从同一个<code>Vue</code>构造函数创建的每个根实例共享相同的全局配置，因此：</p>
+<ul>
+<li>全局配置使得在测试期间很容易意外地污染其他测试用例；</li>
+<li>全局配置使得在同一页面上的多个“app”之间共享同一个 Vue 副本非常困难。</li>
+</ul>
+<p><code>Vue 3.x</code>中引入了一个新的全局API：<code>createApp</code>，调用<code>createApp</code>返回一个应用实例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>任何全局改变 Vue 行为的 API 现在都会移动到应用实例上，以下是当前全局 API 及其相应实例 API 的表：</p>
+<table>
+<thead>
+<tr>
+<th>2.x 全局 API</th>
+<th>3.x 实例 API (app)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Vue.config</td>
+<td>app.config</td>
+</tr>
+<tr>
+<td>Vue.config.productionTip</td>
+<td>移除</td>
+</tr>
+<tr>
+<td>Vue.config.ignoredElements</td>
+<td>app.config.isCustomElement</td>
+</tr>
+<tr>
+<td>Vue.component</td>
+<td>app.component</td>
+</tr>
+<tr>
+<td>Vue.directive</td>
+<td>app.directive</td>
+</tr>
+<tr>
+<td>Vue.mixin</td>
+<td>app.mixin</td>
+</tr>
+<tr>
+<td>Vue.use</td>
+<td>app.use</td>
+</tr>
+</tbody></table>
+<p>使用<code>createApp(/* options */)</code>初始化后，应用实例<code>app</code>可用于挂载具有<code>app.mount(domTarget)</code>。</p>
+<p>Vue 3 应用程序实例还可以提供可由应用程序内的任何组件注入的依赖项：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在入口</span></span><br><span class="line">app.provide(<span class="string">'guide'</span>, <span class="string">'Vue 3 Guide'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在子组件</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  inject: &#123;</span><br><span class="line">    book: &#123;</span><br><span class="line">      <span class="keyword">from</span>: <span class="string">'guide'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  template: <span class="string">`&lt;div&gt;&#123;&#123; book &#125;&#125;&lt;/div&gt;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在应用程序之间共享配置 (如组件或指令) 的一种方法是创建工厂功能，如下所示：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> Foo <span class="keyword">from</span> <span class="string">'./Foo.vue'</span></span><br><span class="line"><span class="keyword">import</span> Bar <span class="keyword">from</span> <span class="string">'./Bar.vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> createMyApp = <span class="function"><span class="params">options</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> app = createApp(options)</span><br><span class="line">  app.directive(<span class="string">'focus'</span> <span class="comment">/* ... */</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> app</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">createMyApp(Foo).mount(<span class="string">'#foo'</span>)</span><br><span class="line">createMyApp(Bar).mount(<span class="string">'#bar'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="全局-API-Treeshaking"><a href="#全局-API-Treeshaking" class="headerlink" title="全局 API Treeshaking"></a>全局 API Treeshaking</h2><p>在<code>Vue 3</code>中，全局和内部<code>API</code>都经过了重构，并考虑到了<code>tree-shaking</code>的支持。因此，全局<code>API</code>现在只能作为<code>ES</code>模块构建的命名导出进行访问。例如，我们想要手动操作<code>DOM</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; nextTick &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line">nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 一些和DOM有关的东西</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>受影响的<code>API</code>如下：</p>
+<ul>
+<li>Vue.nextTick</li>
+<li>Vue.observable (用<code>Vue.reactive</code>替换)</li>
+<li>Vue.version</li>
+<li>Vue.compile</li>
+<li>Vue.set</li>
+<li>Vue.delete</li>
+</ul>
+<p>除了公共<code>API</code>，许多内部组件/帮助器现在也被导出为命名导出，只有当编译器的输出是这些特性时，才允许编译器导入这些特性，例如以下模板：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;transition&gt;</span><br><span class="line">  &lt;div v-show=<span class="string">"ok"</span>&gt;hello&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>transition&gt;</span><br></pre></td></tr></table></figure>
+
+<p>被编译为类似于以下的内容：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h, Transition, withDirectives, vShow &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> h(Transition, [withDirectives(h(<span class="string">'div'</span>, <span class="string">'hello'</span>), [[vShow, <span class="keyword">this</span>.ok]])])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这实际上意味着只有在应用程序实际使用了<code>Transition</code>组件时才会导入它。换句话说，如果应用程序没有任何 <code>Transition</code>组件，那么支持此功能的代码将不会出现在最终的捆绑包中。</p>
+<h2 id="v-model"><a href="#v-model" class="headerlink" title="v-model"></a>v-model</h2><ul>
+<li><code>v-model</code>prop和事件默认名称已更改</li>
+<li><code>v-bind</code>的<code>.sync</code>修饰符和组件的<code>model</code>选项已移除，可用<code>v-model</code>作为代替</li>
+<li>可以在同一个组件上使用多个<code>v-model</code>进行双向绑定</li>
+<li>可以自定义<code>v-model</code>修饰符</li>
+</ul>
+<p>在<code>Vue 2</code>中，开发者使用<code>v-model</code>指令必须使用名为<code>value</code>的<code>prop</code>。如果开发者出于不同的目的需要使用其他的<code>prop</code>，他们就不得不使用<code>v-bind.sync</code>。</p>
+<p>在<code>Vue 3</code>中，双向数据绑定的<code>API</code>已经标准化，减少了开发者在使用<code>v-model</code>指令时的混淆并且在使用 <code>v-model</code>指令时可以更加灵活。</p>
+<p>在<code>3.x</code>中，自定义组件上的<code>v-model</code>相当于传递了<code>modelValue prop</code>并接收抛出的 <code>update:modelValue</code>事件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;ChildComponent v-model=<span class="string">"pageTitle"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 简写: --&gt;</span><br><span class="line"></span><br><span class="line">&lt;ChildComponent</span><br><span class="line">  :modelValue=<span class="string">"pageTitle"</span></span><br><span class="line">  @update:modelValue=<span class="string">"pageTitle = $event"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>若需要更改<code>model</code>名称，而可以将一个<code>argument</code>传递给<code>model</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;ChildComponent v-model:title=<span class="string">"pageTitle"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 简写: --&gt;</span><br><span class="line"></span><br><span class="line">&lt;ChildComponent :title=<span class="string">"pageTitle"</span> @update:title=<span class="string">"pageTitle = $event"</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这也可以作为<code>.sync</code>修饰符的替代，而且允许我们在自定义组件上使用多个<code>v-model</code>：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;ChildComponent v-model:title=<span class="string">"pageTitle"</span> v-model:content=<span class="string">"pageContent"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 简写： --&gt;</span><br><span class="line"></span><br><span class="line">&lt;ChildComponent</span><br><span class="line">  :title=<span class="string">"pageTitle"</span></span><br><span class="line">  @update:title=<span class="string">"pageTitle = $event"</span></span><br><span class="line">  :content=<span class="string">"pageContent"</span></span><br><span class="line">  @update:content=<span class="string">"pageContent = $event"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="key-attribute"><a href="#key-attribute" class="headerlink" title="key attribute"></a>key attribute</h2><ul>
+<li>对于<code>v-if</code>/<code>v-else</code>/<code>v-else-if</code>的各分支项<code>key</code>将不再是必须的，因为现在<code>Vue</code>会自动生成唯一的<code>key</code></li>
+<li><code>&lt;template v-for&gt;</code>的<code>key</code>应该设置在<code>&lt;template&gt;</code>标签上 ，而不是设置在它的子节点上</li>
+</ul>
+<h2 id="v-if-与-v-for-的优先级对比"><a href="#v-if-与-v-for-的优先级对比" class="headerlink" title="v-if 与 v-for 的优先级对比"></a>v-if 与 v-for 的优先级对比</h2><p>两者作用于同一个元素上时<code>v-if</code>会拥有比<code>v-for</code>更高的优先级。由于语法上存在歧义，建议避免在同一元素上同时使用两者。比起在模板层面管理相关逻辑，更好的办法是通过创建计算属性筛选出列表，并以此创建可见元素。</p>
+<h2 id="v-bind-合并行为"><a href="#v-bind-合并行为" class="headerlink" title="v-bind 合并行为"></a>v-bind 合并行为</h2><p><code>v-bind</code>的绑定顺序会影响渲染结果，如果一个元素同时定义了<code>v-bind=&quot;object&quot;</code>和一个相同的单独的<code>property</code>，那么声明绑定的顺序决定了它们如何合并。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- template --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"red"</span> <span class="attr">v-bind</span>=<span class="string">"&#123; id: 'blue' &#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- result --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"blue"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- template --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-bind</span>=<span class="string">"&#123; id: 'blue' &#125;"</span> <span class="attr">id</span>=<span class="string">"red"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- result --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"red"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="v-for的Ref数组"><a href="#v-for的Ref数组" class="headerlink" title="v-for的Ref数组"></a>v-for的Ref数组</h2><p>在<code>Vue 2</code>中，在<code>v-for</code>里使用的<code>ref attribute</code>会用<code>ref</code>数组填充相应的<code>$refs property</code>。在<code>Vue 3</code>中，这样的用法将不再在<code>$ref</code>中自动创建数组。要从单个绑定获取多个<code>ref</code>，需要将<code>ref</code>绑定到一个更灵活的函数上：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-for</span>=<span class="string">"item in list"</span> <span class="attr">:ref</span>=<span class="string">"setItemRef"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ref, onBeforeUpdate, onUpdated &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  setup() &#123;</span><br><span class="line">    <span class="keyword">let</span> itemRefs = []</span><br><span class="line">    <span class="keyword">const</span> setItemRef = <span class="function"><span class="params">el</span> =&gt;</span> &#123;</span><br><span class="line">      itemRefs.push(el)</span><br><span class="line">    &#125;</span><br><span class="line">    onBeforeUpdate(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      itemRefs = []</span><br><span class="line">    &#125;)</span><br><span class="line">    onUpdated(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(itemRefs)</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      itemRefs,</span><br><span class="line">      setItemRef</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="函数式组件"><a href="#函数式组件" class="headerlink" title="函数式组件"></a>函数式组件</h2><ul>
+<li>在<code>3.x</code>中，函数式组件的性能提升可以忽略不计，因此建议只使用有状态的组件</li>
+<li>函数式组件只能使用接收<code>props</code>和<code>context</code>的普通函数创建</li>
+<li><code>functional attribute</code>在单文件组件 (SFC) <code>&lt;template&gt;</code>已被移除</li>
+<li><code>{ functional: true }</code>选项在通过函数创建组件已被移除</li>
+</ul>
+<p>在<code>Vue 3</code>中，所有的函数式组件都是用普通函数创建的，换句话说，不需要定义<code>{ functional: true }</code>组件选项。此外，现在不是在<code>render</code>函数中隐式提供<code>h</code>，而是全局导入<code>h</code>。</p>
+<h2 id="异步组件"><a href="#异步组件" class="headerlink" title="异步组件"></a>异步组件</h2><p>在<code>Vue 2</code>中异步组件是通过将组件定义为返回<code>Promise</code>的函数来创建的：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> asyncPage = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./NextPage.vue'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>或者，对于带有选项的更高阶的组件语法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> asyncPage = &#123;</span><br><span class="line">  component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./NextPage.vue'</span>),</span><br><span class="line">  delay: <span class="number">200</span>,</span><br><span class="line">  timeout: <span class="number">3000</span>,</span><br><span class="line">  error: ErrorComponent,</span><br><span class="line">  loading: LoadingComponent</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>Vue 3</code>中，由于函数式组件被定义为纯函数，因此异步组件的定义需要通过将其包装在新的<code>defineAsyncComponent</code>助手方法中来显式地定义，同时<code>component</code>选项现在被重命名为<code>loader</code>，以便准确地传达不能直接提供组件定义的信息：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineAsyncComponent &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> ErrorComponent <span class="keyword">from</span> <span class="string">'./components/ErrorComponent.vue'</span></span><br><span class="line"><span class="keyword">import</span> LoadingComponent <span class="keyword">from</span> <span class="string">'./components/LoadingComponent.vue'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 不带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPage = defineAsyncComponent(<span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./NextPage.vue'</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPageWithOptions = defineAsyncComponent(&#123;</span><br><span class="line">  loader: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./NextPage.vue'</span>),</span><br><span class="line">  delay: <span class="number">200</span>,</span><br><span class="line">  timeout: <span class="number">3000</span>,</span><br><span class="line">  errorComponent: ErrorComponent,</span><br><span class="line">  loadingComponent: LoadingComponent</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="渲染函数-API"><a href="#渲染函数-API" class="headerlink" title="渲染函数 API"></a>渲染函数 API</h2><p>在<code>Vue 3.x</code>中，<code>h</code>是全局导入的，而不是作为参数自动传入渲染函数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> h(<span class="string">'div'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="统一-Slot"><a href="#统一-Slot" class="headerlink" title="统一 Slot"></a>统一 Slot</h2><p>在<code>Vue 3.x</code>中，插槽被定义为当前节点的子对象，当你需要以编程方式引用作用域<code>slot</code>时，它们现在被统一到<code>$slots</code>选项中。</p>
+<h2 id="自定义指令"><a href="#自定义指令" class="headerlink" title="自定义指令"></a>自定义指令</h2><p>在<code>Vue 3</code>中，将自定义指令的API与组件的生命周期保持一致：</p>
+<ul>
+<li>bind → beforeMount，指令绑定到元素后发生，只发生一次。</li>
+<li>inserted → mounted，元素插入父 DOM 后发生。</li>
+<li>beforeUpdate，在元素本身更新之前调用。</li>
+<li>移除<code>update</code>，改用<code>updated</code>。</li>
+<li>componentUpdated → updated，组件和子级被更新，调用这个钩子。</li>
+<li>beforeUnmount，在卸载元素之前调用。</li>
+<li>unbind -&gt; unmounted，指令被移除，调用这个钩子。</li>
+</ul>
+<h2 id="过渡的-class-名更改"><a href="#过渡的-class-名更改" class="headerlink" title="过渡的 class 名更改"></a>过渡的 class 名更改</h2><p>过渡类名<code>v-enter</code>修改为<code>v-enter-from</code>、过渡类名<code>v-leave</code>修改为<code>v-leave-from</code>，变得更加明确易读。</p>
+<h2 id="在-prop-的默认函数中访问-this"><a href="#在-prop-的默认函数中访问-this" class="headerlink" title="在 prop 的默认函数中访问 this"></a>在 prop 的默认函数中访问 this</h2><p>在属性的默认函数中无法访问<code>this</code>，替代方案为：</p>
+<ul>
+<li>把组件接收到的原始 <code>prop</code>作为参数传递给默认函数；</li>
+<li>注入<code>API</code>可以在默认函数中使用：<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; inject &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    theme: &#123;</span><br><span class="line">      <span class="keyword">default</span> (props) &#123;</span><br><span class="line">        <span class="comment">// `props` 是传递给组件的原始值。</span></span><br><span class="line">        <span class="comment">// 在任何类型/默认强制转换之前</span></span><br><span class="line">        <span class="comment">// 也可以使用 `inject` 来访问注入的 property</span></span><br><span class="line">        <span class="keyword">return</span> inject(<span class="string">'theme'</span>, <span class="string">'default-theme'</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="Data-选项"><a href="#Data-选项" class="headerlink" title="Data 选项"></a>Data 选项</h2><p><code>data</code>组件选项声明不再接收纯<code>JavaScript object</code>，只接受返回<code>object</code>的<code>function</code>。当合并来自<code>mixin</code>或<code>extend</code>的多个<code>data</code>返回值时，是浅层次合并的而不是深层次合并的(只合并根级属性)。</p>
+<h2 id="attribute-强制行为"><a href="#attribute-强制行为" class="headerlink" title="attribute 强制行为"></a>attribute 强制行为</h2><p>删除枚举<code>attribute</code>的内部概念，并将这些<code>attribute</code>视为普通的非布尔<code>attribute</code>。</p>
+<p>2.x 和 3.x 行为的比较</p>
+<table>
+<thead>
+<tr>
+<th>Attributes</th>
+<th>v-bind value 2.x</th>
+<th>v-bind value 3.x</th>
+<th>HTML 输出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2.x “枚举attribute” i.e. contenteditable, draggable and spellcheck.</td>
+<td>undefined, false</td>
+<td>undefined, null</td>
+<td>移除</td>
+</tr>
+<tr>
+<td>2.x “枚举attribute” i.e. contenteditable, draggable and spellcheck.</td>
+<td>true, ‘true’, ‘’, 1, ‘foo’</td>
+<td>true, ‘true’</td>
+<td>“true”</td>
+</tr>
+<tr>
+<td>2.x “枚举attribute” i.e. contenteditable, draggable and spellcheck.</td>
+<td>null, ‘false’</td>
+<td>false, ‘false’</td>
+<td>“false”</td>
+</tr>
+<tr>
+<td>其他非布尔attribute eg. aria-checked, tabindex, alt, etc.</td>
+<td>undefined, null, false</td>
+<td>undefined, null</td>
+<td>移除</td>
+</tr>
+<tr>
+<td>其他非布尔attribute eg. aria-checked, tabindex, alt, etc.</td>
+<td>‘false’</td>
+<td>false, ‘false’</td>
+<td>“false”</td>
+</tr>
+</tbody></table>
+<h2 id="按键修饰符"><a href="#按键修饰符" class="headerlink" title="按键修饰符"></a>按键修饰符</h2><ul>
+<li>不再支持使用数字 (即键码) 作为<code>v-on</code>修饰符</li>
+<li>不再支持<code>config.keyCodes</code></li>
+</ul>
+<p>建议对任何要用作修饰符的键使用 kebab-cased (短横线) 大小写名称：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Vue 3 在 v-on 上使用 按键修饰符 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-on:keyup.delete</span>=<span class="string">"confirmDelete"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="事件-API"><a href="#事件-API" class="headerlink" title="事件 API"></a>事件 API</h2><p><code>$on</code>，<code>$off</code>和<code>$once</code>实例方法已被移除，应用实例不再实现事件触发接口，<code>$emit</code>仍然是现有<code>API</code>的一部分，因为它用于触发由父组件以声明方式附加的事件处理程序。</p>
+<h2 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h2><p>在<code>Vue 3.x</code>中，<code>filters</code>已删除，不再受支持。建议用方法调用或计算属性替换它们。</p>
+<h2 id="内联模板-Attribute"><a href="#内联模板-Attribute" class="headerlink" title="内联模板 Attribute"></a>内联模板 Attribute</h2><p>在<code>Vue 2.x</code>中，为子组件提供了<code>inline-template attribute</code>，以便将其内部内容用作模板，而不是将其作为分发内容：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">my-component</span> <span class="attr">inline-template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>它们被编译为组件自己的模板<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>不是父级所包含的内容。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">my-component</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在<code>Vue 3.x</code>中不再支持此功能，所有模板都直接写在<code>HTML</code>页面中。</p>
+<ul>
+<li><p>使用<code>&lt;script&gt;</code>标签：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/html"</span> id=<span class="string">"my-comp-template"</span>&gt;</span><br><span class="line">  &lt;div&gt;&#123;&#123; hello &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MyComp = &#123;</span><br><span class="line">  template: <span class="string">'#my-comp-template'</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>默认 Slot</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">my-comp</span> <span class="attr">v-slot</span>=<span class="string">"&#123; childState &#125;"</span>&gt;</span></span><br><span class="line">  &#123;&#123; parentMsg &#125;&#125; &#123;&#123; childState &#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">my-comp</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">  在子模板中，在传递时渲染默认slot</span></span><br><span class="line"><span class="comment">  在必要的private状态下。</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">:childState</span>=<span class="string">"childState"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="片段"><a href="#片段" class="headerlink" title="片段"></a>片段</h2><p>在<code>Vue 3</code>中，组件正式支持多根节点组件，即片段。</p>
+<h2 id="自定义元素"><a href="#自定义元素" class="headerlink" title="自定义元素"></a>自定义元素</h2><p>如果我们想添加在<code>Vue</code>外部定义的自定义元素 (例如使用<code>Web</code>组件<code>API</code>)，我们需要“指示”<code>Vue</code>将其视为自定义元素。以下面的模板为例：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plastic-button</span>&gt;</span><span class="tag">&lt;/<span class="name">plastic-button</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在<code>Vue 3.0</code>中，此检查在模板编译期间执行指示编译器将<code>&lt;plastic-button&gt;</code>视为自定义元素：</p>
+<ul>
+<li><p>如果使用生成步骤：将<code>isCustomElement</code>传递给<code>Vue</code>模板编译器，如果使用<code>vue-loader</code>，则应通过 <code>vue-loader</code>的<code>compilerOptions</code>选项传递：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack 中的配置</span></span><br><span class="line">rules: [</span><br><span class="line">  &#123;</span><br><span class="line">    test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">    use: <span class="string">'vue-loader'</span>,</span><br><span class="line">    options: &#123;</span><br><span class="line">      compilerOptions: &#123;</span><br><span class="line">        isCustomElement: <span class="function"><span class="params">tag</span> =&gt;</span> tag === <span class="string">'plastic-button'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果使用动态模板编译，请通过<code>app.config.isCustomElement</code>传递：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> app = Vue.createApp(&#123;&#125;)</span><br><span class="line">app.config.isCustomElement = <span class="function"><span class="params">tag</span> =&gt;</span> tag === <span class="string">'plastic-button'</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>自定义元素规范提供了一种将自定义元素用作自定义内置模板的方法，方法是向内置元素添加<code>is</code>属性。在<code>Vue 3.0</code>中，我们仅将<code>Vue</code>对<code>is</code>属性的特殊处理限制到<code>&lt;component&gt;</code>tag。</p>
+<ul>
+<li><p>在保留的<code>&lt;component&gt;</code>tag上使用时，它的行为将与<code>Vue 2.x</code>中完全相同；</p>
+</li>
+<li><p>在普通组件上使用时，它的行为将类似于普通 prop：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">foo</span> <span class="attr">is</span>=<span class="string">"bar"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>2.x 行为：渲染<code>bar</code>组件。</li>
+<li>3.x 行为：通过<code>is</code>prop渲染<code>foo</code>组件。</li>
+</ul>
+</li>
+<li><p>在普通元素上使用时，它将作为<code>is</code>选项传递给<code>createElement</code>调用，并作为原生<code>attribute</code>渲染，这支持使用自定义的内置元素。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">is</span>=<span class="string">"plastic-button"</span>&gt;</span>点击我！<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>2.x 行为：渲染 plastic-button 组件。</li>
+<li>3.x 行为：通过回调渲染原生的 button。<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.createElement(<span class="string">'button'</span>, &#123; <span class="attr">is</span>: <span class="string">'plastic-button'</span> &#125;)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<p>在<code>Vue 3.x</code>中引入了一个新的指令<code>v-is</code>，用于<code>DOM</code>内模板解析解决方案。<code>v-is</code>指令像一个动态的<code>2.x :is</code>绑定。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://v3.cn.vuejs.org/guide/migration/introduction.html#%E6%A6%82%E8%A7%88" target="_blank" rel="noopener">https://v3.cn.vuejs.org/guide/migration/introduction.html#%E6%A6%82%E8%A7%88</a></p>
+]]></content>
+      <categories>
+        <category>vue</category>
+      </categories>
+      <tags>
+        <tag>vue</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Vue CLI3和TypeScript项目实践</title>
     <url>/2020/06/19/VueCLI3%E5%92%8CTypeScript%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B5/</url>
     <content><![CDATA[<h2 id="typescript入门"><a href="#typescript入门" class="headerlink" title="typescript入门"></a>typescript入门</h2><h3 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h3><p>基本数据类型包括：boolean、number、string、null、undefined 以及 ES6 中的新类型 Symbol。</p>
@@ -2024,301 +2319,6 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
-    <title>Vue3迁移指南</title>
-    <url>/2020/09/27/Vue3%E8%BF%81%E7%A7%BB%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>Vue 3</code>已经正式发布，我们现有的项目基本都是基于<code>Vue 2</code>进行开发的，如何由<code>Vue 2.x</code>迁移到<code>Vue 3.x</code>，<a href="https://v3.cn.vuejs.org/guide/migration/introduction.html#%E6%A6%82%E8%A7%88" target="_blank" rel="noopener">官方文档</a>已经提供了迁移指南，本文是对官方迁移指南的总结。</p>
-<h2 id="重大改变"><a href="#重大改变" class="headerlink" title="重大改变"></a>重大改变</h2><p><code>Vue 3</code>相较于<code>Vue 2</code>有许多<code>Break Change</code>的重大改变，是我们在迁移时需要重点关注的：</p>
-<h3 id="全局API"><a href="#全局API" class="headerlink" title="全局API"></a>全局API</h3><ul>
-<li>变更为使用应用程序实例</li>
-<li>全局和内部API可以被<code>tree shaking</code></li>
-</ul>
-<h3 id="模版指令"><a href="#模版指令" class="headerlink" title="模版指令"></a>模版指令</h3><ul>
-<li><code>v-model</code>用法的变更</li>
-<li><code>v-for</code>节点上<code>key</code>用法的变更</li>
-<li><code>v-if</code>和<code>v-for</code>优先级的变更</li>
-<li><code>v-bind=&quot;object&quot;</code>合并策略的变更</li>
-<li><code>v-for</code>中的<code>ref</code>不再注册为<code>ref</code>数组</li>
-</ul>
-<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><ul>
-<li>只能使用普通函数创建功能组件</li>
-<li><code>functional</code>属性及选项被遗弃</li>
-<li>使用<code>defineAsyncComponent</code>创建异步组件</li>
-</ul>
-<h3 id="渲染函数"><a href="#渲染函数" class="headerlink" title="渲染函数"></a>渲染函数</h3><ul>
-<li>渲染函数的API变更</li>
-<li><code>$scopedSlots</code>property已删除，所有插槽都通过<code>$slots</code>作为函数暴露</li>
-<li>自定义指令的API和组组件的生命周期保持一致</li>
-<li>某些过渡<code>class</code>被重命名</li>
-<li>组件的<code>watch</code>选项和实例的<code>$watch</code>方法不再支持点分隔字符串路径</li>
-<li>应用程序容器的<code>innerHTML</code>将替换为根组件模版</li>
-</ul>
-<h3 id="其他改变"><a href="#其他改变" class="headerlink" title="其他改变"></a>其他改变</h3><ul>
-<li><code>destroyed</code>生命周期被重命名为<code>unmounted</code>，<code>beforeDestroy</code>被重命名为<code>beforeUnmount</code></li>
-<li>组件的默认属性不能访问<code>this</code></li>
-<li><code>data</code>选项应使用声明为函数</li>
-<li><code>mixin</code>的<code>data</code>与组件的<code>data</code>选项只进行简单的合并</li>
-<li><code>attribute</code>强制行为的变更</li>
-<li><code>&lt;template&gt;</code>在没有特殊的指令标记时，将被视为普通的元素，而不是渲染其内容</li>
-</ul>
-<h3 id="移除API"><a href="#移除API" class="headerlink" title="移除API"></a>移除API</h3><ul>
-<li>按键修饰符</li>
-<li>移除<code>$on</code>，<code>$off</code>和<code>$once</code>实例方法</li>
-<li>移除过滤器，建议使用计算属性或方法</li>
-<li>移除<code>inline-template</code>属性</li>
-<li>移除<code>$destroy</code>实例方法</li>
-</ul>
-<h2 id="全局API——createApp"><a href="#全局API——createApp" class="headerlink" title="全局API——createApp"></a>全局API——<code>createApp</code></h2><p><code>Vue 2.x</code>有许多全局API和配置，这些API和配置可以全局改变<code>Vue</code>的行为。例如，要创建全局组件，可以使用<code>Vue.component</code>。</p>
-<p>从技术上讲，<code>Vue 2</code>没有“app”的概念，我们定义的应用程序只是通过<code>new Vue()</code>创建的根<code>Vue</code>实例。从同一个<code>Vue</code>构造函数创建的每个根实例共享相同的全局配置，因此：</p>
-<ul>
-<li>全局配置使得在测试期间很容易意外地污染其他测试用例；</li>
-<li>全局配置使得在同一页面上的多个“app”之间共享同一个 Vue 副本非常困难。</li>
-</ul>
-<p><code>Vue 3.x</code>中引入了一个新的全局API：<code>createApp</code>，调用<code>createApp</code>返回一个应用实例：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = createApp(&#123;&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>任何全局改变 Vue 行为的 API 现在都会移动到应用实例上，以下是当前全局 API 及其相应实例 API 的表：</p>
-<table>
-<thead>
-<tr>
-<th>2.x 全局 API</th>
-<th>3.x 实例 API (app)</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Vue.config</td>
-<td>app.config</td>
-</tr>
-<tr>
-<td>Vue.config.productionTip</td>
-<td>移除</td>
-</tr>
-<tr>
-<td>Vue.config.ignoredElements</td>
-<td>app.config.isCustomElement</td>
-</tr>
-<tr>
-<td>Vue.component</td>
-<td>app.component</td>
-</tr>
-<tr>
-<td>Vue.directive</td>
-<td>app.directive</td>
-</tr>
-<tr>
-<td>Vue.mixin</td>
-<td>app.mixin</td>
-</tr>
-<tr>
-<td>Vue.use</td>
-<td>app.use</td>
-</tr>
-</tbody></table>
-<p>使用<code>createApp(/* options */)</code>初始化后，应用实例<code>app</code>可用于挂载具有<code>app.mount(domTarget)</code>。</p>
-<p>Vue 3 应用程序实例还可以提供可由应用程序内的任何组件注入的依赖项：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在入口</span></span><br><span class="line">app.provide(<span class="string">'guide'</span>, <span class="string">'Vue 3 Guide'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在子组件</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  inject: &#123;</span><br><span class="line">    book: &#123;</span><br><span class="line">      <span class="keyword">from</span>: <span class="string">'guide'</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  template: <span class="string">`&lt;div&gt;&#123;&#123; book &#125;&#125;&lt;/div&gt;`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在应用程序之间共享配置 (如组件或指令) 的一种方法是创建工厂功能，如下所示：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> Foo <span class="keyword">from</span> <span class="string">'./Foo.vue'</span></span><br><span class="line"><span class="keyword">import</span> Bar <span class="keyword">from</span> <span class="string">'./Bar.vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> createMyApp = <span class="function"><span class="params">options</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> app = createApp(options)</span><br><span class="line">  app.directive(<span class="string">'focus'</span> <span class="comment">/* ... */</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> app</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">createMyApp(Foo).mount(<span class="string">'#foo'</span>)</span><br><span class="line">createMyApp(Bar).mount(<span class="string">'#bar'</span>)</span><br></pre></td></tr></table></figure>
-
-<h2 id="全局-API-Treeshaking"><a href="#全局-API-Treeshaking" class="headerlink" title="全局 API Treeshaking"></a>全局 API Treeshaking</h2><p>在<code>Vue 3</code>中，全局和内部<code>API</code>都经过了重构，并考虑到了<code>tree-shaking</code>的支持。因此，全局<code>API</code>现在只能作为<code>ES</code>模块构建的命名导出进行访问。例如，我们想要手动操作<code>DOM</code>：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; nextTick &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line">nextTick(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 一些和DOM有关的东西</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>受影响的<code>API</code>如下：</p>
-<ul>
-<li>Vue.nextTick</li>
-<li>Vue.observable (用<code>Vue.reactive</code>替换)</li>
-<li>Vue.version</li>
-<li>Vue.compile</li>
-<li>Vue.set</li>
-<li>Vue.delete</li>
-</ul>
-<p>除了公共<code>API</code>，许多内部组件/帮助器现在也被导出为命名导出，只有当编译器的输出是这些特性时，才允许编译器导入这些特性，例如以下模板：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;transition&gt;</span><br><span class="line">  &lt;div v-show=<span class="string">"ok"</span>&gt;hello&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>transition&gt;</span><br></pre></td></tr></table></figure>
-
-<p>被编译为类似于以下的内容：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h, Transition, withDirectives, vShow &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> h(Transition, [withDirectives(h(<span class="string">'div'</span>, <span class="string">'hello'</span>), [[vShow, <span class="keyword">this</span>.ok]])])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这实际上意味着只有在应用程序实际使用了<code>Transition</code>组件时才会导入它。换句话说，如果应用程序没有任何 <code>Transition</code>组件，那么支持此功能的代码将不会出现在最终的捆绑包中。</p>
-<h2 id="v-model"><a href="#v-model" class="headerlink" title="v-model"></a>v-model</h2><ul>
-<li><code>v-model</code>prop和事件默认名称已更改</li>
-<li><code>v-bind</code>的<code>.sync</code>修饰符和组件的<code>model</code>选项已移除，可用<code>v-model</code>作为代替</li>
-<li>可以在同一个组件上使用多个<code>v-model</code>进行双向绑定</li>
-<li>可以自定义<code>v-model</code>修饰符</li>
-</ul>
-<p>在<code>Vue 2</code>中，开发者使用<code>v-model</code>指令必须使用名为<code>value</code>的<code>prop</code>。如果开发者出于不同的目的需要使用其他的<code>prop</code>，他们就不得不使用<code>v-bind.sync</code>。</p>
-<p>在<code>Vue 3</code>中，双向数据绑定的<code>API</code>已经标准化，减少了开发者在使用<code>v-model</code>指令时的混淆并且在使用 <code>v-model</code>指令时可以更加灵活。</p>
-<p>在<code>3.x</code>中，自定义组件上的<code>v-model</code>相当于传递了<code>modelValue prop</code>并接收抛出的 <code>update:modelValue</code>事件：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;ChildComponent v-model=<span class="string">"pageTitle"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 简写: --&gt;</span><br><span class="line"></span><br><span class="line">&lt;ChildComponent</span><br><span class="line">  :modelValue=<span class="string">"pageTitle"</span></span><br><span class="line">  @update:modelValue=<span class="string">"pageTitle = $event"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
-
-<p>若需要更改<code>model</code>名称，而可以将一个<code>argument</code>传递给<code>model</code>：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;ChildComponent v-model:title=<span class="string">"pageTitle"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 简写: --&gt;</span><br><span class="line"></span><br><span class="line">&lt;ChildComponent :title=<span class="string">"pageTitle"</span> @update:title=<span class="string">"pageTitle = $event"</span> /&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这也可以作为<code>.sync</code>修饰符的替代，而且允许我们在自定义组件上使用多个<code>v-model</code>：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;ChildComponent v-model:title=<span class="string">"pageTitle"</span> v-model:content=<span class="string">"pageContent"</span> /&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 简写： --&gt;</span><br><span class="line"></span><br><span class="line">&lt;ChildComponent</span><br><span class="line">  :title=<span class="string">"pageTitle"</span></span><br><span class="line">  @update:title=<span class="string">"pageTitle = $event"</span></span><br><span class="line">  :content=<span class="string">"pageContent"</span></span><br><span class="line">  @update:content=<span class="string">"pageContent = $event"</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="key-attribute"><a href="#key-attribute" class="headerlink" title="key attribute"></a>key attribute</h2><ul>
-<li>对于<code>v-if</code>/<code>v-else</code>/<code>v-else-if</code>的各分支项<code>key</code>将不再是必须的，因为现在<code>Vue</code>会自动生成唯一的<code>key</code></li>
-<li><code>&lt;template v-for&gt;</code>的<code>key</code>应该设置在<code>&lt;template&gt;</code>标签上 ，而不是设置在它的子节点上</li>
-</ul>
-<h2 id="v-if-与-v-for-的优先级对比"><a href="#v-if-与-v-for-的优先级对比" class="headerlink" title="v-if 与 v-for 的优先级对比"></a>v-if 与 v-for 的优先级对比</h2><p>两者作用于同一个元素上时<code>v-if</code>会拥有比<code>v-for</code>更高的优先级。由于语法上存在歧义，建议避免在同一元素上同时使用两者。比起在模板层面管理相关逻辑，更好的办法是通过创建计算属性筛选出列表，并以此创建可见元素。</p>
-<h2 id="v-bind-合并行为"><a href="#v-bind-合并行为" class="headerlink" title="v-bind 合并行为"></a>v-bind 合并行为</h2><p><code>v-bind</code>的绑定顺序会影响渲染结果，如果一个元素同时定义了<code>v-bind=&quot;object&quot;</code>和一个相同的单独的<code>property</code>，那么声明绑定的顺序决定了它们如何合并。</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- template --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"red"</span> <span class="attr">v-bind</span>=<span class="string">"&#123; id: 'blue' &#125;"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- result --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"blue"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- template --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-bind</span>=<span class="string">"&#123; id: 'blue' &#125;"</span> <span class="attr">id</span>=<span class="string">"red"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- result --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"red"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="v-for的Ref数组"><a href="#v-for的Ref数组" class="headerlink" title="v-for的Ref数组"></a>v-for的Ref数组</h2><p>在<code>Vue 2</code>中，在<code>v-for</code>里使用的<code>ref attribute</code>会用<code>ref</code>数组填充相应的<code>$refs property</code>。在<code>Vue 3</code>中，这样的用法将不再在<code>$ref</code>中自动创建数组。要从单个绑定获取多个<code>ref</code>，需要将<code>ref</code>绑定到一个更灵活的函数上：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">v-for</span>=<span class="string">"item in list"</span> <span class="attr">:ref</span>=<span class="string">"setItemRef"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ref, onBeforeUpdate, onUpdated &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  setup() &#123;</span><br><span class="line">    <span class="keyword">let</span> itemRefs = []</span><br><span class="line">    <span class="keyword">const</span> setItemRef = <span class="function"><span class="params">el</span> =&gt;</span> &#123;</span><br><span class="line">      itemRefs.push(el)</span><br><span class="line">    &#125;</span><br><span class="line">    onBeforeUpdate(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      itemRefs = []</span><br><span class="line">    &#125;)</span><br><span class="line">    onUpdated(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(itemRefs)</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      itemRefs,</span><br><span class="line">      setItemRef</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="函数式组件"><a href="#函数式组件" class="headerlink" title="函数式组件"></a>函数式组件</h2><ul>
-<li>在<code>3.x</code>中，函数式组件的性能提升可以忽略不计，因此建议只使用有状态的组件</li>
-<li>函数式组件只能使用接收<code>props</code>和<code>context</code>的普通函数创建</li>
-<li><code>functional attribute</code>在单文件组件 (SFC) <code>&lt;template&gt;</code>已被移除</li>
-<li><code>{ functional: true }</code>选项在通过函数创建组件已被移除</li>
-</ul>
-<p>在<code>Vue 3</code>中，所有的函数式组件都是用普通函数创建的，换句话说，不需要定义<code>{ functional: true }</code>组件选项。此外，现在不是在<code>render</code>函数中隐式提供<code>h</code>，而是全局导入<code>h</code>。</p>
-<h2 id="异步组件"><a href="#异步组件" class="headerlink" title="异步组件"></a>异步组件</h2><p>在<code>Vue 2</code>中异步组件是通过将组件定义为返回<code>Promise</code>的函数来创建的：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> asyncPage = <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./NextPage.vue'</span>)</span><br></pre></td></tr></table></figure>
-
-<p>或者，对于带有选项的更高阶的组件语法：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> asyncPage = &#123;</span><br><span class="line">  component: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./NextPage.vue'</span>),</span><br><span class="line">  delay: <span class="number">200</span>,</span><br><span class="line">  timeout: <span class="number">3000</span>,</span><br><span class="line">  error: ErrorComponent,</span><br><span class="line">  loading: LoadingComponent</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在<code>Vue 3</code>中，由于函数式组件被定义为纯函数，因此异步组件的定义需要通过将其包装在新的<code>defineAsyncComponent</code>助手方法中来显式地定义，同时<code>component</code>选项现在被重命名为<code>loader</code>，以便准确地传达不能直接提供组件定义的信息：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineAsyncComponent &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"><span class="keyword">import</span> ErrorComponent <span class="keyword">from</span> <span class="string">'./components/ErrorComponent.vue'</span></span><br><span class="line"><span class="keyword">import</span> LoadingComponent <span class="keyword">from</span> <span class="string">'./components/LoadingComponent.vue'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 不带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPage = defineAsyncComponent(<span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./NextPage.vue'</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 带选项的异步组件</span></span><br><span class="line"><span class="keyword">const</span> asyncPageWithOptions = defineAsyncComponent(&#123;</span><br><span class="line">  loader: <span class="function"><span class="params">()</span> =&gt;</span> <span class="keyword">import</span>(<span class="string">'./NextPage.vue'</span>),</span><br><span class="line">  delay: <span class="number">200</span>,</span><br><span class="line">  timeout: <span class="number">3000</span>,</span><br><span class="line">  errorComponent: ErrorComponent,</span><br><span class="line">  loadingComponent: LoadingComponent</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<h2 id="渲染函数-API"><a href="#渲染函数-API" class="headerlink" title="渲染函数 API"></a>渲染函数 API</h2><p>在<code>Vue 3.x</code>中，<code>h</code>是全局导入的，而不是作为参数自动传入渲染函数：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; h &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> h(<span class="string">'div'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="统一-Slot"><a href="#统一-Slot" class="headerlink" title="统一 Slot"></a>统一 Slot</h2><p>在<code>Vue 3.x</code>中，插槽被定义为当前节点的子对象，当你需要以编程方式引用作用域<code>slot</code>时，它们现在被统一到<code>$slots</code>选项中。</p>
-<h2 id="自定义指令"><a href="#自定义指令" class="headerlink" title="自定义指令"></a>自定义指令</h2><p>在<code>Vue 3</code>中，将自定义指令的API与组件的生命周期保持一致：</p>
-<ul>
-<li>bind → beforeMount，指令绑定到元素后发生，只发生一次。</li>
-<li>inserted → mounted，元素插入父 DOM 后发生。</li>
-<li>beforeUpdate，在元素本身更新之前调用。</li>
-<li>移除<code>update</code>，改用<code>updated</code>。</li>
-<li>componentUpdated → updated，组件和子级被更新，调用这个钩子。</li>
-<li>beforeUnmount，在卸载元素之前调用。</li>
-<li>unbind -&gt; unmounted，指令被移除，调用这个钩子。</li>
-</ul>
-<h2 id="过渡的-class-名更改"><a href="#过渡的-class-名更改" class="headerlink" title="过渡的 class 名更改"></a>过渡的 class 名更改</h2><p>过渡类名<code>v-enter</code>修改为<code>v-enter-from</code>、过渡类名<code>v-leave</code>修改为<code>v-leave-from</code>，变得更加明确易读。</p>
-<h2 id="在-prop-的默认函数中访问-this"><a href="#在-prop-的默认函数中访问-this" class="headerlink" title="在 prop 的默认函数中访问 this"></a>在 prop 的默认函数中访问 this</h2><p>在属性的默认函数中无法访问<code>this</code>，替代方案为：</p>
-<ul>
-<li>把组件接收到的原始 <code>prop</code>作为参数传递给默认函数；</li>
-<li>注入<code>API</code>可以在默认函数中使用：<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; inject &#125; <span class="keyword">from</span> <span class="string">'vue'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  props: &#123;</span><br><span class="line">    theme: &#123;</span><br><span class="line">      <span class="keyword">default</span> (props) &#123;</span><br><span class="line">        <span class="comment">// `props` 是传递给组件的原始值。</span></span><br><span class="line">        <span class="comment">// 在任何类型/默认强制转换之前</span></span><br><span class="line">        <span class="comment">// 也可以使用 `inject` 来访问注入的 property</span></span><br><span class="line">        <span class="keyword">return</span> inject(<span class="string">'theme'</span>, <span class="string">'default-theme'</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h2 id="Data-选项"><a href="#Data-选项" class="headerlink" title="Data 选项"></a>Data 选项</h2><p><code>data</code>组件选项声明不再接收纯<code>JavaScript object</code>，只接受返回<code>object</code>的<code>function</code>。当合并来自<code>mixin</code>或<code>extend</code>的多个<code>data</code>返回值时，是浅层次合并的而不是深层次合并的(只合并根级属性)。</p>
-<h2 id="attribute-强制行为"><a href="#attribute-强制行为" class="headerlink" title="attribute 强制行为"></a>attribute 强制行为</h2><p>删除枚举<code>attribute</code>的内部概念，并将这些<code>attribute</code>视为普通的非布尔<code>attribute</code>。</p>
-<p>2.x 和 3.x 行为的比较</p>
-<table>
-<thead>
-<tr>
-<th>Attributes</th>
-<th>v-bind value 2.x</th>
-<th>v-bind value 3.x</th>
-<th>HTML 输出</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>2.x “枚举attribute” i.e. contenteditable, draggable and spellcheck.</td>
-<td>undefined, false</td>
-<td>undefined, null</td>
-<td>移除</td>
-</tr>
-<tr>
-<td>2.x “枚举attribute” i.e. contenteditable, draggable and spellcheck.</td>
-<td>true, ‘true’, ‘’, 1, ‘foo’</td>
-<td>true, ‘true’</td>
-<td>“true”</td>
-</tr>
-<tr>
-<td>2.x “枚举attribute” i.e. contenteditable, draggable and spellcheck.</td>
-<td>null, ‘false’</td>
-<td>false, ‘false’</td>
-<td>“false”</td>
-</tr>
-<tr>
-<td>其他非布尔attribute eg. aria-checked, tabindex, alt, etc.</td>
-<td>undefined, null, false</td>
-<td>undefined, null</td>
-<td>移除</td>
-</tr>
-<tr>
-<td>其他非布尔attribute eg. aria-checked, tabindex, alt, etc.</td>
-<td>‘false’</td>
-<td>false, ‘false’</td>
-<td>“false”</td>
-</tr>
-</tbody></table>
-<h2 id="按键修饰符"><a href="#按键修饰符" class="headerlink" title="按键修饰符"></a>按键修饰符</h2><ul>
-<li>不再支持使用数字 (即键码) 作为<code>v-on</code>修饰符</li>
-<li>不再支持<code>config.keyCodes</code></li>
-</ul>
-<p>建议对任何要用作修饰符的键使用 kebab-cased (短横线) 大小写名称：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Vue 3 在 v-on 上使用 按键修饰符 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">v-on:keyup.delete</span>=<span class="string">"confirmDelete"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="事件-API"><a href="#事件-API" class="headerlink" title="事件 API"></a>事件 API</h2><p><code>$on</code>，<code>$off</code>和<code>$once</code>实例方法已被移除，应用实例不再实现事件触发接口，<code>$emit</code>仍然是现有<code>API</code>的一部分，因为它用于触发由父组件以声明方式附加的事件处理程序。</p>
-<h2 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h2><p>在<code>Vue 3.x</code>中，<code>filters</code>已删除，不再受支持。建议用方法调用或计算属性替换它们。</p>
-<h2 id="内联模板-Attribute"><a href="#内联模板-Attribute" class="headerlink" title="内联模板 Attribute"></a>内联模板 Attribute</h2><p>在<code>Vue 2.x</code>中，为子组件提供了<code>inline-template attribute</code>，以便将其内部内容用作模板，而不是将其作为分发内容：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">my-component</span> <span class="attr">inline-template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>它们被编译为组件自己的模板<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>不是父级所包含的内容。<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">my-component</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>在<code>Vue 3.x</code>中不再支持此功能，所有模板都直接写在<code>HTML</code>页面中。</p>
-<ul>
-<li><p>使用<code>&lt;script&gt;</code>标签：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/html"</span> id=<span class="string">"my-comp-template"</span>&gt;</span><br><span class="line">  &lt;div&gt;&#123;&#123; hello &#125;&#125;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>script&gt;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MyComp = &#123;</span><br><span class="line">  template: <span class="string">'#my-comp-template'</span></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>默认 Slot</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">my-comp</span> <span class="attr">v-slot</span>=<span class="string">"&#123; childState &#125;"</span>&gt;</span></span><br><span class="line">  &#123;&#123; parentMsg &#125;&#125; &#123;&#123; childState &#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">my-comp</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">  在子模板中，在传递时渲染默认slot</span></span><br><span class="line"><span class="comment">  在必要的private状态下。</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">slot</span> <span class="attr">:childState</span>=<span class="string">"childState"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h2 id="片段"><a href="#片段" class="headerlink" title="片段"></a>片段</h2><p>在<code>Vue 3</code>中，组件正式支持多根节点组件，即片段。</p>
-<h2 id="自定义元素"><a href="#自定义元素" class="headerlink" title="自定义元素"></a>自定义元素</h2><p>如果我们想添加在<code>Vue</code>外部定义的自定义元素 (例如使用<code>Web</code>组件<code>API</code>)，我们需要“指示”<code>Vue</code>将其视为自定义元素。以下面的模板为例：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plastic-button</span>&gt;</span><span class="tag">&lt;/<span class="name">plastic-button</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>在<code>Vue 3.0</code>中，此检查在模板编译期间执行指示编译器将<code>&lt;plastic-button&gt;</code>视为自定义元素：</p>
-<ul>
-<li><p>如果使用生成步骤：将<code>isCustomElement</code>传递给<code>Vue</code>模板编译器，如果使用<code>vue-loader</code>，则应通过 <code>vue-loader</code>的<code>compilerOptions</code>选项传递：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack 中的配置</span></span><br><span class="line">rules: [</span><br><span class="line">  &#123;</span><br><span class="line">    test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">    use: <span class="string">'vue-loader'</span>,</span><br><span class="line">    options: &#123;</span><br><span class="line">      compilerOptions: &#123;</span><br><span class="line">        isCustomElement: <span class="function"><span class="params">tag</span> =&gt;</span> tag === <span class="string">'plastic-button'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>如果使用动态模板编译，请通过<code>app.config.isCustomElement</code>传递：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> app = Vue.createApp(&#123;&#125;)</span><br><span class="line">app.config.isCustomElement = <span class="function"><span class="params">tag</span> =&gt;</span> tag === <span class="string">'plastic-button'</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p>自定义元素规范提供了一种将自定义元素用作自定义内置模板的方法，方法是向内置元素添加<code>is</code>属性。在<code>Vue 3.0</code>中，我们仅将<code>Vue</code>对<code>is</code>属性的特殊处理限制到<code>&lt;component&gt;</code>tag。</p>
-<ul>
-<li><p>在保留的<code>&lt;component&gt;</code>tag上使用时，它的行为将与<code>Vue 2.x</code>中完全相同；</p>
-</li>
-<li><p>在普通组件上使用时，它的行为将类似于普通 prop：</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">foo</span> <span class="attr">is</span>=<span class="string">"bar"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>2.x 行为：渲染<code>bar</code>组件。</li>
-<li>3.x 行为：通过<code>is</code>prop渲染<code>foo</code>组件。</li>
-</ul>
-</li>
-<li><p>在普通元素上使用时，它将作为<code>is</code>选项传递给<code>createElement</code>调用，并作为原生<code>attribute</code>渲染，这支持使用自定义的内置元素。</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">is</span>=<span class="string">"plastic-button"</span>&gt;</span>点击我！<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>2.x 行为：渲染 plastic-button 组件。</li>
-<li>3.x 行为：通过回调渲染原生的 button。<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.createElement(<span class="string">'button'</span>, &#123; <span class="attr">is</span>: <span class="string">'plastic-button'</span> &#125;)</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-</li>
-</ul>
-<p>在<code>Vue 3.x</code>中引入了一个新的指令<code>v-is</code>，用于<code>DOM</code>内模板解析解决方案。<code>v-is</code>指令像一个动态的<code>2.x :is</code>绑定。</p>
-<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a href="https://v3.cn.vuejs.org/guide/migration/introduction.html#%E6%A6%82%E8%A7%88" target="_blank" rel="noopener">https://v3.cn.vuejs.org/guide/migration/introduction.html#%E6%A6%82%E8%A7%88</a></p>
-]]></content>
-      <categories>
-        <category>vue</category>
-      </categories>
-      <tags>
-        <tag>vue</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>es6新特性</title>
     <url>/2020/02/04/es6%E6%96%B0%E7%89%B9%E6%80%A7/</url>
     <content><![CDATA[<h2 id="一-es6对象的扩展"><a href="#一-es6对象的扩展" class="headerlink" title="一. es6对象的扩展"></a>一. es6对象的扩展</h2><h3 id="1-属性的简洁表示法"><a href="#1-属性的简洁表示法" class="headerlink" title="1. 属性的简洁表示法"></a>1. 属性的简洁表示法</h3><p>ES6 允许直接写入变量和函数，作为对象的属性和方法。这样的书写更加简洁。</p>
@@ -2461,6 +2461,400 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </categories>
       <tags>
         <tag>es6</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于Hexo的个人博客搭建</title>
+    <url>/2020/09/11/hexo/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>搭建博客其实很简单，但要注意很多细节问题，之前本人也搭建过博客，那时也踩过一些坑，但是现在重新搭建博客，感觉自己又把之前踩过的坑又踩了一遍。所以为了避免以后搭建博客采坑，所以在此记录一下搭建博客的全流程以及一些注意事项。<br>本文搭建的博客基于<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo</a>，主题选用<a href="https://demo.jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">Butterfly</a>，使用<a href="https://travis-ci.com/" target="_blank" rel="noopener">Travis CI</a>自动部署到Github Pages和Coding Pages上，并在腾讯云上申请个人域名与博客进行绑定。</p>
+<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>安装Hexo并初始化博客，这个没啥好说的，按照<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo官网</a>指示安装初始化即可。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-cli -g     <span class="comment"># 全局安装hexo-cli脚手架，如果不想全局安装，那就使用npx安装</span></span><br><span class="line">$ hexo init blog              <span class="comment"># 初始化博客</span></span><br><span class="line">$ <span class="built_in">cd</span> blog                     <span class="comment"># 进入博客根目录</span></span><br><span class="line">$ npm install                 <span class="comment"># 安装依赖</span></span><br><span class="line">$ hexo s                      <span class="comment"># 本地预览</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用主题"><a href="#使用主题" class="headerlink" title="使用主题"></a>使用主题</h2><p>本文的博客使用<a href="https://github.com/jerryc127/hexo-theme-butterfly/tree/master" target="_blank" rel="noopener">Butterfly</a>，个人觉得这个主题比较好看，大家可以根据自己的喜好进行选择。</p>
+<h3 id="安装主题"><a href="#安装主题" class="headerlink" title="安装主题"></a>安装主题</h3><p>在博客根目录中执行：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> -b 3.0.1 https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong> 此处我们使用的主题版本是3.0.1，建议大家固定使用一个主题版本，因为不同的主题版本的配置有所不同。在每次自动化部署时都需要重新安装主题，如果指定的是<code>master</code>，那每次安装的都是最新版本，会导致部署失败！</p>
+<p>这里所说的版本，即tag，大家可以到主题的仓库中查找最新的tag并使用。</p>
+<p><img src= "/img/loading.gif" data-src="tag.png" alt="主题tag"></p>
+<h3 id="应用主题"><a href="#应用主题" class="headerlink" title="应用主题"></a>应用主题</h3><p>修改站点配置文件_config.yml，把主题改为 butterfly</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">butterfly</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p>如果你没有 pug 以及 stylus 的渲染器，请下载安装：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置主题"><a href="#配置主题" class="headerlink" title="配置主题"></a>配置主题</h2><p>把主题文件夹中的 _config.yml 复制到 Hexo 根目录里，同时重新命名为 _config.butterfly.yml。</p>
+<p>Hexo 会自动合并主题中的_config.yml 和 _config.butterfly.yml 里的配置，如果存在同名配置，会使用_config.butterfly.yml 的配置，其优先度较高。</p>
+<h3 id="配置标签页"><a href="#配置标签页" class="headerlink" title="配置标签页"></a>配置标签页</h3><ul>
+<li>1.在博客根目录中输入<code>hexo new page tags</code></li>
+<li>2.找到 source/tags/index.md 这个文件</li>
+<li>3.修改为：<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 标签</span><br><span class="line">date: 2020-08-29 19:14:29</span><br><span class="line">type: "tags"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="配置分类页"><a href="#配置分类页" class="headerlink" title="配置分类页"></a>配置分类页</h3><ul>
+<li>1.在博客根目录中输入<code>hexo new page categories</code></li>
+<li>2.找到 source/categories/index.md 这个文件</li>
+<li>3.修改为：<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 分类</span><br><span class="line">date: 2020-08-29 19:15:35</span><br><span class="line">type: "categories"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="配置友情链接"><a href="#配置友情链接" class="headerlink" title="配置友情链接"></a>配置友情链接</h3><ul>
+<li>1.在博客根目录中输入<code>hexo new page link</code></li>
+<li>2.找到 source/link/index.md 这个文件</li>
+<li>3.修改为：</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 友情链接</span><br><span class="line">date: 2020-08-29 19:10:49</span><br><span class="line">type: "link"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>4.添加友情链接：</li>
+</ul>
+<p>在博客目录中的 source/_data，创建一个文件 link.yml</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">class:</span></span><br><span class="line">  <span class="attr">class_name:</span> <span class="string">友链</span></span><br><span class="line">  <span class="attr">link_list:</span></span><br><span class="line">    <span class="attr">1:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">YolkPie</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkpie.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">前端研发部</span></span><br><span class="line">    <span class="attr">2:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Yolk</span> <span class="string">CLI</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/yolk-cli/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkcli.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">前端项目脚手架</span></span><br><span class="line">    <span class="attr">3:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Yolk</span> <span class="string">Works</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/yolkworks-list/#/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkworks.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">海量模板及组件</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置关于自己"><a href="#配置关于自己" class="headerlink" title="配置关于自己"></a>配置关于自己</h3><ul>
+<li>1.在博客根目录中输入<code>hexo new page about</code></li>
+<li>2.找到 source/about/index.md 这个文件</li>
+<li>3.修改为：</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 关于我</span><br><span class="line">date: 2020-08-29 19:16:57</span><br><span class="line">type: "about"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置博客语言"><a href="#配置博客语言" class="headerlink" title="配置博客语言"></a>配置博客语言</h3><p>修改博客配置文件 <code>_config.yml</code></p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置导航菜单"><a href="#配置导航菜单" class="headerlink" title="配置导航菜单"></a>配置导航菜单</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="string">首页:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-home</span></span><br><span class="line">  <span class="string">文章:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-archive</span></span><br><span class="line">  <span class="string">标签:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-tags</span></span><br><span class="line">  <span class="string">分类:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-folder-open</span></span><br><span class="line">  <span class="string">友链:</span> <span class="string">/link/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-link</span></span><br><span class="line">  <span class="string">关于:</span> <span class="string">/about/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-heart</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="配置相关图片"><a href="#配置相关图片" class="headerlink" title="配置相关图片"></a>配置相关图片</h3><p>包括网站图标、头像、首页顶部图片、文章页面顶部默认图、文章封面默认图、其他页面顶部默认图等等。</p>
+<p>如果想要使用本地图片，在<code>source</code>目录下创建<code>img</code>目录，在图片放到该目录下，这样我们就可以使用<code>/img/avatar.jpg</code>访问到本地图片。</p>
+<h3 id="配置本地搜索"><a href="#配置本地搜索" class="headerlink" title="配置本地搜索"></a>配置本地搜索</h3><ul>
+<li>1.安装 <code>hexo-generator-search</code><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-generator-search --save</span><br></pre></td></tr></table></figure></li>
+<li>2.修改站点配置文件_config.yml，添加：<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+<li>3.修改主题配置文件_config.butterfly.yml<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">local_search:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="配置评论"><a href="#配置评论" class="headerlink" title="配置评论"></a>配置评论</h3><p>本博客的评论基于<a href="https://github.com/gitalk/gitalk/blob/master/readme-cn.md" target="_blank" rel="noopener">Gitalk</a>，Gitalk 是一个基于 GitHub Issue 和 Preact 开发的评论插件。</p>
+<ul>
+<li>1.选择一个公共github存储库（已存在或创建一个新的github存储库）用于存储评论，一般选择我们的Github Pages。</li>
+<li>2.创建 GitHub Application，如果没有<a href="https://github.com/settings/applications/new" target="_blank" rel="noopener">点击这里申请</a>，<code>Authorization callback URL</code>填写当前使用插件页面的域名。</li>
+<li>3.修改主题配置文件_config.butterfly.yml<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">client_id:</span> <span class="string">你的client</span> <span class="string">id</span> </span><br><span class="line">  <span class="attr">client_secret:</span> <span class="string">你的client</span> <span class="string">secret</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">你的github仓库</span></span><br><span class="line">  <span class="attr">owner:</span> <span class="string">你的github用户名</span></span><br><span class="line">  <span class="attr">admin:</span> <span class="string">该仓库的拥有者或协作者</span></span><br><span class="line">  <span class="attr">language:</span> <span class="string">zh-CN</span> <span class="comment"># en, zh-CN, zh-TW, es-ES, fr, ru</span></span><br><span class="line">  <span class="attr">perPage:</span> <span class="number">10</span> <span class="comment"># Pagination size, with maximum 100.</span></span><br><span class="line">  <span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment"># Facebook-like distraction free mode.</span></span><br><span class="line">  <span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment"># Comment sorting direction, available values are last and first.</span></span><br><span class="line">  <span class="attr">createIssueManually:</span> <span class="literal">false</span> <span class="comment"># Gitalk will create a corresponding github issue for your every single page automatically</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h3><ul>
+<li><a href="https://demo.jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">Butterfly 安装文档(三) 主题配置-1</a></li>
+<li><a href="https://demo.jerryc.me/posts/ceeb73f/" target="_blank" rel="noopener">Butterfly 安装文档(四) 主题配置-2</a></li>
+</ul>
+<h2 id="写篇博客"><a href="#写篇博客" class="headerlink" title="写篇博客"></a>写篇博客</h2><p>一般博客会引用一些图片，如果想要使用本地图片，则配置<code>_config.yml</code>：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">post_asset_folder:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<p>执行<code>hexo new &lt;title&gt;</code>创建一篇文章，可以发现<code>source/_posts</code>目录下多出了<code>&lt;title&gt;</code>目录及<code>&lt;title&gt;.md</code>，其中<code>&lt;title&gt;.md</code>用于我们写博客，<code>&lt;title&gt;</code>目录用于存放我们博客使用的图片。</p>
+<p>文章的配置，下面是我本篇文章的配置，大家可以参考：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">基于Hexo的个人博客搭建</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2020</span><span class="number">-08</span><span class="number">-30</span> <span class="number">10</span><span class="string">:45:29</span></span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">blog</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">hexo</span></span><br><span class="line"><span class="attr">keywords:</span> <span class="string">hexo,Butterfly</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">搭建博客其实很简单，但要注意很多细节问题，之前本人也搭建过博客，那时也踩过一些坑，但是现在重新搭建博客，感觉自己又把之前踩过的坑又踩了一遍。所以为了避免以后搭建博客采坑，所以在此记录一下搭建博客的全流程以及一些注意事项。</span></span><br><span class="line"><span class="attr">cover:</span> <span class="string">/img/hexo.jpg</span></span><br><span class="line"><span class="attr">top_img:</span> <span class="string">hexo.jpg</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>title：文章标题</li>
+<li>tags：文章标签</li>
+<li>categories：文章分类</li>
+<li>cover：文章封面</li>
+<li>top_img：文章顶部图片</li>
+</ul>
+<h2 id="github托管"><a href="#github托管" class="headerlink" title="github托管"></a>github托管</h2><p>将我们博客的源代码托管到github上，在github上创建代码仓库，将我们博客的源代码push上去即可。</p>
+<h2 id="github-pages"><a href="#github-pages" class="headerlink" title="github pages"></a>github pages</h2><p>新建一个repo，仓库名字为<code>xxx.github.io</code>，其中xxx为你github的username。</p>
+<h2 id="coding-pages"><a href="#coding-pages" class="headerlink" title="coding pages"></a>coding pages</h2><ul>
+<li>1.新建一个<code>coding.net</code>团队，如果你已经拥有自己的团队，那么久不需要创建团队了。</li>
+<li>2.创建一个DevOps项目。</li>
+<li>3.在项目下创建代码仓库，用于托管博客静态资源，仓库名字为<code>xxx.coding.io</code>。</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="project.png" alt="project"></p>
+<h2 id="自动部署"><a href="#自动部署" class="headerlink" title="自动部署"></a>自动部署</h2><ul>
+<li><p>1.在博客根目录下创建<code>.travis.yml</code>文件，并写入自动化脚本：</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">10</span></span><br><span class="line"><span class="attr">cache:</span></span><br><span class="line">  <span class="attr">directories:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">node_modules</span></span><br><span class="line"><span class="attr">before_install:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line"><span class="attr">install:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"><span class="attr">script:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">-b</span> <span class="number">3.0</span><span class="number">.1</span> <span class="string">https://github.com/jerryc127/hexo-theme-butterfly.git</span> <span class="string">themes/butterfly</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">source/img/*</span> <span class="string">themes/butterfly/source/img/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span> <span class="string">g</span></span><br><span class="line"><span class="attr">after_success:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">"$&#123;U_NAME&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">"$&#123;U_EMAIL&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">"https://$&#123;GH_TOKEN&#125;@$&#123;GH_REF&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">public/*</span> <span class="string">yujihu.github.io/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">./yujihu.github.io</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">add</span> <span class="string">.</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">commit</span> <span class="string">-m</span> <span class="string">'travis-ci auto build yujihu-blog'</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">push</span> <span class="string">origin</span> <span class="string">"$&#123;P_BRANCH&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">../</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">"https://$&#123;U_NAME2&#125;:$&#123;CO_TOKEN&#125;@$&#123;CO_REF&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">public/*</span> <span class="string">yujihu.coding.io/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">./yujihu.coding.io</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">add</span> <span class="string">.</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">commit</span> <span class="string">-m</span> <span class="string">'travis-ci auto build yujihu-blog'</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">push</span> <span class="string">origin</span> <span class="string">"$&#123;P_BRANCH&#125;"</span></span><br><span class="line"><span class="attr">branches:</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>node_js: 与我们本地开发的node.js版本保持一致。</p>
+</li>
+<li><p>before_install：全局安装hexo脚手架。</p>
+</li>
+<li><p>install：安装博客的依赖。</p>
+</li>
+<li><p>script： 此处为生成博客静态资源的代码，需要将source/img复制到themes/butterfly/source/img下面，否则会导致图片无法访问。</p>
+</li>
+<li><p>after_success：生成成功后，将静态资源分别提交至github pages和coding pages仓库。</p>
+</li>
+<li><p>环境变量：<code>${***}</code> 这块后面会提到。</p>
+</li>
+<li><p>2.Github 增加一个 Personal access tokens，位置在<a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Settings/Developer settings</a>。</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="token.png" alt="token"></p>
+<ul>
+<li>3.Coding 增加一个访问令牌，位置在<code>个人账户设置/访问令牌</code>。 </li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="coding.png" alt="token"></p>
+<ul>
+<li>4.进入<a href="https://travis-ci.com/" target="_blank" rel="noopener">Travis CI</a>，使用 Github登陆， 进入<a href="https://travis-ci.com/dashboard" target="_blank" rel="noopener">dashboard</a>，此时应该可以看到你刚创建的项目。</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="travis1.png" alt="travis1"></p>
+<ul>
+<li>5.进入该项目的setting，配置环境变量</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="travis2.png" alt="travis2"></p>
+<blockquote>
+<p>GH_REF: Github Pages项目地址<code>github.com/[name]/[name].github.io.git</code>注意去掉 https://。<br>CO_REF: Coding Pages项目地址<code>e.coding.net/[name]/[name].coding.io/[name].coding.io.git</code>注意去掉 https://。<br>GH_TOKEN: Github Token，是通过上面第2步拿到的。<br>CO_TOKEN: Coding Token，是通过上面第3步拿到的。<br>P_BRANCH: 要上传的分支，这里我们要传到 master。<br>U_EMAIL: 你的 Github 邮箱。<br>U_NAME: 你的 Github 用户名。<br>U_NAME2: 你的 Coding 用户名，这个很关键，一定要设置正确。</p>
+</blockquote>
+<ul>
+<li>6.将博客源代码push到远程仓库，我们可以发现<code>Travis CI</code>会开启一次自动构建。</li>
+</ul>
+<h2 id="域名绑定"><a href="#域名绑定" class="headerlink" title="域名绑定"></a>域名绑定</h2><p>1.在腾讯云上购买一个域名，首年一般很便宜，大家可以先买一年试试，域名可以不备案，但需要实名认证。<br>2.开启Github Pages，在[name].github.io的setting中进行配置。</p>
+<p><img src= "/img/loading.gif" data-src="github2.png" alt="github2"></p>
+<p>3.开启Coding Pages, 在<code>项目/持续部署/静态网站</code>下进行配置。</p>
+<p><img src= "/img/loading.gif" data-src="coding2.png" alt="coding2"><br><img src= "/img/loading.gif" data-src="coding3.png" alt="coding3"></p>
+<p>4.配置域名解析</p>
+<p>进入刚刚购买域名的管理控制台，配置域名解析规则，境内CNAME到Coding Pages，境外CNAME到Github Pages.</p>
+]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>blog</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mysql 索引</title>
+    <url>/2020/02/04/mysql-%E7%B4%A2%E5%BC%95/</url>
+    <content><![CDATA[<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引(key)是存储引擎用于快速找到记录的一种数据结构。它和一本书中目录的工作方式类似——当要查找一行记录时，先在索引中快速找到行所在的位置信息，然后再直接获取到那行记录。<br>在MySql中，索引是在存储引擎层而不是服务器层实现的，所以不同的存储引擎对索引的实现和支持都不相同。</p>
+<a id="more"></a>
+
+<h2 id="索引的优点"><a href="#索引的优点" class="headerlink" title="索引的优点"></a>索引的优点</h2><ul>
+<li>索引大大减少了服务器需要扫描的数据量</li>
+<li>索引可以帮助服务器避免排序和临时表</li>
+<li>索引可以将随机I/O变为顺序I/O</li>
+</ul>
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
+<li>普通索引</li>
+<li>UNIQUE索引</li>
+<li>主键索引</li>
+</ul>
+<h2 id="MyISAM索引与InnoDB索引那个快"><a href="#MyISAM索引与InnoDB索引那个快" class="headerlink" title="MyISAM索引与InnoDB索引那个快"></a>MyISAM索引与InnoDB索引那个快</h2><h3 id="MyISAM索引的实现"><a href="#MyISAM索引的实现" class="headerlink" title="MyISAM索引的实现"></a>MyISAM索引的实现</h3><pre><code>MyISAM索引文件和数据文件是分离的，索引文件仅保存记录所在页的指针（物理位置），通过这些地址来读取页，进而读取被索引的行。下图是MyISAM的索引原理图：（为了简化，一个页内只存放了两条记录。）</code></pre><p><img src= "/img/loading.gif" data-src="mq1.png" alt=""><br>      上图所提供的示例表字段有Col1（ID）、Col2(age)、Col3（name）三个，其中Col1为Primary Key（主键），上图很好地说明了树中叶子保存的是对应行的物理位置。通过该值，存储引擎能顺利地进行回表查询，得到一行完整记录。同时，每个叶子页也保存了指向下一个叶子页的指针。从而方便叶子节点的范围遍历。</p>
+<pre><code>而对于二级索引，在 MyISAM存储引擎中以与上图同样的方式实现，可以看出MyISAM的索引文件仅仅保存数据记录的地址。</code></pre><h3 id="InnoDB索引的实现"><a href="#InnoDB索引的实现" class="headerlink" title="InnoDB索引的实现"></a>InnoDB索引的实现</h3><ol>
+<li><p>1)聚集索引</p>
+<p>   与 MyISAM相同的一点是，InnoDB 也采用 B+Tree这种数据结构来实现 B-Tree索引。而很大的区别在于，InnoDB 存储引擎采用&quot;聚集索引&quot;的数据存储方式实现B-Tree索引，所谓&quot;聚集&quot;，就是指数据行和相邻的键值紧凑地存储在一起，注意 InnoDB 只能聚集一个叶子页（16K）的记录（即聚集索引满足一定的范围的记录），因此包含相邻键值的记录可能会相距甚远。</p>
+</li>
+</ol>
+<p>注意: innodb来说,</p>
+<p>1 主键索引 既存储索引值,又在叶子中存储行的数据</p>
+<p>2 如果没有主键, 则会Unique key做主键</p>
+<p>3 如果没有unique,则系统生成一个内部的rowid做主键.</p>
+<p>4 像innodb中,主键的索引结构中,既存储了主键值,又存储了行数据,这种结构称为&quot;聚簇索引&quot;</p>
+<p>下图说明了 InnoDB聚集索引的实现方式，同时也体现了一张 innoDB表的结构，可以看到，InnoDB 中，主键索引和数据是一体的，没有分开。：</p>
+<p><img src= "/img/loading.gif" data-src="mq2.png" alt=""><br>这种实现方式，给予了 InnoDB 按主键检索的超高性能。可以有目的性地选择聚集索引，比如一个邮件表，可以选择用户ID来聚集数据，这样只需要从磁盘读取较少并且连续的数据页就能获得某个id的用户全部的邮件，避免了读取分散页时所耗费的随机I/O。</p>
+<p>2)辅助索引</p>
+<pre><code>而对于辅助索引，InnoDB采用的方式是在叶子页中保存主键值，通过这个主键值来回表（上图）查询到一条完整记录，因此按辅助索引检索实际上进行了二次查询，效率肯定是没有按照主键检索高的。下图是辅助索引的实现方式：</code></pre><p><img src= "/img/loading.gif" data-src="mq3.png" alt=""><br>      由于每个辅助索引都包含主键索引，因此，为了减小辅助索引所占空间，我们通常希望 InnoDB 表中的主键索引尽量定义得小一些（值得一提的是，MySIAM会使用前缀压缩技术使得索引变小，而InnoDB按照原数据格式进行存储。），并且希望InnoDB的主键是自增长的，因为如果主键并非自增长，插入时，由于写入时乱序的，会使得插入效率变低。</p>
+<p>参考：<a href="https://blog.csdn.net/frycn/article/details/70158313" target="_blank" rel="noopener">https://blog.csdn.net/frycn/article/details/70158313</a></p>
+<p><a href="https://blog.csdn.net/ljfphp/article/details/80029968" target="_blank" rel="noopener">https://blog.csdn.net/ljfphp/article/details/80029968</a></p>
+<ol start="5">
+<li>索引:用于加快查找数据的速度的一种内部机制。</li>
+</ol>
+<p>如何定位一个慢sql：</p>
+<ol>
+<li>开启慢查询日志，默认是不开启，showvariableslike&#39;%slow%、set log_slow_queries on  set long_query_time=5; 默认是10</li>
+<li>mysqldumpslow –help可显示其参数的使用</li>
+</ol>
+<p>得到返回记录最多的20个sql</p>
+<p>mysqldumpslow -s r -t 20 sqlslow.log</p>
+<p>得到平均访问次数最多的20条sql</p>
+<p>mysqldumpslow -s ar -t 20 sqlslow.log</p>
+<p>参考：<a href="https://blog.csdn.net/sunyuhua_keyboard/article/details/81204020" target="_blank" rel="noopener">https://blog.csdn.net/sunyuhua_keyboard/article/details/81204020</a></p>
+<ol>
+<li>explain + 慢sql</li>
+<li>show profiles 细致分析mysql 生命周期和执行细节</li>
+<li>sql 服务器调优（后边有介绍）</li>
+</ol>
+<p>先讲解explain 参考：<a href="https://www.cnblogs.com/yycc/p/7338894.html" target="_blank" rel="noopener">https://www.cnblogs.com/yycc/p/7338894.html</a></p>
+<p><a href="https://www.cnblogs.com/gomysql/p/3720123.html" target="_blank" rel="noopener">https://www.cnblogs.com/gomysql/p/3720123.html</a></p>
+<p><img src= "/img/loading.gif" data-src="mq4.png" alt=""></p>
+<p>EXPLAIN select * from store_info where id in (SELECT store_info_id from attachment where file_type = 2);</p>
+<p><img src= "/img/loading.gif" data-src="mq5.png" alt=""><br>Id：这是SELECT的查询序列号，id相同时 由上至下执行，id不同时，数值越大越先执行。</p>
+<p>select_type: SELECT类型,可以为以下任何一种:</p>
+<ul>
+<li><strong>SIMPLE</strong>:简单SELECT(不使用UNION或子查询)</li>
+<li><strong>PRIMARY</strong>:最外面的SELECT</li>
+<li><strong>UNION</strong>:UNION中的第二个或后面的SELECT语句</li>
+<li><strong>DEPENDENT UNION</strong>:UNION中的第二个或后面的SELECT语句,取决于外面的查询</li>
+<li><strong>UNION RESULT</strong>:UNION 的结果</li>
+<li><strong>SUBQUERY</strong>:子查询中的第一个SELECT</li>
+<li><strong>DEPENDENT SUBQUERY</strong>:子查询中的第一个SELECT,取决于外面的查询</li>
+<li><strong>DERIVED</strong>:导出表的SELECT(FROM子句的子查询)</li>
+</ul>
+<p>Table ：输出的行所引用的表</p>
+<p>Type: 访问类型  ALL, index,  range, ref, eq_ref, const, system, NULL</p>
+<ul>
+<li><p>==system==: 表仅有一行(=系统表)。这是const联接类型的一个特例。</p>
+</li>
+<li><p>==const==: 表最多有一个匹配行,它将在查询开始时被读取。因为仅有一行,在这行的列值可被优化器剩余部分认为是常数。const表很快,因为它们只读取一次!</p>
+   <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span>\*<span class="keyword">from</span> ( <span class="keyword">select</span>\*<span class="keyword">from</span> t1 <span class="keyword">where</span> <span class="keyword">id</span>= **<span class="number">1</span>** )b1;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong></strong> eq_ref:就在使用的索引是唯一索引，对于每个索引键值，表中只有一条记录匹配，简单来说，就是多表连接中使用primary key或者 unique key作为关联条</p>
+</li>
+<li><p><strong></strong> ref: 使用非唯一索引扫描或者唯一索引的前缀扫描，返回匹配某个单独值的记录行</p>
+</li>
+<li><p><strong></strong> range:索引范围扫描，对索引的扫描开始于某一点，返回匹配值域的行。显而易见的索引范围扫描是带有between或者where子句里带有&amp;lt;, &amp;gt;查询。当mysql使用索引去查找一系列值时，例如IN()和OR列表，也会显示range（范围扫描）,当然性能上面是有差异的。</p>
+</li>
+<li><p><strong></strong> index:该联接类型与ALL相同,除了只有索引树被扫描。这通常比ALL快,因为索引文件通常比数据文件小。</p>
+</li>
+<li><p><strong></strong> ALL:MySQL将遍历全表以找到匹配的行。</p>
+</li>
+<li><p><strong></strong> NULL：MySQL在优化过程中分解语句，执行时甚至不用访问表或索引，例如从一个索引列里选取最小值可以通过单独索引查找完成。</p>
+   <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span>\*<span class="keyword">from</span> t1 <span class="keyword">where</span> <span class="keyword">id</span> = (selectmin(<span class="keyword">id</span>) <span class="keyword">from</span> t2);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>possible_keys <strong>:</strong> 指出MySQL能使用哪个索引在该表中找到行</p>
+<p>key : 显示MySQL实际决定使用的键(索引)<br>key_len : 显示MySQL决定使用的键长度</p>
+<p>ref : 显示使用哪个列或常数与key一起从表中选择行。</p>
+<p>Rows <strong>:</strong> 显示MySQL认为它执行查询时必须检查的行数。</p>
+<p><strong>Extra</strong>  <strong>:</strong></p>
+<ul>
+<li><p><strong></strong> Using filesort:MySQL需要额外的一次传递,以找出如何按排序顺序检索行。</p>
+<p>explain select store_id from store_info where id in (1,2) ORDER BY id</p>
+<p>explain select store_id from store_info where id in (1,2) ORDER BY store_id</p>
+</li>
+<li><p><strong></strong> Using index:从只使用索引树中的信息而不需要进一步搜索读取实际的行来检索表中的列信息。（覆盖索引）</p>
+<p>explain select store_id from store_info where store_id in (1,2) ORDER BY store_id</p>
+</li>
+<li><p><strong></strong> Using temporary: 这个值表示使用了内部临时(基于内存的)表。一个查询可能用到多个临时表。有很多原因都会导致MySQL在执行查询期间创建临时表。两个常见的原因是在来自不同表的上使用了DISTINCT,或者使用了不同的ORDER BY和GROUP BY31,1312列。 A,B    b,a</p>
+</li>
+</ul>
+<p>explain select id from store_info where id in (1,2) GROUP BY store_id</p>
+<ul>
+<li><p><strong></strong> Using where:WHERE 子句用于限制哪一个行匹配下一个表或发送到客户。</p>
+</li>
+<li><p><strong></strong> Impossible where<br>这个值强调了where语句会导致没有符合条件的行。</p>
+<pre><code>EXPLAIN SELECT \* FROM t1 WHERE 1=2;</code></pre></li>
+</ul>
+<p>6.覆盖索引：全值匹配 多列索引 (推荐)</p>
+<p><img src= "/img/loading.gif" data-src="mq6.png" alt=""><br>EXPLAIN SELECT * from store_info  where store_id  = 1 and vender_id =2</p>
+<p>如上：用多少个索引？</p>
+<p><img src= "/img/loading.gif" data-src="mq7.png" alt=""><br>explain SELECT store_id  from store_info where  store_id = 1 and vender_id = 1;</p>
+<p>explain SELECT store_id  from store_info where  store_id != 1 and  vender_id = 1;</p>
+<p>explain SELECT store_id  from store_info where  store_id != 1;</p>
+<p>explain SELECT store_id  from store_info where  store_id = 1 OR vender_id = 1;</p>
+<p>explain SELECT store_id  from store_info where  store_id != 1 OR vender_id = 1;</p>
+<p>explain SELECT store_id  from store_info where  store_id = 1 or vender_id = 1 ORDER BY store_id;</p>
+<p>7.避免索引失效：（多列索引）</p>
+<ol>
+<li><p>针对多列索引，采用最左匹配法则，中间不能断（包括大约等于 小于）</p>
+</li>
+<li><p>不能再索引上做任何操作函数和类型转换（下面有讲）</p>
+</li>
+<li><p>范围查询左侧全失效，  name=&quot;&quot; and age &amp;gt; 25 and type=&quot;&quot;</p>
+</li>
+<li><p>尽量使用覆盖索引，用三个字段创建索引，只用其中一两个字段，尽量少用select * from  user</p>
+</li>
+<li><p>使用 !=   &amp;lt;&amp;gt; 会全表扫描。`</p>
+<p>explain  SELECT * from store_label where label_type_id  !=1</p>
+</li>
+<li><p>is not null 会全表扫描。</p>
+<p>explain  SELECT * from store_label where label_type_id  is not null;</p>
+</li>
+<li><p>Like  &quot;%ssss%&quot;  &quot;%sfds&quot;</p>
+</li>
+<li><p>字符串不加单引号，如：2000  （因为内部使用了 类型转换函数）。</p>
+</li>
+<li><p>少用or 用它连接查询导致索引失效。</p>
+<p>explain  SELECT * from store_label where label_type_id  is null  or label_name like &quot;1123%&quot;;</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>mysql</tag>
+        <tag>索引</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>nginx location 使用指南</title>
+    <url>/2020/02/04/nginx-location-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h2 id="什么是location"><a href="#什么是location" class="headerlink" title="什么是location"></a>什么是location</h2><ul>
+<li>它是nginx基于http协议跟外界沟通的桥梁，用来匹配并执行一个规范化的URI，任何http请求都需要经过它的“同意”才能通过nginx的大门</li>
+<li>它长什么样子呢，比如我们常见的一种配置<a id="more"></a>
+
+</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /hello &#123;</span><br><span class="line">   <span class="attribute">return</span> <span class="number">200</span> <span class="string">'hello world'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>/xxxx 除了这种还有没有其他的写法？ 是不是没有？ 要想知道有没有其他的写法是不是要从系统层面（api）去了解一下，才能扩展 <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location" target="_blank" rel="noopener">官方</a></li>
+</ul>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">location [ = | ~ | ~* | ^~ ] uri &#123; ... &#125;</span><br><span class="line">location @name &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>语法规则很简单，一个location关键字，后面跟着可选的修饰符，后面是要匹配的字符，花括号中是要执行的操作。</p>
+<ul>
+<li>修饰符<br>= 表示精确匹配。只有请求的url路径与后面的字符串完全相等时，才会命中。<br>~ 表示该规则是使用正则定义的，区分大小写。<br><del>* 表示该规则是使用正则定义的，不区分大小写。<br>^</del> 表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找</li>
+</ul>
+<h2 id="精确匹配"><a href="#精确匹配" class="headerlink" title="精确匹配"></a>精确匹配</h2><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> = /a &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>精确匹配一个字都不能错, /a 可以，但是 /a/ 就不行</p>
+<h2 id="普通匹配-和"><a href="#普通匹配-和" class="headerlink" title="普通匹配    / 和  ^~"></a>普通匹配    / 和  ^~</h2><ul>
+<li>/   我们经常使用，是以其后设置的uri作为前缀来匹配请求的</li>
+<li>^~  不常用的 也是以其后设置的uri作为前缀来匹配请求的</li>
+<li>从概念上讲他们是一样的，实际使用也是一样的，但是他们有哪些细微差别呢？ 这个稍后讲</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们访问  /b 或者 /bc 或者 /ba 都是可以访问的</p>
+<p>验证一下 / ,^~ 是前缀匹配，我们可以试一下 /x/b 看看能不能访问？</p>
+<h2 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配"></a>正则匹配</h2><ul>
+<li>~  区分大小写  ，在其后的uri就变成了正则表达式</li>
+<li>~* 不区分大小写，在其后的uri就变成了正则表达式</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~* /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面说普通匹配的时候 我们使用了location /b ,这里正则也使用了 /b 如果同时存在，他们先使用那个呢？ 为什么？这个呢也稍后讲</p>
+<p>还有普通匹配试了 /x/b 返回状态404 ， 那使用正则模式呢，状态是多少？ 正则模式 /b 可以是第一个 也可是是最后一个</p>
+<p>正则是不是完事了？咦，不对 好像少了点什么？ 说好的正则 我堂堂 \d \w [a-z] \d{9,11} 哪里去了，是不是感觉少了点东西</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">location  ~ "/(\d&#123;1,11&#125;)" &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"hi paimai,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是不是这样  我们拍卖单品页是不是这样的  paimai.jd.com/123456789<br>是不是很完美？ 有没有问题?<br>前面我们正则部分我们说了  普通模式 /b 和正则模式 /b 区别 ，回顾一下<br>我之前写的时候就遇到过这样的问题  paimai.jd.com/album/123456789 也被匹配到了</p>
+<p>那么问题来了 正则模式里面怎么精确匹配</p>
+<p>^/a 的意思就是，匹配以/a开头的字符串<br>.html$   的意思就是 以.html结尾</p>
+<p>再重新写一下单品页的匹配方式</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">location ~* "^/(\d&#123;9,11&#125;)$" &#123;</span><br><span class="line">    <span class="attribute">default_type</span> text/html;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"hi paimai,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>使用正则定义的location在配置文件中出现的顺序很重要。因为找到第一个匹配的正则后，查找就停止了，后面定义的正则就是再匹配也没有机会了。</p>
+<p>到这里正则模式才算完了^_^</p>
+<h2 id="模式"><a href="#模式" class="headerlink" title="@ 模式"></a>@ 模式</h2><ul>
+<li>这里内部的意思是指外部用户看不到的location</li>
+</ul>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> @/d &#123;</span><br><span class="line">   <span class="attribute">return</span> <span class="number">200</span> <span class="string">"paimai"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以试着访问一下</p>
+<p>正确使用<br>error_page 404 @/d</p>
+<h2 id="刚刚我们在说-普通匹配-和正则匹配里面-放了两个-这个稍后讲-的问题"><a href="#刚刚我们在说-普通匹配-和正则匹配里面-放了两个-这个稍后讲-的问题" class="headerlink" title="刚刚我们在说  普通匹配 和正则匹配里面 放了两个 这个稍后讲 的问题"></a>刚刚我们在说  普通匹配 和正则匹配里面 放了两个 这个稍后讲 的问题</h2><ol>
+<li>/ 和  ^~ 普通模式里面，两个同时存在的时候 使用的是那个location,是不是有个优先级的问题</li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>/ 和  ~  普通模式 和 匹配模式 同时存在 /b 的时候，优先使用的是那个location </li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ~/,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>^~ 和  ~ 的优先级呢</li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ~/,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得出的结论</p>
+<p>普通匹配优先级要低于正则匹配，而^~的匹配优先级要高于正则匹配</p>
+]]></content>
+      <categories>
+        <category>服务器</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
       </tags>
   </entry>
   <entry>
@@ -3901,400 +4295,6 @@ window.requestAnimationFrame(changePosition);
       <tags>
         <tag>JavaScript</tag>
         <tag>css</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>基于Hexo的个人博客搭建</title>
-    <url>/2020/09/11/hexo/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>搭建博客其实很简单，但要注意很多细节问题，之前本人也搭建过博客，那时也踩过一些坑，但是现在重新搭建博客，感觉自己又把之前踩过的坑又踩了一遍。所以为了避免以后搭建博客采坑，所以在此记录一下搭建博客的全流程以及一些注意事项。<br>本文搭建的博客基于<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo</a>，主题选用<a href="https://demo.jerryc.me/posts/21cfbf15/" target="_blank" rel="noopener">Butterfly</a>，使用<a href="https://travis-ci.com/" target="_blank" rel="noopener">Travis CI</a>自动部署到Github Pages和Coding Pages上，并在腾讯云上申请个人域名与博客进行绑定。</p>
-<h2 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h2><p>安装Hexo并初始化博客，这个没啥好说的，按照<a href="https://hexo.io/zh-cn/" target="_blank" rel="noopener">Hexo官网</a>指示安装初始化即可。</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-cli -g     <span class="comment"># 全局安装hexo-cli脚手架，如果不想全局安装，那就使用npx安装</span></span><br><span class="line">$ hexo init blog              <span class="comment"># 初始化博客</span></span><br><span class="line">$ <span class="built_in">cd</span> blog                     <span class="comment"># 进入博客根目录</span></span><br><span class="line">$ npm install                 <span class="comment"># 安装依赖</span></span><br><span class="line">$ hexo s                      <span class="comment"># 本地预览</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="使用主题"><a href="#使用主题" class="headerlink" title="使用主题"></a>使用主题</h2><p>本文的博客使用<a href="https://github.com/jerryc127/hexo-theme-butterfly/tree/master" target="_blank" rel="noopener">Butterfly</a>，个人觉得这个主题比较好看，大家可以根据自己的喜好进行选择。</p>
-<h3 id="安装主题"><a href="#安装主题" class="headerlink" title="安装主题"></a>安装主题</h3><p>在博客根目录中执行：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> -b 3.0.1 https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意：</strong> 此处我们使用的主题版本是3.0.1，建议大家固定使用一个主题版本，因为不同的主题版本的配置有所不同。在每次自动化部署时都需要重新安装主题，如果指定的是<code>master</code>，那每次安装的都是最新版本，会导致部署失败！</p>
-<p>这里所说的版本，即tag，大家可以到主题的仓库中查找最新的tag并使用。</p>
-<p><img src= "/img/loading.gif" data-src="tag.png" alt="主题tag"></p>
-<h3 id="应用主题"><a href="#应用主题" class="headerlink" title="应用主题"></a>应用主题</h3><p>修改站点配置文件_config.yml，把主题改为 butterfly</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">butterfly</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p>如果你没有 pug 以及 stylus 的渲染器，请下载安装：</p>
-<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
-
-<h2 id="配置主题"><a href="#配置主题" class="headerlink" title="配置主题"></a>配置主题</h2><p>把主题文件夹中的 _config.yml 复制到 Hexo 根目录里，同时重新命名为 _config.butterfly.yml。</p>
-<p>Hexo 会自动合并主题中的_config.yml 和 _config.butterfly.yml 里的配置，如果存在同名配置，会使用_config.butterfly.yml 的配置，其优先度较高。</p>
-<h3 id="配置标签页"><a href="#配置标签页" class="headerlink" title="配置标签页"></a>配置标签页</h3><ul>
-<li>1.在博客根目录中输入<code>hexo new page tags</code></li>
-<li>2.找到 source/tags/index.md 这个文件</li>
-<li>3.修改为：<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 标签</span><br><span class="line">date: 2020-08-29 19:14:29</span><br><span class="line">type: "tags"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h3 id="配置分类页"><a href="#配置分类页" class="headerlink" title="配置分类页"></a>配置分类页</h3><ul>
-<li>1.在博客根目录中输入<code>hexo new page categories</code></li>
-<li>2.找到 source/categories/index.md 这个文件</li>
-<li>3.修改为：<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 分类</span><br><span class="line">date: 2020-08-29 19:15:35</span><br><span class="line">type: "categories"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h3 id="配置友情链接"><a href="#配置友情链接" class="headerlink" title="配置友情链接"></a>配置友情链接</h3><ul>
-<li>1.在博客根目录中输入<code>hexo new page link</code></li>
-<li>2.找到 source/link/index.md 这个文件</li>
-<li>3.修改为：</li>
-</ul>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 友情链接</span><br><span class="line">date: 2020-08-29 19:10:49</span><br><span class="line">type: "link"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>4.添加友情链接：</li>
-</ul>
-<p>在博客目录中的 source/_data，创建一个文件 link.yml</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">class:</span></span><br><span class="line">  <span class="attr">class_name:</span> <span class="string">友链</span></span><br><span class="line">  <span class="attr">link_list:</span></span><br><span class="line">    <span class="attr">1:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">YolkPie</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkpie.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">前端研发部</span></span><br><span class="line">    <span class="attr">2:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Yolk</span> <span class="string">CLI</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/yolk-cli/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkcli.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">前端项目脚手架</span></span><br><span class="line">    <span class="attr">3:</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">Yolk</span> <span class="string">Works</span></span><br><span class="line">      <span class="attr">link:</span> <span class="string">https://yolkpie.net/yolkworks-list/#/</span></span><br><span class="line">      <span class="attr">avatar:</span> <span class="string">/img/yolkworks.png</span></span><br><span class="line">      <span class="attr">descr:</span> <span class="string">海量模板及组件</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="配置关于自己"><a href="#配置关于自己" class="headerlink" title="配置关于自己"></a>配置关于自己</h3><ul>
-<li>1.在博客根目录中输入<code>hexo new page about</code></li>
-<li>2.找到 source/about/index.md 这个文件</li>
-<li>3.修改为：</li>
-</ul>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: 关于我</span><br><span class="line">date: 2020-08-29 19:16:57</span><br><span class="line">type: "about"</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置博客语言"><a href="#配置博客语言" class="headerlink" title="配置博客语言"></a>配置博客语言</h3><p>修改博客配置文件 <code>_config.yml</code></p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="配置导航菜单"><a href="#配置导航菜单" class="headerlink" title="配置导航菜单"></a>配置导航菜单</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="string">首页:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-home</span></span><br><span class="line">  <span class="string">文章:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-archive</span></span><br><span class="line">  <span class="string">标签:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-tags</span></span><br><span class="line">  <span class="string">分类:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-folder-open</span></span><br><span class="line">  <span class="string">友链:</span> <span class="string">/link/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-link</span></span><br><span class="line">  <span class="string">关于:</span> <span class="string">/about/</span> <span class="string">||</span> <span class="string">fas</span> <span class="string">fa-heart</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="配置相关图片"><a href="#配置相关图片" class="headerlink" title="配置相关图片"></a>配置相关图片</h3><p>包括网站图标、头像、首页顶部图片、文章页面顶部默认图、文章封面默认图、其他页面顶部默认图等等。</p>
-<p>如果想要使用本地图片，在<code>source</code>目录下创建<code>img</code>目录，在图片放到该目录下，这样我们就可以使用<code>/img/avatar.jpg</code>访问到本地图片。</p>
-<h3 id="配置本地搜索"><a href="#配置本地搜索" class="headerlink" title="配置本地搜索"></a>配置本地搜索</h3><ul>
-<li>1.安装 <code>hexo-generator-search</code><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-generator-search --save</span><br></pre></td></tr></table></figure></li>
-<li>2.修改站点配置文件_config.yml，添加：<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
-<li>3.修改主题配置文件_config.butterfly.yml<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">local_search:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h3 id="配置评论"><a href="#配置评论" class="headerlink" title="配置评论"></a>配置评论</h3><p>本博客的评论基于<a href="https://github.com/gitalk/gitalk/blob/master/readme-cn.md" target="_blank" rel="noopener">Gitalk</a>，Gitalk 是一个基于 GitHub Issue 和 Preact 开发的评论插件。</p>
-<ul>
-<li>1.选择一个公共github存储库（已存在或创建一个新的github存储库）用于存储评论，一般选择我们的Github Pages。</li>
-<li>2.创建 GitHub Application，如果没有<a href="https://github.com/settings/applications/new" target="_blank" rel="noopener">点击这里申请</a>，<code>Authorization callback URL</code>填写当前使用插件页面的域名。</li>
-<li>3.修改主题配置文件_config.butterfly.yml<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">client_id:</span> <span class="string">你的client</span> <span class="string">id</span> </span><br><span class="line">  <span class="attr">client_secret:</span> <span class="string">你的client</span> <span class="string">secret</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">你的github仓库</span></span><br><span class="line">  <span class="attr">owner:</span> <span class="string">你的github用户名</span></span><br><span class="line">  <span class="attr">admin:</span> <span class="string">该仓库的拥有者或协作者</span></span><br><span class="line">  <span class="attr">language:</span> <span class="string">zh-CN</span> <span class="comment"># en, zh-CN, zh-TW, es-ES, fr, ru</span></span><br><span class="line">  <span class="attr">perPage:</span> <span class="number">10</span> <span class="comment"># Pagination size, with maximum 100.</span></span><br><span class="line">  <span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment"># Facebook-like distraction free mode.</span></span><br><span class="line">  <span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment"># Comment sorting direction, available values are last and first.</span></span><br><span class="line">  <span class="attr">createIssueManually:</span> <span class="literal">false</span> <span class="comment"># Gitalk will create a corresponding github issue for your every single page automatically</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h3 id="其他配置"><a href="#其他配置" class="headerlink" title="其他配置"></a>其他配置</h3><ul>
-<li><a href="https://demo.jerryc.me/posts/4aa8abbe/" target="_blank" rel="noopener">Butterfly 安装文档(三) 主题配置-1</a></li>
-<li><a href="https://demo.jerryc.me/posts/ceeb73f/" target="_blank" rel="noopener">Butterfly 安装文档(四) 主题配置-2</a></li>
-</ul>
-<h2 id="写篇博客"><a href="#写篇博客" class="headerlink" title="写篇博客"></a>写篇博客</h2><p>一般博客会引用一些图片，如果想要使用本地图片，则配置<code>_config.yml</code>：</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">post_asset_folder:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<p>执行<code>hexo new &lt;title&gt;</code>创建一篇文章，可以发现<code>source/_posts</code>目录下多出了<code>&lt;title&gt;</code>目录及<code>&lt;title&gt;.md</code>，其中<code>&lt;title&gt;.md</code>用于我们写博客，<code>&lt;title&gt;</code>目录用于存放我们博客使用的图片。</p>
-<p>文章的配置，下面是我本篇文章的配置，大家可以参考：</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">基于Hexo的个人博客搭建</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2020</span><span class="number">-08</span><span class="number">-30</span> <span class="number">10</span><span class="string">:45:29</span></span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">blog</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">hexo</span></span><br><span class="line"><span class="attr">keywords:</span> <span class="string">hexo,Butterfly</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">搭建博客其实很简单，但要注意很多细节问题，之前本人也搭建过博客，那时也踩过一些坑，但是现在重新搭建博客，感觉自己又把之前踩过的坑又踩了一遍。所以为了避免以后搭建博客采坑，所以在此记录一下搭建博客的全流程以及一些注意事项。</span></span><br><span class="line"><span class="attr">cover:</span> <span class="string">/img/hexo.jpg</span></span><br><span class="line"><span class="attr">top_img:</span> <span class="string">hexo.jpg</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>title：文章标题</li>
-<li>tags：文章标签</li>
-<li>categories：文章分类</li>
-<li>cover：文章封面</li>
-<li>top_img：文章顶部图片</li>
-</ul>
-<h2 id="github托管"><a href="#github托管" class="headerlink" title="github托管"></a>github托管</h2><p>将我们博客的源代码托管到github上，在github上创建代码仓库，将我们博客的源代码push上去即可。</p>
-<h2 id="github-pages"><a href="#github-pages" class="headerlink" title="github pages"></a>github pages</h2><p>新建一个repo，仓库名字为<code>xxx.github.io</code>，其中xxx为你github的username。</p>
-<h2 id="coding-pages"><a href="#coding-pages" class="headerlink" title="coding pages"></a>coding pages</h2><ul>
-<li>1.新建一个<code>coding.net</code>团队，如果你已经拥有自己的团队，那么久不需要创建团队了。</li>
-<li>2.创建一个DevOps项目。</li>
-<li>3.在项目下创建代码仓库，用于托管博客静态资源，仓库名字为<code>xxx.coding.io</code>。</li>
-</ul>
-<p><img src= "/img/loading.gif" data-src="project.png" alt="project"></p>
-<h2 id="自动部署"><a href="#自动部署" class="headerlink" title="自动部署"></a>自动部署</h2><ul>
-<li><p>1.在博客根目录下创建<code>.travis.yml</code>文件，并写入自动化脚本：</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">node_js</span></span><br><span class="line"><span class="attr">node_js:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="number">10</span></span><br><span class="line"><span class="attr">cache:</span></span><br><span class="line">  <span class="attr">directories:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">node_modules</span></span><br><span class="line"><span class="attr">before_install:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">npm</span> <span class="string">install</span> <span class="string">hexo-cli</span> <span class="string">-g</span></span><br><span class="line"><span class="attr">install:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line"><span class="attr">script:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">-b</span> <span class="number">3.0</span><span class="number">.1</span> <span class="string">https://github.com/jerryc127/hexo-theme-butterfly.git</span> <span class="string">themes/butterfly</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">source/img/*</span> <span class="string">themes/butterfly/source/img/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span> <span class="string">clean</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">hexo</span> <span class="string">g</span></span><br><span class="line"><span class="attr">after_success:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.name</span> <span class="string">"$&#123;U_NAME&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">config</span> <span class="string">--global</span> <span class="string">user.email</span> <span class="string">"$&#123;U_EMAIL&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">"https://$&#123;GH_TOKEN&#125;@$&#123;GH_REF&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">public/*</span> <span class="string">yujihu.github.io/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">./yujihu.github.io</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">add</span> <span class="string">.</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">commit</span> <span class="string">-m</span> <span class="string">'travis-ci auto build yujihu-blog'</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">push</span> <span class="string">origin</span> <span class="string">"$&#123;P_BRANCH&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">../</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">clone</span> <span class="string">"https://$&#123;U_NAME2&#125;:$&#123;CO_TOKEN&#125;@$&#123;CO_REF&#125;"</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cp</span> <span class="string">-rf</span> <span class="string">public/*</span> <span class="string">yujihu.coding.io/</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">cd</span> <span class="string">./yujihu.coding.io</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">add</span> <span class="string">.</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">commit</span> <span class="string">-m</span> <span class="string">'travis-ci auto build yujihu-blog'</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">git</span> <span class="string">push</span> <span class="string">origin</span> <span class="string">"$&#123;P_BRANCH&#125;"</span></span><br><span class="line"><span class="attr">branches:</span></span><br><span class="line">  <span class="attr">only:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>node_js: 与我们本地开发的node.js版本保持一致。</p>
-</li>
-<li><p>before_install：全局安装hexo脚手架。</p>
-</li>
-<li><p>install：安装博客的依赖。</p>
-</li>
-<li><p>script： 此处为生成博客静态资源的代码，需要将source/img复制到themes/butterfly/source/img下面，否则会导致图片无法访问。</p>
-</li>
-<li><p>after_success：生成成功后，将静态资源分别提交至github pages和coding pages仓库。</p>
-</li>
-<li><p>环境变量：<code>${***}</code> 这块后面会提到。</p>
-</li>
-<li><p>2.Github 增加一个 Personal access tokens，位置在<a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Settings/Developer settings</a>。</p>
-</li>
-</ul>
-<p><img src= "/img/loading.gif" data-src="token.png" alt="token"></p>
-<ul>
-<li>3.Coding 增加一个访问令牌，位置在<code>个人账户设置/访问令牌</code>。 </li>
-</ul>
-<p><img src= "/img/loading.gif" data-src="coding.png" alt="token"></p>
-<ul>
-<li>4.进入<a href="https://travis-ci.com/" target="_blank" rel="noopener">Travis CI</a>，使用 Github登陆， 进入<a href="https://travis-ci.com/dashboard" target="_blank" rel="noopener">dashboard</a>，此时应该可以看到你刚创建的项目。</li>
-</ul>
-<p><img src= "/img/loading.gif" data-src="travis1.png" alt="travis1"></p>
-<ul>
-<li>5.进入该项目的setting，配置环境变量</li>
-</ul>
-<p><img src= "/img/loading.gif" data-src="travis2.png" alt="travis2"></p>
-<blockquote>
-<p>GH_REF: Github Pages项目地址<code>github.com/[name]/[name].github.io.git</code>注意去掉 https://。<br>CO_REF: Coding Pages项目地址<code>e.coding.net/[name]/[name].coding.io/[name].coding.io.git</code>注意去掉 https://。<br>GH_TOKEN: Github Token，是通过上面第2步拿到的。<br>CO_TOKEN: Coding Token，是通过上面第3步拿到的。<br>P_BRANCH: 要上传的分支，这里我们要传到 master。<br>U_EMAIL: 你的 Github 邮箱。<br>U_NAME: 你的 Github 用户名。<br>U_NAME2: 你的 Coding 用户名，这个很关键，一定要设置正确。</p>
-</blockquote>
-<ul>
-<li>6.将博客源代码push到远程仓库，我们可以发现<code>Travis CI</code>会开启一次自动构建。</li>
-</ul>
-<h2 id="域名绑定"><a href="#域名绑定" class="headerlink" title="域名绑定"></a>域名绑定</h2><p>1.在腾讯云上购买一个域名，首年一般很便宜，大家可以先买一年试试，域名可以不备案，但需要实名认证。<br>2.开启Github Pages，在[name].github.io的setting中进行配置。</p>
-<p><img src= "/img/loading.gif" data-src="github2.png" alt="github2"></p>
-<p>3.开启Coding Pages, 在<code>项目/持续部署/静态网站</code>下进行配置。</p>
-<p><img src= "/img/loading.gif" data-src="coding2.png" alt="coding2"><br><img src= "/img/loading.gif" data-src="coding3.png" alt="coding3"></p>
-<p>4.配置域名解析</p>
-<p>进入刚刚购买域名的管理控制台，配置域名解析规则，境内CNAME到Coding Pages，境外CNAME到Github Pages.</p>
-]]></content>
-      <categories>
-        <category>hexo</category>
-      </categories>
-      <tags>
-        <tag>hexo</tag>
-        <tag>blog</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>mysql 索引</title>
-    <url>/2020/02/04/mysql-%E7%B4%A2%E5%BC%95/</url>
-    <content><![CDATA[<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引(key)是存储引擎用于快速找到记录的一种数据结构。它和一本书中目录的工作方式类似——当要查找一行记录时，先在索引中快速找到行所在的位置信息，然后再直接获取到那行记录。<br>在MySql中，索引是在存储引擎层而不是服务器层实现的，所以不同的存储引擎对索引的实现和支持都不相同。</p>
-<a id="more"></a>
-
-<h2 id="索引的优点"><a href="#索引的优点" class="headerlink" title="索引的优点"></a>索引的优点</h2><ul>
-<li>索引大大减少了服务器需要扫描的数据量</li>
-<li>索引可以帮助服务器避免排序和临时表</li>
-<li>索引可以将随机I/O变为顺序I/O</li>
-</ul>
-<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><ul>
-<li>普通索引</li>
-<li>UNIQUE索引</li>
-<li>主键索引</li>
-</ul>
-<h2 id="MyISAM索引与InnoDB索引那个快"><a href="#MyISAM索引与InnoDB索引那个快" class="headerlink" title="MyISAM索引与InnoDB索引那个快"></a>MyISAM索引与InnoDB索引那个快</h2><h3 id="MyISAM索引的实现"><a href="#MyISAM索引的实现" class="headerlink" title="MyISAM索引的实现"></a>MyISAM索引的实现</h3><pre><code>MyISAM索引文件和数据文件是分离的，索引文件仅保存记录所在页的指针（物理位置），通过这些地址来读取页，进而读取被索引的行。下图是MyISAM的索引原理图：（为了简化，一个页内只存放了两条记录。）</code></pre><p><img src= "/img/loading.gif" data-src="mq1.png" alt=""><br>      上图所提供的示例表字段有Col1（ID）、Col2(age)、Col3（name）三个，其中Col1为Primary Key（主键），上图很好地说明了树中叶子保存的是对应行的物理位置。通过该值，存储引擎能顺利地进行回表查询，得到一行完整记录。同时，每个叶子页也保存了指向下一个叶子页的指针。从而方便叶子节点的范围遍历。</p>
-<pre><code>而对于二级索引，在 MyISAM存储引擎中以与上图同样的方式实现，可以看出MyISAM的索引文件仅仅保存数据记录的地址。</code></pre><h3 id="InnoDB索引的实现"><a href="#InnoDB索引的实现" class="headerlink" title="InnoDB索引的实现"></a>InnoDB索引的实现</h3><ol>
-<li><p>1)聚集索引</p>
-<p>   与 MyISAM相同的一点是，InnoDB 也采用 B+Tree这种数据结构来实现 B-Tree索引。而很大的区别在于，InnoDB 存储引擎采用&quot;聚集索引&quot;的数据存储方式实现B-Tree索引，所谓&quot;聚集&quot;，就是指数据行和相邻的键值紧凑地存储在一起，注意 InnoDB 只能聚集一个叶子页（16K）的记录（即聚集索引满足一定的范围的记录），因此包含相邻键值的记录可能会相距甚远。</p>
-</li>
-</ol>
-<p>注意: innodb来说,</p>
-<p>1 主键索引 既存储索引值,又在叶子中存储行的数据</p>
-<p>2 如果没有主键, 则会Unique key做主键</p>
-<p>3 如果没有unique,则系统生成一个内部的rowid做主键.</p>
-<p>4 像innodb中,主键的索引结构中,既存储了主键值,又存储了行数据,这种结构称为&quot;聚簇索引&quot;</p>
-<p>下图说明了 InnoDB聚集索引的实现方式，同时也体现了一张 innoDB表的结构，可以看到，InnoDB 中，主键索引和数据是一体的，没有分开。：</p>
-<p><img src= "/img/loading.gif" data-src="mq2.png" alt=""><br>这种实现方式，给予了 InnoDB 按主键检索的超高性能。可以有目的性地选择聚集索引，比如一个邮件表，可以选择用户ID来聚集数据，这样只需要从磁盘读取较少并且连续的数据页就能获得某个id的用户全部的邮件，避免了读取分散页时所耗费的随机I/O。</p>
-<p>2)辅助索引</p>
-<pre><code>而对于辅助索引，InnoDB采用的方式是在叶子页中保存主键值，通过这个主键值来回表（上图）查询到一条完整记录，因此按辅助索引检索实际上进行了二次查询，效率肯定是没有按照主键检索高的。下图是辅助索引的实现方式：</code></pre><p><img src= "/img/loading.gif" data-src="mq3.png" alt=""><br>      由于每个辅助索引都包含主键索引，因此，为了减小辅助索引所占空间，我们通常希望 InnoDB 表中的主键索引尽量定义得小一些（值得一提的是，MySIAM会使用前缀压缩技术使得索引变小，而InnoDB按照原数据格式进行存储。），并且希望InnoDB的主键是自增长的，因为如果主键并非自增长，插入时，由于写入时乱序的，会使得插入效率变低。</p>
-<p>参考：<a href="https://blog.csdn.net/frycn/article/details/70158313" target="_blank" rel="noopener">https://blog.csdn.net/frycn/article/details/70158313</a></p>
-<p><a href="https://blog.csdn.net/ljfphp/article/details/80029968" target="_blank" rel="noopener">https://blog.csdn.net/ljfphp/article/details/80029968</a></p>
-<ol start="5">
-<li>索引:用于加快查找数据的速度的一种内部机制。</li>
-</ol>
-<p>如何定位一个慢sql：</p>
-<ol>
-<li>开启慢查询日志，默认是不开启，showvariableslike&#39;%slow%、set log_slow_queries on  set long_query_time=5; 默认是10</li>
-<li>mysqldumpslow –help可显示其参数的使用</li>
-</ol>
-<p>得到返回记录最多的20个sql</p>
-<p>mysqldumpslow -s r -t 20 sqlslow.log</p>
-<p>得到平均访问次数最多的20条sql</p>
-<p>mysqldumpslow -s ar -t 20 sqlslow.log</p>
-<p>参考：<a href="https://blog.csdn.net/sunyuhua_keyboard/article/details/81204020" target="_blank" rel="noopener">https://blog.csdn.net/sunyuhua_keyboard/article/details/81204020</a></p>
-<ol>
-<li>explain + 慢sql</li>
-<li>show profiles 细致分析mysql 生命周期和执行细节</li>
-<li>sql 服务器调优（后边有介绍）</li>
-</ol>
-<p>先讲解explain 参考：<a href="https://www.cnblogs.com/yycc/p/7338894.html" target="_blank" rel="noopener">https://www.cnblogs.com/yycc/p/7338894.html</a></p>
-<p><a href="https://www.cnblogs.com/gomysql/p/3720123.html" target="_blank" rel="noopener">https://www.cnblogs.com/gomysql/p/3720123.html</a></p>
-<p><img src= "/img/loading.gif" data-src="mq4.png" alt=""></p>
-<p>EXPLAIN select * from store_info where id in (SELECT store_info_id from attachment where file_type = 2);</p>
-<p><img src= "/img/loading.gif" data-src="mq5.png" alt=""><br>Id：这是SELECT的查询序列号，id相同时 由上至下执行，id不同时，数值越大越先执行。</p>
-<p>select_type: SELECT类型,可以为以下任何一种:</p>
-<ul>
-<li><strong>SIMPLE</strong>:简单SELECT(不使用UNION或子查询)</li>
-<li><strong>PRIMARY</strong>:最外面的SELECT</li>
-<li><strong>UNION</strong>:UNION中的第二个或后面的SELECT语句</li>
-<li><strong>DEPENDENT UNION</strong>:UNION中的第二个或后面的SELECT语句,取决于外面的查询</li>
-<li><strong>UNION RESULT</strong>:UNION 的结果</li>
-<li><strong>SUBQUERY</strong>:子查询中的第一个SELECT</li>
-<li><strong>DEPENDENT SUBQUERY</strong>:子查询中的第一个SELECT,取决于外面的查询</li>
-<li><strong>DERIVED</strong>:导出表的SELECT(FROM子句的子查询)</li>
-</ul>
-<p>Table ：输出的行所引用的表</p>
-<p>Type: 访问类型  ALL, index,  range, ref, eq_ref, const, system, NULL</p>
-<ul>
-<li><p>==system==: 表仅有一行(=系统表)。这是const联接类型的一个特例。</p>
-</li>
-<li><p>==const==: 表最多有一个匹配行,它将在查询开始时被读取。因为仅有一行,在这行的列值可被优化器剩余部分认为是常数。const表很快,因为它们只读取一次!</p>
-   <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span>\*<span class="keyword">from</span> ( <span class="keyword">select</span>\*<span class="keyword">from</span> t1 <span class="keyword">where</span> <span class="keyword">id</span>= **<span class="number">1</span>** )b1;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong></strong> eq_ref:就在使用的索引是唯一索引，对于每个索引键值，表中只有一条记录匹配，简单来说，就是多表连接中使用primary key或者 unique key作为关联条</p>
-</li>
-<li><p><strong></strong> ref: 使用非唯一索引扫描或者唯一索引的前缀扫描，返回匹配某个单独值的记录行</p>
-</li>
-<li><p><strong></strong> range:索引范围扫描，对索引的扫描开始于某一点，返回匹配值域的行。显而易见的索引范围扫描是带有between或者where子句里带有&amp;lt;, &amp;gt;查询。当mysql使用索引去查找一系列值时，例如IN()和OR列表，也会显示range（范围扫描）,当然性能上面是有差异的。</p>
-</li>
-<li><p><strong></strong> index:该联接类型与ALL相同,除了只有索引树被扫描。这通常比ALL快,因为索引文件通常比数据文件小。</p>
-</li>
-<li><p><strong></strong> ALL:MySQL将遍历全表以找到匹配的行。</p>
-</li>
-<li><p><strong></strong> NULL：MySQL在优化过程中分解语句，执行时甚至不用访问表或索引，例如从一个索引列里选取最小值可以通过单独索引查找完成。</p>
-   <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">explain</span> <span class="keyword">select</span>\*<span class="keyword">from</span> t1 <span class="keyword">where</span> <span class="keyword">id</span> = (selectmin(<span class="keyword">id</span>) <span class="keyword">from</span> t2);</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p>possible_keys <strong>:</strong> 指出MySQL能使用哪个索引在该表中找到行</p>
-<p>key : 显示MySQL实际决定使用的键(索引)<br>key_len : 显示MySQL决定使用的键长度</p>
-<p>ref : 显示使用哪个列或常数与key一起从表中选择行。</p>
-<p>Rows <strong>:</strong> 显示MySQL认为它执行查询时必须检查的行数。</p>
-<p><strong>Extra</strong>  <strong>:</strong></p>
-<ul>
-<li><p><strong></strong> Using filesort:MySQL需要额外的一次传递,以找出如何按排序顺序检索行。</p>
-<p>explain select store_id from store_info where id in (1,2) ORDER BY id</p>
-<p>explain select store_id from store_info where id in (1,2) ORDER BY store_id</p>
-</li>
-<li><p><strong></strong> Using index:从只使用索引树中的信息而不需要进一步搜索读取实际的行来检索表中的列信息。（覆盖索引）</p>
-<p>explain select store_id from store_info where store_id in (1,2) ORDER BY store_id</p>
-</li>
-<li><p><strong></strong> Using temporary: 这个值表示使用了内部临时(基于内存的)表。一个查询可能用到多个临时表。有很多原因都会导致MySQL在执行查询期间创建临时表。两个常见的原因是在来自不同表的上使用了DISTINCT,或者使用了不同的ORDER BY和GROUP BY31,1312列。 A,B    b,a</p>
-</li>
-</ul>
-<p>explain select id from store_info where id in (1,2) GROUP BY store_id</p>
-<ul>
-<li><p><strong></strong> Using where:WHERE 子句用于限制哪一个行匹配下一个表或发送到客户。</p>
-</li>
-<li><p><strong></strong> Impossible where<br>这个值强调了where语句会导致没有符合条件的行。</p>
-<pre><code>EXPLAIN SELECT \* FROM t1 WHERE 1=2;</code></pre></li>
-</ul>
-<p>6.覆盖索引：全值匹配 多列索引 (推荐)</p>
-<p><img src= "/img/loading.gif" data-src="mq6.png" alt=""><br>EXPLAIN SELECT * from store_info  where store_id  = 1 and vender_id =2</p>
-<p>如上：用多少个索引？</p>
-<p><img src= "/img/loading.gif" data-src="mq7.png" alt=""><br>explain SELECT store_id  from store_info where  store_id = 1 and vender_id = 1;</p>
-<p>explain SELECT store_id  from store_info where  store_id != 1 and  vender_id = 1;</p>
-<p>explain SELECT store_id  from store_info where  store_id != 1;</p>
-<p>explain SELECT store_id  from store_info where  store_id = 1 OR vender_id = 1;</p>
-<p>explain SELECT store_id  from store_info where  store_id != 1 OR vender_id = 1;</p>
-<p>explain SELECT store_id  from store_info where  store_id = 1 or vender_id = 1 ORDER BY store_id;</p>
-<p>7.避免索引失效：（多列索引）</p>
-<ol>
-<li><p>针对多列索引，采用最左匹配法则，中间不能断（包括大约等于 小于）</p>
-</li>
-<li><p>不能再索引上做任何操作函数和类型转换（下面有讲）</p>
-</li>
-<li><p>范围查询左侧全失效，  name=&quot;&quot; and age &amp;gt; 25 and type=&quot;&quot;</p>
-</li>
-<li><p>尽量使用覆盖索引，用三个字段创建索引，只用其中一两个字段，尽量少用select * from  user</p>
-</li>
-<li><p>使用 !=   &amp;lt;&amp;gt; 会全表扫描。`</p>
-<p>explain  SELECT * from store_label where label_type_id  !=1</p>
-</li>
-<li><p>is not null 会全表扫描。</p>
-<p>explain  SELECT * from store_label where label_type_id  is not null;</p>
-</li>
-<li><p>Like  &quot;%ssss%&quot;  &quot;%sfds&quot;</p>
-</li>
-<li><p>字符串不加单引号，如：2000  （因为内部使用了 类型转换函数）。</p>
-</li>
-<li><p>少用or 用它连接查询导致索引失效。</p>
-<p>explain  SELECT * from store_label where label_type_id  is null  or label_name like &quot;1123%&quot;;</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>mysql</tag>
-        <tag>索引</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>nginx location 使用指南</title>
-    <url>/2020/02/04/nginx-location-%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h2 id="什么是location"><a href="#什么是location" class="headerlink" title="什么是location"></a>什么是location</h2><ul>
-<li>它是nginx基于http协议跟外界沟通的桥梁，用来匹配并执行一个规范化的URI，任何http请求都需要经过它的“同意”才能通过nginx的大门</li>
-<li>它长什么样子呢，比如我们常见的一种配置<a id="more"></a>
-
-</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /hello &#123;</span><br><span class="line">   <span class="attribute">return</span> <span class="number">200</span> <span class="string">'hello world'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>/xxxx 除了这种还有没有其他的写法？ 是不是没有？ 要想知道有没有其他的写法是不是要从系统层面（api）去了解一下，才能扩展 <a href="http://nginx.org/en/docs/http/ngx_http_core_module.html#location" target="_blank" rel="noopener">官方</a></li>
-</ul>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">location [ = | ~ | ~* | ^~ ] uri &#123; ... &#125;</span><br><span class="line">location @name &#123; ... &#125;</span><br></pre></td></tr></table></figure>
-
-<p>语法规则很简单，一个location关键字，后面跟着可选的修饰符，后面是要匹配的字符，花括号中是要执行的操作。</p>
-<ul>
-<li>修饰符<br>= 表示精确匹配。只有请求的url路径与后面的字符串完全相等时，才会命中。<br>~ 表示该规则是使用正则定义的，区分大小写。<br><del>* 表示该规则是使用正则定义的，不区分大小写。<br>^</del> 表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找</li>
-</ul>
-<h2 id="精确匹配"><a href="#精确匹配" class="headerlink" title="精确匹配"></a>精确匹配</h2><figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> = /a &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>精确匹配一个字都不能错, /a 可以，但是 /a/ 就不行</p>
-<h2 id="普通匹配-和"><a href="#普通匹配-和" class="headerlink" title="普通匹配    / 和  ^~"></a>普通匹配    / 和  ^~</h2><ul>
-<li>/   我们经常使用，是以其后设置的uri作为前缀来匹配请求的</li>
-<li>^~  不常用的 也是以其后设置的uri作为前缀来匹配请求的</li>
-<li>从概念上讲他们是一样的，实际使用也是一样的，但是他们有哪些细微差别呢？ 这个稍后讲</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们访问  /b 或者 /bc 或者 /ba 都是可以访问的</p>
-<p>验证一下 / ,^~ 是前缀匹配，我们可以试一下 /x/b 看看能不能访问？</p>
-<h2 id="正则匹配"><a href="#正则匹配" class="headerlink" title="正则匹配"></a>正则匹配</h2><ul>
-<li>~  区分大小写  ，在其后的uri就变成了正则表达式</li>
-<li>~* 不区分大小写，在其后的uri就变成了正则表达式</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span> <span class="regexp">~* /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面说普通匹配的时候 我们使用了location /b ,这里正则也使用了 /b 如果同时存在，他们先使用那个呢？ 为什么？这个呢也稍后讲</p>
-<p>还有普通匹配试了 /x/b 返回状态404 ， 那使用正则模式呢，状态是多少？ 正则模式 /b 可以是第一个 也可是是最后一个</p>
-<p>正则是不是完事了？咦，不对 好像少了点什么？ 说好的正则 我堂堂 \d \w [a-z] \d{9,11} 哪里去了，是不是感觉少了点东西</p>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">location  ~ "/(\d&#123;1,11&#125;)" &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"hi paimai,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>是不是这样  我们拍卖单品页是不是这样的  paimai.jd.com/123456789<br>是不是很完美？ 有没有问题?<br>前面我们正则部分我们说了  普通模式 /b 和正则模式 /b 区别 ，回顾一下<br>我之前写的时候就遇到过这样的问题  paimai.jd.com/album/123456789 也被匹配到了</p>
-<p>那么问题来了 正则模式里面怎么精确匹配</p>
-<p>^/a 的意思就是，匹配以/a开头的字符串<br>.html$   的意思就是 以.html结尾</p>
-<p>再重新写一下单品页的匹配方式</p>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line">location ~* "^/(\d&#123;9,11&#125;)$" &#123;</span><br><span class="line">    <span class="attribute">default_type</span> text/html;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"hi paimai,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>使用正则定义的location在配置文件中出现的顺序很重要。因为找到第一个匹配的正则后，查找就停止了，后面定义的正则就是再匹配也没有机会了。</p>
-<p>到这里正则模式才算完了^_^</p>
-<h2 id="模式"><a href="#模式" class="headerlink" title="@ 模式"></a>@ 模式</h2><ul>
-<li>这里内部的意思是指外部用户看不到的location</li>
-</ul>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> @/d &#123;</span><br><span class="line">   <span class="attribute">return</span> <span class="number">200</span> <span class="string">"paimai"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们可以试着访问一下</p>
-<p>正确使用<br>error_page 404 @/d</p>
-<h2 id="刚刚我们在说-普通匹配-和正则匹配里面-放了两个-这个稍后讲-的问题"><a href="#刚刚我们在说-普通匹配-和正则匹配里面-放了两个-这个稍后讲-的问题" class="headerlink" title="刚刚我们在说  普通匹配 和正则匹配里面 放了两个 这个稍后讲 的问题"></a>刚刚我们在说  普通匹配 和正则匹配里面 放了两个 这个稍后讲 的问题</h2><ol>
-<li>/ 和  ^~ 普通模式里面，两个同时存在的时候 使用的是那个location,是不是有个优先级的问题</li>
-</ol>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>/ 和  ~  普通模式 和 匹配模式 同时存在 /b 的时候，优先使用的是那个location </li>
-</ol>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi /,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ~/,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>^~ 和  ~ 的优先级呢</li>
-</ol>
-<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">location</span><span class="regexp"> ^~</span> /b &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ^~,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="attribute">location</span>  <span class="regexp">~ /b</span> &#123;</span><br><span class="line">    <span class="attribute">default_type</span> <span class="string">"text/html"</span>;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">200</span> <span class="string">"wo shi ~/,url=<span class="variable">$uri</span>"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>得出的结论</p>
-<p>普通匹配优先级要低于正则匹配，而^~的匹配优先级要高于正则匹配</p>
-]]></content>
-      <categories>
-        <category>服务器</category>
-      </categories>
-      <tags>
-        <tag>nginx</tag>
       </tags>
   </entry>
   <entry>
