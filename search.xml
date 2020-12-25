@@ -3042,7 +3042,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 ]]></content>
   </entry>
   <entry>
-    <title>WebSocket(一)</title>
+    <title>WebSocket</title>
     <url>/2020/11/20/websocket/</url>
     <content><![CDATA[<h2 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket(-)"></a>WebSocket(-)</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>WebSocket protocol是HTML5一种新的协议。它实现了浏览器与服务器全双工通信(full-duplex)。一开始的握手需要借助HTTP请求完成。</p>
 <h3 id="原理-amp-机制"><a href="#原理-amp-机制" class="headerlink" title="原理&amp;机制"></a>原理&amp;机制</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>网站上的即时通讯是很常见的，比如网页的QQ，微信等。按照以往的技术能力通常是采用轮询等技术解决。<br>HTTP协议是非持久化的，单向的网络协议，在建立连接后只允许浏览器向服务器发出请求后，服务器才能返回相应的数据。<br>当需要即时通讯时，通过轮询在特定的时间间隔（如1秒），由浏览器向服务器发送Request请求，然后将最新的数据返回给浏览器。<br>缺点：会导致过多不必要的请求，浪费流量和服务器资源，每一次请求、应答，都浪费了一定流量在相同的头部信息上，而在WebSocket中，只需要服务器和浏览器通过HTTP协议进行一个握手的动作，然后单独建立一条TCP的通信通道进行数据的传送。<br>WebSocket同HTTP一样也是应用层的协议，但是它是一种双向通信协议，是建立在TCP之上的。<br>广泛被用来做即时通讯，以替代轮询。</p>
@@ -3064,6 +3064,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <li>没有同源限制，客户端可以与任意服务器通信。</li>
 <li>协议标识符是ws（如果加密，则为wss），服务器网址就是 URL</li>
 </ul>
+<h3 id="保持连接-心跳"><a href="#保持连接-心跳" class="headerlink" title="保持连接+心跳"></a>保持连接+心跳</h3><p>WebSocket为了保持客户端、服务端的实时双向通信，需要确保客户端、服务端之间的TCP通道保持连接没有断开。然而，对于长时间没有数据往来的连接，如果依旧长时间保持着，可能会浪费包括的连接资源。<br>但不排除有些场景，客户端、服务端虽然长时间没有数据往来，但仍需要保持连接。这个时候，可以采用心跳来实现。<br>发送方-&gt;接收方：ping<br>接收方-&gt;发送方：pong<br>ping、pong的操作，对应的是WebSocket的两个控制帧，opcode分别是0x9、0xA。<br>举例，WebSocket服务端向客户端发送ping，只需要如下代码（采用ws模块）</p>
 <h3 id="主要Api"><a href="#主要Api" class="headerlink" title="主要Api"></a>主要Api</h3><h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><p>WebSocket 对象作为一个构造函数，用于新建 WebSocket 实例。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const ws &#x3D; new WebSocket(&#39;ws:&#x2F;&#x2F;localhost:80&#39;);</span><br></pre></td></tr></table></figure>
 
@@ -5158,7 +5159,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2</code></pre>]]></content>
   </entry>
   <entry>
     <title>设计模式-提高代码质量</title>
-    <url>/2020/12/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</url>
+    <url>/2020/12/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</url>
     <content><![CDATA[<p>1、实现某个功能相信大家问题都不大，以实际代码+设计模式看到效果</p>
 <p>一、代码指标<br>  1、健壮性：是什么意思呢？ 百度里去搜索，一般说的都比较抽象<br>    对一个人而言，一般是说：这个人身份比较好，一般的小病小灾打不倒他<br>    对我们的代码而言：（一般的小bug 代码不会崩溃）你的代码在出现预期之外的错误下，减少找bug的难度和影响程度<br>      减少找bug的难度：<br>        我们有些人是这种情况： 写代码2个小时，改bug 6个小时，这样一天时间就过去了，大部分时间都在找bug的时间上，健壮性好的代码呢，程序出问题，能很快的定位到问题在哪儿<br>      减少影响程序<br>        不会因为一个小bug 让整个程序崩溃<br>    保证健壮性的手段：<br>      不同于其他性能之类的，没有很多抽象的概念，主要是开发习惯，</p>
 <pre><code>参数层面
