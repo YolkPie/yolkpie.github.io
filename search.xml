@@ -3094,7 +3094,65 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 ]]></content>
   </entry>
   <entry>
-    <title>whistle使用实践</title>
+    <title>whistle使用实践（实例篇）</title>
+    <url>/2020/12/24/whistle%E4%BD%BF%E7%94%A8%E5%AE%9E%E8%B7%B5%EF%BC%88%E5%AE%9E%E4%BE%8B%E7%AF%87%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h1><p>作为一名前端开发，利用代理工具抓包是最基础的技能。通过抓包，我们可以获取的信息有下面这些：</p>
+<ol>
+<li>具体的url</li>
+<li>请求的Method，Status等信息</li>
+<li>请求接口携带的参数</li>
+<li>请求头信息（cookie、UA、请求参数等）</li>
+<li>返回头信息（返回结果、是否支持跨域等）</li>
+</ol>
+<p>这部分和其他的代理工具没什么区别，都在Network模块里，不熟悉的话多点点就找到了。需要啰嗦几句的是，如果页面出问题，我们抓包的排查步骤是什么：首先确认控制台是否报错（见下节），确认页面地址及url携带的参数是否正确，还要确认要加载的静态资源或者接口的请求是否有非200的情况，当然，如果确切知道问题出在哪个接口上，直接查看接口的请求头和返回值信息就行了。</p>
+<h1 id="查看控制台报错"><a href="#查看控制台报错" class="headerlink" title="查看控制台报错"></a>查看控制台报错</h1><p>远程调试页面或者线上页面出现问题时，我们希望能够看到控制台的报错。这里有三种实现方式：</p>
+<ul>
+<li>使用log规则</li>
+<li>在页面注入vConsole</li>
+<li>使用Wenire</li>
+</ul>
+<p>如果只是简单查看控制台报错的话，经常用的是前两种方式，Wenire我会在本文单独说明。这里以查看京东首页的控制台内容来举例。</p>
+<h2 id="使用log规则"><a href="#使用log规则" class="headerlink" title="使用log规则"></a>使用log规则</h2><p>使用log规则很简单，在Rules里增加以下规则：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">https:<span class="comment">//m.jd.com/ log://</span></span><br></pre></td></tr></table></figure>
+<p>规则添加完成后，切换到Network模块，刷新京东首页，在左侧的请求中找到<a href="https://m.jd.com/并选中，在右侧选中Tools标签，就可以看到控制台打印的信息了。" target="_blank" rel="noopener">https://m.jd.com/并选中，在右侧选中Tools标签，就可以看到控制台打印的信息了。</a><br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/152818/39/11356/1022862/5fe45986Eba613fd6/c7bc33721f017f2d.jpg" alt="控制台信息"></p>
+<h2 id="在页面注入vConsole"><a href="#在页面注入vConsole" class="headerlink" title="在页面注入vConsole"></a>在页面注入vConsole</h2><p>在页面注入cConsole其实就是使用了whsitle的js规则，该规则在响应中追加脚本，如果响应是html文档，则自动用<code>&lt;script&gt;&lt;/script&gt;</code>包装后插入</p>
+<blockquote>
+<p>vConsole.js 文件地址：<a href="http://wechatfe.github.io/vconsole/lib/vconsole.min.js?v=3.3.0" target="_blank" rel="noopener">http://wechatfe.github.io/vconsole/lib/vconsole.min.js?v=3.3.0</a></p>
+</blockquote>
+<ol>
+<li>在Values中增加vConsole.js，并把从上面链接获取到的vConsole.js的内容粘贴到新增的vConsole.js中</li>
+<li>在vConsole.js中追加初始化逻辑：<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">window</span>.VConsole();</span><br><span class="line"><span class="string">``</span><span class="string">` </span></span><br><span class="line"><span class="string">3. 在Rules中配置如下规则：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span> js</span><br><span class="line">https:<span class="comment">//m.jd.com/ js://&#123;vConsole.js&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li>刷新京东主页，就可以在页面右下角看到vConsole了，点击vConsole，就可以看到控制台的信息了<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/154434/11/11513/852204/5fe45fb5Ec33d1d66/3b1229d5e9d38030.jpg" alt="vConsole"></li>
+</ol>
+<p>就我个人而言，我比较习惯使用注入vConsle的方式，因为可以同时使用多台设备，输出的内容互不影响，而且使用vConsole可以查看localStorage和sessionStorage等缓存信息。</p>
+<h1 id="配Host"><a href="#配Host" class="headerlink" title="配Host"></a>配Host</h1><h1 id="mock数据"><a href="#mock数据" class="headerlink" title="mock数据"></a>mock数据</h1><p>在项目开发中，经常遇到的情况是前端静态页和交互好了，后端接口没完成或者没数据，或者说有些数据的状态不易获得，这时候，使用mock数据来开发是比较高效的手段。当然，mock数据的前提是后端提供了接口的数据结构。</p>
+<p>拿获取用户是否是新用户的接口举例，这个接口支持JSONP和非JSONP两种形式</p>
+<h2 id="mock非JSONP请求"><a href="#mock非JSONP请求" class="headerlink" title="mock非JSONP请求"></a>mock非JSONP请求</h2><blockquote>
+<p><a href="https://api.m.jd.com/api?appid=paimai&amp;functionId=queryNewComerInfo&amp;body={}" target="_blank" rel="noopener">https://api.m.jd.com/api?appid=paimai&amp;functionId=queryNewComerInfo&amp;body={}</a></p>
+</blockquote>
+<p>我们需要先在Files或者Values添加名为queryNewComerInfo.json的文件，并在这个文件里根据接口文档要求的数据格式创建假数据：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    code:0,</span><br><span class="line">    data:</span><br><span class="line">        &#123;</span><br><span class="line">            newComerFlag:false,</span><br><span class="line">            pin:"XXXXXXX"</span><br><span class="line">        &#125;,</span><br><span class="line">    datas:[],</span><br><span class="line">    message:"操作成功",</span><br><span class="line">    statusCode:200</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再在Rules里添加规则</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用正则匹配queryNewComerInfo的方法，返回queryNewComerInfo.json里的内容</span></span><br><span class="line">/functionId=queryNewComerInfo/ file:<span class="comment">//&#123;queryNewComerInfo.json&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="mock-JSONP-请求"><a href="#mock-JSONP-请求" class="headerlink" title="mock JSONP 请求"></a>mock JSONP 请求</h2><blockquote>
+<p><a href="https://api.m.jd.com/api?appid=paimai&amp;functionId=queryNewComerInfo&amp;body={}&amp;_=1608811151553&amp;jsonp=Zepto1608810637767" target="_blank" rel="noopener">https://api.m.jd.com/api?appid=paimai&amp;functionId=queryNewComerInfo&amp;body={}&amp;_=1608811151553&amp;jsonp=Zepto1608810637767</a></p>
+</blockquote>
+<p> 如果访问上面的地址，JSONP请求返回的数据是这样的：<br> <figure class="highlight"><table><tr><td class="code"><pre><span class="line">Zepto1608810637767(</span><br><span class="line">    &#123;</span><br><span class="line">    code: 0,</span><br><span class="line">    data: &#123;</span><br><span class="line">        newComerFlag: false,</span><br><span class="line">        pin: "XXXXXXX"</span><br><span class="line">    &#125;,</span><br><span class="line">        datas: [ ],</span><br><span class="line">        message: "操作成功",</span><br><span class="line">        statusCode: 200</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p> 熟悉JSONP的应该都知道，返回内容的回调函数名称和url中jsonp的参数值（默认为callback）保持一致的，因为jsonp的参数值是随机的，我们就不能使用json格式的数据直接返回。这里我们要用到whislte的tpl：</p>
+<blockquote>
+<p>tpl基本功能跟file一样可以做本地替换，但tpl内置了一个简单的模板引擎，可以把文件内容里面{name}替换请求参数对应的字段(如果不存在对应的自动则不会进行替换)，一般可用于mock jsonp的请求。</p>
+</blockquote>
+<p>所以，如果请求是JSONP，我们就需要在返回结果的json中使用{jsonp}来替换url中jsonp的参数值：</p>
+ <figure class="highlight"><table><tr><td class="code"><pre><span class="line">Zepto1608810637767(</span><br><span class="line">    &#123;</span><br><span class="line">    code: 0,</span><br><span class="line">    data: &#123;</span><br><span class="line">        newComerFlag: false,</span><br><span class="line">        pin: "XXXXXXX"</span><br><span class="line">    &#125;,</span><br><span class="line">        datas: [ ],</span><br><span class="line">        message: "操作成功",</span><br><span class="line">        statusCode: 200</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h1 id="使用Weinre"><a href="#使用Weinre" class="headerlink" title="使用Weinre"></a>使用Weinre</h1>]]></content>
+      <tags>
+        <tag>whistle</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>whistle使用实践（配置与基础篇）</title>
     <url>/2020/12/22/whistle%E4%BD%BF%E7%94%A8%E5%AE%9E%E8%B7%B5%EF%BC%88%E9%85%8D%E7%BD%AE%E4%B8%8E%E5%9F%BA%E7%A1%80%E7%AF%87%EF%BC%89/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>whistle是基于Node实现的跨平台web调试代理工具，同类型的工具有Fiddler和Charles，主要用于查看、修改HTTP、HTTPS、Websocket的请求、响应，也可以作为HTTP代理服务器使用。</p>
 <p>在使用了Fiddler、Charles以及whistle这三款代理工具之后，总结出来的whistle的优势有以下几点：</p>
@@ -3116,7 +3174,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 
 <p>查看版本：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">whisle -V</span><br></pre></td></tr></table></figure>
-<p>如果能正确输出whislte的版本信息，就表示安装成功了。之后可通过help命令查看帮助信息：</p>
+<p>如果能正确输出whistle的版本信息，就表示安装成功了。之后可通过help命令查看帮助信息：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">whistle help</span><br></pre></td></tr></table></figure>
 <h2 id="启动whistle"><a href="#启动whistle" class="headerlink" title="启动whistle"></a>启动whistle</h2><p>whistle支持三种等价的命令whistle、w2、wproxy，本文使用w2命令。下面是常用的命令：</p>
 <p>启动whistle:</p>
@@ -3177,7 +3235,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <li>输入设置的规格名称<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/135720/28/17480/22628/5fbfa3f9Ef188fc6c/8d3854390d3657a8.png" alt="输入规则名称"></li>
 <li>在入站规则列表中查看是否新建成功以及是否开启，开启之后whistle提供的服务就可以在局域网中访问了<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/148633/37/18944/99950/5fdc21c6E2d1652c8/a1ccf9c2dfae880f.png" alt="查看入栈规则"></li>
 </ol>
-<h1 id="安装https证书"><a href="#安装https证书" class="headerlink" title="安装https证书"></a>安装https证书</h1><p>关闭防火墙或者给whsitle设置了白名单之后，如果whislte的设置页面可以正常打开，这表示说我们可以代理http请求了。</p>
+<h1 id="安装https证书"><a href="#安装https证书" class="headerlink" title="安装https证书"></a>安装https证书</h1><p>关闭防火墙或者给whsitle设置了白名单之后，如果whistle的设置页面可以正常打开，这表示说我们可以代理http请求了。</p>
 <p>如果你的页面和接口全部是http请求，就可以忽略安装https证书的这一步了。但现实是除了本地或者预发环境，我们很难找到不是https的了（很多预发环境也是https的），因此还是建议提前把证书装上。<br>如果你的环境中出现了以下情况（当然，没有装好证书的话这些情况基本都会出现的），就是https证书没有安装或者没装好：</p>
 <ol>
 <li>whisle的配置页面可以打开，但是网页不能打开或者只加载了一部分页面</li>
@@ -3195,8 +3253,8 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <blockquote>
 <p>上面的配置完成之后，如果https的请求还是不能正常访问或者还是出现安全提醒，可以重新打开浏览器访问或者重启下whistle。whistle官网给出的解释是如果之前访问过该页面，导致长链接已建立，所以我们之后的配置是不生效的。</p>
 </blockquote>
-<h1 id="准备知识"><a href="#准备知识" class="headerlink" title="准备知识"></a>准备知识</h1><p> 虽然我会按照具体的使用场景来介绍whistle的使用方法，但是在此之前，我们有必要对whistle控制台的功能划分和whisle的配置方式做一下简单的了解。</p>
-<h2 id="控制台"><a href="#控制台" class="headerlink" title="控制台"></a>控制台</h2><p>whislte控制台的打开方式上文我们已经说过了，这里不再重复。<br>whistle控制台核心部分的分区如下（[whistle界面详细列表点这里]（<a href="http://wproxy.org/whistle/webui/））：" target="_blank" rel="noopener">http://wproxy.org/whistle/webui/））：</a><br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/148002/26/19653/283807/5fe1ad39E16b9900c/30e8246cd6654f05.jpg" alt="控制台划分"></p>
+<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p> 虽然在[whistle使用实践（实例篇）]中我会按照具体的使用场景来详细介绍whistle的使用方法，但是在此之前，我们有必要对whistle控制台的功能划分和whisle的配置方式做一下简单的了解。</p>
+<h2 id="控制台"><a href="#控制台" class="headerlink" title="控制台"></a>控制台</h2><p>whistle控制台的打开方式上文我们已经说过了，这里不再重复。<br>whistle控制台核心部分的分区如下（[whistle界面详细列表点这里]（<a href="http://wproxy.org/whistle/webui/））：" target="_blank" rel="noopener">http://wproxy.org/whistle/webui/））：</a><br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/148002/26/19653/283807/5fe1ad39E16b9900c/30e8246cd6654f05.jpg" alt="控制台划分"></p>
 <ol>
 <li>NetWork: 查看请求响应的详细信息及请求列表的Timeline</li>
 <li>Rules: 匹配规则，whistle核心，详见下一节配置方式</li>
@@ -3214,11 +3272,16 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <p>和系统hosts一样，如果一个pattern要对应多个操作，whsitle也支持组合方式的配置。使用组合方式时，whistle会按照从左到右的顺序执行operatorURI。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">pattern operatorURI1 operatorURI2 operatorURIN</span><br></pre></td></tr></table></figure>
 
+<p>在简单了解了配置方式之后，我们就可以按照<code>pattern operatorURI</code>的模式为whsitle添加规则了。<br>还是再回到whsitle控制台的界面，选中Rules。我们可以像使用SwitchHosts软件管理hosts一样对规则进行分组管理。默认情况下，whistle只有一个Default的分组，如下：<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/138559/4/19993/221408/5fe313e6Edf676254/32de4c9528b8bba0.jpg" alt="default分组"></p>
+<p>我们可以点击Create按钮添加一个单品页的分组，在这个分组里可以加上所有与单品页相关的配置（如果要禁用某个配置，可以使用Ctrl + /的快捷键，或者直接在前面加#）<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/141428/28/19593/327919/5fe313f4E0b32f1ba/7e624a7cbb37d9bf.jpg" alt="添加分组"></p>
+<p>如果要配置的分组生效，需要双击左侧单品页的tab，出现对号就表示生效了，没有在使用的分组是没有对号的，也可以同时使用多个分组。<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/155210/10/11166/324076/5fe313efE0b194f99/f694ed08e697dcb6.jpg" alt="分组生效"></p>
 <h3 id="匹配模式pattern"><a href="#匹配模式pattern" class="headerlink" title="匹配模式pattern"></a>匹配模式pattern</h3><p>whistle的匹配模式分为以下几种：</p>
 <ol>
-<li><p>域名匹配：域名匹配不仅支持匹配某个域名，也可以限定端口号、协议</p>
+<li>域名匹配：域名匹配不仅支持匹配某个域名，也可以限定端口号、协议</li>
+</ol>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 匹配www.domain.com域名下的所有请求，包括http、https、ws、wss，tunnel</span></span><br><span class="line">www.domain.com operatorURI</span><br><span class="line"></span><br><span class="line"><span class="comment">// 匹配www.domain.com域名下的http请求</span></span><br><span class="line"></span><br><span class="line">http:<span class="comment">//www.domain.com operatorURI</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 匹配www.domain.com域名下81端口的请求(http请求默认为80端口，https请求默认为443端口)</span></span><br><span class="line">www.domain.com:<span class="number">81</span> operatorURI</span><br></pre></td></tr></table></figure>
-</li>
+
+<ol start="2">
 <li><p>路径匹配：指定匹配某个路径，也可以限定端口号、协议</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 匹配www.domain.com:81/path路径及其子路径（如www.domain.com:81/path/child）的请求</span></span><br><span class="line">www.domain.com:<span class="number">81</span>/path operatorURI</span><br></pre></td></tr></table></figure>
 </li>
@@ -3249,11 +3312,68 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 </ul>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 对所有域名对应的路径 protocol://a.b.c/xxx[/yyy]都生效</span></span><br><span class="line">*<span class="regexp">/ 127.0.0.1</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="操作值operatorURI"><a href="#操作值operatorURI" class="headerlink" title="操作值operatorURI"></a>操作值operatorURI</h3><p>（待补充）</p>
-<h2 id="添加与管理规则Rules"><a href="#添加与管理规则Rules" class="headerlink" title="添加与管理规则Rules"></a>添加与管理规则Rules</h2><p>在简单了解了pattern和operatorURI之后，我们就可以按照<code>pattern operatorURI</code>的模式为whsitle添加规则了。<br>还是再回到控制台的界面，选中Rules。我们可以像使用S<br>SwitchHosts软件管理hosts一样对规则进行分组管理。默认情况下，whistle只有一个Default的分组，如下：<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/138559/4/19993/221408/5fe313e6Edf676254/32de4c9528b8bba0.jpg" alt="default分组"></p>
-<p>我们可以点击Create按钮添加一个单品页的分组，在这个分组里可以加上所有与单品页相关的配置（如果要禁用某个配置，可以使用Ctrl + /的快捷键，或者直接在前面加#）<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/141428/28/19593/327919/5fe313f4E0b32f1ba/7e624a7cbb37d9bf.jpg" alt="添加分组"></p>
-<p>如果要配置的分组生效，需要双击左侧单品页的tab，出现对号就表示生效了，没有在使用的分组是没有对号的，也可以同事使用多个分组。<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/155210/10/11166/324076/5fe313efE0b194f99/f694ed08e697dcb6.jpg" alt="分组生效"></p>
-<p>未完待续。。。</p>
+<h3 id="操作值operatorURI"><a href="#操作值operatorURI" class="headerlink" title="操作值operatorURI"></a>操作值operatorURI</h3><p>whistle官网将whsitle的操作值分为字符串和JSON对象两种。本文按照配置方式的不同，将whislte的操作值分为两种：带空格的和不带空格的。</p>
+<ul>
+<li>带空格：带空格的字符串和保留缩进格式的JSON对象</li>
+<li>不带空格：不带空格的字符串和序列化了的不带空格的JSON对象</li>
+</ul>
+<p>不带空格的操作值可以直接在operatorURI中写入，模式为<code>pattern opProtocol://(strValue)</code>，注意字符串必须要用括号包裹：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 将符合pattern的url的返回内容用helloworld代替</span></span><br><span class="line">pattern resBody:<span class="comment">//(helloworld)</span></span><br></pre></td></tr></table></figure>
+
+<p>带空格的操作值需要将操作值保存在Values或者本地文件中。</p>
+<ol>
+<li>保存在Values中<br>在whsitle控制台中打开Values标签，点击Create，增加名称为test.json的操作值，并在右侧编辑test.json的内容，可按照<code>pattern opProtocol://{valueName}</code>来使用，注意value名称是用打括号包裹的，如下：</li>
+</ol>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/143992/4/19957/246593/5fe4336cEc5199118/8e955d43a329167f.jpg" alt="添加values"></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 将符合pattern的url的返回内容用test.json文件中的内容代替</span></span><br><span class="line">pattern resBody:<span class="comment">//&#123;test.json&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>增加的操作值的名称是按照自己的需求取的，后缀名也是非必填的。使用后缀名的话会按照对应的格式高亮展示，不使用的话默认文本格式展示</p>
+</blockquote>
+<ol start="2">
+<li>保存在本地文件中<br>首先我们先在本地新建一个test1.json的文件，然后在whsitle控制台中点击Files标签<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/156829/15/1850/248324/5fe447e0E52edb3cb/b36938896694268c.jpg" alt="点击Files"></li>
+</ol>
+<p>按照步骤选中创建的test1.json文件，whsitle会生成一个path，我们可以按照这个路径来使用<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/150822/27/12260/330508/5fe4483eEab5a4da3/0d2527e32c231d94.jpg" alt="选中"></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 将符合pattern的url的返回内容用test.json文件中的内容代替</span></span><br><span class="line">pattern resBody:<span class="comment">///$whistle/test1.json</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ]]></content>
       <tags>
         <tag>whistle</tag>
