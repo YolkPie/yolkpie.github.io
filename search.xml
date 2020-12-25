@@ -3044,7 +3044,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   <entry>
     <title>WebSocket</title>
     <url>/2020/11/20/websocket/</url>
-    <content><![CDATA[<h2 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket(-)"></a>WebSocket(-)</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>WebSocket protocol是HTML5一种新的协议。它实现了浏览器与服务器全双工通信(full-duplex)。一开始的握手需要借助HTTP请求完成。</p>
+    <content><![CDATA[<h2 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>WebSocket protocol是HTML5一种新的协议。它实现了浏览器与服务器全双工通信(full-duplex)。一开始的握手需要借助HTTP请求完成。</p>
 <h3 id="原理-amp-机制"><a href="#原理-amp-机制" class="headerlink" title="原理&amp;机制"></a>原理&amp;机制</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>网站上的即时通讯是很常见的，比如网页的QQ，微信等。按照以往的技术能力通常是采用轮询等技术解决。<br>HTTP协议是非持久化的，单向的网络协议，在建立连接后只允许浏览器向服务器发出请求后，服务器才能返回相应的数据。<br>当需要即时通讯时，通过轮询在特定的时间间隔（如1秒），由浏览器向服务器发送Request请求，然后将最新的数据返回给浏览器。<br>缺点：会导致过多不必要的请求，浪费流量和服务器资源，每一次请求、应答，都浪费了一定流量在相同的头部信息上，而在WebSocket中，只需要服务器和浏览器通过HTTP协议进行一个握手的动作，然后单独建立一条TCP的通信通道进行数据的传送。<br>WebSocket同HTTP一样也是应用层的协议，但是它是一种双向通信协议，是建立在TCP之上的。<br>广泛被用来做即时通讯，以替代轮询。</p>
 <h4 id="机制"><a href="#机制" class="headerlink" title="机制"></a>机制</h4><p>WebSocket是HTML5的新的协议。它实现了浏览器与服务器全双工通信，能更好的节省服务器资源和带宽并达到实时通讯，它建立在TCP之上，同HTTP一样通过 TCP 来传输数据，但是它和 HTTP 最大不同在于：</p>
 <ul>
