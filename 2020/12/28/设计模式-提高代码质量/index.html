@@ -1,0 +1,174 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>设计模式-提高代码质量 | YolkPie</title><meta name="description" content="1、实现某个功能相信大家问题都不大，以实际代码+设计模式看到效果 一、代码指标  1、健壮性：是什么意思呢？ 百度里去搜索，一般说的都比较抽象    对一个人而言，一般是说：这个人身份比较好，一般的小病小灾打不倒他    对我们的代码而言：（一般的小bug 代码不会崩溃）你的代码在出现预期之外的错误下，减少找bug的难度和影响程度      减少找bug的难度：        我们有些人是这种情况"><meta name="keywords" content="前端技术博客"><meta name="author" content="YolkPie"><meta name="copyright" content="YolkPie"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://yolkpie.github.io/2020/12/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="设计模式-提高代码质量"><meta property="og:url" content="https://yolkpie.github.io/2020/12/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/"><meta property="og:site_name" content="YolkPie"><meta property="og:description" content="1、实现某个功能相信大家问题都不大，以实际代码+设计模式看到效果 一、代码指标  1、健壮性：是什么意思呢？ 百度里去搜索，一般说的都比较抽象    对一个人而言，一般是说：这个人身份比较好，一般的小病小灾打不倒他    对我们的代码而言：（一般的小bug 代码不会崩溃）你的代码在出现预期之外的错误下，减少找bug的难度和影响程度      减少找bug的难度：        我们有些人是这种情况"><meta property="og:image" content="https://yolkpie.github.io/img/post.jpg"><meta property="article:published_time" content="2020-12-28T08:07:54.789Z"><meta property="article:modified_time" content="2020-12-28T08:07:54.789Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="Storybook-typescript重构" href="https://yolkpie.github.io/2020/12/28/Storybook-typescript%E9%87%8D%E6%9E%84/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: false
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="https://at.alicdn.com/t/font_1638514_cadwssqh3zv.css"><meta name="generator" content="Hexo 4.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">53</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">48</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">22</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相关链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我们</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/post.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">YolkPie</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 相关链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我们</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">设计模式-提高代码质量</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2020-12-28 16:07:54"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2020-12-28</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-12-28 16:07:54"><i class="fas fa-history fa-fw"></i> 更新于 2020-12-28</span></time></div><div class="meta-secondline"> <span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta__icon"></i><span>字数总计:</span><span class="word-count">1.5k</span><span class="post-meta__separator">|</span><i class="far fa-clock fa-fw post-meta__icon"></i><span>阅读时长: 4 分钟</span></span></div><div class="meta-thirdline"><span class="post-meta-pv-cv"><span class="post-meta__separator">|</span><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"><span class="post-meta__separator">|</span><i class="far fa-comments fa-fw post-meta__icon"></i><span>评论数:</span><a href="/2020/12/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/#post-comment"><span class="gitalk-comment-count comment-count"></span></a></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><p>1、实现某个功能相信大家问题都不大，以实际代码+设计模式看到效果</p>
+<p>一、代码指标<br>  1、健壮性：是什么意思呢？ 百度里去搜索，一般说的都比较抽象<br>    对一个人而言，一般是说：这个人身份比较好，一般的小病小灾打不倒他<br>    对我们的代码而言：（一般的小bug 代码不会崩溃）你的代码在出现预期之外的错误下，减少找bug的难度和影响程度<br>      减少找bug的难度：<br>        我们有些人是这种情况： 写代码2个小时，改bug 6个小时，这样一天时间就过去了，大部分时间都在找bug的时间上，健壮性好的代码呢，程序出问题，能很快的定位到问题在哪儿<br>      减少影响程序<br>        不会因为一个小bug 让整个程序崩溃<br>    保证健壮性的手段：<br>      不同于其他性能之类的，没有很多抽象的概念，主要是开发习惯，</p>
+<pre><code>参数层面
+  1、基础类型判断
+  2、参数是配置对象时，保证必传参数有值： 默认配置合并
+  3、参数是某个类的实例时： function 除了可以是一个方法 ，还可以是一个什么？
+
+易错代码
+  1、不由自己控制的出错代码： 像接口请求返回的非预期代码
+
+变量权限： 有点抽象了
+  变量应该不应该被篡改，能不能够被篡改
+  变量应不应该被读取，能不能够被读取，在哪里能被读取
+  这就是变量的权限
+  权限跟健壮性有什么关系呢？
+  我们在使用vue router时，有没有注意这个问题：
+    在this.$router赋值时，this.$router={}  无论你给什么值，this.$router的值都不会被改变,
+    Object.defineProperty(Vue.prototype, &apos;$router&apos;, {
+      get: function get () { return this._routerRoot._router }
+    });</code></pre><p>  2、可读性</p>
+<pre><code>语义化
+  定义有意义的名字： function a(){}  function b(){}// 这些都是没有意义的名称
+  1、业务中的作用，中文描述作用，再翻译成英文
+
+命名规范
+  1、类命名：首字母大写
+  2、普通方法变量，小驼峰命名
+  3、常量： 全大写，
+  4、局部变量：_开头
+
+结构清晰
+  1、if-else
+  2、回调函数
+    如果没有promise的话，会不会些什么功能做不出来
+    promise async 主要为了解决回调的问题</code></pre><p>  3、可复用性<br>    DRY原则： don’t repeat yourself<br>      写过一次的东东，就不要再写了</p>
+<pre><code>逻辑复用，提取代码
+  针对某个功能块而言
+
+创建公用模板
+  针对项目全局，创建公用模板
+
+代价： 增加了代码管理难度，提取重复代码，要把握一个度</code></pre><p>  4、可扩展性<br>    产品不可能不修改他的需求，就像程序员不可能不写bug一样，<br>    可扩展性就是在以后需求发生变化时，代码修改的难度问题，<br>    模块分明<br>      积木式编程，随时可以插入、移除某个模块<br>    耦合度低<br>      架构： 划分低耦合的模块，并高效设计模块间的沟通<br>    合适的扩展技巧</p>
+<p>二、设计模式概论<br>  创建型设计模式<br>    帮且我们优雅的创建对象<br>    工厂模式—-&gt; 大量创建对象<br>    建造者模式 —&gt; 精细化组合对象： 就像造房子，先有一些现成的材料：如门，窗，<br>    单例模式 —&gt; 全局只有一个：对象只能被创建一次，<br>      vue-router:全局中有一个，如果有多个的话，页面跳转的时候，选用哪个就是一个问题<br>      vuex: 全局只有一个，如果有多个，那页面的状态从哪个取也是问题</p>
+<p>  结构型<br>    帮助我们更优雅的设计代码结构：策略，享元</p>
+<p>  行为型<br>    模块间的行为模式的总结，帮助组织模块的沟通： 观察者</p>
+<p>  技巧型<br>    帮助我们优化代码</p>
+<p>  设计思路<br>    拿到需求 –&gt; 思考需求需求做什么 –&gt; 设计有哪些模块 –&gt; 整体类怎么设计 –&gt; 思考以后更改的可能，重新设计模块 –&gt; 编写代码，思考提高代码健壮性，可读性，有无重复代码<br>    开饭店<br>    饭店是服务顾客吃饭的<br>    厨师模块，服务员模块，收银员模块（老板）：<br>    类怎么设计：创建型设计模式<br>    思考变动： 重新拆分，整合，封装  模块间沟通：行为型设计模式<br>    写代码：思考提高代码质量：就会用到结构型设计模式， 技巧型设计模式</p>
+<p>需求：写一个编辑器， 有前进，后退，改变字体，大小，颜色功能</p>
+<p>需求2： 写一个表单验证工具，给出我要验证的dom、value 加对应的规则，就会自动验证<br>  分析模块：dom初始化模块 –&gt; 事件绑定模块 –&gt; 验证模块 –&gt; 消息提示模块</p>
+<p>三、设计模式解决问题<br>  1、if-else模式<br>    策略模式、状态模式</p>
+<p>  2、减少重复代码<br>    享元模式<br>      应用场景：当代码中创建了大量类似对象和类似代码块</p>
+<p>  3、更好的扩展方法<br>    装饰者模式<br>      目的：不重写方法的扩展方法<br>      应用场景：当一个方法需要扩展，但又不方便或不能去修改方法时： 是公共的方法 或他人的方法 或原生方法 或第三方模块的方法</p>
+<p>  4、解耦模块<br>    观察者模式（行为型）<br>      目的：减少对象间的耦合，来提高扩展性<br>      应用场景：当两个模块直接沟通会增加他们的耦合性时，两个模块不方便直接沟通</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">YolkPie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yolkpie.github.io/2020/12/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/">https://yolkpie.github.io/2020/12/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yolkpie.github.io" target="_blank">YolkPie</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/post.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/12/28/Storybook-typescript%E9%87%8D%E6%9E%84/"><img class="next-cover" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/156730/39/2480/35419/5fe93f39E95a59010/12c3a050227901de.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Storybook-typescript重构</div></div></a></div></nav><hr><div id="post-comment"><div class="comment_headling"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: '6e1bb19099a60d063402',
+  clientSecret: '6fefeea17c4f73c838216b0aab539d37c7bbcdad',
+  repo: 'yolkpie.github.io',
+  owner: 'YolkPie',
+  admin: ['yujihu'],
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN',
+  perPage: 10,
+  distractionFreeMode: true,
+  pagerDirection: 'last',
+  createIssueManually: true,
+  updateCountCallback: commentCount
+})
+gitalk.render('gitalk-container')
+
+function commentCount(n){
+  try {
+    document.getElementsByClassName('gitalk-comment-count')[0].innerHTML= n
+  } catch (e) {
+    return false
+  }
+}</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2020 By YolkPie</div><div class="framework-info"><span>驱动 </span><a href="https://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fas fa-comments"></i></a><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script id="ribbon_piao" mobile="true" src="/js/third-party/piao.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/local-search.js"></script><div style="display:none"><script type="text/javascript" src="https://s9.cnzz.com/z_stat.php?id=1279214088&web_id=1279214088"></script></div></body></html>
