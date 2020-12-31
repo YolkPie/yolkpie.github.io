@@ -310,6 +310,101 @@
       </tags>
   </entry>
   <entry>
+    <title>Mobx和Redux区别浅析</title>
+    <url>/2020/12/30/Mobx%E5%92%8CRedux%E5%8C%BA%E5%88%AB%E6%B5%85%E6%9E%90/</url>
+    <content><![CDATA[<p>在React项目中做数据管理，Redux已经占据半边天下，为什么会出现Mobx呢，它是什么，能给我们带来什么，和Redux相比有什么优缺点呢，今天，我就自己学习的一点知识，为大家做一个简单的分享，希望让你对Mobx有一个大致的了解。</p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>Mobx是什么</li>
+<li>编程思维方式的不同</li>
+<li>Store的区别</li>
+<li>储存数据形式区别</li>
+<li>操作对象方式不同</li>
+<li>代码对比</li>
+<li>Props的注入不同</li>
+<li>Mobx优缺点总结</li>
+</ol>
+<h2 id="Mobx是什么"><a href="#Mobx是什么" class="headerlink" title="Mobx是什么"></a>Mobx是什么</h2><p>Mobx是一个透明函数响应式编程（Transparently Functional Reactive Programming，TFRP）的状态管理库，它使得状态管理简单可伸缩：<br>Anything that can be derived from the application state, should be derived. Automatically.</p>
+<p>任何起源于应用状态的数据应该自动获取。<br>其原理如图：<br><img src= "/img/loading.gif" data-src="img1.png" alt=""></p>
+<ol>
+<li><p>Action：定义改变状态的动作函数，包括如何变更状态；</p>
+</li>
+<li><p>Store：集中管理模块状态（State）和动作（action）；</p>
+</li>
+<li><p>Derivation（衍生）：从应用状态中派生而出，且没有任何其他影响的数据，我们称为derivation（衍生），衍生在以下情况下存在：<br>a. 用户界面；<br>b. 衍生数据；<br>衍生主要有两种：</p>
+</li>
+<li><p>Computed Values（计算值）：计算值总是可以使用纯函数（pure function）从当前可观察状态中获取；</p>
+</li>
+<li><p>Reactions（反应）：反应指状态变更时需要自动发生的副作用，这种情况下，我们需要实现其读写操作；</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;observable, autorun&#125; <span class="keyword">from</span> <span class="string">'mobx'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> todoStore = observable(&#123;</span><br><span class="line">    <span class="comment">/* some observable state */</span></span><br><span class="line">    todos: [],</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* a derived value */</span></span><br><span class="line">    <span class="keyword">get</span> completedCount() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.todos.filter(<span class="function"><span class="params">todo</span> =&gt;</span> todo.completed).length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* a function that observes the state */</span></span><br><span class="line">autorun(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Completed %d of %d items"</span>,</span><br><span class="line">        todoStore.completedCount,</span><br><span class="line">        todoStore.todos.length</span><br><span class="line">    );</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ..and some actions that modify the state */</span></span><br><span class="line">todoStore.todos[<span class="number">0</span>] = &#123;</span><br><span class="line">    title: <span class="string">"Take a walk"</span>,</span><br><span class="line">    completed: <span class="literal">false</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// -&gt; synchronously prints: 'Completed 0 of 1 items'</span></span><br><span class="line"></span><br><span class="line">todoStore.todos[<span class="number">0</span>].completed = <span class="literal">true</span>;</span><br><span class="line"><span class="comment">// -&gt; synchronously prints: 'Completed 1 of 1 items'</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="编程思维方式的不同"><a href="#编程思维方式的不同" class="headerlink" title="编程思维方式的不同"></a>编程思维方式的不同</h2><p>Redux更多的是遵循函数式编程（Functional Programming, FP）思想，而Mobx则更多从面相对象角度考虑问题。</p>
+<p>Redux提倡编写函数式代码，如reducer就是一个纯函数（pure function），如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">    (state, action) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.assign(&#123;&#125;, state, &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 纯函数，接受输入，然后输出结果，除此之外不会有任何影响，也包括不会影响接收的参数；对于相同的输入总是输出相同的结果。</p>
+<p> Mobx设计更多偏向于面向对象编程（OOP）和响应式编程（Reactive Programming），通常将状态包装成可观察对象，于是我们就可以使用可观察对象的所有能力，一旦状态对象变更，就能自动获得更新。</p>
+<h2 id="store的区别"><a href="#store的区别" class="headerlink" title="store的区别"></a>store的区别</h2><p>store是应用管理数据的地方，在Redux应用中，我们总是将所有共享的应用数据集中在一个大的store中，而Mobx则通常按模块将应用状态划分，在多个独立的store中管理。</p>
+<h2 id="储存数据形式区别"><a href="#储存数据形式区别" class="headerlink" title="储存数据形式区别"></a>储存数据形式区别</h2><p>Redux默认以JavaScript原生对象形式存储数据，而Mobx使用可观察对象：</p>
+<ol>
+<li>Redux需要手动追踪所有状态对象的变更；</li>
+<li>Mobx中可以监听可观察对象，当其变更时将自动触发监听；</li>
+</ol>
+<h2 id="操作对象方式不同"><a href="#操作对象方式不同" class="headerlink" title="操作对象方式不同"></a>操作对象方式不同</h2><p>Redux状态对象通常是不可变的（Immutable）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">  <span class="keyword">case</span> REQUEST_POST:</span><br><span class="line">  	<span class="keyword">return</span> <span class="built_in">Object</span>.assign(&#123;&#125;, state, &#123;</span><br><span class="line">      post: action.payload.post</span><br><span class="line">  	&#125;);</span><br><span class="line">  <span class="keyword">default</span>:</span><br><span class="line">    retur nstate;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们不能直接操作状态对象，而总是在原来状态对象基础上返回一个新的状态对象，这样就能很方便的返回应用上一状态；而Mobx中可以直接使用新值更新状态对象。</p>
+<h2 id="代码对比"><a href="#代码对比" class="headerlink" title="代码对比"></a>代码对比</h2><p>在Redux应用中，我们首先需要配置，创建store，并使用redux-thunk或redux-saga中间件以支持异步action，然后使用Provider将store注入应用：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// src/store.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; applyMiddleware, createStore &#125; <span class="keyword">from</span> <span class="string">"redux"</span>;</span><br><span class="line"><span class="keyword">import</span> createSagaMiddleware <span class="keyword">from</span> <span class="string">'redux-saga'</span></span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; Provider &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; BrowserRouter &#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; composeWithDevTools &#125; <span class="keyword">from</span> <span class="string">'redux-devtools-extension'</span>;</span><br><span class="line"><span class="keyword">import</span> rootReducer <span class="keyword">from</span> <span class="string">"./reducers"</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./containers/App/'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> sagaMiddleware = createSagaMiddleware()</span><br><span class="line"><span class="keyword">const</span> middleware = composeWithDevTools(applyMiddleware(sagaMiddleware));</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> createStore(rootReducer, middleware);</span><br><span class="line"></span><br><span class="line"><span class="comment">// src/index.js</span></span><br><span class="line">…</span><br><span class="line">ReactDOM.render(</span><br><span class="line">  &lt;BrowserRouter&gt;</span><br><span class="line">    &lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">      &lt;App /&gt;</span><br><span class="line">    &lt;<span class="regexp">/Provider&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>BrowserRouter&gt;,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>Mobx应用则可以直接将所有store注入应用：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; render &#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; Provider &#125; <span class="keyword">from</span> <span class="string">'mobx-react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; BrowserRouter &#125; <span class="keyword">from</span> <span class="string">'react-router-dom'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; useStrict &#125; <span class="keyword">from</span> <span class="string">'mobx'</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./containers/App/'</span>;</span><br><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> stores <span class="keyword">from</span> <span class="string">'./flux/index'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// set strict mode for mobx</span></span><br><span class="line"><span class="comment">// must change store through action</span></span><br><span class="line">useStrict(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Provider &#123;...stores&#125;&gt;</span><br><span class="line">    &lt;BrowserRouter&gt;</span><br><span class="line">      &lt;App /&gt;</span><br><span class="line">    &lt;<span class="regexp">/BrowserRouter&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>Provider&gt;,</span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">'app'</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Props的注入不同"><a href="#Props的注入不同" class="headerlink" title="Props的注入不同"></a>Props的注入不同</h2><ul>
+<li>Redux</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// src/containers/Company.js</span></span><br><span class="line">…</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CompanyContainer</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  componentDidMount () &#123;</span><br><span class="line">    <span class="keyword">this</span>.props.loadData(&#123;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Company</span></span></span></span><br><span class="line"><span class="xml">      infos=&#123;this.props.infos&#125;</span></span><br><span class="line"><span class="xml">      loading=&#123;this.props.loading&#125;</span></span><br><span class="line"><span class="xml">    /&gt;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">…</span><br><span class="line"></span><br><span class="line"><span class="comment">// function for injecting state into props</span></span><br><span class="line"><span class="keyword">const</span> mapStateToProps = <span class="function">(<span class="params">state</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    infos: state.companyStore.infos,</span><br><span class="line">    loading: state.companyStore.loading</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> mapDispatchToProps = <span class="function"><span class="params">dispatch</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> bindActionCreators(&#123;</span><br><span class="line">      loadData: loadData</span><br><span class="line">  &#125;, dispatch);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// injecting both state and actions into props</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> connect(mapStateToProps, &#123; loadData &#125;)(CompanyContainer);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Mobx</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">@inject(<span class="string">'companyStore'</span>)</span><br><span class="line">@observer</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CompanyContainer</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  componentDidMount () &#123;</span><br><span class="line">    <span class="keyword">this</span>.props.companyStore.loadData(&#123;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  render () &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; infos, loading &#125; = <span class="keyword">this</span>.props.companyStore;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Company</span></span></span></span><br><span class="line"><span class="xml">      infos=&#123;infos&#125;</span></span><br><span class="line"><span class="xml">      loading=&#123;loading&#125;</span></span><br><span class="line"><span class="xml">    /&gt;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Mobx优缺点总结"><a href="#Mobx优缺点总结" class="headerlink" title="Mobx优缺点总结"></a>Mobx优缺点总结</h2><ul>
+<li><strong>优点</strong></li>
+</ul>
+<ol>
+<li><p>学习成本少：Mobx基础知识很简单，学习了半小时官方文档和示例代码就搭建了新项目实例；而Redux确较繁琐，流程较多，需要配置，创建store，编写reducer，action，如果涉及异步任务，还需要引入redux-thunk或redux-saga编写额外代码，Mobx流程相比就简单很多，并且不需要额外异步处理库；</p>
+</li>
+<li><p>面向对象编程：Mobx支持面向对象编程，我们可以使用@observable and @observer，以面向对象编程方式使得JavaScript对象具有响应式能力；而Redux最推荐遵循函数式编程，当然Mobx也支持函数式编程；</p>
+</li>
+<li><p>模版代码少：相对于Redux的各种模版代码，如，actionCreater，reducer，saga／thunk等，Mobx则不需要编写这类模板代码；</p>
+</li>
+</ol>
+<ul>
+<li><strong>缺点</strong></li>
+</ul>
+<ol>
+<li><p>过于自由：Mobx提供的约定及模版代码很少，这导致开发代码编写很自由，如果不做一些约定，比较容易导致团队代码风格不统一，所以当团队成员较多时，确实需要添加一些约定；</p>
+</li>
+<li><p>可拓展，可维护性：也许你会担心Mobx能不能适应后期项目发展壮大呢？确实Mobx更适合用在中小型项目中，但这并不表示其不能支撑大型项目，关键在于大型项目通常需要特别注意可拓展性，可维护性，相比而言，规范的Redux更有优势，而Mobx更自由，需要我们自己制定一些规则来确保项目后期拓展，维护难易程度；</p>
+</li>
+</ol>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ol>
+<li><a href="https://www.robinwieruch.de/redux-mobx" target="_blank" rel="noopener">Redux &amp; Mobx</a></li>
+<li><a href="https://mobx.js.org/index.html" target="_blank" rel="noopener">Mobx</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>数据存储</category>
+      </categories>
+      <tags>
+        <tag>数据存储</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>nuxt.js</title>
     <url>/2020/02/04/NuxtJS/</url>
     <content><![CDATA[<h2 id="Nuxt-js是什么？"><a href="#Nuxt-js是什么？" class="headerlink" title="Nuxt.js是什么？"></a>Nuxt.js是什么？</h2><blockquote>
@@ -4181,6 +4276,58 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
+    <title>从设计着手保护用户隐私</title>
+    <url>/2020/12/30/%E4%BB%8E%E8%AE%BE%E8%AE%A1%E7%9D%80%E6%89%8B%E4%BF%9D%E6%8A%A4%E7%94%A8%E6%88%B7%E9%9A%90%E7%A7%81/</url>
+    <content><![CDATA[<p>用户隐私安全在产品设计中是很重要的一个环节。我们每天都会使用到各式各样的APP，有金融的，社交的，电商的…而这些APP里面又储存着我们重要的隐私信息。如登录密码、存款金额、身份信息等。因此今天总结一下，一些主流产品在用户隐私方面的做法与设计点，为我们日后对用户隐私信息设计时，能有一些思考和帮助。</p>
+<p>用户的隐私安全很重要，涉及的范围和角度也很多。首先先说说用户协议和隐私保护。</p>
+<h3 id="一、用户协议和隐私保护"><a href="#一、用户协议和隐私保护" class="headerlink" title="一、用户协议和隐私保护"></a>一、用户协议和隐私保护</h3><p>依稀记得，2017年支付宝年度账单，有个页面下有一行特别小的字儿：“我同意《芝麻服务的用户协议》”，且选择状态是已选状态，默认帮助用户选择同意，意思就是我们默认允许支付宝收集我们的信息，包括在第三方已保存的信息，引起了很大的负面影响，随后芝麻信用道歉说：初衷没错，只是方式错误…</p>
+<p>“用户协议”作为一种格式合同，是产品用来和用户签约授权的方式，原则意义上，它是具备法律效力的。产品提供“用户协议”完成的是对用户的<strong>“提前告知”</strong>动作，但用户信息的获取和使用，应该严格遵守《网络安全法》，做到让用户<strong>知情和同意</strong>，不能过度采集，更不可滥用数据。在我们大众的认知里，是没有对这个用户协议引起足够的重视，大家普遍认为它是没有法律依据的，也不会去了解接下来我们该尽到哪些义务和责任，如果用户没有仔细阅读用户协议，发生纠纷，会被认为是自身的疏忽问题，想要维权是非常麻烦的。</p>
+<p>所以从设计上，我们要：</p>
+<ul>
+<li>对于“用户协议”中重要的条款和内容要以<strong>加粗、标色、下划线</strong>等方式提醒用户，尽到提示和说明的义务。</li>
+<li>用户协议和隐私选项，最好是让用户自己点击勾选，用户如果忘记勾选，点击“登录”后可以使用弹窗提醒勾选。尽量不要默认勾选用户隐私协议。</li>
+</ul>
+<h3 id="二、密码输入保护隐私"><a href="#二、密码输入保护隐私" class="headerlink" title="二、密码输入保护隐私"></a>二、密码输入保护隐私</h3><p>密码是我们登录各大APP的钥匙，也是我们的信息数据得以保障的依据。在这方面的保护上，各种app都有不同的方式。无论在设计手法上，还是系统功能上。</p>
+<h4 id="1-iOS录屏与截图后：隐藏密码"><a href="#1-iOS录屏与截图后：隐藏密码" class="headerlink" title="1. iOS录屏与截图后：隐藏密码"></a><strong>1. iOS录屏与截图后：隐藏密码</strong></h4><p>iOS一贯对用户隐私的高度重视，在各个APP上填写密码时被屏幕录制与截图功能所监控，苹果也能通过自有技术进行检测与保密处理。保存后的图片与视频里会自动隐藏掉密码输入的痕迹，包括加密符号与键盘输入时的字符。以下是京东、淘宝、金融软件及视频软件在截图后，密码一栏被隐藏；</p>
+<p>bilibili的防偷窥捂眼睛，在设计上更有趣。用户输入账户时，动漫人物的眼睛是睁开的，在用户输入密码时，人物的眼睛会捂住，给用户一种可信任依赖的感觉。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/157353/17/472/119020/5feafaa3E88240db7/879c67efbe842b7d.png" alt="登陆账号时保护隐私"></p>
+<h4 id="2-录屏涉及到密码做黑屏处理"><a href="#2-录屏涉及到密码做黑屏处理" class="headerlink" title="2.录屏涉及到密码做黑屏处理"></a><strong>2.录屏涉及到密码做黑屏处理</strong></h4><p>华为手机录屏功能除了在操作方式上打通多种渠道使操作更方便,在功能的细节设计上也下了很大功夫。比如,在播放录制好的视频时,只要是涉及到密码、解锁等用户隐私相关页面,华为录屏就会将页面进行黑屏遮挡,不少用户误以为是录屏出现了bug,背后实则是华为手机为了保护用户数据安全做出的人性化设计。</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/150753/31/13299/136140/5feafaa4Ec6750293/8732e383a43d8d32.png" alt="华为手机黑屏"></p>
+<h4 id="3-银行app-自定义键盘"><a href="#3-银行app-自定义键盘" class="headerlink" title="3.银行app-自定义键盘"></a><strong>3.银行app-自定义键盘</strong></h4><p>目前几乎所有的银行app的数字键盘都是自定义的，这是为什么呢？</p>
+<p>一是：银监会要求银行开发移动产品时必须使用加密键盘；二是：因为打乱的键盘会防止密码被类似按钮记录器之类的东西记录，如果键盘每次都是打乱供用户输入的，密码就会被辨别成为无用的随机信息。三：防偷窥。一般偷窥密码的人会偷瞄我们点按屏幕的位置，记住位置就有较大几率拿到我们的真实密码。但这种自定义的无序键盘实际上用户体验来说并不是很好，当用户很着急支付的时候，对于这种无序键盘真的想爆粗口。</p>
+<p>突然发现除了银行app，互联网金融app为什么没有做无序密码处理呢？大致做了猜想：一是：银监会或者政策上并没有对支付宝或者微信做要求（当然，最基础的安全支付还是很有必要的），二是：这种有很大用户量的软件，会在产品研发上极度重视用户体验。支付宝和微信如何在密码键盘上，如何做到既安全又便捷呢？</p>
+<ul>
+<li><strong>技术上安全；</strong></li>
+<li><strong>用户体验设计上，让用户感知到安全；</strong></li>
+</ul>
+<p><strong>技术上的安全：</strong>记得有篇文章说过：支付宝可以通过指压、接触面积、重力变化，连续间隔时间等，可以帮助判断是否是本人操作。用户操作手机的习惯也是进行风险判定的一个重要维度。每个人的行为都会有自己的习惯，就好像走路的姿势、笔迹一样。每个人触控手机屏幕的方式不同，而手机上是有很多传感器的，所以可以通过指压等操作，帮助判断是否是本人操作。</p>
+<p><strong>用户体验设计上：</strong>微信初次转账页面，有一行小文字，微信安全支付，支付宝会有环境安全检测，告知用户可以安全支付。还有招行app自定义键盘上会有招商银行安全支付的文字，一些文字提示也能从视觉上让用户感知到安全感。</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/159938/25/404/80030/5feafaa3E2cca2581/b43a10e3ec87d6e4.png" alt="安全支付"></p>
+<h3 id="三、资产金额隐藏保护"><a href="#三、资产金额隐藏保护" class="headerlink" title="三、资产金额隐藏保护"></a>三、资产金额隐藏保护</h3><p>金融app对于个人账户的总资产可以自定义隐藏和显示，从视觉上保护资产不外泄。但个人觉得资产隐藏这部分还有更多设计可以突破，比如，总资产位置我们不展示****，可以用简短的文案代替，增加趣味性，比如隐藏资产的时候显示：空空如也？</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/160418/35/391/114519/5feafaa4E6ead0a16/bb517ed8c876dc90.png" alt="金额敏感信息"></p>
+<h3 id="四、匿名模式设计"><a href="#四、匿名模式设计" class="headerlink" title="四、匿名模式设计"></a>四、匿名模式设计</h3><h4 id="1-电商、外卖等平台匿名评价"><a href="#1-电商、外卖等平台匿名评价" class="headerlink" title="1.电商、外卖等平台匿名评价"></a>1.电商、外卖等平台匿名评价</h4><p>为什么会出现匿名评价的需求呢？通过真实的评价改善服务质量是评价系统的终极目的，而匿名评价存在的必要性则在于减少用户评论时的顾虑，增加评论的客观性，同时督促被评价人在各方面提升自己。</p>
+<p>这个心理诉求很好理解，拿三个场景举例：</p>
+<ul>
+<li>购买了特殊物品，分享了使用体验，不希望被熟人看到；</li>
+<li>商家服务还可以但产品不行，想给出低分但面子过不去，希望商家不知道是自己评的；</li>
+<li>商家服务特别差，但又怕差评后遭商家报复，所以选择匿名评价；</li>
+</ul>
+<p>因为买家差评，被商家寄恐怖物品；因外卖太慢，给骑手差评遭到骑手吐唾沫；这样的例子举不胜举；所以衍生了匿名评价功能；保护用户隐私，但我们以为的匿名真的匿名了吗？这个很值得商榷。</p>
+<p>匿名服务在设计上还是有一些差别的：我认为京东的设计对我来说是比较友好的，京东默认是匿名评价，用户如果想实名可以选择取消选择；饿了么和淘宝默认是公开选择的，如果用户没有手动选择，或者忽视这一选项，可能会给用户造成一些不好的体验。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/152439/39/12454/266315/5feafaa4Ee83546a2/af8c78b5e1d23bd3.png" alt="匿名评价"></p>
+<h4 id="2-嘀嗒、嘀嘀打车平台匿名评价"><a href="#2-嘀嗒、嘀嘀打车平台匿名评价" class="headerlink" title="2.嘀嗒、嘀嘀打车平台匿名评价"></a>2.嘀嗒、嘀嘀打车平台匿名评价</h4><p>滴答拼车除了自动匿名评价外，会对差评的内容进行延迟发布，通过时间差来避免用户遭到司机的恶意骚扰。</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/160437/11/419/223213/5feafaa3E6d4b4d8d/3022775b32bb392a.png" alt="出行评价"></p>
+<h4 id="3-QQ社交软件截图隐藏用户名和头像"><a href="#3-QQ社交软件截图隐藏用户名和头像" class="headerlink" title="3.QQ社交软件截图隐藏用户名和头像"></a>3.QQ社交软件截图隐藏用户名和头像</h4><p>QQ在用户进行截图的以后，可以选择抹去用户名和头像，减少用户再二次手动模糊用户名和头像的操作，一方面保护了用户隐私，一方面方便了用户操作。如下图所示，这个模糊操作很厉害，估计当事人看到了也看不出是自己吧～hhh～</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/150700/25/13421/588858/5feafaa6E54cfd03c/065f6d75bbc60ed9.png" alt="image-20201229173110028"></p>
+]]></content>
+      <categories>
+        <category>设计</category>
+      </categories>
+      <tags>
+        <tag>设计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>函数式编程</title>
     <url>/2020/02/04/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h3 id="一、JS引擎的工作原理"><a href="#一、JS引擎的工作原理" class="headerlink" title="一、JS引擎的工作原理"></a>一、<a href="https://www.cnblogs.com/onepixel/p/5090799.html" target="_blank" rel="noopener">JS引擎的工作原理</a></h3><p>先引入几个概念：<code>执行环境栈</code>、<code>执行环境</code>、<code>全局对象</code>、<code>变量对象</code>、<code>活动对象</code>、<code>作用域</code>和<code>作用域链</code></p>
@@ -4490,6 +4637,50 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </categories>
       <tags>
         <tag>functional</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>分析设计分类导航</title>
+    <url>/2020/12/30/%E5%88%86%E6%9E%90%E8%AE%BE%E8%AE%A1%E5%88%86%E7%B1%BB%E5%AF%BC%E8%88%AA/</url>
+    <content><![CDATA[<p>作为设计师，在拿到设计需求后，不要着急做需求，先分析需求，且在思考设计视觉时一定记得从业务本身的属性出发，多跟运营以及产品沟通，分析挖掘到更多的潜在需求，才能从根本上解决问题，设计出符合产品调性的页面。</p>
+<p>一般说来，在电商购物类的app中，用户想要到达商品详情页的路径有以下3种：</p>
+<ul>
+<li>通过搜索直达商品列表；</li>
+<li>通过分类导航页触达；</li>
+<li>通过一些资源位（例如：banner、活动专区、坑位入口等）进入专区商品列表；</li>
+</ul>
+<p>这三种路径基本上就涵盖了用户购物的的3种心态：</p>
+<ul>
+<li>通过搜索直达商品列表：可以有效满足用户明确知道自己要买哪个具体商品的需求；</li>
+<li>通过分类导航页直达商详页：可以有效满足用户明确自己要买哪类商品但不知道具体要买哪个商品的需求；</li>
+<li>通过资源位直达商品列表：可以满足用户逛逛的心态。</li>
+</ul>
+<h3 id="分类导航入口"><a href="#分类导航入口" class="headerlink" title="分类导航入口"></a>分类导航入口</h3><p>产品用户群体不一样、业务属性不一样，分类导航页的入口也不同。京东的用户群体一般都目标明确，购买力强，所以京东的分类导航页入口在底部导航处，可随时切换触达目标商品。而淘宝和考拉的用户是属于闲逛型的，不知道自己想买哪些商品，所以它们分类导航页的入口设置在金刚区最后边；就我自己而言，京东的分类导航页我的使用率高于淘宝和考拉的。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/158630/9/757/406744/5fec48e1Ec1b3de72/01a2f2cb91954f2c.png" alt="购物电商的分类导航"></p>
+<h3 id="为什么要做分类导航"><a href="#为什么要做分类导航" class="headerlink" title="为什么要做分类导航"></a>为什么要做分类导航</h3><p>分类是把商品按照固有属性、适用人群、使用场景等座位区分标准，把符合统一标准的商品归类，提高查找商品效率的一种手段。</p>
+<p>按照分类查找商品是人类最常用到的一种思维方式和习惯，这种习惯主要来源于人们在线下购物的方式。线下商场的商品都是实体的，需要占用三维的物理空间，无法像在网上一样可以通过搜索把商品相关信息展现在用户的眼前，商品是不会动的，用户需要改变自己的地理位置去走到商品所在位置，才能拿到商品，为了能够让用户快速找到自己的商品，商场就会按照一定的标准给商品分类，符合同类标准的商品会放在同一片区域，百货商场里面1楼是化妆品、2楼是女装、3楼男装、4楼箱包、5楼文体用品等，在电商刚兴起的时候，PC端的网站就是很大程度上借鉴了线下楼层的这种概念。</p>
+<p>由于线下购物习惯的存在，分类导航始终是用户查找商品的一个重要入口，如何更高效的利用分类导航带来更多的成交，这是在电商app设计中不可忽略的一个课题。经过一些用户调研发现，用户在明确自己要买的商品大类但不知道具体商品型号的时候，90%的用户会通过类目去查找商品。</p>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>设想一个使用场景，用户想买一些水果，但不知道具体买哪一种。我们来看看各大app都是怎么做的？如果通过类目导航查找，在生鲜/水果的类目下会有多种水果的种类帮助用户做出选择，京东还在三级类目上增加一个活动小banner，这样用户又会多一种选择，达到引流效果。经过三级类目的引导，用户可以轻易选择买哪个品类的零食；假如用户通过搜索路径，在“水果”的搜索结果页，京东在顶部还增加了一个分类展示，企图通过分类引导的方式帮助用户快速完成任务。毕竟淘宝和京东这种全品类的大型电商app大品类很多，可能在细小分类上就没有那么详细，反观美团买菜这种专门的生鲜app在分类导航上有更多细小的分类，除了能快速触达，还能快速加购。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/162975/27/49/784639/5fec48e4Ec8d5780f/082f8f0873396d83.png" alt="水果的分类导航"></p>
+<h3 id="页面设计"><a href="#页面设计" class="headerlink" title="页面设计"></a>页面设计</h3><p>在分类页面的设计样式上，基本上都采用了标签＋盒子的形式，只不过标签的样式采用了横式和竖式。一级类目数量不是很多的情况下，可以优先考虑横式标签样式，这样能够把更多的空间留给二级类目；在一级类目数量比较多的情况下，建议采用竖式标签的样式，这样方便用户快捷的进行一级类目的查找。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/164730/12/46/722041/5fec48e0E285f2235/6332b5d2cb3dd7f7.png" alt="分类页设计"></p>
+<p>在一些商品数量还不是很庞大的购物app上，大部分的会在首页的顶部栏额外增加一个标签式的分类导航，提升分类导航的层级，更好的引导用户利用分类导航去找到自己想要的商品，由于每个二级分类的商品数量不是很多，可以把多个二级类目的商品全部排列在一级类目的标签页下面（仅通过滑动就可以切换到下一个类目），降低了用户的二级类目切换成本，提升用户逛的沉浸感，增加商品成交量。</p>
+<h3 id="品牌因素"><a href="#品牌因素" class="headerlink" title="品牌因素"></a>品牌因素</h3><p>随着消费水平的提高，品牌因素对用户选购商品会占有越来越大的比重，按照品牌来分类也越来越多的出现在购物类的app中，如图中左边的例子，可以直接通过品牌列表来查找自己要找的品牌；右边的例子在一级类目下面集成了品牌推荐，这也是对用户思路的一种引导方式。但现在品牌种类太多了，我觉得反而左边的品牌列表在选择品牌上更便捷。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/160261/1/697/465264/5fec48e2E30cf8cce/3d4bfcee09619de8.png" alt="品牌列表"></p>
+<p>经过上面的案例可以看出来：</p>
+<ul>
+<li>类目导航最高效的适用场景是：用户有购物欲望，但无法确定所要购买具体商品型号；</li>
+<li>按照商品属性分类仅仅是类目导航的一个基本的维度，我们还可以尝试从使用场景、使用人群、品牌、个性推荐等维度进行更多的分类尝试，以便覆盖更多的用户场景；</li>
+<li>在类目导航页增加类目运营活动是提高转化率的一个有效手段，值得尝试；</li>
+<li>要考虑好上下文的关系，点击二级类目进入到商品列表以后，较为合理的筛选与排序操作就是必不可少的动作了。</li>
+</ul>
+<p>所以在做设计时一定记得从业务本身的属性出发，从根本上解决问题。</p>
+]]></content>
+      <categories>
+        <category>设计</category>
+      </categories>
+      <tags>
+        <tag>设计</tag>
       </tags>
   </entry>
   <entry>
