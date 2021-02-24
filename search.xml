@@ -1594,6 +1594,91 @@
       </tags>
   </entry>
   <entry>
+    <title>reactHook之useState和useEffect的原理与简单实现</title>
+    <url>/2021/02/24/reactHook%E4%B9%8BuseState%E5%92%8CuseEffect%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<h3 id="useState"><a href="#useState" class="headerlink" title="useState"></a>useState</h3><h4 id="实现一个state"><a href="#实现一个state" class="headerlink" title="实现一个state"></a>实现一个state</h4><p>useState接收状态初始值，返回一个数组，第一个是状态的当前值，第二个是函数，用来更新状态.</p>
+<p>以<code>const [count, setCount] = useState(0)</code>为例：<br>组件第一渲染时，从useState拿到初始值0。当调用setCount(count+1)时，调用dispatch，state更新为1，之后执行render，组件重新渲染，此时拿到新的count（每一次都拿到独立的count状态，但是这个状态在一次渲染过程中是常量）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> _state</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useState</span>(<span class="params">initialState</span>) </span>&#123;</span><br><span class="line">    _state = _state || (<span class="keyword">typeof</span> initialState === <span class="string">&#x27;function&#x27;</span> ? initialState() : initialState)</span><br><span class="line">    <span class="keyword">const</span> dispatch = <span class="function"><span class="params">action</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> curState = _state</span><br><span class="line">        <span class="keyword">const</span> newState = basicStateReducer(curState, action)</span><br><span class="line">        <span class="keyword">if</span> (curState === newState) <span class="keyword">return</span></span><br><span class="line">        _state = newState</span><br><span class="line">        render()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> [_state, dispatch]</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">basicStateReducer</span>(<span class="params">state, action</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> action === <span class="string">&#x27;function&#x27;</span> ? action(state) : action</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="实现多个state"><a href="#实现多个state" class="headerlink" title="实现多个state"></a>实现多个state</h4><p>若是多个state，该如何实现？  </p>
+<p>通过数组，把多个state放在数组memoizedState中，根据索引index，更修改相应的state</p>
+<ul>
+<li>useState会读取memoizedState[index]</li>
+<li>index由useState调用的顺序决定</li>
+<li>setState会修改state，并触发组件更新<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> memoizedState = [] <span class="comment">// hooks 存放在这个数组</span></span><br><span class="line"><span class="keyword">let</span> index = <span class="number">0</span> <span class="comment">// 当前 memoizedState 下标</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useState</span>(<span class="params">initialState</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> currentIndex = index</span><br><span class="line">    index++</span><br><span class="line">    memoizedState[currentIndex] = memoizedState[currentIndex] || (<span class="keyword">typeof</span> initialState === <span class="string">&#x27;function&#x27;</span> ? initialState() : initialState)</span><br><span class="line">    <span class="keyword">const</span> dispatch = <span class="function"><span class="params">action</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> curState = memoizedState[currentIndex]</span><br><span class="line">        <span class="keyword">const</span> newState = basicStateReducer(curState, action)</span><br><span class="line">        <span class="keyword">if</span> (curState === newState) <span class="keyword">return</span></span><br><span class="line">        memoizedState[currentIndex] = newState</span><br><span class="line">        render()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> [memoizedState[currentIndex], dispatch]</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">basicStateReducer</span>(<span class="params">state, action</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> action === <span class="string">&#x27;function&#x27;</span> ? action(state) : action</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> render = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    index = <span class="number">0</span></span><br><span class="line">    ReactDOM.render(<span class="xml"><span class="tag">&lt;<span class="name">App</span>/&gt;</span></span>, rootElement)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+从上面可以看出，useState要按顺序执行，不能使用条件语句，因为可能会打乱顺序。<br>注：源码中，useState是通过链表结构来实现的<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">hook1 =&gt; Fiber.memoizedState </span><br><span class="line">state1 === hook1.memoizedState</span><br><span class="line"></span><br><span class="line">hook1.next =&gt; hook2 </span><br><span class="line">state2 === hook2.memoizedState</span><br></pre></td></tr></table></figure>
+<h3 id="实现useEffect"><a href="#实现useEffect" class="headerlink" title="实现useEffect"></a>实现useEffect</h3>useEffect接收两个参数。第一个是函数，放所需执行的代码；第二个参数是一个数组，里面是Effect的依赖项，数组发生变化，useEffect就会执行。第二个参数可以省略，每次渲染就会执行useEffect中的函数。</li>
+</ul>
+<p>setState时，组件会重新渲染，此时会重新触发useEffect函数。（并不是count的值在“不变”的effect中发生了改变，而是effect函数本身在每一次渲染中都不相同）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> effectHOOKS = []</span><br><span class="line"><span class="keyword">let</span> effectIndex = <span class="number">0</span> <span class="comment">// 当前effect的下标</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useEffect</span>(<span class="params">callback, depArray</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> effect = effectHOOKS[effectIndex]</span><br><span class="line">    <span class="keyword">const</span> deps = effect &amp;&amp; effect.deps</span><br><span class="line">    <span class="keyword">const</span> hasNoDeps = !depArray</span><br><span class="line">    <span class="keyword">const</span> hasChangedDeps = deps</span><br><span class="line">        ? !depArray.every(<span class="function">(<span class="params">el, i</span>) =&gt;</span> el === deps[i])</span><br><span class="line">        : <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hasNoDeps || hasChangedDeps) &#123;</span><br><span class="line">        <span class="keyword">const</span> destroy = effect &amp;&amp; effect.destroy</span><br><span class="line">        <span class="comment">// 上一次的effect会在重新渲染后被清除掉</span></span><br><span class="line">        destroy &amp;&amp; <span class="keyword">typeof</span> destroy === <span class="string">&#x27;function&#x27;</span> &amp;&amp; destroy()</span><br><span class="line">        <span class="comment">// 执行本次的回调函数</span></span><br><span class="line">        <span class="keyword">const</span> callbackRes = callback()</span><br><span class="line">        effectHOOKS[effectIndex] = &#123;</span><br><span class="line">            ...effectHOOKS[effectIndex],</span><br><span class="line">            deps: depArray, <span class="attr">destroy</span>: callbackRes</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    effectIndex++</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上述代码可知，当depArray=[]时，useEffect中的callback回调函数只执行一次。上一次的effect只会在重新渲染后被清除掉。<br>有问题的定时器组件写法，count永远是0。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> [count, setCount] = useState(<span class="number">0</span>)</span><br><span class="line">useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> id = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// count永远是0</span></span><br><span class="line">        setCount(count + <span class="number">1</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="built_in">clearInterval</span>(id)</span><br><span class="line">&#125;, [])</span><br></pre></td></tr></table></figure>
+<p>优化：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> id = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// count永远是0</span></span><br><span class="line">        setCount(count + <span class="number">1</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> <span class="built_in">clearInterval</span>(id)</span><br><span class="line">&#125;, [count])</span><br><span class="line">=&gt; </span><br><span class="line">useEffect(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> id = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// count传入的是当前state的值</span></span><br><span class="line">        setCount(<span class="function"><span class="params">count</span> =&gt;</span> count + <span class="number">1</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">clearInterval</span>(id)</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;clearInterval&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, [])</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>react</tag>
+        <tag>react hook</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>reactHook之useState的源码解析</title>
+    <url>/2021/02/24/reactHook%E4%B9%8BuseState%E7%9A%84%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>下面分析16.14.2版本react中useState的源码实现</p>
+<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><h4 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h4><p>当前fiber节点的数据结构是：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> fiberNode = &#123;</span><br><span class="line">    tag: xxx, <span class="comment">// 标记不同的组件类型</span></span><br><span class="line">    key: xxx,</span><br><span class="line">    memoizedState: &#123; <span class="comment">// hooks</span></span><br><span class="line">        baseState: xxx, <span class="comment">// 初始化 initialState， 每次 dispatch 之后的newState</span></span><br><span class="line">        memoizedState: xxx, <span class="comment">// 上次更新完之后的最终值</span></span><br><span class="line">        queue: &#123; <span class="comment">// 缓存的更新队列，</span></span><br><span class="line">            lastRenderedReducer: basicStateReducer(state, action),</span><br><span class="line">            lastRenderedState: xxx, <span class="comment">// 上次state的值</span></span><br><span class="line">            pending: <span class="literal">null</span> <span class="comment">// 存放即将更新的newState信息</span></span><br><span class="line">        &#125;,</span><br><span class="line">        next: <span class="literal">null</span>, <span class="comment">// link到下一个hooks，通过next串联每一个hooks</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>React 的 Hooks 是一个单向链表，Hook.next 指向下一个 Hook。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Fiber.memoizedState =&gt; hook1  state1 === hook1.memoizedState </span><br><span class="line">hook1.next =&gt; hook2           state2 === hook2.memoizedState</span><br><span class="line">hook2.next =&gt; hook3           state3 === hook2.memoizedState</span><br></pre></td></tr></table></figure>
+<h4 id="入口文件"><a href="#入口文件" class="headerlink" title="入口文件"></a>入口文件</h4><p>react/cjs/react.development.js</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">useState</span>(<span class="params">initialState</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> dispatcher = resolveDispatcher();</span><br><span class="line">  <span class="keyword">return</span> dispatcher.useState(initialState);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>resolveDispatcher返回的是ReactCurrentDispatcher.current，所以<code>useState = ReactCurrentDispatcher.current.useState</code></p>
+<h3 id="首次渲染"><a href="#首次渲染" class="headerlink" title="首次渲染"></a>首次渲染</h3><p><code>ReactDOM.render(&lt;App/&gt;, rootElement)</code>，react从render开始执行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">render &#x3D;&gt; ... &#x3D;&gt; beginWork &#x3D;&gt; updateFunctionComponent &#x3D;&gt;  renderWithHooks</span><br></pre></td></tr></table></figure>
+<p>hooks的核心渲染逻辑入口是renderWithHooks。</p>
+<h4 id="renderWithHooks"><a href="#renderWithHooks" class="headerlink" title="renderWithHooks"></a>renderWithHooks</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 14762</span></span><br><span class="line">renderWithHooks()</span><br><span class="line">    <span class="comment">// 14787 核心逻辑</span></span><br><span class="line">    <span class="keyword">if</span> (current !== <span class="literal">null</span> &amp;&amp; current.memoizedState !== <span class="literal">null</span>) &#123;</span><br><span class="line">      ReactCurrentDispatcher.current = HooksDispatcherOnUpdateInDEV;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// 组件首次挂载时</span></span><br><span class="line">      ReactCurrentDispatcher.current = HooksDispatcherOnMountInDEV;</span><br><span class="line">    &#125;</span><br><span class="line">    =&gt;</span><br><span class="line">    <span class="number">15694</span> HooksDispatcherOnMountInDEV.useState = &#123;</span><br><span class="line">      <span class="keyword">return</span> mountState(initialState) <span class="comment">// 15766</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="number">15881</span> HooksDispatcherOnUpdateInDEV.useState = &#123;</span><br><span class="line">      <span class="keyword">return</span> updateState(initialState) <span class="comment">// 15939</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 14851</span></span><br><span class="line">    currentlyRenderingFiber$<span class="number">1</span> = <span class="literal">null</span>;</span><br><span class="line">    currentHook = <span class="literal">null</span>;</span><br><span class="line">    workInProgressHook = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上述代码可知，首次挂载时，<code>useState = HooksDispatcherOnMountInDEV.useState = mountState</code>;state更新时，<code>useState = HooksDispatcherOnUpdateInDEV.useState = mountState</code></p>
+<h4 id="mountState"><a href="#mountState" class="headerlink" title="mountState"></a>mountState</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 15213 第一次调用组件的 useState 时实际调用的方法</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mountState</span>(<span class="params">initialState</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> hook = mountWorkInProgressHook(); <span class="comment">// / 创建一个新的 Hook，并返回当前 workInProgressHook</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> initialState === <span class="string">&#x27;function&#x27;</span>) &#123;</span><br><span class="line">    initialState = initialState();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  hook.memoizedState = hook.baseState = initialState;</span><br><span class="line">  <span class="keyword">var</span> queue = hook.queue = &#123;</span><br><span class="line">    pending: <span class="literal">null</span>,</span><br><span class="line">    dispatch: <span class="literal">null</span>,</span><br><span class="line">    lastRenderedReducer: basicStateReducer,</span><br><span class="line">    lastRenderedState: initialState</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// 绑定当前 fiber 和 queue 到 dispatchAction 上</span></span><br><span class="line">  <span class="comment">// currentlyRenderingFiber$1是一个全局变量，表示当前正在渲染的Fiber节点</span></span><br><span class="line">  <span class="keyword">var</span> dispatch = queue.dispatch = dispatchAction.bind(<span class="literal">null</span>, currentlyRenderingFiber$<span class="number">1</span>, queue);</span><br><span class="line">  <span class="comment">// const [name, setName] = useState(&#x27;king&#x27;)</span></span><br><span class="line">  <span class="comment">// king 赋值给了 hook.memoizedState， setName表示dispatch，当调用setName(&#x27;queen&#x27;)会执行dispatchAction(&#x27;queen&#x27;)</span></span><br><span class="line">  <span class="keyword">return</span> [hook.memoizedState, dispatch];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（1）执行mountWorkInProgressHook()，更新hook链表，并返回当前 workInProgressHook</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 14921 创建一个新的 hook，并返回当前 workInProgressHook</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mountWorkInProgressHook</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> hook = &#123;</span><br><span class="line">    memoizedState: <span class="literal">null</span>,</span><br><span class="line">    baseState: <span class="literal">null</span>,</span><br><span class="line">    baseQueue: <span class="literal">null</span>,</span><br><span class="line">    queue: <span class="literal">null</span>,</span><br><span class="line">    next: <span class="literal">null</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">if</span> (workInProgressHook === <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 只有在第一次打开页面的时候，workInProgressHook 为空</span></span><br><span class="line">    currentlyRenderingFiber$<span class="number">1.</span>memoizedState = workInProgressHook = hook;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 已经存在 workInProgressHook 就将新创建的这个 Hook 接在 workInProgressHook 的尾部</span></span><br><span class="line">    workInProgressHook = workInProgressHook.next = hook;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> workInProgressHook;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（2）获取当前的workInProgressHook后，初始化了hook.memoizedState、hook.baseState、hook.queue和queue.dispatch</p>
+<p>（3）basicStateReducer的源码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 15007</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">basicStateReducer</span>(<span class="params">state, action</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> action === <span class="string">&#x27;function&#x27;</span> ? action(state) : action;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>（4）最终返回一个数组 <code>[hook.memoizedState, dispatch]</code><br>执行<code>setName(&#39;queen&#39;)</code>，其实就是执行<code>dispatch(&#39;queen&#39;)</code></p>
+<p>第一次<code>const [name, setName] = useState(&#39;king&#39;)</code>，mountWorkInProgressHook()后，hook的值为</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">hook = &#123;</span><br><span class="line">    baseQueue: <span class="literal">null</span>,</span><br><span class="line">    baseState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">    memoizedState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">    next: <span class="literal">null</span>,</span><br><span class="line">    queue: &#123;</span><br><span class="line">            dispatch: fucntion,</span><br><span class="line">            lastRenderedReducer: basicStateReducer(state, action),</span><br><span class="line">            lastRenderedState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">            pending: <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二次<code>const [count, setCount] = useState(0)</code>，mountWorkInProgressHook()后，hook的值为</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">hook = &#123;</span><br><span class="line">    baseQueue: <span class="literal">null</span>,</span><br><span class="line">    baseState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">    memoizedState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">    queue: &#123;</span><br><span class="line">        dispatch: fucntion,</span><br><span class="line">        lastRenderedReducer: basicStateReducer(state, action),</span><br><span class="line">        lastRenderedState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">        pending: <span class="literal">null</span></span><br><span class="line">    &#125;,</span><br><span class="line">    next: &#123;</span><br><span class="line">        baseQueue: <span class="literal">null</span>,</span><br><span class="line">        baseState: <span class="number">0</span>,</span><br><span class="line">        memoizedState: <span class="number">0</span>,</span><br><span class="line">        queue: &#123;</span><br><span class="line">            dispatch: fucntion,</span><br><span class="line">            lastRenderedReducer: basicStateReducer(state, action),</span><br><span class="line">            lastRenderedState: <span class="number">0</span>,</span><br><span class="line">            pending: <span class="literal">null</span></span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="dispatchAction"><a href="#dispatchAction" class="headerlink" title="dispatchAction"></a>dispatchAction</h4><p>以<code>const [name, setName] = useState(&#39;king&#39;) setName(&#39;queen&#39;)</code>为例：</p>
+<p>执行<code>setName(&#39;queen&#39;)</code>，其实就是执行<code>dispatchAction(fiber, queue, &#39;queen&#39;)</code></p>
+<ul>
+<li>dispatchAction() 会创建 update 对象({action:’queen’})</li>
+<li>将 update 加至 hook.queue 的末尾：hook.queue.pending = update</li>
+<li>执行 scheduleWork()，走 updateFunctionComponent() 流程<br>核心代码：<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 15564</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dispatchAction</span>(<span class="params">fiber, queue, action</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// action 就是传进来要更新的 state-&gt;&#x27;queen&#x27;</span></span><br><span class="line">  <span class="keyword">var</span> update = &#123;</span><br><span class="line">    expirationTime: expirationTime,</span><br><span class="line">    suspenseConfig: suspenseConfig,</span><br><span class="line">    action: action,</span><br><span class="line">    eagerReducer: <span class="literal">null</span>,</span><br><span class="line">    eagerState: <span class="literal">null</span>,</span><br><span class="line">    next: <span class="literal">null</span></span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="comment">// 这里的queue，是之前传入的hook对象中的queue，这里保留了一个引用！！（即queue发生变化，当前fiber节点的hook数据也是同步变更的）</span></span><br><span class="line">  <span class="keyword">var</span> pending = queue.pending;</span><br><span class="line">  <span class="keyword">if</span> (pending === <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// This is the first update. Create a circular list.</span></span><br><span class="line">    update.next = update;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    update.next = pending.next;</span><br><span class="line">    pending.next = update;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//  将update对象加至hook.queue的末尾pending中</span></span><br><span class="line">  queue.pending = update;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> currentState = queue.lastRenderedState;</span><br><span class="line">  <span class="comment">// currentState: king，action: queen</span></span><br><span class="line">  <span class="comment">// 将新的state queen 赋值到 update.eagerState</span></span><br><span class="line">  <span class="keyword">var</span> eagerState = lastRenderedReducer(currentState, action); </span><br><span class="line">  update.eagerReducer = lastRenderedReducer;</span><br><span class="line">  update.eagerState = eagerState;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  scheduleWork(fiber, expirationTime)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<code>setName(&#39;queen&#39;)</code>，即执行dispatchAction()后，hook变为<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">hook = &#123;</span><br><span class="line">    baseQueue: <span class="literal">null</span>,</span><br><span class="line">    baseState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">    memoizedState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">    queue: &#123;</span><br><span class="line">        lastRenderedReducer: basicStateReducer(state, action),</span><br><span class="line">        lastRenderedState: <span class="string">&#x27;king&#x27;</span>,</span><br><span class="line">        pending: &#123;</span><br><span class="line">            action: <span class="string">&#x27;queen&#x27;</span>,</span><br><span class="line">            eagerState: <span class="string">&#x27;queen&#x27;</span>,</span><br><span class="line">            next: pending <span class="comment">// pedding对象，单链表</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    next: &#123;</span><br><span class="line">        baseQueue: <span class="literal">null</span>,</span><br><span class="line">        baseState: <span class="number">0</span>,</span><br><span class="line">        memoizedState: <span class="number">0</span>,</span><br><span class="line">        queue: &#123;</span><br><span class="line">            lastRenderedReducer: basicStateReducer(state, action),</span><br><span class="line">            lastRenderedState: <span class="number">0</span>,</span><br><span class="line">            pending: <span class="literal">null</span></span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+最后会执行scheduleWork(fiber, expirationTime)，经过React的调度，会带上action（setName的传参），再次进入hook组件核心渲染逻辑：renderWithHooks。<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">dispatchAction &#x3D;&gt; scheduleUpdateOnFiber &#x3D;&gt; ensureRootIsScheduled &#x3D;&gt; performConcurrentWorkOnRoot &#x3D;&gt; performUnitOfWork &#x3D;&gt; beginWork &#x3D;&gt; updateFunctionComponent </span><br><span class="line">&#x3D;&gt; renderWithHooks</span><br></pre></td></tr></table></figure>
+此时，由于并非首次渲染组件，React会使用HooksDispatcherOnUpdateInDEV对象上的useState，<code>useState = HooksDispatcherOnUpdateInDEV.useState = mountState</code>。在这个useState中，会使用一个叫做updateState的函数来更新最新的state值。<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 14762</span></span><br><span class="line">renderWithHooks()</span><br><span class="line">    <span class="comment">// 14787 核心逻辑</span></span><br><span class="line">    <span class="keyword">if</span> (current !== <span class="literal">null</span> &amp;&amp; current.memoizedState !== <span class="literal">null</span>) &#123;</span><br><span class="line">      ReactCurrentDispatcher.current = HooksDispatcherOnUpdateInDEV;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123; <span class="comment">// 组件首次挂载时</span></span><br><span class="line">      ReactCurrentDispatcher.current = HooksDispatcherOnMountInDEV;</span><br><span class="line">    &#125;</span><br><span class="line">    =&gt;</span><br><span class="line">    <span class="number">15694</span> HooksDispatcherOnMountInDEV.useState = &#123;</span><br><span class="line">      <span class="keyword">return</span> mountState(initialState) <span class="comment">// 15766</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="number">15881</span> HooksDispatcherOnUpdateInDEV.useState = &#123;</span><br><span class="line">      <span class="keyword">return</span> updateState(initialState) <span class="comment">// 15939</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">var</span> children = Component(props, secondArg)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+renderWithHooks()中有一个Component()方法，用来执行App()，此时又会执行 <code>const [name, setName] = useState(&#39;king&#39;)</code>，最终调用的是<code>HooksDispatcherOnUpdateInDEV.useState(king&#39;) =&gt; updateState(&#39;king&#39;)</code>。<h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><h4 id="updateState"><a href="#updateState" class="headerlink" title="updateState()"></a>updateState()</h4>由updateState可以看出，实际调用的是 updateReducer<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 15233</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateState</span>(<span class="params">initialState</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> updateReducer(basicStateReducer);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">basicStateReducer</span>(<span class="params">state, action</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> action === <span class="string">&#x27;function&#x27;</span> ? action(state) : action;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="updateReducer"><a href="#updateReducer" class="headerlink" title="updateReducer()"></a>updateReducer()</h4>updateReducer的核心代码：<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 15033</span></span><br><span class="line">funtion <span class="function"><span class="title">updateReducer</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> hook = updateWorkInProgressHook();</span><br><span class="line">    <span class="keyword">var</span> queue = hook.queue;</span><br><span class="line">    <span class="keyword">var</span> pendingQueue = queue.pending</span><br><span class="line">    current.baseQueue = baseQueue = pendingQueue;</span><br><span class="line">    queue.pending = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">var</span> first = baseQueue.next;</span><br><span class="line">    <span class="keyword">var</span> newState = current.baseState;</span><br><span class="line">    <span class="keyword">var</span> update = first;</span><br><span class="line">    <span class="keyword">if</span> (update.eagerReducer === reducer) &#123;</span><br><span class="line">      newState = update.eagerState;</span><br><span class="line">    &#125; </span><br><span class="line">    hook.memoizedState = newState;</span><br><span class="line">    hook.baseState = newBaseState;</span><br><span class="line">    <span class="keyword">var</span> dispatch = queue.dispatch;</span><br><span class="line">    <span class="keyword">return</span> [hook.memoizedState, dispatch]; <span class="comment">// 返回[&#x27;queen&#x27;, dispatch]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+（1）第一步执行updateWorkInProgressHook()，获取当前正在工作中的 hook <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 14941</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateWorkInProgressHook</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 此时currentlyRenderingFiber$1.memoizedState，但是为fiber的副本，保留着fiber.memoizedState的内容</span></span><br><span class="line">  <span class="comment">// 核心代码</span></span><br><span class="line">   <span class="keyword">var</span> nextCurrentHook;</span><br><span class="line">  <span class="keyword">if</span> (currentHook === <span class="literal">null</span>) &#123; <span class="comment">// 第一次useState</span></span><br><span class="line">    <span class="keyword">var</span> current = currentlyRenderingFiber$<span class="number">1.</span>alternate;</span><br><span class="line">    <span class="keyword">if</span> (current !== <span class="literal">null</span>) &#123;</span><br><span class="line">      nextCurrentHook = current.memoizedState;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      nextCurrentHook = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    nextCurrentHook = currentHook.next;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> nextWorkInProgressHook;</span><br><span class="line">  <span class="keyword">if</span> (workInProgressHook === <span class="literal">null</span>) &#123; <span class="comment">// 第一次useState</span></span><br><span class="line">    nextWorkInProgressHook = currentlyRenderingFiber$<span class="number">1.</span>memoizedState;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    nextWorkInProgressHook = workInProgressHook.next;</span><br><span class="line">  &#125;</span><br><span class="line">  currentHook = nextCurrentHook;</span><br><span class="line">  <span class="keyword">var</span> newHook = &#123;</span><br><span class="line">    memoizedState: currentHook.memoizedState,</span><br><span class="line">    baseState: currentHook.baseState,</span><br><span class="line">    baseQueue: currentHook.baseQueue,</span><br><span class="line">    queue: currentHook.queue,</span><br><span class="line">    next: <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (workInProgressHook === <span class="literal">null</span>) &#123;</span><br><span class="line">    currentlyRenderingFiber$<span class="number">1.</span>memoizedState = workInProgressHook = newHook;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    workInProgressHook = workInProgressHook.next = newHook;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> workInProgressHook</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+第一次<code>const [name, setName] = useState(&#39;king&#39;)</code>，workInProgressHook的值为<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">workInProgressHook=&#123;</span><br><span class="line">    memoizedState: <span class="string">&quot;king&quot;</span>,</span><br><span class="line">    baseState: <span class="string">&quot;king&quot;</span>,</span><br><span class="line">    queue:&#123;</span><br><span class="line">        pending:&#123;</span><br><span class="line">            action: <span class="string">&quot;queen&quot;</span>,</span><br><span class="line">            eagerState: <span class="string">&quot;queen&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    next: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+第二次<code>const [count, setCount] = useState(0)</code>，workInProgressHook的值为<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">workInProgressHook=&#123;</span><br><span class="line">    memoizedState: <span class="number">0</span>,</span><br><span class="line">    baseState: <span class="number">0</span>,</span><br><span class="line">    queue:&#123;</span><br><span class="line">        pending:&#123;</span><br><span class="line">            action: <span class="number">0</span>,</span><br><span class="line">            eagerState: <span class="number">0</span>,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    next: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+（2）从workInProgressHook的数据结构可以看出，我们需要更新的值就在queue.pending.eagerState/action中<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (update.eagerReducer === reducer) &#123;</span><br><span class="line">   newState = update.eagerState;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+（3）更新state<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">hook.memoizedState = newState;</span><br><span class="line">hook.baseState = newBaseState;</span><br><span class="line"><span class="keyword">var</span> dispatch = queue.dispatch;</span><br><span class="line"><span class="keyword">return</span> [hook.memoizedState, dispatch]; <span class="comment">// 返回[&#x27;queen&#x27;, dispatch]</span></span><br></pre></td></tr></table></figure>
+将<code>&#39;queen&#39;</code>赋值给<code>hook.memoizedState</code>，返回<code>[&#39;queen&#39;, diapatch]</code>，此时的<code>name</code>已经更新为<code>&#39;queen&#39;</code></li>
+</ul>
+<p>由上述源码可知，useState按顺序执行的原因是，useState是通过next来查找下一个hooks</p>
+]]></content>
+      <categories>
+        <category>react</category>
+      </categories>
+      <tags>
+        <tag>react</tag>
+        <tag>react hook</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>storybook</title>
     <url>/2020/09/16/storybook/</url>
     <content><![CDATA[<h1 id="storybook"><a href="#storybook" class="headerlink" title="storybook"></a>storybook</h1><h3 id="Storybook简介"><a href="#Storybook简介" class="headerlink" title="Storybook简介"></a>Storybook简介</h3><p>  Storybook是一个辅助UI控件开发的工具。通过story创建独立的控件，让每个控件开发都有一个独立的开发调试环境。<br>  Storybook的运行不依赖于项目，开发人员不用担心由于开发环境、依赖问题导致不能开发控件。<br>  Storybook支持的框架覆盖主流的框架（React、Vue、Angular）。<br>  本文将介绍使用react的项目如何配置Storybook环境。</p>
@@ -2893,103 +2978,6 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
       </tags>
   </entry>
   <entry>
-    <title>微信小程序暗黑模式</title>
-    <url>/2020/11/01/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%9A%97%E9%BB%91%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<blockquote>
-<p>WXS（WeiXin Script）是小程序的一套脚本语言，结合 WXML，可以构建出页面的结构。</p>
-<p>WXS 与 JavaScript 是不同的语言，有自己的语法，并不和 JavaScript 一致。</p>
-<p>增强 wxml 标签的表达能力</p>
-<p>WXS 对性能的贡献就只有一点：与 WXML 是在同一个线程运行的，避免了跨线程通信的开销。</p>
-<p>号称 『wxs 目前在 iOS 设备的效率，会比JS快 2~20倍。在 Android 则无差异</p>
-</blockquote>
-<h1 id="WXS模块"><a href="#WXS模块" class="headerlink" title="WXS模块"></a>WXS模块</h1><p>每一个 .wxs 文件和 <code>&lt;wxs&gt;</code> 标签都是一个单独的模块。</p>
-<p>每个模块都有自己独立的作用域。即在一个模块里面定义的变量与函数，默认为私有的，对其他模块不可见。</p>
-<p>一个模块要想对外暴露其内部的私有变量与函数，只能通过 module.exports 实现。</p>
-<h2 id="module-对象"><a href="#module-对象" class="headerlink" title="module 对象"></a>module 对象</h2><p>eg:</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// /page/tools.wxs</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = <span class="string">&quot;&#x27;hello world&#x27; from tools.wxs&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> bar = <span class="function"><span class="keyword">function</span> (<span class="params">d</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对象形式导出</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  FOO: foo,</span><br><span class="line">  bar: bar,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 单独导出某一个</span></span><br><span class="line"><span class="built_in">module</span>.exports.msg = <span class="string">&quot;some msg&quot;</span>;</span><br></pre></td></tr></table></figure>
-
-<h2 id="require"><a href="#require" class="headerlink" title="require"></a>require</h2><p>在 wxs 中引用其它 wxs 文件文件模块，可以使用 require 函数，引用的时候需要注意以下几点问题：</p>
-<ol>
-<li>只能引用 .wxs 文件模块，且必须使用相对路径。</li>
-<li>wxs 模块均为单例，wxs 模块在第一次被引用时，会自动初始化为单例对象。多个页面，多个地方，多次引用，使用的都是同一个 wxs 模块对象。</li>
-<li>如果一个 wxs 模块在定义之后，一直没有被引用，则该模块不会被解析与运行。</li>
-</ol>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> tools = <span class="built_in">require</span>(<span class="string">&quot;./cat.wxs&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(tools.tip);</span><br><span class="line"><span class="built_in">console</span>.log(tools.msg);</span><br></pre></td></tr></table></figure>
-
-<h2 id="标签"><a href="#标签" class="headerlink" title=" 标签"></a><wxs> 标签</h2><p><code>&lt;wxs&gt;</code> 标签有两个属性，一个是 module，一个是 src.</p>
-<p>此标签可以使用单标签闭合的写法</p>
-<h3 id="module-属性"><a href="#module-属性" class="headerlink" title="module 属性"></a>module 属性</h3><p>当前 <code>&lt;wxs&gt;</code> 标签的模块名。必填字段。</p>
-<p>在单个 wxml 文件内，建议其值唯一。有重复模块名则按照先后顺序覆盖（后者覆盖前者）。不同文件之间的 wxs 模块名不会相互覆盖。</p>
-<p>module 属性值的命名必须符合下面两个规则：</p>
-<ol>
-<li>首字符必须是：字母（a-zA-Z），下划线（_）</li>
-<li>剩余字符可以是：字母（a-zA-Z），下划线（_）， 数字（0-9）</li>
-</ol>
-<h3 id="src-属性"><a href="#src-属性" class="headerlink" title="src 属性"></a>src 属性</h3><p>引用 .wxs 文件的相对路径。仅当本标签为单闭合标签或标签的内容为空时有效</p>
-<p>src 属性可以用来引用其他的 wxs 文件模块。</p>
-<p>引用的时候，要注意如下几点：</p>
-<ol>
-<li>只能引用 .wxs 文件模块，且必须使用相对路径。</li>
-<li>wxs 模块均为单例，wxs 模块在第一次被引用时，会自动初始化为单例对象。多个页面，多个地方，多次引用，使用的都是同一个 wxs 模块对象。</li>
-<li>如果一个 wxs 模块在定义之后，一直没有被引用，则该模块不会被解析与运行。</li>
-</ol>
-<p>这里的规则同 require 函数。</p>
-<p><code>&lt;wxs&gt;</code> 模块只能在定义模块的 WXML 文件中被访问到。使用 <code>&lt;include&gt;</code> 或 <code>&lt;import&gt;</code> 时，<code>&lt;wxs&gt;</code> 模块不会被引入到对应的 WXML 文件中。</p>
-<p><code>&lt;template&gt;</code> 标签中，只能使用定义该 <code>&lt;template&gt;</code> 的 WXML 文件中定义的 <code>&lt;wxs&gt;</code> 模块.</p>
-<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ol>
-<li>WXS 中的变量均为值的引用。</li>
-<li>没有声明的变量直接赋值使用，会被定义为全局变量。</li>
-<li>如果只声明变量而不赋值，则默认值为 undefined。</li>
-<li>var表现与javascript一致，会有变量提升</li>
-</ol>
-<p>…<br>其余的都与JavaScript相差不大，不再赘述。</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
-<li><code>&lt;wxs&gt;</code> 模块只能在定义模块的 WXML 文件中被访问到。使用 <code>&lt;include&gt;</code> 或 <code>&lt;import&gt;</code> 时，<code>&lt;wxs&gt;</code> 模块不会被引入到对应的 WXML 文件中。</li>
-<li>&lt;<code>template&gt;</code> 标签中，只能使用定义该 <code>&lt;template&gt;</code> 的 WXML 文件中定义的 <code>&lt;wxs&gt;</code> 模块。</li>
-<li><em>不支持es6语法</em></li>
-</ol>
-<h1 id="小程序暗黑模式"><a href="#小程序暗黑模式" class="headerlink" title="小程序暗黑模式"></a>小程序暗黑模式</h1><p>当app.json中配置darkmode为true时，小程序部分配置项可通过变量的形式配置，在变量配置文件中定义不同主题下的颜色或图标，方法如下：</p>
-<ol>
-<li>在app.json中配置 themeLocation，指定变量配置文件 theme.json 路径，例如：在根目录下新增theme.json，需要配置”themeLocation”:”theme.json”</li>
-<li>在theme.json中定义相关变量；</li>
-<li>在app.json中以@开头引用变量。</li>
-</ol>
-<p>支持通过变量配置的属性：</p>
-<p>全局配置的 window 属性与页面配置下的属性</p>
-<ol>
-<li>navigationBarBackgroundColor</li>
-<li>navigationBarTextStyle</li>
-<li>backgroundColor</li>
-<li>backgroundTextStyle</li>
-<li>backgroundColorTop</li>
-<li>backgroundColorBottom</li>
-</ol>
-<p>全局配置 window.tabBar 的属性</p>
-<ol>
-<li>color</li>
-<li>selectedColor</li>
-<li>backgroundColor</li>
-<li>borderStyle</li>
-<li>list</li>
-<li>iconPath</li>
-<li>selectedIconPat</li>
-</ol>
-<p>相关配置：</p>
-<p>app.json</p>
-<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&quot;themeLocation&quot;: &quot;theme.json&quot;,</span><br><span class="line">&quot;darkmode&quot;: true,</span><br><span class="line">&quot;window&quot;: &#123;</span><br><span class="line">  &quot;navigationBarBackgroundColor&quot;: &quot;@navBgColor&quot;,</span><br><span class="line">  &quot;navigationBarTextStyle&quot;: &quot;@navTxtStyle&quot;,</span><br><span class="line">  &quot;backgroundColor&quot;: &quot;@bgColor&quot;,</span><br><span class="line">  &quot;backgroundTextStyle&quot;: &quot;@bgTxtStyle&quot;,</span><br><span class="line">  &quot;backgroundColorTop&quot;: &quot;@bgColorTop&quot;,</span><br><span class="line">  &quot;backgroundColorBottom&quot;: &quot;@bgColorBottom&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>theme.json</p>
-<p>必须包含 light、dark 属性</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;light&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;navBgColor&quot;</span>: <span class="string">&quot;#f6f6f6&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;navTxtStyle&quot;</span>: <span class="string">&quot;black&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColor&quot;</span>: <span class="string">&quot;#ffffff&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgTxtStyle&quot;</span>: <span class="string">&quot;light&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColorTop&quot;</span>: <span class="string">&quot;#eeeeee&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColorBottom&quot;</span>: <span class="string">&quot;#efefef&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;dark&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;navBgColor&quot;</span>: <span class="string">&quot;#191919&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;navTxtStyle&quot;</span>: <span class="string">&quot;white&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColor&quot;</span>: <span class="string">&quot;#1f1f1f&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgTxtStyle&quot;</span>: <span class="string">&quot;dark&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColorTop&quot;</span>: <span class="string">&quot;#191919&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColorBottom&quot;</span>: <span class="string">&quot;#1f1f1f&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Attention：</p>
-<ol>
-<li>在小程序中，若使用编译打包的形式，直接在app.js中写入时，如果打包出来的 theme.json 引入报错，可采用在 config 中 copy theme.json 文件 的方式</li>
-<li>必须配置darkmode和themeLocation才会生效</li>
-</ol>
-]]></content>
-  </entry>
-  <entry>
     <title>数据库中的锁</title>
     <url>/2020/02/04/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<h2 id="两段锁协议"><a href="#两段锁协议" class="headerlink" title="两段锁协议"></a>两段锁协议</h2><p>两段锁协议是指每个事务的执行可以分为两个阶段：生长阶段（加锁阶段）和衰退阶段（解锁阶段）。<br><strong>加锁阶段：</strong> 在该阶段可以进行加锁操作。在对任何数据进行读操作之前要申请并获得S锁，在进行写操作之前要申请并获得X锁。加锁不成功，则事务进入等待状态，直到加锁成功才继续执行。<br><strong>解锁阶段：</strong> 当事务释放了一个封锁以后，事务进入解锁阶段，在该阶段只能进行解锁操作不能再进行加锁操作。  </p>
@@ -3094,6 +3082,103 @@ https://www.jianshu.com/p/38bd5f1cf2f2</code></pre>
       </tags>
   </entry>
   <entry>
+    <title>微信小程序暗黑模式</title>
+    <url>/2020/11/01/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%9A%97%E9%BB%91%E6%A8%A1%E5%BC%8F/</url>
+    <content><![CDATA[<blockquote>
+<p>WXS（WeiXin Script）是小程序的一套脚本语言，结合 WXML，可以构建出页面的结构。</p>
+<p>WXS 与 JavaScript 是不同的语言，有自己的语法，并不和 JavaScript 一致。</p>
+<p>增强 wxml 标签的表达能力</p>
+<p>WXS 对性能的贡献就只有一点：与 WXML 是在同一个线程运行的，避免了跨线程通信的开销。</p>
+<p>号称 『wxs 目前在 iOS 设备的效率，会比JS快 2~20倍。在 Android 则无差异</p>
+</blockquote>
+<h1 id="WXS模块"><a href="#WXS模块" class="headerlink" title="WXS模块"></a>WXS模块</h1><p>每一个 .wxs 文件和 <code>&lt;wxs&gt;</code> 标签都是一个单独的模块。</p>
+<p>每个模块都有自己独立的作用域。即在一个模块里面定义的变量与函数，默认为私有的，对其他模块不可见。</p>
+<p>一个模块要想对外暴露其内部的私有变量与函数，只能通过 module.exports 实现。</p>
+<h2 id="module-对象"><a href="#module-对象" class="headerlink" title="module 对象"></a>module 对象</h2><p>eg:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// /page/tools.wxs</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = <span class="string">&quot;&#x27;hello world&#x27; from tools.wxs&quot;</span>;</span><br><span class="line"><span class="keyword">var</span> bar = <span class="function"><span class="keyword">function</span> (<span class="params">d</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> d;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对象形式导出</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  FOO: foo,</span><br><span class="line">  bar: bar,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 单独导出某一个</span></span><br><span class="line"><span class="built_in">module</span>.exports.msg = <span class="string">&quot;some msg&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="require"><a href="#require" class="headerlink" title="require"></a>require</h2><p>在 wxs 中引用其它 wxs 文件文件模块，可以使用 require 函数，引用的时候需要注意以下几点问题：</p>
+<ol>
+<li>只能引用 .wxs 文件模块，且必须使用相对路径。</li>
+<li>wxs 模块均为单例，wxs 模块在第一次被引用时，会自动初始化为单例对象。多个页面，多个地方，多次引用，使用的都是同一个 wxs 模块对象。</li>
+<li>如果一个 wxs 模块在定义之后，一直没有被引用，则该模块不会被解析与运行。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> tools = <span class="built_in">require</span>(<span class="string">&quot;./cat.wxs&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(tools.tip);</span><br><span class="line"><span class="built_in">console</span>.log(tools.msg);</span><br></pre></td></tr></table></figure>
+
+<h2 id="标签"><a href="#标签" class="headerlink" title=" 标签"></a><wxs> 标签</h2><p><code>&lt;wxs&gt;</code> 标签有两个属性，一个是 module，一个是 src.</p>
+<p>此标签可以使用单标签闭合的写法</p>
+<h3 id="module-属性"><a href="#module-属性" class="headerlink" title="module 属性"></a>module 属性</h3><p>当前 <code>&lt;wxs&gt;</code> 标签的模块名。必填字段。</p>
+<p>在单个 wxml 文件内，建议其值唯一。有重复模块名则按照先后顺序覆盖（后者覆盖前者）。不同文件之间的 wxs 模块名不会相互覆盖。</p>
+<p>module 属性值的命名必须符合下面两个规则：</p>
+<ol>
+<li>首字符必须是：字母（a-zA-Z），下划线（_）</li>
+<li>剩余字符可以是：字母（a-zA-Z），下划线（_）， 数字（0-9）</li>
+</ol>
+<h3 id="src-属性"><a href="#src-属性" class="headerlink" title="src 属性"></a>src 属性</h3><p>引用 .wxs 文件的相对路径。仅当本标签为单闭合标签或标签的内容为空时有效</p>
+<p>src 属性可以用来引用其他的 wxs 文件模块。</p>
+<p>引用的时候，要注意如下几点：</p>
+<ol>
+<li>只能引用 .wxs 文件模块，且必须使用相对路径。</li>
+<li>wxs 模块均为单例，wxs 模块在第一次被引用时，会自动初始化为单例对象。多个页面，多个地方，多次引用，使用的都是同一个 wxs 模块对象。</li>
+<li>如果一个 wxs 模块在定义之后，一直没有被引用，则该模块不会被解析与运行。</li>
+</ol>
+<p>这里的规则同 require 函数。</p>
+<p><code>&lt;wxs&gt;</code> 模块只能在定义模块的 WXML 文件中被访问到。使用 <code>&lt;include&gt;</code> 或 <code>&lt;import&gt;</code> 时，<code>&lt;wxs&gt;</code> 模块不会被引入到对应的 WXML 文件中。</p>
+<p><code>&lt;template&gt;</code> 标签中，只能使用定义该 <code>&lt;template&gt;</code> 的 WXML 文件中定义的 <code>&lt;wxs&gt;</code> 模块.</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><ol>
+<li>WXS 中的变量均为值的引用。</li>
+<li>没有声明的变量直接赋值使用，会被定义为全局变量。</li>
+<li>如果只声明变量而不赋值，则默认值为 undefined。</li>
+<li>var表现与javascript一致，会有变量提升</li>
+</ol>
+<p>…<br>其余的都与JavaScript相差不大，不再赘述。</p>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ol>
+<li><code>&lt;wxs&gt;</code> 模块只能在定义模块的 WXML 文件中被访问到。使用 <code>&lt;include&gt;</code> 或 <code>&lt;import&gt;</code> 时，<code>&lt;wxs&gt;</code> 模块不会被引入到对应的 WXML 文件中。</li>
+<li>&lt;<code>template&gt;</code> 标签中，只能使用定义该 <code>&lt;template&gt;</code> 的 WXML 文件中定义的 <code>&lt;wxs&gt;</code> 模块。</li>
+<li><em>不支持es6语法</em></li>
+</ol>
+<h1 id="小程序暗黑模式"><a href="#小程序暗黑模式" class="headerlink" title="小程序暗黑模式"></a>小程序暗黑模式</h1><p>当app.json中配置darkmode为true时，小程序部分配置项可通过变量的形式配置，在变量配置文件中定义不同主题下的颜色或图标，方法如下：</p>
+<ol>
+<li>在app.json中配置 themeLocation，指定变量配置文件 theme.json 路径，例如：在根目录下新增theme.json，需要配置”themeLocation”:”theme.json”</li>
+<li>在theme.json中定义相关变量；</li>
+<li>在app.json中以@开头引用变量。</li>
+</ol>
+<p>支持通过变量配置的属性：</p>
+<p>全局配置的 window 属性与页面配置下的属性</p>
+<ol>
+<li>navigationBarBackgroundColor</li>
+<li>navigationBarTextStyle</li>
+<li>backgroundColor</li>
+<li>backgroundTextStyle</li>
+<li>backgroundColorTop</li>
+<li>backgroundColorBottom</li>
+</ol>
+<p>全局配置 window.tabBar 的属性</p>
+<ol>
+<li>color</li>
+<li>selectedColor</li>
+<li>backgroundColor</li>
+<li>borderStyle</li>
+<li>list</li>
+<li>iconPath</li>
+<li>selectedIconPat</li>
+</ol>
+<p>相关配置：</p>
+<p>app.json</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&quot;themeLocation&quot;: &quot;theme.json&quot;,</span><br><span class="line">&quot;darkmode&quot;: true,</span><br><span class="line">&quot;window&quot;: &#123;</span><br><span class="line">  &quot;navigationBarBackgroundColor&quot;: &quot;@navBgColor&quot;,</span><br><span class="line">  &quot;navigationBarTextStyle&quot;: &quot;@navTxtStyle&quot;,</span><br><span class="line">  &quot;backgroundColor&quot;: &quot;@bgColor&quot;,</span><br><span class="line">  &quot;backgroundTextStyle&quot;: &quot;@bgTxtStyle&quot;,</span><br><span class="line">  &quot;backgroundColorTop&quot;: &quot;@bgColorTop&quot;,</span><br><span class="line">  &quot;backgroundColorBottom&quot;: &quot;@bgColorBottom&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>theme.json</p>
+<p>必须包含 light、dark 属性</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;light&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;navBgColor&quot;</span>: <span class="string">&quot;#f6f6f6&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;navTxtStyle&quot;</span>: <span class="string">&quot;black&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColor&quot;</span>: <span class="string">&quot;#ffffff&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgTxtStyle&quot;</span>: <span class="string">&quot;light&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColorTop&quot;</span>: <span class="string">&quot;#eeeeee&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColorBottom&quot;</span>: <span class="string">&quot;#efefef&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;dark&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;navBgColor&quot;</span>: <span class="string">&quot;#191919&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;navTxtStyle&quot;</span>: <span class="string">&quot;white&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColor&quot;</span>: <span class="string">&quot;#1f1f1f&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgTxtStyle&quot;</span>: <span class="string">&quot;dark&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColorTop&quot;</span>: <span class="string">&quot;#191919&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;bgColorBottom&quot;</span>: <span class="string">&quot;#1f1f1f&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Attention：</p>
+<ol>
+<li>在小程序中，若使用编译打包的形式，直接在app.js中写入时，如果打包出来的 theme.json 引入报错，可采用在 config 中 copy theme.json 文件 的方式</li>
+<li>必须配置darkmode和themeLocation才会生效</li>
+</ol>
+]]></content>
+  </entry>
+  <entry>
     <title>模块机制</title>
     <url>/2020/02/04/%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/</url>
     <content><![CDATA[<h1 id="模块机制"><a href="#模块机制" class="headerlink" title="模块机制"></a>模块机制</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>程序员最怕两件事，第一件事是产品改需求，第二件事是接手的代码乱七八糟结果最后发现是自己以前写的。<br>很不幸，我正在经历第二件事。<br>本文旨在让你对模块机制有简单了解以及对require js的核心原理的介绍。</p>
@@ -3164,6 +3249,92 @@ https://www.jianshu.com/p/38bd5f1cf2f2</code></pre>
       </categories>
       <tags>
         <tag>模块</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>浏览器缓存</title>
+    <url>/2021/02/23/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p> 说到浏览器缓存，一些前端同学可能会先联想localStorage和sessionStorage，但它们是完全不同的概念。localStorage或sessionStorage是浏览器本地存储技术，是用来存储客户端临时信息的；浏览器缓存是，浏览器将通过HTTP获取的网路资源保存到本地，下次再请求相同的url时，根据当前的缓存机制，来决定是使用本地缓存的资源还是向服务器发送网络请求。</p>
+<p> 浏览器缓存的好处：</p>
+<ul>
+<li>减少了重复数据的传输；</li>
+<li>减少服务器端的网络请求</li>
+<li>加快客户端页面加载速度，提升用户体验</li>
+</ul>
+<h3 id="浏览器缓存的流程"><a href="#浏览器缓存的流程" class="headerlink" title="浏览器缓存的流程"></a>浏览器缓存的流程</h3><p>浏览器缓存的具体流程是：</p>
+<ol>
+<li>浏览器发送请求时，首先判断是否采用缓存（强缓存或协商缓存），若未使用缓存，向服务器端请求资源；</li>
+<li>若使用缓存，先判断是否使用强缓存且强缓存为过期，若是的话，直接使用本地缓存的资源；</li>
+<li>若未使用强缓存或者强缓存已过期，浏览器向服务端发起请求，服务端根据请求头的信息判断是否使用协商缓存，若使用协商缓存且协商缓存的资源未发生变化，则返回304和空的响应体，直接从客户端缓存中读取资源；否则返回200和新的资源<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/165592/32/7462/60812/6034fa6dE8d773898/4fd4fb53ba00e91e.png" alt="浏览器缓存的流程.png"></li>
+</ol>
+<p>下面详细介绍缓存资源的存放位置、强缓存和协商缓存~</p>
+<h3 id="缓存资源位置"><a href="#缓存资源位置" class="headerlink" title="缓存资源位置"></a>缓存资源位置</h3><p><strong>memory cache</strong><br>是将资源缓存到内存中，等下次再访问时直接从内存中读取缓存资源。浏览器关闭后，缓存的资源就被释放掉了，下次再打开相同的页面时，不会出现memory cache的资源。  </p>
+<p><strong>disk cache</strong><br>是将资源缓存到磁盘中，等再次访问时，直接从磁盘中读取。跟memory cache不同的是，关闭浏览器后，缓存的资源依旧存在。  </p>
+<p>访问缓存资源的优先级是先从内存中查找，内存中没有，再从硬盘中查找，若是两者都没有的话，就向服务器发送网络请求。</p>
+<p>已加载的资源是存到磁盘中还是存到内存中，取决于资源的大小和内存空闲情况。磁盘的容量远大于内存容量。当内存空闲时，优先将资源放入内存，否则存入磁盘中。</p>
+<h3 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h3><p>强缓存是，浏览器加载资源时，不会像服务器发送请求，而是直接从本地缓存中读取资源。强缓存的实现方式有两种，Expires 和 Cache-Control，它们都是通过设置HTTP请求头来实现的。</p>
+<h4 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h4><p>Expires用来指定资源的到期时间，是服务器的绝对时间，是GMT时间格式。当服务器时间和浏览器本地时间偏差较大时，会导致缓存混乱。</p>
+<h4 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h4><p>Cache-Control是一个相对时间，通过设置max-age的值来实现，单位是秒。比如，Cache-Control:max-age=200，表示缓存的资源200s后过期。</p>
+<p>Cache-Control的设置值：</p>
+<ul>
+<li>max-age=xxx：xxx秒后，缓存的资源到期；</li>
+<li>no-cache：需要进行协商缓存，发送请求到服务器确认是否使用缓存；</li>
+<li>no-store：禁止使用缓存，每一次都要重新请求数据；</li>
+<li>public：可以被所有的用户缓存，包括终端用户和 CDN 等中间代理服务器；</li>
+<li>private：只能被终端用户的浏览器缓存，不允许 CDN 等中继缓存服务器对其缓存。</li>
+</ul>
+<p>若Expires和Cache-Control在服务端同时启用，Cache-Control的优先级更高。那么若本地客户端请求头和服务器响应头都设置了Cache-Control，它们的优先级是怎么样的呢？<br>这里，我们通过代码实验一下。chrome浏览器默认设置Cache-Control:no-cache，所以需要将Disable cache取消勾选。</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/161197/2/7873/76825/6035e22cE18d858b3/e6fc95a141400e0f.png" alt="关闭Disable cache.png"></p>
+<p>第一种：客户端和服务端都不设置Cache-Control</p>
+<ul>
+<li>客户端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;http://localhost:3000/cacheDemo&#x27;</span>,</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res, <span class="string">&#x27;请求的资源&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li>服务端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.all(<span class="string">&#x27;*&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">    res.header(<span class="string">&quot;Access-Control-Allow-Origin&quot;</span>, <span class="string">&quot;*&quot;</span>)</span><br><span class="line">    next()</span><br><span class="line">&#125;)</span><br><span class="line">app.get(<span class="string">&#x27;/cacheDemo&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;执行了&#x27;</span>)</span><br><span class="line">    res.end(<span class="string">`cacheDemo`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/165028/13/7441/137566/6035eb5fE5b597e41/a058eaf095c81830.png" alt="场景1.png"></li>
+</ul>
+<p>默认情况下，第二次请求相同的资源，是不会走缓存逻辑的  </p>
+<p>第二种：客户端设置Cache-Control，服务端不设置Cache-Control</p>
+<ul>
+<li>客户端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;http://localhost:3000/cacheDemo&#x27;</span>,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        <span class="string">&#x27;Cache-Control&#x27;</span>: <span class="string">&#x27;max-age=10&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res, <span class="string">&#x27;请求的资源&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/155234/40/19141/125236/6035eb5fE1f8c773d/2f2ad352131fe81f.png" alt="场景2.png"></li>
+</ul>
+<p>第二次请求相同的资源，缓存同样没有生效。  </p>
+<p>第三种：客户端不设置Cache-Control，服务端设置Cache-Control</p>
+<ul>
+<li>客户端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;http://localhost:3000/cacheDemo&#x27;</span>,</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res, <span class="string">&#x27;请求的资源&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li>服务端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.all(<span class="string">&#x27;*&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">    res.header(<span class="string">&quot;Access-Control-Allow-Origin&quot;</span>, <span class="string">&quot;*&quot;</span>)</span><br><span class="line">    res.header(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;max-age=300&quot;</span>)</span><br><span class="line">    res.header(<span class="string">&quot;Access-Control-Allow-Headers&quot;</span>, <span class="string">&quot;X-Requested-With, cache-control&quot;</span>)</span><br><span class="line">    next()</span><br><span class="line">&#125;)</span><br><span class="line">app.get(<span class="string">&#x27;/cacheDemo&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&#x27;执行了&#x27;</span>)</span><br><span class="line">    res.end(<span class="string">`cacheDemo`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/162049/14/7678/116715/6035eb5fE2207302f/71b4aae2f370bc7a.png" alt="场景3.png"> </li>
+</ul>
+<p>第二次请求相同的资源，命中强缓存，不再进行网络请求，直接从缓存中读取资源。  </p>
+<p>第四种，客户端和服务端都设置Cache-Control，但max-age是不同的值  </p>
+<ul>
+<li>客户端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;http://localhost:3000/cacheDemo&#x27;</span>,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        <span class="string">&#x27;Cache-Control&#x27;</span>: <span class="string">&#x27;max-age=10&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res, <span class="string">&#x27;请求的资源&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li>服务端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.all(<span class="string">&#x27;*&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">    res.header(<span class="string">&quot;Access-Control-Allow-Origin&quot;</span>, <span class="string">&quot;*&quot;</span>)</span><br><span class="line">    res.header(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;max-age=300&quot;</span>)</span><br><span class="line">    res.header(<span class="string">&quot;Access-Control-Allow-Headers&quot;</span>, <span class="string">&quot;X-Requested-With, cache-control&quot;</span>)</span><br><span class="line">    next()</span><br><span class="line">&#125;)</span><br><span class="line">app.get(<span class="string">&#x27;/cacheDemo&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;    </span><br><span class="line">    res.end(<span class="string">`cacheDemo`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/170106/19/7773/121716/6035eb5fEda2e11bd/1e75b7033dddb0b5.png" alt="场景4.png"></li>
+</ul>
+<p>10s之后，缓存并未失效，30s后才生效，缓存的失效时间是由服务端决定的  </p>
+<p>第五种，客户端设置关闭缓存，服务端都设置Cache-Control  </p>
+<ul>
+<li>客户端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    url: <span class="string">&#x27;http://localhost:3000/cacheDemo&#x27;</span>,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        <span class="string">&#x27;Cache-Control&#x27;</span>: <span class="string">&#x27;no-cache&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res, <span class="string">&#x27;请求的资源&#x27;</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+<li>服务端<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">app.all(<span class="string">&#x27;*&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res, next</span>) </span>&#123;</span><br><span class="line">    res.header(<span class="string">&quot;Access-Control-Allow-Origin&quot;</span>, <span class="string">&quot;*&quot;</span>)</span><br><span class="line">    res.header(<span class="string">&quot;Cache-Control&quot;</span>, <span class="string">&quot;max-age=300&quot;</span>)</span><br><span class="line">    res.header(<span class="string">&quot;Access-Control-Allow-Headers&quot;</span>, <span class="string">&quot;X-Requested-With, cache-control&quot;</span>)</span><br><span class="line">    next()</span><br><span class="line">&#125;)</span><br><span class="line">app.get(<span class="string">&#x27;/cacheDemo&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;    </span><br><span class="line">    res.end(<span class="string">`cacheDemo`</span>)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/152904/22/19259/145673/6035eb5fEa9a1e989/a51e4fade6b418e7.png" alt="场景5.png"></li>
+</ul>
+<p>第二次载入资源，不再走强缓存，而晒向服务器端发送资源请求</p>
+<p>所以，结论是，服务器端才能开启强缓存，且决定缓存的失效时间；客户端无法开启强缓存，但可以通过设置Cache-Control为max-age=0、no-store或no-cache，来关闭缓存</p>
+<h3 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h3><p>当没有强缓存或者强缓存过期时，浏览器会向服务端发起请求，服务端根据请求头信息判断是否使用协商缓存且协商缓存的资源未发生变化，若是的话，返回304和空的响应体，告诉浏览器资源未更新，直接从本地缓存中读取资源；否则返回200和新的资源。协商缓存的实现方式有两种， Last-Modified/If-Modify-Since 和 ETag/If-None-Match。</p>
+<h4 id="Last-Modified-If-Modify-Since"><a href="#Last-Modified-If-Modify-Since" class="headerlink" title="Last-Modified/If-Modify-Since"></a>Last-Modified/If-Modify-Since</h4><p>浏览器在第一次访问资源时，服务器返回资源的同时，在响应头中添加 Last-Modified字段（绝对时间，GMT格式），其值是这个资源在服务器上的最后修改时间；浏览器再次向服务端请求相同的资源时，请求头中会包含If-Modify-Since，其值是之前响应头Last-Modified的值。服务端收到资源请求后，如果If-Modify-Since的值等于服务器中这个资源的最后修改时间，表示资源未发生变化，则返回304和空的响应体；如果If-Modify-Since的值小于资源最后修改时间，说明资源发生变化，返回200和新资源。</p>
+<p>缺点：</p>
+<ul>
+<li>Last-Modified检查的粒度是秒级，是无法检测到1s内资源的N次变化</li>
+<li>有些资源只是文件的修改时间变了，但其内容被未发生改变，结果还是会命中协商缓存</li>
+</ul>
+<h3 id="ETag-If-None-Match"><a href="#ETag-If-None-Match" class="headerlink" title="ETag/If-None-Match"></a>ETag/If-None-Match</h3><p>与Last-Modified/If-Modify-Since不同的是，服务器返回资源的响应头中添加ETag字段，其值是当前资源文件的唯一标识符，资源变化，Etag的值会发生变化；浏览器再次向服务端请求相同的资源时，Etag的值放到请求头的If-None-Match中，服务端会根据If-None-Match的值跟服务器中该资源的Etag作对比，若是值相等，表示资源未发生变化，则返回304和空的响应体；如果Etag不一致，说明资源发生变化，返回200和新资源。</p>
+<p>ETag/If-None-Match 的优先级高于 ETag/If-None-Match</p>
+]]></content>
+      <categories>
+        <category>性能优化</category>
+      </categories>
+      <tags>
+        <tag>浏览器缓存</tag>
       </tags>
   </entry>
   <entry>
@@ -5705,117 +5876,6 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
-    <title>色彩理论与搭配</title>
-    <url>/2020/05/21/%E8%89%B2%E5%BD%A9%E7%90%86%E8%AE%BA%E4%B8%8E%E6%90%AD%E9%85%8D/</url>
-    <content><![CDATA[<h1 id="一、色彩的基础理论"><a href="#一、色彩的基础理论" class="headerlink" title="一、色彩的基础理论"></a>一、色彩的基础理论</h1><h2 id="1-色彩是什么"><a href="#1-色彩是什么" class="headerlink" title="1.色彩是什么"></a>1.色彩是什么</h2><p>​        色彩是人脑识别反射光的强弱和不同波长所产生的差异的感觉，与形状同为最基本的视觉反应之一。物体被光线照射，反射光被人脑接受，形成的色彩。总之，没有光照就不存在色彩，而且我们的日常生活中看到的所有色彩都不是物体本身的颜色。颜色本质上并不是物体本身固有的属性，或者更大胆地说，任何事物都是没有颜色的。我们之所以看到一个苹果是红色的，是因为它反射的光线进入我们眼睛，刺激我们的视觉神经，使我们产生了“红色”的知觉。</p>
-<p>​        光波是电磁波的一种，电磁波包括X射线、紫外线等很多种，其中人类能够看到的称之为“可见光”。根据可见光的电磁波波长由短到长的顺序，我们可以识别蓝紫色、紫色、青绿色、绿色、黄绿色、黄色、橙色、红色等色彩。光线中包含很多种色彩，但光线本身却是无色的。</p>
-<p>​        电磁波中人类肉眼可感知的波长范围被称为”可见光”，可见光的波长约为360-400nm，长波长约为760至830nm，如果波长超过可见光的波长范围（更长或者更短），就超出了人眼所能感知的范围了。</p>
-<p><img src= "/img/loading.gif" data-src="%E5%8F%AF%E8%A7%81%E5%85%89.jpg" alt="可见光"></p>
-<h2 id="2-色彩的三属性"><a href="#2-色彩的三属性" class="headerlink" title="2.色彩的三属性"></a>2.色彩的三属性</h2><p>色彩有三个属性：色相、明度、纯度。</p>
-<p>色相：色相是指色彩的相貌，就是我们通常说的各种颜色，如红、橙、黄、绿、青、蓝、紫等。色相是区别不同彩色的最佳标准，它和色彩的强弱及明暗都没有关系，只是纯粹表示色相相貌的差异。色相是色彩的首要特征，人眼区分色彩的方式就是通过色相区分。</p>
-<p><img src= "/img/loading.gif" data-src="%E8%89%B2%E7%9B%B8%E7%8E%AF.png" alt="色相环"></p>
-<p>明度：明度是指色彩的明亮程度，在任何一种色彩中添加白色，其明度都会升高。添加黑色，则其明度下降。因此，色彩中明度最高的是白色，明度最低的是黑色，白色-黑色的灰度，则是明度差异的表现。</p>
-<p>纯度：是指色彩的鲜艳程度，如新鲜水果的那种鲜艳，艳丽的色彩代表“高纯度”，树枝、泥土等天然染料的那种朴素、淡雅的色彩代表低纯度，同一色相中，纯度最高的色彩被称为纯色。在实际的配色过程中，通过调整纯度，可以使相同的色相形成不同的印象，一般来讲，色彩的纯度越高，越容易形成强劲有力、充满朝气的印象。而纯度越低，越容易形成成熟、稳重的印象。</p>
-<p><img src= "/img/loading.gif" data-src="HSB.png" alt="HSB"></p>
-<h2 id="3-有彩色和无彩色"><a href="#3-有彩色和无彩色" class="headerlink" title="3.有彩色和无彩色"></a>3.有彩色和无彩色</h2><p>​        色彩大体上可以分为“有彩色”和“无彩色”两类。无彩色是指白色、黑色、灰色中性色，这 三种色彩没有色相属性和纯度属性，只有明度一个属性的色彩。有彩色指的是拥有色彩三属性的全部色彩。</p>
-<p>​       无彩色中明度最高的色彩是白色，最低的是黑色。无彩色不含纯度属性，所以在和其他任何色彩搭配时都很和谐，合理恰当地运用无彩色，可以营造时尚和稳重的印象。但是也要注意避免陷入单调、乏味、呆板的印象。</p>
-<h2 id="4-色调"><a href="#4-色调" class="headerlink" title="4.色调"></a>4.色调</h2><p>色调是指色彩的浓淡、强弱程度，是通过色彩的明度和纯度综合表现色彩状态的概念。同一色调或者相近色调的色彩搭配，集中了纯度相近的色彩，呈现自然、和谐的效果。色调有很多种，常见的有接近唇色的鲜艳色调、接近白色的浅色调、接近黑色的暗色调等。即使色相不统一，只要色调保持一致的话，画面也能展现统一的配色效果。</p>
-<h2 id="5-色彩的情绪"><a href="#5-色彩的情绪" class="headerlink" title="5.色彩的情绪"></a>5.色彩的情绪</h2><p>冷暖色</p>
-<p><img src= "/img/loading.gif" data-src="%E5%86%B7%E6%9A%96%E8%89%B2.png" alt="冷暖色"></p>
-<p>​       暖色系的色彩可以使人感到温暖，冷色系的色彩可以使人感到寒冷。这一规律在哪儿都适用。但是具体色彩所代表的含义并不是全世界共通的，会因为文化、传统和风土人情而异。但是人类遗传基因中总是存在一些共通的物质，色彩带给人的感觉也不例外。</p>
-<p>​       色彩本身是没有情绪的，只是因为不同波长的光通过人的眼睛传到大脑，引起了人们不同的心理感受，所以色彩才有了情绪。每种颜色都会给人独特的心理感受，引起我们不同的情绪，因此在设计过程中色彩情绪是必须要考虑的一个重要元素。</p>
-<p>​       比如现在的一些知名品牌。人对于品牌商品的快速印象有90％来仅仅是来自于其色彩，品牌或者品牌商品的颜色是人们接触品牌最直接的视觉呈现，从某种意义上来说意义上来说，色彩是品牌在人们心中整合品牌识别度的第一步。</p>
-<p>​       从Hermès标志性的橙到Tiffany蓝，再到Supreme的红白，香奈儿的黑白，Christian Louboutin经典的红底高跟鞋，星巴克的绿色。色彩是品牌独特的DNA。再比如现在互联网中的京东红、淘宝橙。</p>
-<p>（1）黑色：沉稳、品质感、收敛、沉默、静寂、悲哀</p>
-<p>​        单独使用时黑色可以很容易吸引用户的注意力。和其他颜色搭配使用时可以很好地搭配组合，使用黑色的背景可以非常好的突出页面中的内容，容易出效果，应用场景非常广泛。</p>
-<p>​        除了白色之外，黑色是艺术中使用的第一种记录色，即旧石器时代所使用的颜色，它们使用木炭，烧过的骨头或各种粉碎的矿物质。纵观大部分历史，黑色一直是邪恶的象征（如希腊神话地狱），哀悼，悲伤和黑暗。然而，在古埃及，颜色具有保护和生育的积极象征。</p>
-<p>​       在不同的时代和不同的文化上，黑色在应用和观念上经历了许多变化。最终这种颜色被革命化，在时尚界占据显着不可替代的地位，迅速成为优雅和简约的象征。</p>
-<p><img src= "/img/loading.gif" data-src="%E9%BB%91%E8%89%B2.png" alt="黑色"></p>
-<p>（2）白色：干净、纯洁、简洁。</p>
-<p>白色是无色的，意思是没有色调的颜色。它已成为许多时代的艺术，历史和文化。事实上，它被记录为艺术中使用的第一种颜色，旧石器时代的艺术家使用白色方解石和粉笔作画。纵观大部分历史，白色已被选为善良、灵性、纯洁、虔诚和神圣的象征。古埃及诸神，希腊诸神，罗马女神都被描绘为身穿白色象征着他们的神圣。</p>
-<p>白色被认为是黑色的象征性的反面，两种颜色一起形成善恶的象征，日夜，明暗等。在西方文化中，白色是婚纱礼服的典型色彩，象征着纯真和纯洁，而在许多亚洲文化中，白色是哀悼，悲伤和失落的颜色。 白色也是和平的象征，在战争中白道色旗帜是投降的标志。</p>
-<p><img src= "/img/loading.gif" data-src="%E7%99%BD%E8%89%B2.png" alt="白色"></p>
-<p>（3）红色：红色是彰显热情的色彩，给人留下强烈的印象，刺激人的情感。红色的特点：热情、躁动、危险、警告。页    面设计中可以在删除提醒、禁止操作功能时使用。</p>
-<p>​        信号灯的红色、唇膏的红色、广告传单标题价格的红色以及交通标示的红色等都是纯度最高，色彩鲜明的红色，是最能刺激人类情感的色彩，具有使人兴奋、脉搏跳动加快的功能。（心脏不好的人最好不要使用红色的窗帘或者壁纸）高纯度红色的特征基本不受形状、材质的影响。面积越大、视觉冲击效果越强。红色作为暖色调，也代表了食材的新鲜和美味可口：比如草莓、樱桃等。</p>
-<p><img src= "/img/loading.gif" data-src="%E7%BA%A2%E8%89%B2.png" alt="红色"></p>
-<p>（4）橙色：温暖、活泼、年轻。</p>
-<p>​       红色和黄色之间的颜色就是橙色。既不会像红色那样躁动，又不会像黄色那么灿烂。橙色是欢快活泼的光辉色彩，是暖色系中最温暖的色，它使人联想到金色的秋天，丰硕的果实，是一种富足、快乐而幸福的颜色。</p>
-<p>​     橙色稍稍混入黑色或白色，会变成一种稳重、含蓄又明快的暖色，但混入较多的黑色，就成为一种烧焦的色；橙色中加入较多的白色会带来一种甜腻的感觉。</p>
-<p>​     橙色明视度高，在工业安全用色中，橙色即是警戒色，如火车头，登山服装，背包，救生衣等。橙色可作餐厅的布置色，据说在餐厅里多用橙色可以增加食欲。</p>
-<p>​     橙色与浅绿色和浅蓝色相配，可以构成最响亮、最欢乐的色彩。橙色与淡黄色相配有一种很舒服的过渡感。橙色一般不能与紫色或深蓝色相配，这将给人一种不干净、晦涩的感觉。橙色有不同的色调和深浅，每种都有不同的含义和效果。例如，轻柔的橙色色被认为是甜美，善良和友好的，而更强烈，充满活力的橙色被视为活力，能量和鼓励的代表。比如k12教育中，经常被用作主色调或者辅助色。</p>
-<p><img src= "/img/loading.gif" data-src="%E6%A9%99%E8%89%B2.png" alt="橙色"></p>
-<p>（5）黄色：阳光、辉煌、醒目、高贵。</p>
-<p>​       由于与黄金密切相关，颜色被认为是永恒的和坚不可摧的。黄色与艺术世界有着悠久的关系，梵高等艺术家将其作为标志性的颜色来表达温暖与快乐。黄色是一种能根据色彩和应用而体现出许多想法的颜色。如前所述，它可以象征幸福，阳光，正能量和喜悦。但是，它也可以代表懦弱，背叛，恐怖和疾病。例如有毒有害的标示、医院的垃圾桶。此外，由于黄色是光谱中最明显的颜色，通常用于紧急和警示标志，服装和应用，如交通标志上的黄灯，工程用的大型机器，学生用雨衣，雨鞋等，都使用黄色。如果你需要快速引起注意，可以使用一些黄色。在日本，黄色被认为代表勇气，在墨西哥的某些地区，某些色调可以被认为代表死亡。</p>
-<p>当涉及到品牌，黄色可以用来表示一系列的想法。例如，它常常用来表示速度和效率，正如我们可以看到在法拉利和斯普林特这样的品牌中体现的。</p>
-<p><img src= "/img/loading.gif" data-src="%E9%BB%84%E8%89%B2.png" alt="黄色"></p>
-<p>（6）绿色：健康、大自然、清新、环保、安全。</p>
-<p>​       绿色是一种与自然，环境和与大自然有关的所有事物的紧密联系而又独特的色彩。现在非常提倡的环保生活都是采用绿色为主色调，健康无污染。代表着春天，在策划设计春天相关事物活动，可以使用绿色为主色进行设计。绿色是有着安全属性的，在支付、保障方面通常是应用很多的，与红色正好是相反的作用。</p>
-<p>在西方国家，绿色被看作是运气、新鲜、嫉妒和贪婪。在中国和日本，绿色被视为新生，青春和希望的颜色。</p>
-<p>​       绿色中渗入黄色为黄绿色，它单纯、年轻；绿色中渗入蓝色为蓝绿色，它清秀、豁达。含灰的绿色，仍是一种宁静、平和的色彩，就像暮色中的森林或晨雾中的田野。深绿色和浅绿色相配有一种和谐、安宁的感觉；绿色与白色相配，显得很年轻；浅绿色与黑色相配，显得美丽、大方。绿色与浅红色相配，象征着春天的到来。</p>
-<p>（7）蓝色：科技、纯净、清爽、深邃、放松、忧郁</p>
-<p>​       蓝色是三原色之一。提到蓝色，往往想到的都是天空和大海。蓝色是永恒的象征，它是最冷的色彩，另外，蓝色也是科技宇宙领域的专属颜色，是理智、效率的代名词，随处可见的企业官网、VI、软件、宣传物料等。像是心理治疗室都是使用蓝色系的环境，就是给用户提供一个放松的环境。</p>
-<ul>
-<li><p>天蓝：天蓝最浅的蓝，几乎不含有红的痕迹，好像天空的清冷。代表”初始”的颜色，是生物在年轻时的代表(成熟色是绿色)。在心理暗示来说，天蓝和粉红色一 样，都是”安抚色”，是令人安静并放松的颜色。</p>
-</li>
-<li><p>湖蓝：湖蓝深邃的蓝色，却又带着跳脱的亮光，美丽的像是沉浸在无尽的静谧中的湖水。代表着”等待” 。在颜色的暗示来说，是禁语的颜色，通常在充斥这样颜色的地方，人们的对话都会减少。</p>
-</li>
-<li><p>宝石蓝(宝蓝)：在传说中希望女神的原型就是一颗蓝色的钻石。所以宝石一样的靓丽幽蓝就成了”希望”的代名词。在心理上，宝石蓝和紫色一样，都会给人高贵的感觉，并且引起人们的注意。右图便是著名的宝蓝海洋。</p>
-</li>
-<li><p>孔雀蓝：是蓝色中最神秘的一种，几乎没有人能确定它正确的色值所在，是模糊色的一种，不同的人会对它有不同的诠释，代表的意义是”隐匿” 。在印刷领域里，这种颜色会和设想分开很大的误差。在精神领域里，这个颜色是遥不可攀的神界的颜色，是除了金银以外的一个特殊色。</p>
-</li>
-<li><p>蓝(正蓝)：是”忧郁”的代名词。平分蓝色系列的青色和红色在这里完美的统一了数值，展现出夜空的微微紫色的深蓝。在心理学上，深蓝会给一些容易接受暗示的人以压迫感，但是有会让保有乐观态度的人产生放松的心态。</p>
-</li>
-<li><p>蓝紫：就是蓝莓的那种颜色，喜欢浆果的人看到这个颜色就会想到森林的掩映中一个个小蓝莓的酸甜味道。这个颜色的意思也和蓝莓一样是”神秘”。在美容领域里，这个颜色会给人安静的诱惑的感觉，而在一般的运用上，这个颜色太过于扩张化而给人骄傲的感觉。</p>
-<p><img src= "/img/loading.gif" data-src="%E8%93%9D%E8%89%B2.png" alt="蓝色"></p>
-</li>
-</ul>
-<p>（8）紫色：神秘、富贵、压抑。</p>
-<p>​       紫色是一个非常刺激性的颜色。单独使用容易给用户造成心理上的压力，通常会搭配其他颜色使用，紫色和蓝色搭配使用时可以创造出既理智又有些梦幻的色彩，紫色和粉色配合使用时，可以创造出非常美丽的女性化的色彩。</p>
-<p>​       在红色和蓝色之间的色谱是紫色的。紫色在色彩方面历史悠久。由于生产紫色颜料昂贵且困难的事实，在拜占庭帝国和神圣罗马帝国以及日本的贵族统治下，这种颜色常常被高贵和皇室血统所穿戴。从这时开始一直到1856年，紫色始终是象征着皇族和贵族的颜色。到了19世纪中期，每个人都变得更容易获得颜色。但是，紫色仍然是英国王室使用的颜色，并将永远保持皇室使用色的地位。</p>
-<p>​      紫色在色谱上的一个有趣的地方，正好在暖色系的红色和冷色系的蓝色之间，使它成为一种独特的颜色，根据具体的色调，它可以既凉爽又温暖。</p>
-<p>​      由此，不同的紫色可以有不同的效果。在光谱的最底端是淡紫色。这种苍白，柔和的色调代表女性气质，怀旧，浪漫和温柔。更生动的紫色代表皇室，贵族，奢侈和奢侈品。而深紫色的深色，如淡紫色，可以给人带来严肃性，专业性以及忧郁和悲伤的想法。</p>
-<p>紫色也是一种可以促进趣味，创造力和娱乐的颜色。正因为如此，它经常被用于一些糖果、巧克力这样的儿童品牌。</p>
-<p><img src= "/img/loading.gif" data-src="%E7%B4%AB%E8%89%B2.png" alt="紫色"></p>
-<p>（9）粉色：恋爱、可爱、温馨、浪漫。</p>
-<p>​        粉红色以同名花朵命名，是一种充满活力的女性色彩，有着悠久的历史。粉红色在艺术和文化方面没有其他颜色那样多产，因为红色和深红色的深浅往往是优选的。然而，在文艺复兴时期，粉红色颜料开始被更多地应用，从那里开始，颜色进入了时尚，艺术和设计的世界。</p>
-<p>​        粉红色在西方世界被广泛认为是女性的色彩。正因为如此，它被用来提高对乳腺癌的认识，应用于许多女性的产品，并被认为是女性主要使用和穿着的颜色。但是，情况并非总是如此。最初它被认为是适合小男孩的颜色，因为红色是男性的颜色，粉红色是妹妹的颜色。同样，在日本，粉红色是与男性气质相关的颜色，粉红色的樱花树被认为是战死的武士的象征。当谈到粉色，它柔和纯净，往往会代表少女时期、成长、爱情和温柔，而这些柔和的色调实际上被认为是增加女性的力量。</p>
-<p>​        粉色是一种恋爱的颜色。通常和爱情、浪漫相关，像是情人节七夕节等，都会使用粉色来设计。不同纯度明度的粉色适用于不同的场景，纯度较低，明度较高的浅粉色可以传达出娇嫩、甜美的感觉。和红色、橙色、黄色暖色调搭配，蓝色冷色调搭配都可以结合出很多不同的色彩效果。粉红色以各种方式被使用在品牌上。可以说，最常见的是主要迎合女性的品牌。</p>
-<p>（10）棕褐色：</p>
-<p>​       褐色不是一种容易被忽略的颜色，曾有研究表明是“公众最不喜欢的颜色”。褐色长期以来一直是下层阶级的象征，这种联系源自古罗马，当时只有野蛮人和社会底层的人才穿这种颜色。这也是方济会的僧侣所穿的颜色，作为贫穷和谦卑的象征。然而在现代文化中，褐色开始慢慢被应用起来。现在它象征着有机、自然、健康和品质，它是一种有许多积极联想的颜色。</p>
-<p>​       褐色不像其他色调一样在品牌中被广泛应用，但是在使用时，它能带来一些独特的效果。由于褐色是自然界常见的颜色，它已成为所有事物的象征，有机、真实或自然。我们可以看到这个品牌如Ugg和棉花品牌。路易威登标志性的棕色和霍利斯特（Hollister）经常使用浓郁的深棕色，表现出高品质和奢华的风格。深褐色的标志就是最好的例子。</p>
-<h1 id="二、色彩的搭配"><a href="#二、色彩的搭配" class="headerlink" title="二、色彩的搭配"></a>二、色彩的搭配</h1><h2 id="1-色相之间的关系"><a href="#1-色相之间的关系" class="headerlink" title="1.色相之间的关系"></a>1.色相之间的关系</h2><p>五大色相关系：同类色、邻近色、类似色、互补色、对比色</p>
-<p><img src= "/img/loading.gif" data-src="%E5%90%8C%E7%B1%BB%E8%89%B2.png" alt="同类色"></p>
-<p><img src= "/img/loading.gif" data-src="%E4%B8%B4%E8%BF%91%E8%89%B2.png" alt="临近色"></p>
-<p><img src= "/img/loading.gif" data-src="%E7%B1%BB%E4%BC%BC%E8%89%B2.png" alt="类似色"></p>
-<p><img src= "/img/loading.gif" data-src="%E4%BA%92%E8%A1%A5%E8%89%B2.png" alt="互补色"></p>
-<p><img src= "/img/loading.gif" data-src="%E5%AF%B9%E6%AF%94%E8%89%B2.png" alt="对比色"></p>
-<h2 id="2-从服装搭配看色彩搭配"><a href="#2-从服装搭配看色彩搭配" class="headerlink" title="2.从服装搭配看色彩搭配"></a>2.从服装搭配看色彩搭配</h2><p><img src= "/img/loading.gif" data-src="42166d224f4a20a4c46b6a68252c3824730ed0a9.jpeg" alt="42166d224f4a20a4c46b6a68252c3824730ed0a9"></p>
-<p><img src= "/img/loading.gif" data-src="2fdda3cc7cd98d10322ac806974118087aec9094.jpeg" alt="2fdda3cc7cd98d10322ac806974118087aec9094"></p>
-<p><img src= "/img/loading.gif" data-src="8ad4b31c8701a18b8c8f92f42a51a70e2938feae.jpeg" alt="8ad4b31c8701a18b8c8f92f42a51a70e2938feae"></p>
-<p><img src= "/img/loading.gif" data-src="9c16fdfaaf51f3de3da53e60229050193a297920.jpeg" alt="9c16fdfaaf51f3de3da53e60229050193a297920"></p>
-<p><img src= "/img/loading.gif" data-src="%E7%B2%89%E8%89%B2%E7%B3%BB.jpeg" alt="粉色系"></p>
-<p><img src= "/img/loading.gif" data-src="d31b0ef41bd5ad6efba20acb34b599ddb6fd3c38.jpeg" alt="d31b0ef41bd5ad6efba20acb34b599ddb6fd3c38"></p>
-<p><img src= "/img/loading.gif" data-src="f2deb48f8c5494ee7a8b8d3f5e7400fa98257ef5.jpeg" alt="f2deb48f8c5494ee7a8b8d3f5e7400fa98257ef5"></p>
-<p><img src= "/img/loading.gif" data-src="%E5%9B%BE3.jpg" alt="图3"></p>
-<p><img src= "/img/loading.gif" data-src="%E5%9B%BE5.jpg" alt="图5"></p>
-<h2 id="3-从大自然学习色彩搭配"><a href="#3-从大自然学习色彩搭配" class="headerlink" title="3.从大自然学习色彩搭配"></a>3.从大自然学习色彩搭配</h2><p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_1.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
-<p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_2.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
-<p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_3.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
-<p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_4.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
-<p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_5.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
-<h1 id="三、挑战眼力训练"><a href="#三、挑战眼力训练" class="headerlink" title="三、挑战眼力训练"></a>三、挑战眼力训练</h1><p><a href="http://game.ioxapp.com/eye-test/">http://game.ioxapp.com/eye-test/</a></p>
-<h1 id="四、服装类型"><a href="#四、服装类型" class="headerlink" title="四、服装类型"></a>四、服装类型</h1><p><img src= "/img/loading.gif" data-src="%E7%94%B7%E7%94%9F%E6%90%AD%E9%85%8D.png" alt="男生搭配"></p>
-<p><img src= "/img/loading.gif" data-src="%E9%A3%8E%E6%A0%BC.png" alt="风格"></p>
-]]></content>
-      <categories>
-        <category>设计</category>
-      </categories>
-      <tags>
-        <tag>设计</tag>
-        <tag>色彩</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>设计模式-提高代码质量</title>
     <url>/2020/12/14/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%8F%90%E9%AB%98%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F/</url>
     <content><![CDATA[<h1 id="代码质量-与-设计模式应用"><a href="#代码质量-与-设计模式应用" class="headerlink" title="代码质量 与 设计模式应用"></a>代码质量 与 设计模式应用</h1><h2 id="一、代码指标"><a href="#一、代码指标" class="headerlink" title="一、代码指标"></a>一、代码指标</h2><h3 id="1、健壮性"><a href="#1、健壮性" class="headerlink" title="1、健壮性"></a>1、健壮性</h3><blockquote>
@@ -6144,6 +6204,117 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <li>4、解耦模块</li>
 </ul>
 ]]></content>
+  </entry>
+  <entry>
+    <title>色彩理论与搭配</title>
+    <url>/2020/05/21/%E8%89%B2%E5%BD%A9%E7%90%86%E8%AE%BA%E4%B8%8E%E6%90%AD%E9%85%8D/</url>
+    <content><![CDATA[<h1 id="一、色彩的基础理论"><a href="#一、色彩的基础理论" class="headerlink" title="一、色彩的基础理论"></a>一、色彩的基础理论</h1><h2 id="1-色彩是什么"><a href="#1-色彩是什么" class="headerlink" title="1.色彩是什么"></a>1.色彩是什么</h2><p>​        色彩是人脑识别反射光的强弱和不同波长所产生的差异的感觉，与形状同为最基本的视觉反应之一。物体被光线照射，反射光被人脑接受，形成的色彩。总之，没有光照就不存在色彩，而且我们的日常生活中看到的所有色彩都不是物体本身的颜色。颜色本质上并不是物体本身固有的属性，或者更大胆地说，任何事物都是没有颜色的。我们之所以看到一个苹果是红色的，是因为它反射的光线进入我们眼睛，刺激我们的视觉神经，使我们产生了“红色”的知觉。</p>
+<p>​        光波是电磁波的一种，电磁波包括X射线、紫外线等很多种，其中人类能够看到的称之为“可见光”。根据可见光的电磁波波长由短到长的顺序，我们可以识别蓝紫色、紫色、青绿色、绿色、黄绿色、黄色、橙色、红色等色彩。光线中包含很多种色彩，但光线本身却是无色的。</p>
+<p>​        电磁波中人类肉眼可感知的波长范围被称为”可见光”，可见光的波长约为360-400nm，长波长约为760至830nm，如果波长超过可见光的波长范围（更长或者更短），就超出了人眼所能感知的范围了。</p>
+<p><img src= "/img/loading.gif" data-src="%E5%8F%AF%E8%A7%81%E5%85%89.jpg" alt="可见光"></p>
+<h2 id="2-色彩的三属性"><a href="#2-色彩的三属性" class="headerlink" title="2.色彩的三属性"></a>2.色彩的三属性</h2><p>色彩有三个属性：色相、明度、纯度。</p>
+<p>色相：色相是指色彩的相貌，就是我们通常说的各种颜色，如红、橙、黄、绿、青、蓝、紫等。色相是区别不同彩色的最佳标准，它和色彩的强弱及明暗都没有关系，只是纯粹表示色相相貌的差异。色相是色彩的首要特征，人眼区分色彩的方式就是通过色相区分。</p>
+<p><img src= "/img/loading.gif" data-src="%E8%89%B2%E7%9B%B8%E7%8E%AF.png" alt="色相环"></p>
+<p>明度：明度是指色彩的明亮程度，在任何一种色彩中添加白色，其明度都会升高。添加黑色，则其明度下降。因此，色彩中明度最高的是白色，明度最低的是黑色，白色-黑色的灰度，则是明度差异的表现。</p>
+<p>纯度：是指色彩的鲜艳程度，如新鲜水果的那种鲜艳，艳丽的色彩代表“高纯度”，树枝、泥土等天然染料的那种朴素、淡雅的色彩代表低纯度，同一色相中，纯度最高的色彩被称为纯色。在实际的配色过程中，通过调整纯度，可以使相同的色相形成不同的印象，一般来讲，色彩的纯度越高，越容易形成强劲有力、充满朝气的印象。而纯度越低，越容易形成成熟、稳重的印象。</p>
+<p><img src= "/img/loading.gif" data-src="HSB.png" alt="HSB"></p>
+<h2 id="3-有彩色和无彩色"><a href="#3-有彩色和无彩色" class="headerlink" title="3.有彩色和无彩色"></a>3.有彩色和无彩色</h2><p>​        色彩大体上可以分为“有彩色”和“无彩色”两类。无彩色是指白色、黑色、灰色中性色，这 三种色彩没有色相属性和纯度属性，只有明度一个属性的色彩。有彩色指的是拥有色彩三属性的全部色彩。</p>
+<p>​       无彩色中明度最高的色彩是白色，最低的是黑色。无彩色不含纯度属性，所以在和其他任何色彩搭配时都很和谐，合理恰当地运用无彩色，可以营造时尚和稳重的印象。但是也要注意避免陷入单调、乏味、呆板的印象。</p>
+<h2 id="4-色调"><a href="#4-色调" class="headerlink" title="4.色调"></a>4.色调</h2><p>色调是指色彩的浓淡、强弱程度，是通过色彩的明度和纯度综合表现色彩状态的概念。同一色调或者相近色调的色彩搭配，集中了纯度相近的色彩，呈现自然、和谐的效果。色调有很多种，常见的有接近唇色的鲜艳色调、接近白色的浅色调、接近黑色的暗色调等。即使色相不统一，只要色调保持一致的话，画面也能展现统一的配色效果。</p>
+<h2 id="5-色彩的情绪"><a href="#5-色彩的情绪" class="headerlink" title="5.色彩的情绪"></a>5.色彩的情绪</h2><p>冷暖色</p>
+<p><img src= "/img/loading.gif" data-src="%E5%86%B7%E6%9A%96%E8%89%B2.png" alt="冷暖色"></p>
+<p>​       暖色系的色彩可以使人感到温暖，冷色系的色彩可以使人感到寒冷。这一规律在哪儿都适用。但是具体色彩所代表的含义并不是全世界共通的，会因为文化、传统和风土人情而异。但是人类遗传基因中总是存在一些共通的物质，色彩带给人的感觉也不例外。</p>
+<p>​       色彩本身是没有情绪的，只是因为不同波长的光通过人的眼睛传到大脑，引起了人们不同的心理感受，所以色彩才有了情绪。每种颜色都会给人独特的心理感受，引起我们不同的情绪，因此在设计过程中色彩情绪是必须要考虑的一个重要元素。</p>
+<p>​       比如现在的一些知名品牌。人对于品牌商品的快速印象有90％来仅仅是来自于其色彩，品牌或者品牌商品的颜色是人们接触品牌最直接的视觉呈现，从某种意义上来说意义上来说，色彩是品牌在人们心中整合品牌识别度的第一步。</p>
+<p>​       从Hermès标志性的橙到Tiffany蓝，再到Supreme的红白，香奈儿的黑白，Christian Louboutin经典的红底高跟鞋，星巴克的绿色。色彩是品牌独特的DNA。再比如现在互联网中的京东红、淘宝橙。</p>
+<p>（1）黑色：沉稳、品质感、收敛、沉默、静寂、悲哀</p>
+<p>​        单独使用时黑色可以很容易吸引用户的注意力。和其他颜色搭配使用时可以很好地搭配组合，使用黑色的背景可以非常好的突出页面中的内容，容易出效果，应用场景非常广泛。</p>
+<p>​        除了白色之外，黑色是艺术中使用的第一种记录色，即旧石器时代所使用的颜色，它们使用木炭，烧过的骨头或各种粉碎的矿物质。纵观大部分历史，黑色一直是邪恶的象征（如希腊神话地狱），哀悼，悲伤和黑暗。然而，在古埃及，颜色具有保护和生育的积极象征。</p>
+<p>​       在不同的时代和不同的文化上，黑色在应用和观念上经历了许多变化。最终这种颜色被革命化，在时尚界占据显着不可替代的地位，迅速成为优雅和简约的象征。</p>
+<p><img src= "/img/loading.gif" data-src="%E9%BB%91%E8%89%B2.png" alt="黑色"></p>
+<p>（2）白色：干净、纯洁、简洁。</p>
+<p>白色是无色的，意思是没有色调的颜色。它已成为许多时代的艺术，历史和文化。事实上，它被记录为艺术中使用的第一种颜色，旧石器时代的艺术家使用白色方解石和粉笔作画。纵观大部分历史，白色已被选为善良、灵性、纯洁、虔诚和神圣的象征。古埃及诸神，希腊诸神，罗马女神都被描绘为身穿白色象征着他们的神圣。</p>
+<p>白色被认为是黑色的象征性的反面，两种颜色一起形成善恶的象征，日夜，明暗等。在西方文化中，白色是婚纱礼服的典型色彩，象征着纯真和纯洁，而在许多亚洲文化中，白色是哀悼，悲伤和失落的颜色。 白色也是和平的象征，在战争中白道色旗帜是投降的标志。</p>
+<p><img src= "/img/loading.gif" data-src="%E7%99%BD%E8%89%B2.png" alt="白色"></p>
+<p>（3）红色：红色是彰显热情的色彩，给人留下强烈的印象，刺激人的情感。红色的特点：热情、躁动、危险、警告。页    面设计中可以在删除提醒、禁止操作功能时使用。</p>
+<p>​        信号灯的红色、唇膏的红色、广告传单标题价格的红色以及交通标示的红色等都是纯度最高，色彩鲜明的红色，是最能刺激人类情感的色彩，具有使人兴奋、脉搏跳动加快的功能。（心脏不好的人最好不要使用红色的窗帘或者壁纸）高纯度红色的特征基本不受形状、材质的影响。面积越大、视觉冲击效果越强。红色作为暖色调，也代表了食材的新鲜和美味可口：比如草莓、樱桃等。</p>
+<p><img src= "/img/loading.gif" data-src="%E7%BA%A2%E8%89%B2.png" alt="红色"></p>
+<p>（4）橙色：温暖、活泼、年轻。</p>
+<p>​       红色和黄色之间的颜色就是橙色。既不会像红色那样躁动，又不会像黄色那么灿烂。橙色是欢快活泼的光辉色彩，是暖色系中最温暖的色，它使人联想到金色的秋天，丰硕的果实，是一种富足、快乐而幸福的颜色。</p>
+<p>​     橙色稍稍混入黑色或白色，会变成一种稳重、含蓄又明快的暖色，但混入较多的黑色，就成为一种烧焦的色；橙色中加入较多的白色会带来一种甜腻的感觉。</p>
+<p>​     橙色明视度高，在工业安全用色中，橙色即是警戒色，如火车头，登山服装，背包，救生衣等。橙色可作餐厅的布置色，据说在餐厅里多用橙色可以增加食欲。</p>
+<p>​     橙色与浅绿色和浅蓝色相配，可以构成最响亮、最欢乐的色彩。橙色与淡黄色相配有一种很舒服的过渡感。橙色一般不能与紫色或深蓝色相配，这将给人一种不干净、晦涩的感觉。橙色有不同的色调和深浅，每种都有不同的含义和效果。例如，轻柔的橙色色被认为是甜美，善良和友好的，而更强烈，充满活力的橙色被视为活力，能量和鼓励的代表。比如k12教育中，经常被用作主色调或者辅助色。</p>
+<p><img src= "/img/loading.gif" data-src="%E6%A9%99%E8%89%B2.png" alt="橙色"></p>
+<p>（5）黄色：阳光、辉煌、醒目、高贵。</p>
+<p>​       由于与黄金密切相关，颜色被认为是永恒的和坚不可摧的。黄色与艺术世界有着悠久的关系，梵高等艺术家将其作为标志性的颜色来表达温暖与快乐。黄色是一种能根据色彩和应用而体现出许多想法的颜色。如前所述，它可以象征幸福，阳光，正能量和喜悦。但是，它也可以代表懦弱，背叛，恐怖和疾病。例如有毒有害的标示、医院的垃圾桶。此外，由于黄色是光谱中最明显的颜色，通常用于紧急和警示标志，服装和应用，如交通标志上的黄灯，工程用的大型机器，学生用雨衣，雨鞋等，都使用黄色。如果你需要快速引起注意，可以使用一些黄色。在日本，黄色被认为代表勇气，在墨西哥的某些地区，某些色调可以被认为代表死亡。</p>
+<p>当涉及到品牌，黄色可以用来表示一系列的想法。例如，它常常用来表示速度和效率，正如我们可以看到在法拉利和斯普林特这样的品牌中体现的。</p>
+<p><img src= "/img/loading.gif" data-src="%E9%BB%84%E8%89%B2.png" alt="黄色"></p>
+<p>（6）绿色：健康、大自然、清新、环保、安全。</p>
+<p>​       绿色是一种与自然，环境和与大自然有关的所有事物的紧密联系而又独特的色彩。现在非常提倡的环保生活都是采用绿色为主色调，健康无污染。代表着春天，在策划设计春天相关事物活动，可以使用绿色为主色进行设计。绿色是有着安全属性的，在支付、保障方面通常是应用很多的，与红色正好是相反的作用。</p>
+<p>在西方国家，绿色被看作是运气、新鲜、嫉妒和贪婪。在中国和日本，绿色被视为新生，青春和希望的颜色。</p>
+<p>​       绿色中渗入黄色为黄绿色，它单纯、年轻；绿色中渗入蓝色为蓝绿色，它清秀、豁达。含灰的绿色，仍是一种宁静、平和的色彩，就像暮色中的森林或晨雾中的田野。深绿色和浅绿色相配有一种和谐、安宁的感觉；绿色与白色相配，显得很年轻；浅绿色与黑色相配，显得美丽、大方。绿色与浅红色相配，象征着春天的到来。</p>
+<p>（7）蓝色：科技、纯净、清爽、深邃、放松、忧郁</p>
+<p>​       蓝色是三原色之一。提到蓝色，往往想到的都是天空和大海。蓝色是永恒的象征，它是最冷的色彩，另外，蓝色也是科技宇宙领域的专属颜色，是理智、效率的代名词，随处可见的企业官网、VI、软件、宣传物料等。像是心理治疗室都是使用蓝色系的环境，就是给用户提供一个放松的环境。</p>
+<ul>
+<li><p>天蓝：天蓝最浅的蓝，几乎不含有红的痕迹，好像天空的清冷。代表”初始”的颜色，是生物在年轻时的代表(成熟色是绿色)。在心理暗示来说，天蓝和粉红色一 样，都是”安抚色”，是令人安静并放松的颜色。</p>
+</li>
+<li><p>湖蓝：湖蓝深邃的蓝色，却又带着跳脱的亮光，美丽的像是沉浸在无尽的静谧中的湖水。代表着”等待” 。在颜色的暗示来说，是禁语的颜色，通常在充斥这样颜色的地方，人们的对话都会减少。</p>
+</li>
+<li><p>宝石蓝(宝蓝)：在传说中希望女神的原型就是一颗蓝色的钻石。所以宝石一样的靓丽幽蓝就成了”希望”的代名词。在心理上，宝石蓝和紫色一样，都会给人高贵的感觉，并且引起人们的注意。右图便是著名的宝蓝海洋。</p>
+</li>
+<li><p>孔雀蓝：是蓝色中最神秘的一种，几乎没有人能确定它正确的色值所在，是模糊色的一种，不同的人会对它有不同的诠释，代表的意义是”隐匿” 。在印刷领域里，这种颜色会和设想分开很大的误差。在精神领域里，这个颜色是遥不可攀的神界的颜色，是除了金银以外的一个特殊色。</p>
+</li>
+<li><p>蓝(正蓝)：是”忧郁”的代名词。平分蓝色系列的青色和红色在这里完美的统一了数值，展现出夜空的微微紫色的深蓝。在心理学上，深蓝会给一些容易接受暗示的人以压迫感，但是有会让保有乐观态度的人产生放松的心态。</p>
+</li>
+<li><p>蓝紫：就是蓝莓的那种颜色，喜欢浆果的人看到这个颜色就会想到森林的掩映中一个个小蓝莓的酸甜味道。这个颜色的意思也和蓝莓一样是”神秘”。在美容领域里，这个颜色会给人安静的诱惑的感觉，而在一般的运用上，这个颜色太过于扩张化而给人骄傲的感觉。</p>
+<p><img src= "/img/loading.gif" data-src="%E8%93%9D%E8%89%B2.png" alt="蓝色"></p>
+</li>
+</ul>
+<p>（8）紫色：神秘、富贵、压抑。</p>
+<p>​       紫色是一个非常刺激性的颜色。单独使用容易给用户造成心理上的压力，通常会搭配其他颜色使用，紫色和蓝色搭配使用时可以创造出既理智又有些梦幻的色彩，紫色和粉色配合使用时，可以创造出非常美丽的女性化的色彩。</p>
+<p>​       在红色和蓝色之间的色谱是紫色的。紫色在色彩方面历史悠久。由于生产紫色颜料昂贵且困难的事实，在拜占庭帝国和神圣罗马帝国以及日本的贵族统治下，这种颜色常常被高贵和皇室血统所穿戴。从这时开始一直到1856年，紫色始终是象征着皇族和贵族的颜色。到了19世纪中期，每个人都变得更容易获得颜色。但是，紫色仍然是英国王室使用的颜色，并将永远保持皇室使用色的地位。</p>
+<p>​      紫色在色谱上的一个有趣的地方，正好在暖色系的红色和冷色系的蓝色之间，使它成为一种独特的颜色，根据具体的色调，它可以既凉爽又温暖。</p>
+<p>​      由此，不同的紫色可以有不同的效果。在光谱的最底端是淡紫色。这种苍白，柔和的色调代表女性气质，怀旧，浪漫和温柔。更生动的紫色代表皇室，贵族，奢侈和奢侈品。而深紫色的深色，如淡紫色，可以给人带来严肃性，专业性以及忧郁和悲伤的想法。</p>
+<p>紫色也是一种可以促进趣味，创造力和娱乐的颜色。正因为如此，它经常被用于一些糖果、巧克力这样的儿童品牌。</p>
+<p><img src= "/img/loading.gif" data-src="%E7%B4%AB%E8%89%B2.png" alt="紫色"></p>
+<p>（9）粉色：恋爱、可爱、温馨、浪漫。</p>
+<p>​        粉红色以同名花朵命名，是一种充满活力的女性色彩，有着悠久的历史。粉红色在艺术和文化方面没有其他颜色那样多产，因为红色和深红色的深浅往往是优选的。然而，在文艺复兴时期，粉红色颜料开始被更多地应用，从那里开始，颜色进入了时尚，艺术和设计的世界。</p>
+<p>​        粉红色在西方世界被广泛认为是女性的色彩。正因为如此，它被用来提高对乳腺癌的认识，应用于许多女性的产品，并被认为是女性主要使用和穿着的颜色。但是，情况并非总是如此。最初它被认为是适合小男孩的颜色，因为红色是男性的颜色，粉红色是妹妹的颜色。同样，在日本，粉红色是与男性气质相关的颜色，粉红色的樱花树被认为是战死的武士的象征。当谈到粉色，它柔和纯净，往往会代表少女时期、成长、爱情和温柔，而这些柔和的色调实际上被认为是增加女性的力量。</p>
+<p>​        粉色是一种恋爱的颜色。通常和爱情、浪漫相关，像是情人节七夕节等，都会使用粉色来设计。不同纯度明度的粉色适用于不同的场景，纯度较低，明度较高的浅粉色可以传达出娇嫩、甜美的感觉。和红色、橙色、黄色暖色调搭配，蓝色冷色调搭配都可以结合出很多不同的色彩效果。粉红色以各种方式被使用在品牌上。可以说，最常见的是主要迎合女性的品牌。</p>
+<p>（10）棕褐色：</p>
+<p>​       褐色不是一种容易被忽略的颜色，曾有研究表明是“公众最不喜欢的颜色”。褐色长期以来一直是下层阶级的象征，这种联系源自古罗马，当时只有野蛮人和社会底层的人才穿这种颜色。这也是方济会的僧侣所穿的颜色，作为贫穷和谦卑的象征。然而在现代文化中，褐色开始慢慢被应用起来。现在它象征着有机、自然、健康和品质，它是一种有许多积极联想的颜色。</p>
+<p>​       褐色不像其他色调一样在品牌中被广泛应用，但是在使用时，它能带来一些独特的效果。由于褐色是自然界常见的颜色，它已成为所有事物的象征，有机、真实或自然。我们可以看到这个品牌如Ugg和棉花品牌。路易威登标志性的棕色和霍利斯特（Hollister）经常使用浓郁的深棕色，表现出高品质和奢华的风格。深褐色的标志就是最好的例子。</p>
+<h1 id="二、色彩的搭配"><a href="#二、色彩的搭配" class="headerlink" title="二、色彩的搭配"></a>二、色彩的搭配</h1><h2 id="1-色相之间的关系"><a href="#1-色相之间的关系" class="headerlink" title="1.色相之间的关系"></a>1.色相之间的关系</h2><p>五大色相关系：同类色、邻近色、类似色、互补色、对比色</p>
+<p><img src= "/img/loading.gif" data-src="%E5%90%8C%E7%B1%BB%E8%89%B2.png" alt="同类色"></p>
+<p><img src= "/img/loading.gif" data-src="%E4%B8%B4%E8%BF%91%E8%89%B2.png" alt="临近色"></p>
+<p><img src= "/img/loading.gif" data-src="%E7%B1%BB%E4%BC%BC%E8%89%B2.png" alt="类似色"></p>
+<p><img src= "/img/loading.gif" data-src="%E4%BA%92%E8%A1%A5%E8%89%B2.png" alt="互补色"></p>
+<p><img src= "/img/loading.gif" data-src="%E5%AF%B9%E6%AF%94%E8%89%B2.png" alt="对比色"></p>
+<h2 id="2-从服装搭配看色彩搭配"><a href="#2-从服装搭配看色彩搭配" class="headerlink" title="2.从服装搭配看色彩搭配"></a>2.从服装搭配看色彩搭配</h2><p><img src= "/img/loading.gif" data-src="42166d224f4a20a4c46b6a68252c3824730ed0a9.jpeg" alt="42166d224f4a20a4c46b6a68252c3824730ed0a9"></p>
+<p><img src= "/img/loading.gif" data-src="2fdda3cc7cd98d10322ac806974118087aec9094.jpeg" alt="2fdda3cc7cd98d10322ac806974118087aec9094"></p>
+<p><img src= "/img/loading.gif" data-src="8ad4b31c8701a18b8c8f92f42a51a70e2938feae.jpeg" alt="8ad4b31c8701a18b8c8f92f42a51a70e2938feae"></p>
+<p><img src= "/img/loading.gif" data-src="9c16fdfaaf51f3de3da53e60229050193a297920.jpeg" alt="9c16fdfaaf51f3de3da53e60229050193a297920"></p>
+<p><img src= "/img/loading.gif" data-src="%E7%B2%89%E8%89%B2%E7%B3%BB.jpeg" alt="粉色系"></p>
+<p><img src= "/img/loading.gif" data-src="d31b0ef41bd5ad6efba20acb34b599ddb6fd3c38.jpeg" alt="d31b0ef41bd5ad6efba20acb34b599ddb6fd3c38"></p>
+<p><img src= "/img/loading.gif" data-src="f2deb48f8c5494ee7a8b8d3f5e7400fa98257ef5.jpeg" alt="f2deb48f8c5494ee7a8b8d3f5e7400fa98257ef5"></p>
+<p><img src= "/img/loading.gif" data-src="%E5%9B%BE3.jpg" alt="图3"></p>
+<p><img src= "/img/loading.gif" data-src="%E5%9B%BE5.jpg" alt="图5"></p>
+<h2 id="3-从大自然学习色彩搭配"><a href="#3-从大自然学习色彩搭配" class="headerlink" title="3.从大自然学习色彩搭配"></a>3.从大自然学习色彩搭配</h2><p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_1.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
+<p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_2.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
+<p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_3.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
+<p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_4.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
+<p><img src= "/img/loading.gif" data-src="%E5%A4%A7%E8%87%AA%E7%84%B6%E4%B8%AD%E5%AD%A6%E4%B9%A0%E9%85%8D%E8%89%B2_5.jpg" alt="写给新手的色彩搭配快速入门指南  优设网 - UISDC"></p>
+<h1 id="三、挑战眼力训练"><a href="#三、挑战眼力训练" class="headerlink" title="三、挑战眼力训练"></a>三、挑战眼力训练</h1><p><a href="http://game.ioxapp.com/eye-test/">http://game.ioxapp.com/eye-test/</a></p>
+<h1 id="四、服装类型"><a href="#四、服装类型" class="headerlink" title="四、服装类型"></a>四、服装类型</h1><p><img src= "/img/loading.gif" data-src="%E7%94%B7%E7%94%9F%E6%90%AD%E9%85%8D.png" alt="男生搭配"></p>
+<p><img src= "/img/loading.gif" data-src="%E9%A3%8E%E6%A0%BC.png" alt="风格"></p>
+]]></content>
+      <categories>
+        <category>设计</category>
+      </categories>
+      <tags>
+        <tag>设计</tag>
+        <tag>色彩</tag>
+      </tags>
   </entry>
   <entry>
     <title>ThreadPoolExecutor源码解析</title>
