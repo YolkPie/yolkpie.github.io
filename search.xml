@@ -3740,7 +3740,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
   <entry>
     <title>浅拷贝vs深拷贝</title>
     <url>/2021/03/10/%E6%B5%85%E6%8B%B7%E8%B4%9Dvs%E6%B7%B1%E6%8B%B7%E8%B4%9D/</url>
-    <content><![CDATA[<h1 id="浅拷贝vs深拷贝"><a href="#浅拷贝vs深拷贝" class="headerlink" title="浅拷贝vs深拷贝"></a>浅拷贝vs深拷贝</h1><p>本文主要讲一下javascript的基本数据类型以及一些堆和栈的知识和什么是深拷贝、浅拷贝，深拷贝与浅拷贝的区别，以及怎么进行深拷贝和怎么进行浅拷贝。</p>
+    <content><![CDATA[<h2 id="浅拷贝vs深拷贝"><a href="#浅拷贝vs深拷贝" class="headerlink" title="浅拷贝vs深拷贝"></a>浅拷贝vs深拷贝</h2><p>本文主要讲一下javascript的基本数据类型以及一些堆和栈的知识和什么是深拷贝、浅拷贝，深拷贝与浅拷贝的区别，以及怎么进行深拷贝和怎么进行浅拷贝。</p>
 <h3 id="堆和栈"><a href="#堆和栈" class="headerlink" title="堆和栈"></a>堆和栈</h3><p>深拷贝和浅拷贝的主要区别在内存中的存储类型不同。堆和栈都是内存中划分出来用来存储的区域。栈（stack）为自动分配的内存空间，它由系统自动释放；而堆（heap）则是动态分配的内存，大小不定也不会自动释放。</p>
 <h3 id="ECMAScript的数据类型"><a href="#ECMAScript的数据类型" class="headerlink" title="ECMAScript的数据类型"></a>ECMAScript的数据类型</h3><p>首先先说一下ECMAScript的数据类型。</p>
 <h4 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h4><ul>
