@@ -2847,7 +2847,7 @@ renderWithHooks()中有一个Component()方法，用来执行App()，此时又�
       </tags>
   </entry>
   <entry>
-    <title>代码重构之重构API</title>
+    <title>代码重构之处理继承关系</title>
     <url>/2021/03/10/%E4%BB%A3%E7%A0%81%E9%87%8D%E6%9E%84%E4%B9%8B%E5%A4%84%E7%90%86%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB/</url>
     <content><![CDATA[<h4 id="函数上移"><a href="#函数上移" class="headerlink" title="函数上移"></a>函数上移</h4><blockquote>
 <p>动机：如果某个函数在各个子类中的函数体都相同，则将函数上移</p>
