@@ -3738,6 +3738,64 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       </tags>
   </entry>
   <entry>
+    <title></title>
+    <url>/2021/03/10/%E6%B5%85%E6%8B%B7%E8%B4%9Dvs%E6%B7%B1%E6%8B%B7%E8%B4%9D/</url>
+    <content><![CDATA[<h1 id="浅拷贝vs深拷贝"><a href="#浅拷贝vs深拷贝" class="headerlink" title="浅拷贝vs深拷贝"></a>浅拷贝vs深拷贝</h1><p>本文主要讲一下javascript的基本数据类型以及一些堆和栈的知识和什么是深拷贝、浅拷贝，深拷贝与浅拷贝的区别，以及怎么进行深拷贝和怎么进行浅拷贝。</p>
+<h2 id="堆和栈"><a href="#堆和栈" class="headerlink" title="堆和栈"></a>堆和栈</h2><p>深拷贝和浅拷贝的主要区别在内存中的存储类型不同。堆和栈都是内存中划分出来用来存储的区域。栈（stack）为自动分配的内存空间，它由系统自动释放；而堆（heap）则是动态分配的内存，大小不定也不会自动释放。</p>
+<h2 id="ECMAScript的数据类型"><a href="#ECMAScript的数据类型" class="headerlink" title="ECMAScript的数据类型"></a>ECMAScript的数据类型</h2><p>首先先说一下ECMAScript的数据类型。</p>
+<h3 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h3><ul>
+<li><p>undefined</p>
+</li>
+<li><p>boolean</p>
+</li>
+<li><p>number</p>
+</li>
+<li><p>string</p>
+</li>
+<li><p>null</p>
+<p>基本数据类型存放在栈中。存放在栈内存中的简单数据段，数据大小确定，内存空间大小可以分配，是直接按值存放的，所以可以直接访问。</p>
+</li>
+</ul>
+<h4 id="基本数据类型值不可变"><a href="#基本数据类型值不可变" class="headerlink" title="基本数据类型值不可变"></a>基本数据类型值不可变</h4><p>js中的原始值（undefined、null、布尔值、数字和字符串）与对象（包括数组和函数）有着根本区别。原始值是不可更改的。</p>
+<p>基本数据类型的值是不可变的，动态修改了基本数据类型的值，它的原始值也是不会改变的，例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let str &#x3D; &quot;abc&quot;;</span><br><span class="line">console.log(str[1]&#x3D;&quot;f&quot;);    &#x2F;&#x2F; f</span><br><span class="line">console.log(str);           &#x2F;&#x2F; abc</span><br></pre></td></tr></table></figure>
+
+<h4 id="基本类型的比较是值的比较"><a href="#基本类型的比较是值的比较" class="headerlink" title="基本类型的比较是值的比较"></a>基本类型的比较是值的比较</h4><p>基本类型的比较是值的比较，只要它们的值相等就认为他们是相等的，例如:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let a &#x3D; 1, b &#x3D; 1;</span><br><span class="line">console.log(a &#x3D;&#x3D;&#x3D; b);  &#x2F;&#x2F;true</span><br></pre></td></tr></table></figure>
+
+<h3 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h3><h4 id="引用类型存放在堆中"><a href="#引用类型存放在堆中" class="headerlink" title="引用类型存放在堆中"></a>引用类型存放在堆中</h4><p>引用类型（object）是存放在堆内存中的，变量实际上是一个存放在栈内存的指针，这个指针指向堆内存中的地址。每个空间大小不一样，要根据情况开进行特定的分配，例如:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let person1 &#x3D; &#123;name:&#39;jozo&#39;&#125;;</span><br><span class="line">let person2 &#x3D; &#123;name:&#39;xiaom&#39;&#125;;</span><br><span class="line">let person3 &#x3D; &#123;name:&#39;xiaoq&#39;&#125;;</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/166090/31/5915/69760/601fd463E65160a6e/6f84d4dbcd475154.jpg"></p>
+<h4 id="引用类型值可变"><a href="#引用类型值可变" class="headerlink" title="引用类型值可变"></a>引用类型值可变</h4><p>例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a &#x3D; [1,2,3];</span><br><span class="line">a[1] &#x3D; 5;</span><br><span class="line">console.log(a[1]); &#x2F;&#x2F; 5</span><br></pre></td></tr></table></figure>
+<h4 id="引用类型的比较是引用的比较"><a href="#引用类型的比较是引用的比较" class="headerlink" title="引用类型的比较是引用的比较"></a>引用类型的比较是引用的比较</h4><p>所以每次我们对 js 中的引用类型进行操作的时候，都是操作其对象的引用（保存在栈内存中的指针），所以比较两个引用类型，是看其的引用是否指向同一个对象。例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let a &#x3D; [1,2,3], b &#x3D; [1,2,3];</span><br><span class="line">console.log(a &#x3D;&#x3D;&#x3D; b);  &#x2F;&#x2F;false</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/153245/23/18034/51108/601fd528E492b7b56/6d14b845e7c8f7e4.jpg"></p>
+<h3 id="传值与传址"><a href="#传值与传址" class="headerlink" title="传值与传址"></a>传值与传址</h3><p>了解了基本数据类型与引用类型的区别之后，我们就应该能明白传值与传址的区别了。在进行赋值操作的时候，基本数据类型的赋值（=）是在内存中新开辟一段栈内存，然后再把再将值赋值到新的栈中。例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let a &#x3D; 10, b &#x3D; a;</span><br><span class="line">a ++ ;</span><br><span class="line">console.log(a); &#x2F;&#x2F; 11</span><br><span class="line">console.log(b); &#x2F;&#x2F; 10</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/161856/11/5971/48056/601fd5d5Eefd12f79/bcdf1d5896d925f0.jpg"></p>
+<p>而引用类型的赋值是传址。只是改变指针的指向，例如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a &#x3D; &#123;&#125;; &#x2F;&#x2F; a保存了一个空对象的实例</span><br><span class="line">var b &#x3D; a;  &#x2F;&#x2F; a和b都指向了这个空对象</span><br><span class="line"></span><br><span class="line">a.name &#x3D; &#39;jozo&#39;;</span><br><span class="line">console.log(a.name); &#x2F;&#x2F; &#39;jozo&#39;</span><br><span class="line">console.log(b.name); &#x2F;&#x2F; &#39;jozo&#39;</span><br><span class="line"></span><br><span class="line">b.age &#x3D; 22;</span><br><span class="line">console.log(b.age);&#x2F;&#x2F; 22</span><br><span class="line">console.log(a.age);&#x2F;&#x2F; 22</span><br><span class="line"></span><br><span class="line">console.log(a &#x3D;&#x3D; b);&#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/166818/18/5850/88832/601fd6a6E0e87f529/4bcaa52d018dd200.jpg"></p>
+<h3 id="浅拷贝"><a href="#浅拷贝" class="headerlink" title="浅拷贝"></a>浅拷贝</h3><h4 id="赋值（-）和浅拷贝的区别"><a href="#赋值（-）和浅拷贝的区别" class="headerlink" title="赋值（=）和浅拷贝的区别"></a>赋值（=）和浅拷贝的区别</h4><p>以下例说明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var obj1 &#x3D; &#123;</span><br><span class="line">    &#39;name&#39; : &#39;zhangsan&#39;,</span><br><span class="line">    &#39;age&#39; :  &#39;18&#39;,</span><br><span class="line">    &#39;language&#39; : [1,[2,3],[4,5]],</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">var obj2 &#x3D; obj1;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var obj3 &#x3D; shallowCopy(obj1);</span><br><span class="line">function shallowCopy(src) &#123;</span><br><span class="line">    var dst &#x3D; &#123;&#125;;</span><br><span class="line">    for (var prop in src) &#123;</span><br><span class="line">        if (src.hasOwnProperty(prop)) &#123;</span><br><span class="line">            dst[prop] &#x3D; src[prop];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return dst;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">obj2.name &#x3D; &quot;lisi&quot;;</span><br><span class="line">obj3.age &#x3D; &quot;20&quot;;</span><br><span class="line"></span><br><span class="line">obj2.language[1] &#x3D; [&quot;二&quot;,&quot;三&quot;];</span><br><span class="line">obj3.language[2] &#x3D; [&quot;四&quot;,&quot;五&quot;];</span><br><span class="line"></span><br><span class="line">console.log(obj1);  </span><br><span class="line">&#x2F;&#x2F;obj1 &#x3D; &#123;</span><br><span class="line">&#x2F;&#x2F;    &#39;name&#39; : &#39;lisi&#39;,</span><br><span class="line">&#x2F;&#x2F;    &#39;age&#39; :  &#39;18&#39;,</span><br><span class="line">&#x2F;&#x2F;    &#39;language&#39; : [1,[&quot;二&quot;,&quot;三&quot;],[&quot;四&quot;,&quot;五&quot;]],</span><br><span class="line">&#x2F;&#x2F;&#125;;</span><br><span class="line"></span><br><span class="line">console.log(obj2);</span><br><span class="line">&#x2F;&#x2F;obj2 &#x3D; &#123;</span><br><span class="line">&#x2F;&#x2F;    &#39;name&#39; : &#39;lisi&#39;,</span><br><span class="line">&#x2F;&#x2F;    &#39;age&#39; :  &#39;18&#39;,</span><br><span class="line">&#x2F;&#x2F;    &#39;language&#39; : [1,[&quot;二&quot;,&quot;三&quot;],[&quot;四&quot;,&quot;五&quot;]],</span><br><span class="line">&#x2F;&#x2F;&#125;;</span><br><span class="line"></span><br><span class="line">console.log(obj3);</span><br><span class="line">&#x2F;&#x2F;obj3 &#x3D; &#123;</span><br><span class="line">&#x2F;&#x2F;    &#39;name&#39; : &#39;zhangsan&#39;,</span><br><span class="line">&#x2F;&#x2F;    &#39;age&#39; :  &#39;20&#39;,</span><br><span class="line">&#x2F;&#x2F;    &#39;language&#39; : [1,[&quot;二&quot;,&quot;三&quot;],[&quot;四&quot;,&quot;五&quot;]],</span><br><span class="line">&#x2F;&#x2F;&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>先定义个一个原始的对象 obj1，然后使用赋值得到第二个对象 obj2，然后通过浅拷贝，将 obj1 里面的属性都赋值到 obj3 中。也就是说：</p>
+<p>obj1：原始数据<br>obj2：赋值操作得到<br>obj3：浅拷贝得到</p>
+<p>然后我们改变 obj2 的 name 属性和 obj3 的 name 属性，可以看到，改变赋值得到的对象 obj2 同时也会改变原始值 obj1，而改变浅拷贝得到的的 obj3 则不会改变原始对象 obj1。这就可以说明赋值得到的对象 obj2 只是将指针改变，其引用的仍然是同一个对象，而浅拷贝得到的的 obj3 则是重新创建了新对象。<br>然而，我们接下来来看一下改变引用类型会是什么情况呢，我又改变了赋值得到的对象 obj2 和浅拷贝得到的 obj3 中的 language 属性的第二个值和第三个值（language 是一个数组，也就是引用类型）。结果见输出，可以看出来，无论是修改赋值得到的对象 obj2 和浅拷贝得到的 obj3 都会改变原始数据。<br>这是因为浅拷贝只复制一层对象的属性，并不包括对象里面的为引用类型的数据。所以就会出现改变浅拷贝得到的 obj3 中的引用类型时，会使原始数据得到改变。</p>
+<p>深拷贝：将 B 对象拷贝到 A 对象中，包括 B 里面的子对象，</p>
+<p>浅拷贝：将 B 对象拷贝到 A 对象中，但不包括 B 里面的子对象<br><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/153006/4/18335/127130/601fd8aaE7f1845aa/d855d9ba0b486d45.jpg"></p>
+<h3 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h3><p>深拷贝就是对对象以及对象的所有子对象进行拷贝。<br>怎么进行深拷贝呢？<br>思路就是递归调用刚刚的浅拷贝，把所有属于对象的属性类型都遍历赋给另一个对象即可。</p>
+<h4 id="扩展运算符是深拷贝还是浅拷贝"><a href="#扩展运算符是深拷贝还是浅拷贝" class="headerlink" title="扩展运算符是深拷贝还是浅拷贝"></a>扩展运算符是深拷贝还是浅拷贝</h4><p>以下例说明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let arr &#x3D; [1, 2, 3, 4, 5, 6];</span><br><span class="line">let arr1 &#x3D; [...arr];</span><br><span class="line">arr1.push(7);</span><br><span class="line">console.log(arr); &#x2F;&#x2F;[1, 2, 3, 4, 5, 6]</span><br><span class="line">console.log(arr1); &#x2F;&#x2F;[1, 2, 3, 4, 5, 6, 7]</span><br></pre></td></tr></table></figure>
+<p>当数组是一维数组时，扩展运算符可以进行完全深拷贝，改变拷贝后数组的值并不会影响拷贝源的值。但是，当数组为多维时：例如</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let arr &#x3D; [1, 2, 3, 4, 5, 6, [1, 2, 3]];</span><br><span class="line">let arr1 &#x3D; [...arr];</span><br><span class="line">arr1.push(7);</span><br><span class="line">arr1[arr1.length - 2][0] &#x3D; 100;</span><br><span class="line">console.log(arr); &#x2F;&#x2F;[1, 2, 3, 4, 5, 6,[100, 2, 3]]</span><br><span class="line">console.log(arr1); &#x2F;&#x2F;[1, 2, 3, 4, 5, 6, [100, 2, 3],7]</span><br></pre></td></tr></table></figure>
+<p>由此可见，不难发现当改变拷贝后数组中第二层数组的值时，则拷贝前数组第二层数组的值也跟着改变了。</p>
+<p>结论：扩展运算符，如果只是一层数组或是对象，其元素只是简单类型的元素，那么属于深拷贝（就是一层拷贝，可以理解为深拷贝吧！）<br>如果数组或对象中的元素是引用类型的元素，那么就是浅拷贝。</p>
+<h4 id="JSON-parse-JSON-stringfy-xxx-来实现深拷贝"><a href="#JSON-parse-JSON-stringfy-xxx-来实现深拷贝" class="headerlink" title="JSON.parse(JSON.stringfy(xxx))来实现深拷贝"></a>JSON.parse(JSON.stringfy(xxx))来实现深拷贝</h4><p>利用JSON.parse(JSON.stringfy(xxx))也可实现深拷贝<br><code>注意：JSON.parse(JSON.stringfy(xxx))的方法，如果变量中含有Promise对象，则不可以使用该方法。</code></p>
+]]></content>
+  </entry>
+  <entry>
     <title>浏览器缓存</title>
     <url>/2021/02/23/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/</url>
     <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p> 说到浏览器缓存，一些前端同学可能会先联想localStorage和sessionStorage，但它们是完全不同的概念。localStorage或sessionStorage是浏览器本地存储技术，是用来存储客户端临时信息的；浏览器缓存是，浏览器将通过HTTP获取的网路资源保存到本地，下次再请求相同的url时，根据当前的缓存机制，来决定是使用本地缓存的资源还是向服务器发送网络请求。</p>
