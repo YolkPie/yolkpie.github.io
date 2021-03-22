@@ -1,6 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>After Effects各功能基础认识</title>
+    <url>/2021/03/22/After%20Effects%E5%90%84%E5%8A%9F%E8%83%BD%E5%9F%BA%E7%A1%80%E8%AE%A4%E8%AF%86/</url>
+    <content><![CDATA[<h2 id="学习AE的必要性"><a href="#学习AE的必要性" class="headerlink" title="学习AE的必要性"></a>学习AE的必要性</h2><p>UI是基于静态页面来设计的，页面之间通过跳转切换。但是在设计过程中，设计师很重视单页的视觉效果，却经常忽略了对页面间跳转的处理。页面增加动效可以增强产品的趣味性和氛围。</p>
+<p><strong>动效的重要性：</strong></p>
+<p><strong>功能性：</strong>动效能够在一定层面上解决用户的需求，比如优化用户对界面的感知，引起用户注意，提供用户操作后的视觉反馈可以帮助用户为下一步操作做准备；</p>
+<p><strong>物理性：</strong>让UI符合空间逻辑并根据物理定律制作动画，定义屏幕和UI设计元件之间的空间相对关系。当设计时考虑到重力、惯性、速度和刚性等因素，动效就会显得相对真实；</p>
+<p><strong>趣味性：</strong>在页面中加入一些有趣的动画，能够让用户眼前一亮，印象深刻。</p>
+<h2 id="认识After-Effects"><a href="#认识After-Effects" class="headerlink" title="认识After Effects"></a>认识After Effects</h2><p>大多数时候，当设计师在接触一款新的设计软件时，最重要的就是先了解软件的基础面板和常用的命令模块。AE面板界面主要包括菜单栏、顶部工具栏面板、项目面板、视图窗口区(动画展示区域)、图层编辑区、时间轴、视窗信息展示面板区、预览播放面板、效果面板。接下来我们就详细了解一下AE的各个面板。</p>
+<p>熟悉各个面板和对应的命令模块，可以提高我们的操作效率，于此同时，大家可以根据自己的爱好和习惯自由安排面板布局，面板布局并没有具体限制和约束。</p>
+<h2 id="AE基础面板介绍"><a href="#AE基础面板介绍" class="headerlink" title="AE基础面板介绍"></a>AE基础面板介绍</h2><h3 id="1-菜单栏"><a href="#1-菜单栏" class="headerlink" title="1.菜单栏"></a><strong>1.菜单栏</strong></h3><p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/157554/36/13735/57911/60571c8fE9b60f776/66a3d8461a00393a.png" alt="菜单栏"></p>
+<p>菜单栏的功能命令贯通了整个AE动效的制作流程。从文件选项的新建项目、打开项目导入导出素材，然后再到编辑选项的粘贴、剪切、复制，再到合成选项的合成新建以及设置及预渲染的合成，到图层选项的图层新建设置以及蒙版和路径的一个绘制。再到效果选项的一个效果添加，再到动画选项的一个关键帧及曲线的一个调整都贯到整个AE的一个制作的流程。</p>
+<p>窗口选项栏，它里面主要就是针对我们所能看到的这个AE界面的各个面板的调用，窗口选项栏打了勾的功能，就能在AE界面中显示该面板，而没有打勾的，是不存在的。如果我们要调用这些面板功能的话，就需要鼠标点击把它调出来，然后使用，如果把现存窗口选项栏里的勾点掉，那么相对的AE界面的面板也会去除。所勾选的窗口是可以浮动调整的，不需要浮动的话，我们也可以把窗口放回去。</p>
+<h3 id="2-顶部工具栏面板"><a href="#2-顶部工具栏面板" class="headerlink" title="2.顶部工具栏面板"></a><strong>2.顶部工具栏面板</strong></h3><p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/139182/28/16735/141384/60571c90Eb776a59c/04b5a2a706c1d365.png" alt="顶部工具栏"></p>
+<p>顶部工具栏面板具体功能如上图；做UI动效常用的工具有：选取工具、手型工具、缩放工具、旋转工具、锚点工具、矩形工具、钢笔工具、文本工具等；做MG动画会较多用到图钉工具；</p>
+<h3 id="3-项目面板"><a href="#3-项目面板" class="headerlink" title="3.项目面板"></a><strong>3.项目面板</strong></h3><p>项目面板，主要是导入一些素材，以及合成的渲染输出，都是在这个项目面板里进行的。素材的格式包括：Mp3的音频、AI文件、psd文件、图片、Mp4、WMV等视频格式。导入素材可以在文件选项栏点击导入。也可以直接在项目面板双击来导入素材。</p>
+<p><strong>PSD/AI文件导入到AE中的步骤：</strong></p>
+<ul>
+<li><p>双击项目面板或导入素材，选择想要导入的PSD源文件；</p>
+</li>
+<li><p>导入弹窗选择项：启用-选择所有可接受的文件或所有素材文件；导入为-选择合成保持图层大小；如下图：</p>
+</li>
+<li><p>点击打开，这样就完成了能显示图层的PSD源文件导入。步骤如下：</p>
+<p>注：在PSD源文件中，一定要养成良好的命名习惯，尽可能把图层整理清晰后再保存，方便在AE中寻找图层；</p>
+<p>​       在Illustrator中需要将设计中的<strong>每个元素放置到独立的图层中</strong>，然后保存文件；不然导入就是一个图层；   </p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/165822/15/15595/875816/60571c90Ef5308c60/68869ca868c87b94.png" alt="导入ps源文件"></p>
+<p><strong>将Sketch文件导入到AE中的步骤：</strong></p>
+<p>Sketch毫无疑问是如今UI设计行业使用频率最高的软件之一，其凭借轻量、高效的使用特点和拥有着专门的Toolbox插件体系的优势获得大家的认可。同时Sketch Toolbox中有不止百款插件供设计师们免费使用。不过Sketch并不是Adobe家族中的一员，所以从协同上来说，没有PS和AI便捷，但是借助一个插件“Sketch2AE”就可以促使Sketch导入到AE中。</p>
+<ul>
+<li>首先在Sketch中将所有需要运动的图层打组，然后在组命名前加上“#”，意味着该组属于一个图层不可编辑；</li>
+<li>然后选中所有需要导出的组，在插件中找到“Sketch2AE”，然后执行生成导出切片命令，此时可以看到每个组下方都会出现一个名为“Slice To AE”的新图层；</li>
+<li>然后再找到插件中的“Sketch2AE”，执行“导出画板命令”，然后在弹出的面板里设置合成时长和帧速率，并选择需要导出的画板，点击确定，同时给文件命名，然后选择导出的存放路径导出文件，此时在对应的路径下会自动生成一个.jsx的脚本文件和slice文件夹。</li>
+<li>打开AE后，在菜单栏选择文件-脚本-运行脚本文件，选择刚才导出的.jsx文件，这就算导入成功了。</li>
+</ul>
+<h3 id="4-视图窗口"><a href="#4-视图窗口" class="headerlink" title="4.视图窗口"></a><strong>4.视图窗口</strong></h3><p>视图窗口（合成窗口）是视频的预览区域，能够直接的观察要处理的素材文件显示效果。该窗口不仅可以预览素材，在编辑素材的过程中也是不克或缺的。</p>
+<p>下图是视图窗口各个功能点的解释：</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/168746/17/13953/316414/60571c90Eb37c8da5/6b4664de42b394dc.png" alt="视图窗口"></p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/167030/22/13944/28869/60571c90Ea36ad8da/ea1e9725804bb4c5.png" alt="红色提示条"></p>
+<p>如果在动画设计中，视图窗口出现如上的红色提示条，不要惊慌～我们只需要按键盘上的“caps lock”就可以取消红色提示条了～</p>
+<h3 id="5-素材图层编辑区"><a href="#5-素材图层编辑区" class="headerlink" title="5.素材图层编辑区"></a><strong>5.素材图层编辑区</strong></h3><p>图层编辑区域主要功能详细介绍如下：</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/169241/17/13935/164681/60571c90Ea9da764f/ab9c4ea82577a60e.png" alt="图层编辑区域"></p>
+<h3 id="6-时间轴面板"><a href="#6-时间轴面板" class="headerlink" title="6.时间轴面板"></a>6.时间轴面板</h3><p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/165444/37/14120/228625/60571c90E48f350b0/4a28d656c2df364b.png" alt="时间轴区域"></p>
+<p>时间轴窗口素材截取，全选全截，单选单截。调整左出点：alt+[   调整右出点：alt+]左右中括号是控制关键帧的出点和入点。</p>
+<h3 id="7-预览面板和效果面板"><a href="#7-预览面板和效果面板" class="headerlink" title="7.预览面板和效果面板"></a>7.预览面板和效果面板</h3><p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/156178/40/17086/383546/60571c91E5e2f890d/7eff5ae439f40013.png" alt="预览面板和效果面板"></p>
+<p>预览面板主要包括播放、逐帧播放、倒放、以及声音开关、调整帧速率等设置；</p>
+<p>效果面板主要和一些“效果和预设”，所有的效果都收集在这里，我们可以选择或者搜索找到想要的效果并应用；</p>
+<h2 id="After-Effects-CC工作流程"><a href="#After-Effects-CC工作流程" class="headerlink" title="After Effects CC工作流程"></a>After Effects CC工作流程</h2><p>启动一个项目包含两项任务：（1）基于最终输出格式设计项目（2）创建项目文件</p>
+<h3 id="项目素材"><a href="#项目素材" class="headerlink" title="项目素材"></a>项目素材</h3><ul>
+<li>文件路径：每次做项目之间，先建好文件夹，在文件夹内再建一个素材文件夹，用来存放图片、psd、ai或其他视频文件，避免再次打开源文件时，读取不到素材路径而画面缺失；</li>
+<li>正确的命名习惯：尽可能用窗口兼容文件扩展名来命名素材和项目文件，例如，Quick Time电影的.mov和After Effects项目的.aep；</li>
+<li>相同资源：确保所有资源在两个体系均可用，比如相同的字体、效果、编码器等；如果将一个项目渲染成一个或多个媒体格式，通常将合成的解析度设置和在输出中使用的最高解析度设置进行匹配，然后设置渲染队列窗口，来为项目的每一种格式渲染一个单独的版本。渲染输出时，经常输出的格式有：Quick Time、Microsoft Video For Windows、GIF、.swf格式等；</li>
+</ul>
+<h3 id="偏好设置"><a href="#偏好设置" class="headerlink" title="偏好设置"></a>偏好设置</h3><p>在开始一个合成之前，需要根据具体工作情况进行项目设置、渲染设置、输出模块设置以及偏好参数设置。</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/158607/40/14658/212375/60571c91E6f987982/db8073fb75ef8be0.png" alt="项目设置"></p>
+<ul>
+<li>视频渲染和效果：可设置使用范围；</li>
+<li>时间显示样式：包括时基、帧数和胶片长度3种方式；</li>
+<li>颜色设置：包括颜色深度和工作区颜色；</li>
+<li>音频设置：为统一输出模式，同时节省时间，不必每一次渲染输出时都进行设置，可以根据成品需要设置渲染和输出的参数；</li>
+</ul>
+<h3 id="组织和管理素材"><a href="#组织和管理素材" class="headerlink" title="组织和管理素材"></a>组织和管理素材</h3><p>在我们导入素材时，AE不是将素材复制到项目中，而是在项目控制板中创建一个对应素材项目的路径链接，这就是为什么刚开始我们需要在项目文件中创建好素材文件的原因。如果中途文件丢失，就会用彩色占位符展示，此时我们可以双击彩色占位符，重新载入项目项目素材即可。</p>
+<p>如果我们使用其他程序修改项目素材时，比如用AI或者PS修改文件样式保存后，再次打开项目时，AE中的素材样式也随之改动。</p>
+<h3 id="输出设置"><a href="#输出设置" class="headerlink" title="输出设置"></a>输出设置</h3><p>当项目各种动效技巧完成时，接下来就是输出成品，为了加速渲染速度，可以先清理内存，执行 主菜单-编辑-清理-清理所有内存的命令；</p>
+<ol>
+<li>首先要激活输出的时间线窗口，选择 主菜单-合成-添加到渲染队列的命令，自动添加至渲染队列；</li>
+<li>在渲染队列面板中单击渲染设置对应的选项，在弹出的渲染设置对话框中设置渲染文件的品质、分辨率、以及时间采样等选项，然后单击确定按钮关闭对话框；</li>
+<li>在渲染队列面板中输出模式对应的选项，在弹出“输出模块设置”对话框中设置渲染文件的格式、视频输出、尺寸等选项，然后单击确定按钮关闭对话框；</li>
+<li>在渲染队列面板中，单击“输出到”对应的选项，在弹出“将影片输出到”对话框中设置渲染文件的名称和路径，单击确定按钮关闭弹窗；</li>
+<li>当设置完成后，就可以单击渲染按钮开始渲染，直至完成</li>
+<li>高版本的AE CC 目前已经无法直接输出动态GIF文件了，我们需要借助Adobe Media Encoder ，在合成窗口中选择添加到Adobe Media Encoder 队列输出GIF；</li>
+</ol>
+]]></content>
+      <categories>
+        <category>After Effects</category>
+      </categories>
+      <tags>
+        <tag>After Effects</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>After Effects表达式</title>
+    <url>/2021/03/22/After-Effects%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <content><![CDATA[<h2 id="什么是表达式？"><a href="#什么是表达式？" class="headerlink" title="什么是表达式？"></a>什么是表达式？</h2><p>表达式是AE内部基于Javascript编程语言开发的编辑工具。使用表达式的最主要好处是自动化，简化和增强复杂性。<strong>交换表达式的关键帧会生成具有干净和准确结果的数据。</strong></p>
+<h3 id="学习表达式之前需要了解这两点："><a href="#学习表达式之前需要了解这两点：" class="headerlink" title="学习表达式之前需要了解这两点："></a>学习表达式之前需要了解这两点：</h3><p><strong>1.所有的表达式只可以添加在AE里面的可编辑动画关建帧的属性上</strong>；</p>
+<p>在AE里面表达式只可以输入在可编辑关键帧的属性上，比如位置，旋转，缩放等，所以我们使用表达式的目的是对一些动画属性进行控制，从而提高我们的工作效率或者制作出更棒的动画效果！</p>
+<p><strong>2.并不是所有地方都需要表达式，我们要根据需求选择使用关键帧或者表达式；</strong></p>
+<p>在AE里面并不是任何时候使用表达式都比关键帧要方便，有的时候关键帧的效果或者效率反而比表达式更好更快。所以要根据不同的效果选择打关键帧或者表达式，或者两者的结合。我们最终的目的还是完美的呈现动效效果。</p>
+<h2 id="如何添加表达式？"><a href="#如何添加表达式？" class="headerlink" title="如何添加表达式？"></a>如何添加表达式？</h2><p>我们只需要按住键盘上的ALT键+鼠标左键点击关键帧前的小码表，就可以调出对应属性的表达式输入框。我们需要做的就是在输入框内输入表达式即可。</p>
+<p><strong>表达式工具：</strong></p>
+<p>1.表达式关闭开启工具  2.表达式图表工具   3.表达式关联器   4.表达式语言菜单</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/170573/2/14061/117135/60571ef3E85ea6d09/7a1b5283d880ae5f.png" alt="表达式开启"></p>
+<p><strong>语言菜单：</strong>调用AE内置表达式函数命令</p>
+<h2 id="表达式书写的一些规则："><a href="#表达式书写的一些规则：" class="headerlink" title="表达式书写的一些规则："></a>表达式书写的一些规则：</h2><p><strong>1.针对不同属性，表达式最终输出的是不同的数据类型</strong></p>
+<p>在AE里面不同的属性的参数是不一样的,大致可以分为4种：<strong>单个数值</strong>、<strong>数组</strong>、<strong>布尔值</strong>、<strong>字符串；</strong></p>
+<p><strong>数值和数组</strong></p>
+<p>最常使用的就是单个数值和数组，那单个数值和数组有什么区别呢？锚点、位置、缩放这三个属性都是由两个数值组成的，所以这种类型叫数组；旋转和不透明这两个属性是由一个数值来调节的，所以这种数据叫单个数值；</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/171184/35/14021/366579/60571ef3E92ff38f8/841ee4498f13730b.png" alt="表达式数组和数值.png"></p>
+<p><strong>布尔值和字符串</strong></p>
+<p>布尔值主要是起开关作用的，<strong>它主要就是两个值：true和false，</strong>true代表“真”、false代表“假”。可以用数值0和1代表：<strong>0</strong>代表<strong>假、1</strong>代表<strong>真</strong>;</p>
+<p>字符串不太常用，它主要是针对文本工具的：如“你好”（字符串需要用双引号“”括起来，双引号里面你可以填任何信息，中文、英文或者数字都可以，但它只是字符的意义）</p>
+<p><strong>2.数组的书写格式</strong></p>
+<p>数组是由多个数值组成的，所以数组的书写格式如：[10,10]，一维属性展示方式；</p>
+<p>数组需要使用中括号[]括起来，中括号里面你可以填多个数值（要填几个数值取决于对应的属性），每一个数值之间用逗号隔开；二维属性展示方式；</p>
+<p><strong>变量的使用：</strong></p>
+<p>在AE表达式书写的时候，并不是我们书写的所有内容表达式都能识别。表达式一般能识别的就是表达式内部的一些函数命令，我们可以直接在“表达式语言菜单”中调用。除了内部的一些函数命令外，表达式还可以识别我们外部自定义的变量</p>
+<p>什么是变量？</p>
+<p>变量是我们用来存储数值用的，你可以把它当做一个容器；比如：a=100，我们就把100这个数值存储在a里面，则a这个时候就是一个变量，变量需要使用等于号“=”来进行赋值，你可以使用任何单词作为变量，字母a也好、字母b也好、单词也好、或者汉语拼音都可以，但是不能使用中文；</p>
+<p><strong>表达式内置的函数命令：</strong></p>
+<p>上面说道AE表达式只能够识别<strong>内置的函数命令</strong>和<strong>自定义的变量</strong>。</p>
+<p>内置的函数命令就是我们最常使用的一些代码了，我们直接可以在AE表达式工具里面的“表达式语言菜单”里面进行调用。</p>
+<h2 id="常用的表达式："><a href="#常用的表达式：" class="headerlink" title="常用的表达式："></a>常用的表达式：</h2><h4 id="1-时间time表达式"><a href="#1-时间time表达式" class="headerlink" title="1.时间time表达式"></a><strong>1.时间time表达式</strong></h4><p><strong>原理：</strong>time表示时间，以秒为单位，time<em>n =时间（秒数）</em>n （若应用于旋转属性，则n表示角度）</p>
+<p><strong>举例：</strong>若在旋转属性上设置time表达式为time*60，则图层将通过1秒的时间旋转60度，2秒时旋转到120度以此类推（数值为正数时顺时针旋转，为负数时逆时针旋转）</p>
+<p><strong>注意事项：</strong>time赋予旋转、不透明度属性时，表达式结果是一维展示，time<em>n。time赋予位置、缩放、锚点属性时：表达式结果必须是二维，[time</em>n,time*n]</p>
+<p>以下是一维、二维属性添加time表达式的动画效果；</p>
+<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/f164c850b0-e9494d00-8a3f-11eb-a368-6d3780c2f1df.gif" alt="时间time表达式"></p>
+<h4 id="2-抖动-摆动表达式："><a href="#2-抖动-摆动表达式：" class="headerlink" title="2.抖动/摆动表达式："></a>2.抖动/摆动表达式：</h4><p>wiggle(freq, amp, octaves = 1, amp_mult = 0.5, t = time)</p>
+<p><strong>原理：</strong>freq=频率（设置每秒抖动的频率）；amp=振幅（每次抖动的幅度）；octaves=振幅幅度（在每次振幅的基础上还会进行一定的震幅幅度，很少用）；amp_mult=频率倍频（默认数值即可，数值越接近0，细节越少；越接近1，细节越多）；t=持续时间（抖动时间为合成时间，一般无需修改）；一般只写前两个数值即可</p>
+<p><strong>举例：</strong>若在一维属性中，为位置属性添加wiggle(10,20)，则表示图层每秒抖动10次，每次随机波动的幅度为20；</p>
+<p>若在二维属性中，为缩放添加n=wiggle(1,10);[n[0],n[0]]，则表示图层的缩放XY在每秒抖动10次，每次随机波动的幅度为20；若在二维属性中，想单独在单维度进行抖动，需要将属性设置为单独尺寸后添加wiggle(10,20)，表示图层的缩放X轴在每秒抖动10次，每次随机波动的幅度为20。</p>
+<p><strong>注意事项：</strong>可直接在现有属性上运行，包括任何关键帧；<strong>单独尺寸的设置方式：选中属性-鼠标右击-选择单独尺寸</strong></p>
+<p>以下左图是一维、二维属性添加wiggle表达式的动画效果；</p>
+<p>跟抖动表达式相近效果的还有随机表达式：random(频率,振幅)，以下右图左边三个小飞机是wiggle表达式效果，右边是random表达式的展示效果；</p>
+<p><strong>相比random函数，会发现，wiggle有两个明显的特点：</strong></p>
+<p>1.有自适应性，同样是缩放，random需要填写两个参数，wiggle只需要一个，同时在旋转上表现了双倍的范围</p>
+<p>2.wiggle的变化相比random产生的效果要平滑很多，你看看random，能看吗？能看吗？！</p>
+<p><strong>需要再补充一点：wiggle的频率并非每秒钟变化的次数，当第一个参数的值是1时，一秒内仍然会产生多个数值。所以要想有好的结果，需要反复调试，就像开车打方向盘一样，找感觉吧～</strong></p>
+<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/bb22527414-5b6640a0-8a40-11eb-853a-6fded8704e77.gif" alt="wiggle表达式"></p>
+<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/4432fa7c42-2c403ec0-8a40-11eb-a368-6d3780c2f1df.gif" alt="random表达式"></p>
+<h4 id="3-index表达式（索引表达式）："><a href="#3-index表达式（索引表达式）：" class="headerlink" title="3.index表达式（索引表达式）："></a>3.index表达式（索引表达式）：</h4><p><strong>原理：</strong>为每间隔多少数值来产生多少变化</p>
+<p><strong>举例：</strong>若为图层1的旋转属性添加表达式index*5 ，则第一个图层会旋转5度，之后按Ctrl+D去复制多个图层时，第2个图层将旋转10度，以此类推；若想第一层图形不产生旋转保持正常形态，复制后的图形以5度递增，表达式可写为(index-1)*5</p>
+<p><img src= "/img/loading.gif" data-src="/Users/lili896/Desktop/20210223AE%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%9F%BA%E7%A1%80/%E8%A1%A8%E8%BE%BE%E5%BC%8F%E9%85%8D%E5%9B%BE/index%E7%B4%A2%E5%BC%95%E8%A1%A8%E8%BE%BE%E5%BC%8F.png" alt="index索引表达式"></p>
+<h4 id="4-value表达式"><a href="#4-value表达式" class="headerlink" title="4.value表达式"></a>4.value表达式</h4><p><strong>原理：</strong>在当前时间输出当前属性值</p>
+<p><strong>举例：</strong>若对位置属性添加表达式为value+100，则位置会在关键帧数值的基础上对X轴向右偏移100（正数向右侧，负数像左侧）；若想控制Y轴的位置属性，则可对位置属性进行单独尺寸的分割，从而可单独控制Y轴（正数向下，负数向上）</p>
+<p><strong>注意事项：</strong>更多的使用场景是结合其他表达式一起应用</p>
+<h4 id="5-random表达式（随机表达式）"><a href="#5-random表达式（随机表达式）" class="headerlink" title="5.random表达式（随机表达式）"></a>5.random表达式（随机表达式）</h4><p><strong>原理：</strong>random(x,y)在数值x到y之间随机进行抽取，最小值为x，最大值为y</p>
+<p><strong>举例：</strong>若为数字源文本添加表达式random(20)，则数据会随机改变，最大值不会超过20；</p>
+<p>若为数字源文本添加表达式random(10,100)，则数据会在10&lt;数值&lt;100之间随机改变；</p>
+<p>若为数字源文本添加表达式seedRandom(5, timeless = false)，random(50)，则数据会在50以内随机改变（前面的5是种子数，如一张画面中需要多个相同区间的数值做随机变化，就要为他们添加不同的种子数，防止两者随机变化雷同）；</p>
+<p>若希望数字随机变化为整数则应添加表达式为Math.round(random(2,50))，表示在2和50之间随机改变无小数</p>
+<p><strong>注意事项：</strong>随机表达式不仅局限于数据上的使用，其他属性也可以应用，若数值为整数Math的M要大写</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/158584/40/14488/2860938/605738aeEcb0c1c75/77920430d230ea39.gif" alt="数字随机表达式"></p>
+<h4 id="6-循环表达式"><a href="#6-循环表达式" class="headerlink" title="6.循环表达式"></a>6.循环表达式</h4><p>AE中循环表达式主要有4中，分别是：loopOut loopIn loop</p>
+<p>LoopOut（type=“循环方式”，numkeyframes=0）</p>
+<p>LoopIn（type=“循环方式”，numkeyframes=0）</p>
+<p><strong>原理：</strong>loopOut(type=”类型”,numkeyframes=0)对一组动作进行循环loopOut(type=”pingpong”,numkeyframes=0)是类似像乒乓球一样的来回循环；loopOut(type=”cycle”,numkeyframes=0)是周而复始的循环；</p>
+<p>loopOut(type=”continue”)延续属性变化的最后速度，</p>
+<p>loopOut(type=”offset”,numkeyframes=0)是重复指定的时间段进行循环；</p>
+<p>numkeyframes=0是循环的次数，0为无限循环，1是最后两个关键帧无限循环，2是最后三个关键帧无限循环，以此类推</p>
+<p>loopOut 和loopIn 这两个表达式都是表达循环类型的表达式；</p>
+]]></content>
+      <categories>
+        <category>After Effects</category>
+      </categories>
+      <tags>
+        <tag>After Effects</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>JS自定义功能函数(一)：动态拼接或修改url地址参数和参数值</title>
     <url>/2020/09/17/JS%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8A%9F%E8%83%BD%E5%87%BD%E6%95%B0(%E4%B8%80)%EF%BC%9A%E5%8A%A8%E6%80%81%E6%8B%BC%E6%8E%A5%E6%88%96%E4%BF%AE%E6%94%B9url%E5%9C%B0%E5%9D%80%E5%8F%82%E6%95%B0%E5%92%8C%E5%8F%82%E6%95%B0%E5%80%BC/</url>
     <content><![CDATA[<h3 id="参数定义"><a href="#参数定义" class="headerlink" title="参数定义"></a>参数定义</h3><ul>
