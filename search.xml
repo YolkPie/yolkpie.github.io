@@ -4392,7 +4392,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
 <h4 id="compiler-钩子"><a href="#compiler-钩子" class="headerlink" title="compiler 钩子"></a>compiler 钩子</h4><h5 id="钩子的用法"><a href="#钩子的用法" class="headerlink" title="钩子的用法"></a>钩子的用法</h5><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// someHook 钩子名称</span></span><br><span class="line"><span class="comment">// webpack 4</span></span><br><span class="line">compiler.hooks.someHook.tap(<span class="string">&#x27;MyPlugin&#x27;</span>, <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/* ... */</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">// webpack 2/3</span></span><br><span class="line">compiler.plugin(someHook, <span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/* ... */</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h5 id="常用钩子介绍"><a href="#常用钩子介绍" class="headerlink" title="常用钩子介绍"></a>常用钩子介绍</h5><ul>
 <li><strong>entryOption</strong>：在 webpack 选项中的 entry 被处理过之后调用</li>
-<li>afterPlugins：在初始化内部插件集合完成设置之后调用，回调参数 context 和 entry</li>
+<li><strong>afterPlugins</strong>：在初始化内部插件集合完成设置之后调用，回调参数 context 和 entry</li>
 <li><strong>compilation</strong>：compilation 创建之后，输出 asset 之前执行。回调参数：compilation</li>
 <li><strong>emit</strong>：输出 asset 到 output 目录之前执行。回调参数：compilation</li>
 <li><strong>afterEmit</strong>：输出 asset 到 output 目录之后执行。回调参数：compilation</li>
