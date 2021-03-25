@@ -2088,7 +2088,7 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>Nginx基础知识</title>
     <url>/2021/03/25/nginx%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
     <content><![CDATA[<p><img src= "/img/loading.gif" data-src="nginx.webp" alt="Nginx" title="Nginx"></p>
 <h2 id="Nginx-学习手册"><a href="#Nginx-学习手册" class="headerlink" title="Nginx 学习手册"></a>Nginx 学习手册</h2><p>什么是Nginx</p>
@@ -4050,7 +4050,7 @@ window.requestAnimationFrame(changePosition);
       </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>导出GIF图的4种方式</title>
     <url>/2021/03/25/%E5%AF%BC%E5%87%BAGIF%E5%9B%BE%E7%9A%844%E7%A7%8D%E6%96%B9%E5%BC%8F/</url>
     <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>当下UI设计师工作中多多少少都会涉及到动效的制作，如交互动效，icon动效，运营类的微动效等，从设计制动效到交付开发的过程中，总有一个不起眼的环节会占用我大量时间，这个环节就是将完成的动效导出gif，在自己查阅了大量资料，咨询了很多人以及自己实践了n多次后，得到了很多种解决办法，在此，提炼了一些常用到，效果较好的方法分享出来。本篇文章只分享GIF图的导出方法，不包含动效转Lottie。</p>
 <h3 id="方式一：视频导入PS再导出GIF图"><a href="#方式一：视频导入PS再导出GIF图" class="headerlink" title="方式一：视频导入PS再导出GIF图"></a>方式一：视频导入PS再导出GIF图</h3><ol>
