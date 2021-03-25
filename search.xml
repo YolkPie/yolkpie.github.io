@@ -2088,6 +2088,114 @@
       </tags>
   </entry>
   <entry>
+    <title></title>
+    <url>/2021/03/25/nginx%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</url>
+    <content><![CDATA[<p><img src= "/img/loading.gif" data-src="nginx.webp" alt="Nginx" title="Nginx"></p>
+<h2 id="Nginx-学习手册"><a href="#Nginx-学习手册" class="headerlink" title="Nginx 学习手册"></a>Nginx 学习手册</h2><p>什么是Nginx</p>
+<blockquote>
+<p>简单说： Nginx 是个神奇的 Web 服务器<br>专业说：Nginx 是一个采用主从架构的 Web 服务器，可用于反向代理、负载均衡器、邮件代理和 HTTP 缓存。</p>
+</blockquote>
+<p>Nginx 是一个高性能的 HTTP 和反向代理服务器，特点是占用内存少，并发能力强，事实上 Nginx 的并发能力确实在同类型的网页服务器中表现较好。Nginx 专为性能优化而开发，性能是其最重要的要求，十分注重效率，有报告 Nginx 能支持高达 50000 个并发连接数。</p>
+<h3 id="1、Nginx-知识网结构图"><a href="#1、Nginx-知识网结构图" class="headerlink" title="1、Nginx 知识网结构图"></a>1、Nginx 知识网结构图</h3><p><img src= "/img/loading.gif" data-src="struct.jpg" alt="Nginx 知识网结构图" title="Nginx 知识网结构图"></p>
+<h3 id="2、Nginx专业术语"><a href="#2、Nginx专业术语" class="headerlink" title="2、Nginx专业术语"></a>2、Nginx专业术语</h3><p><img src= "/img/loading.gif" data-src="640.gif" alt="Nginx 专业术语" title="Nginx 专业术语"><br>Nginx 的基本特性是代理，所以你一定要明白什么是代理和反向代理。</p>
+<h4 id="正向代理与反向代理"><a href="#正向代理与反向代理" class="headerlink" title="正向代理与反向代理"></a>正向代理与反向代理</h4><h5 id="正向代理"><a href="#正向代理" class="headerlink" title="正向代理"></a>正向代理</h5><p>局域网中的电脑用户想要直接访问网络是不可行的，只能通过代理服务器来访问，这种代理服务就被称为正向代理。</p>
+<p><img src= "/img/loading.gif" data-src="proxy.jpg" alt="Nginx 正向代理" title="Nginx 正向代理"></p>
+<blockquote>
+<p>通俗讲：client1 和 client2 通过代理服务器向服务器发送请求 request1 和 request2，此时后端服务器不知道 request1 是由 client1 发送的还是 client2 发送的，但会执行（响应）操作。<br><strong>服务器</strong>不知道请求<strong>谁发起的</strong></p>
+</blockquote>
+<h5 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h5><p>客户端无法感知代理，因为客户端访问网络不需要配置，只要把请求发送到反向代理服务器，由反向代理服务器去选择目标服务器获取数据，然后再返回到客户端。<br>此时反向代理服务器和目标服务器对外就是一个服务器，暴露的是代理服务器地址，隐藏了真实服务器 IP 地址。</p>
+<p><img src= "/img/loading.gif" data-src="r-proxy.jpg" alt="Nginx 反向代理" title="Nginx 反向代理"></p>
+<blockquote>
+<p>通俗讲：客户端将通过 Web 服务器发送请求. 而 Web 服务器会通过一个算法，当中最有意思的算法是轮询，直接将请求指向许多后端服务器中的一个，并通过 Web 服务器将响应返回给客户端。因此，在上面的例子中，客户端其实并不知道在与哪个后端服务器进行交互。<br><strong>客户端</strong>不知道请求<strong>是谁处理的</strong></p>
+</blockquote>
+<h4 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h4><p>又是枯燥的一个名词：负载均衡，不过它很好理解，因为负载均衡本身就是反向代理的一个实例。</p>
+<p><strong>有状态应用</strong><br><img src= "/img/loading.gif" data-src="has-status.webp" alt="有状态应用" title="有状态应用"></p>
+<blockquote>
+<p>如图所示，一个后端服务器 server1 存储了一些信息，服务器 server2 并不存储此信息，因此，客户端 (上图 Bob) 的交互可能会也可能不会得到想要的结果，因为它可能会与 server1 或 server2 交互。在本例中，server1 允许 Bob 查看数据文件，但 server2 不允许。因此，虽然有状态应用避免对数据库的多次 API 调用，并且（响应）速度更快，但它可能会在不同的服务器上导致这个（无法得到想要结果）问题。</p>
+</blockquote>
+<p><strong>无状态应用</strong><br><img src= "/img/loading.gif" data-src="no-status.webp" alt="无状态应用" title="无状态应用"></p>
+<blockquote>
+<p>如果我通过 Web 服务器从客户端向后端服务器 server1 发送请求，它将向客户端返回一个令牌，用于任何进一步的访问请求。客户端可以使用令牌并向 Web 服务器发送请求。此时 Web 服务器将请求连同令牌一起发送到任意后端服务器，而每个后端服务器都能提供相同的所需结果。</p>
+</blockquote>
+<p><strong>负载均衡与反向代理的区别</strong></p>
+<blockquote>
+<ul>
+<li>负载均衡: 必须有 2 个或者更多的后端服务器</li>
+<li>反向代理: 一台后端服务器也能运作</li>
+</ul>
+</blockquote>
+<p>客户端发送多个请求到服务器，服务器处理请求，有一些可能要与数据库进行交互，服务器处理完毕之后，再将结果返回给客户端。</p>
+<ul>
+<li>普通请求和响应过程如下图：<br><img src= "/img/loading.gif" data-src="request.webp" alt="Nginx 反向代理" title="Nginx 反向代理"></li>
+</ul>
+<p>但是随着信息数量增长，访问量和数据量飞速增长，普通架构无法满足现在的需求。</p>
+<p>我们首先想到的是升级服务器配置，可以由于<code>摩尔定律</code>的日益失效，单纯从硬件提升性能已经逐渐不可取了，怎么解决这种需求呢？</p>
+<p>我们可以增加服务器的数量，构建集群，将请求分发到各个服务器上，将原来请求集中到单个服务器的情况改为请求分发到多个服务器，也就是我们说的负载均衡。</p>
+<ul>
+<li>负载均衡<br><img src= "/img/loading.gif" data-src="balance.jpg" alt="Nginx 负载均衡" title="Nginx 负载均衡"></li>
+</ul>
+<p>假设有 15 个请求发送到代理服务器，那么由代理服务器根据服务器数量，平均分配，每个服务器处理 5 个请求，这个过程就叫做负载均衡。</p>
+<h4 id="动静分离"><a href="#动静分离" class="headerlink" title="动静分离"></a>动静分离</h4><p>为了加快网站的解析速度，可以把动态页面和静态页面交给不同的服务器来解析，加快解析的速度，降低由单个服务器的压力。</p>
+<ul>
+<li>动静分离前<br><img src= "/img/loading.gif" data-src="before-split.jpg" alt="Nginx 动静分离前" title="Nginx 动静分离前"></li>
+<li>动静分离后<br><img src= "/img/loading.gif" data-src="after-split.jpg" alt="Nginx 动静分离后" title="Nginx 动静分离后"></li>
+</ul>
+<h3 id="3、Nginx安装"><a href="#3、Nginx安装" class="headerlink" title="3、Nginx安装"></a>3、Nginx安装</h3><h4 id="Windows-安装"><a href="#Windows-安装" class="headerlink" title="Windows 安装"></a>Windows 安装</h4><p>下载地址：<a href="http://nginx.org/en/download.html">http://nginx.org/en/download.html</a><br>下载后，解压，直接运行nginx.exe即可</p>
+<h4 id="Linux-安装"><a href="#Linux-安装" class="headerlink" title="Linux 安装"></a>Linux 安装</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ yum install nginx </span><br></pre></td></tr></table></figure>
+
+<h4 id="Mac-安装"><a href="#Mac-安装" class="headerlink" title="Mac 安装"></a>Mac 安装</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">$ brew install Nginx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动</span></span><br><span class="line">$ nginx </span><br><span class="line"><span class="comment"># OR </span></span><br><span class="line">$ sudo nginx</span><br><span class="line"><span class="comment"># 默认8080端口 http://localhost:8080/</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看帮助</span></span><br><span class="line">$ nginx -h</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置nginx.conf 文件</span></span><br><span class="line">$ nginx -c file name </span><br><span class="line"><span class="comment"># brew 安装默认位置： /opt/homebrew/etc/nginx</span></span><br></pre></td></tr></table></figure>
+<h3 id="4、Nginx配置"><a href="#4、Nginx配置" class="headerlink" title="4、Nginx配置"></a>4、Nginx配置</h3><p>场景一： 我们将在一个公共端口上运行两个文件夹，并设置我们想要的规则<br>本地目录结构</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">├── nginx-demo</span><br><span class="line">│  ├── content</span><br><span class="line">│  │  ├── first.txt</span><br><span class="line">│  │  ├── index.html</span><br><span class="line">│  │  └── index.md</span><br><span class="line">│  └── main</span><br><span class="line">│    └── index.html</span><br><span class="line">└── temp-nginx</span><br><span class="line">  └── outsider</span><br><span class="line">    └── index.html</span><br></pre></td></tr></table></figure>
+<p><strong>1、添加配置的基本设置</strong><br>一定要添加 <code>events &#123;&#125;</code>，因为在 Nginx 架构中，它通常用来表示 worker 的数量。<br>用 http 告诉 Nginx 我们将在 OSI 模型 的第 7 层作业。</p>
+<p>我们告诉 Nginx 监听 5000 端口，并指向 main 文件夹中的静态文件。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">events &#123;</span><br><span class="line">  worker_connections  <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line"></span><br><span class="line">  server &#123;</span><br><span class="line">    listen <span class="number">5000</span>;</span><br><span class="line">    root /path/to/nginx-demo/main/; </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2、添加其他规则</strong><br>接下来我们将为 <code>/content</code> 和 <code>/outsider</code> URL 添加其他的规则，其中 <strong>outsider</strong> 将指向第一步中提到的根目录之外的目录。</p>
+<p>这里的 <code>location /content</code>  表示无论我在叶（leaf）目录中定义了什么根（root），<strong>content</strong> 子 URL 都会被添加到定义的根 URL 的末尾。因此，当我指定 root 为 <code>root /path/to/nginx-demo/</code>时，这仅仅意味着我告诉 Nginx 在 <code>http://localhost:5000/path/to/nginx-demo/content/</code> 文件夹中显示静态文件的内容。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">events &#123;</span><br><span class="line">  worker_connections  <span class="number">1024</span>;</span><br><span class="line">&#125;</span><br><span class="line">http &#123;</span><br><span class="line">  server &#123;</span><br><span class="line">    listen <span class="number">5000</span>;</span><br><span class="line">    root /path/to/nginx-demo/main/; </span><br><span class="line"></span><br><span class="line">    location /content &#123;</span><br><span class="line">      root /path/to/nginx-demo/;</span><br><span class="line">    &#125;   </span><br><span class="line">    location /outsider &#123;</span><br><span class="line">      root /path/temp-nginx/;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>现在 Nginx 不仅能定义 URL 根路径，还可以设置规则，这样我们就能阻止客户端访问某个文件了。</strong></p>
+</blockquote>
+<p><strong>3、限制访问</strong><br>接下来，我们在主服务器上编写一个规则来防止任意 .md 文件被访问。我们可以在 Nginx 中使用正则表达式，因此我们将这样定义规则：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">location ~ .md &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">403</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>4、来看看代理 proxy_pass</strong><br>我们已经在5000端口上运行了服务，再起一个在8888端口上的服务,这样我们就有两个服务了。</p>
+<p>我们要做的是：当客户端通过 Nginx 访问 8888 端口时，将这个请求传到 5000 端口，并将响应返回给客户端！</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen <span class="number">8888</span>;</span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_pass http:<span class="comment">//localhost:5000/;</span></span><br><span class="line">  &#125;</span><br><span class="line">  location /<span class="keyword">new</span> &#123;</span><br><span class="line">    proxy_pass http:<span class="comment">//localhost:5000/outsider/;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>5、负载均衡</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">upstream myserver&#123;</span><br><span class="line">  <span class="comment">#ip_hash</span></span><br><span class="line">  server 127.0.0.1:5000 weight=1;</span><br><span class="line">  server 127.0.0.1:8888 weight=2;</span><br><span class="line">  <span class="comment">#fair; </span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">  listen 8000;</span><br><span class="line">  location / &#123;</span><br><span class="line">    proxy_pass http://myserver;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>负载均衡方式如下：</strong></p>
+<blockquote>
+<p>轮询（默认）。<br>weight，代表权，权越高优先级越高。<br>fair，按后端服务器的响应时间来分配请求，相应时间短的优先分配。<br>ip_hash，每个请求按照访问 ip 的 hash 结果分配，这样每一个访客固定的访问一个后端服务器，可以解决 Session 的问题。</p>
+</blockquote>
+<p><strong>6、动静分离实战</strong><br><img src= "/img/loading.gif" data-src="after-split.webp" alt="Nginx 动静分离后" title="Nginx 动静分离后"></p>
+<blockquote>
+<p>纯粹将静态文件独立成单独域名放在独立的服务器上，也是目前主流方案。<br>将动态跟静态文件混合在一起发布，通过 Nginx 分开</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">location /image/ &#123;</span><br><span class="line">  root /path/to/images/;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>看一下所有配置</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">events &#123;</span><br><span class="line">  worker_connections  1024;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">  server &#123;</span><br><span class="line">    listen 5000;</span><br><span class="line">    root /path/to/nginx-demo/main/; </span><br><span class="line"></span><br><span class="line">    location /content &#123;</span><br><span class="line">      root /path/to/nginx-demo/;</span><br><span class="line">    &#125;   </span><br><span class="line">    location /outsider &#123;</span><br><span class="line">      root /path/temp-nginx/;</span><br><span class="line">    &#125;</span><br><span class="line">    location ~ .md &#123;</span><br><span class="line">      <span class="built_in">return</span> 403;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  server &#123;</span><br><span class="line">    listen 8888;</span><br><span class="line">    location / &#123;</span><br><span class="line">      proxy_pass http://localhost:5000/;</span><br><span class="line">    &#125;</span><br><span class="line">    location /new &#123;</span><br><span class="line">      proxy_pass http://localhost:5000/outsider/;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment"># 4、负载均衡</span></span><br><span class="line">  server &#123;</span><br><span class="line">    listen 8000;</span><br><span class="line">    location / &#123;</span><br><span class="line">      proxy_pass http://myserver;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">upstream myserver&#123;</span><br><span class="line">  <span class="comment">#ip_hash</span></span><br><span class="line">  server 127.0.0.1:5000 weight=1;</span><br><span class="line">  server 127.0.0.1:8888 weight=2;</span><br><span class="line">  <span class="comment">#fair; </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>来把服务启起来</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nginx</span><br><span class="line"><span class="comment"># OR</span></span><br><span class="line">$ sudo nginx</span><br></pre></td></tr></table></figure>
+<p><strong>Nginx的其他命令</strong></p>
+<ul>
+<li>1、首次启动 Nginx Web 服务器。<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nginx </span><br><span class="line"><span class="comment"># OR </span></span><br><span class="line">$ sudo nginx</span><br></pre></td></tr></table></figure></li>
+<li>2、重新加载正在运行的 Nginx Web 服务器。<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nginx -s reload</span><br><span class="line"><span class="comment"># OR </span></span><br><span class="line">$ sudo nginx -s reload</span><br></pre></td></tr></table></figure></li>
+<li>3、停止正在运行中的 Nginx Web 服务器。<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ nginx -s stop</span><br><span class="line"><span class="comment"># OR </span></span><br><span class="line">$ sudo nginx -s stop</span><br></pre></td></tr></table></figure></li>
+<li>4、查看系统上运行的 Nginx 进程。<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ps -ef | grep Nginx</span><br></pre></td></tr></table></figure>
+第 4 条命令很重要，如果前 3 条命令产生了一些问题，通常你可以用第 4 条命令找到所有正在运行的 Nginx 进程并杀死进程，然后重新启动它们。</li>
+</ul>
+<p>要杀死一个进程，你需要 PID，再用以下命令杀死它：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">kill</span> -9 &lt;PID&gt;</span><br><span class="line"><span class="comment"># OR </span></span><br><span class="line">$ sudo <span class="built_in">kill</span> -9 &lt;PID&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>location 指令说明，该语法用来匹配 url，语法如下：</strong></p>
+<blockquote>
+<p>=：用于不含正则表达式的 url 前，要求字符串与 url 严格匹配，匹配成功就停止向下搜索并处理请求。<br><del>：用于表示 url 包含正则表达式，并且区分大小写。<br>~*：用于表示 url 包含正则表达式，并且不区分大小写。<br>^</del>：用于不含正则表达式的 url 前，要求 Nginx 服务器找到表示 url 和字符串匹配度最高的 location 后，立即使用此 location 处理请求，而不再匹配。<br>如果有 url 包含正则表达式，不需要有 ~ 开头标识。<br>本机演示命令</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">sudo vim /opt/homebrew/etc/nginx/nginx.conf</span><br></pre></td></tr></table></figure>
+<p>摩尔定律<br>每18到24个月，集成电路上可容纳的元器件数目便会增加一倍，芯片的性能也会随之翻一番</p>
+]]></content>
+  </entry>
+  <entry>
     <title>npm发包</title>
     <url>/2020/09/19/npm%E5%8F%91%E5%8C%85/</url>
     <content><![CDATA[<h1 id="npm发包"><a href="#npm发包" class="headerlink" title="npm发包"></a>npm发包</h1><h3 id="配置环境-安装node-js"><a href="#配置环境-安装node-js" class="headerlink" title="配置环境 安装node.js"></a>配置环境 安装node.js</h3><ul>
@@ -3942,6 +4050,71 @@ window.requestAnimationFrame(changePosition);
       </tags>
   </entry>
   <entry>
+    <title></title>
+    <url>/2021/03/25/%E5%AF%BC%E5%87%BAGIF%E5%9B%BE%E7%9A%844%E7%A7%8D%E6%96%B9%E5%BC%8F/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>当下UI设计师工作中多多少少都会涉及到动效的制作，如交互动效，icon动效，运营类的微动效等，从设计制动效到交付开发的过程中，总有一个不起眼的环节会占用我大量时间，这个环节就是将完成的动效导出gif，在自己查阅了大量资料，咨询了很多人以及自己实践了n多次后，得到了很多种解决办法，在此，提炼了一些常用到，效果较好的方法分享出来。本篇文章只分享GIF图的导出方法，不包含动效转Lottie。</p>
+<h3 id="方式一：视频导入PS再导出GIF图"><a href="#方式一：视频导入PS再导出GIF图" class="headerlink" title="方式一：视频导入PS再导出GIF图"></a>方式一：视频导入PS再导出GIF图</h3><ol>
+<li><p>在AE中选择合成-添加到渲染队列渲染视频，选择“QuickTime”格式（渲染速度快），得到一个.mov的视频文件；</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/170379/23/14658/1619026/605c5268E05630612/4898cb5299553724.png" alt="导出视频"></p>
+</li>
+<li><p>接着我们将该视频导入到ps中，将视频转换成帧动画，再选择文件-导出为web所用格式，选择GIF格式就可以成功导出GIF图了。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/158695/38/15344/2220493/605c526cE7854235f/d5a8a6ead06d9f9b.png" alt="帧动画"></p>
+</li>
+</ol>
+<h3 id="方法二：png序列导出GIF图"><a href="#方法二：png序列导出GIF图" class="headerlink" title="方法二：png序列导出GIF图"></a>方法二：png序列导出GIF图</h3><ol>
+<li><p>在AE中Ctrl+M打开渲染队列，点“输出模块”打开设置，将“格式”改为[Png序列]，“通道”改为“RGB+Alpha”，设置完成后点击“渲染”，得到一套完整的png序列图；</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/166009/32/14226/890152/605c526fE8773c642/4672808b6ef1adad.png" alt="png序列"></p>
+</li>
+<li><p>加载序列图：打开PS，点“文件-脚本-将文件载入堆栈”，浏览并选择全部序列图点击“确定”；</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/174507/16/364/1113540/605c5269Ead842a66/0af78cb8688c093b.png" alt="导入png序列图"></p>
+</li>
+<li><p>然后创建时间轴：待所有序列图加载完成后，打开窗口-时间轴，点“创建时间轴”。以下步骤就同视频导出GIF图一样；</p>
+</li>
+<li><p>点击时间轴右上角展开菜单，选择“设置时间轴帧速率”，将帧速率和AE合成的速率保持一致（在ae中Ctrl+K打开合成设置可查看帧速率）；</p>
+</li>
+<li><p>选择“转换帧-从剪辑建立帧”；</p>
+</li>
+<li><p>点击时间轴左下角，生成帧动画；</p>
+</li>
+<li><p>修改动画顺序：此时动画是倒放，所以点击右上角展开菜单，点击“选择全部帧”，然后点击“反向帧”，将动画正序；</p>
+</li>
+<li><p>导出动画：此时动图已设置好，Ctrl+shift+alt+s导出为web所用格式，将杂边颜色修改为图案所应用的界面的背景图层一致或改成“无”，即可导出；</p>
+</li>
+</ol>
+<h3 id="方式三：GifGun导出GIF图"><a href="#方式三：GifGun导出GIF图" class="headerlink" title="方式三：GifGun导出GIF图"></a>方式三：GifGun导出GIF图</h3><h4 id="GifGun安装方法"><a href="#GifGun安装方法" class="headerlink" title="GifGun安装方法"></a>GifGun安装方法</h4><p>先介绍一下GifGun安装方法，下载链接：<a href="http://www.gfxcamp.com/gifgun-v1715/">http://www.gfxcamp.com/gifgun-v1715/</a></p>
+<p>目前GifGun的版本是：v1.7.15</p>
+<p>先安装插件程序GifGunInstaller1.7.7signed.pkg；</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/163510/37/14413/59081/605c5267E71fed68d/b04c884bb17f05db.png" alt="安装方法"></p>
+<p>然后复制gifGun.jsxbin文件到AE脚本目录：Mac路径：应用程序\Adobe After Effects CC\Scripts\ScriptUI Panels\；</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/163261/29/14604/994451/605c5269E3f39cc98/da2b8c42f096680c.png" alt="复制路径"></p>
+<p>安装成功以后打开AE软件设置，勾选上允许脚本读写和访问网络；接下来我们就可以使用插件导出GIF啦～</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/162719/15/14710/567003/605c526aE02083989/e700d5189a6d2130.png" alt="勾选允许脚本写入"></p>
+<h4 id="GifGun使用方法"><a href="#GifGun使用方法" class="headerlink" title="GifGun使用方法"></a>GifGun使用方法</h4><p>先从AE窗口最下边把GifGun插件打开，图片右侧就是GifGun插件。</p>
+<p>接着就可以导出需要GIF图了，先设置下需要导出图片尺寸，比如这里我需要导出1125*926尺寸，设置宽度1125px，高度会自动换算的，设置导出位置，先把AE图层选中，也可以在导出之前，先把所有图层进行预合成，然后选中预合成文件，直接点击MaKe GIF动效就导出来了。</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/159615/15/14718/454946/605c526aE310d637d/0a9967b647ceaf08.png" alt="设置插件"></p>
+<h3 id="方式四：Adobe-Media-Encoder导出GIF图"><a href="#方式四：Adobe-Media-Encoder导出GIF图" class="headerlink" title="方式四：Adobe Media Encoder导出GIF图"></a>方式四：Adobe Media Encoder导出GIF图</h3><p>1.启动Adobe Media Encoder：先选中合成文件，然后选择合成-添加到Adobe Media Encoder渲染队列，启动启动Adobe Media Encoder；</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/162087/32/14797/1739901/605c526dE5fbe7529/11a733bd25b1e1c8.png" alt="Adobe Media Encoder"></p>
+<p>2.选择合成下边的下拉三角，找到我们想输出的动画GIF图格式，然后在预设中对GIF图的输出进行设置：输出路径、图片尺寸、输出质量、透明通道等进行设置，然后就可以导出GIF图了。但是一般导出的GIF图质量高体积大，需要我们再次进行GIF体积的瘦身。</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/173571/25/352/1187978/605c526bE48f3bc20/7bc2a868b6c9056d.png" alt="预设"></p>
+<h3 id="影响GIF体积的因素"><a href="#影响GIF体积的因素" class="headerlink" title="影响GIF体积的因素"></a>影响GIF体积的因素</h3><p>影响GIF体积主要有三个因素：<strong>尺寸、动画复杂度、动画时长</strong></p>
+<p>尺寸、动画时长越小，输出GIF的体积也就越小，动画复杂度越低，体积也就越小。影响动画复杂度的因素主要是：<strong>颜色和运动方式</strong>。相同条件下，色彩越丰富，运动方式越复杂，GIF体积越大。</p>
+<h3 id="降低GIF体积的方法"><a href="#降低GIF体积的方法" class="headerlink" title="降低GIF体积的方法"></a>降低GIF体积的方法</h3><p>有时候好不容易导出了GIF图，但却因为动图文件太大，导致上传受到限制，或研发说文件太大加载太慢拒绝接受文件，这时候是不是心里有一万只草泥马🦙在奔腾～hahh～</p>
+<p>我发现了一个特别好用的网站分享给大家：免费GIF编辑：<a href="https://ezgif.com/optimize%EF%BC%9B%E6%94%B6%E8%B4%B9GIF%E7%BC%96%E8%BE%91%EF%BC%9Ahttps://www.soogif.com/compress%EF%BC%9B">https://ezgif.com/optimize；收费GIF编辑：https://www.soogif.com/compress；</a></p>
+<h4 id="减小GIF大小的原理"><a href="#减小GIF大小的原理" class="headerlink" title="减小GIF大小的原理"></a>减小GIF大小的原理</h4><p>编辑GIF之前，我们要先知道怎样操作才可以降低图片大小。降低GIF大小原理有三个：减少图片帧数、减少图片颜色数量、减少图片大小（宽高像素），接下来我们根据以下步骤完成GIF的编辑。以ezgif网站步骤为例：</p>
+<h4 id="减小GIF大小的操作步骤"><a href="#减小GIF大小的操作步骤" class="headerlink" title="减小GIF大小的操作步骤"></a>减小GIF大小的操作步骤</h4><h5 id="第一步："><a href="#第一步：" class="headerlink" title="第一步："></a>第一步：</h5><p>先选择需要压缩的GIF图，点击上传；</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/156989/35/18066/71279/605c526aE06990430/4ad51f75b92d096b.png" alt="上传GIF"></p>
+<h5 id="第二步："><a href="#第二步：" class="headerlink" title="第二步："></a>第二步：</h5><p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/155918/13/17959/753855/605c526bE4dc68d64/432b7081ec905be1.png" alt="优化gif"></p>
+<p>如上图，上传了GIF后，在图片下方我们可以选择优化方法，这里的优化方法就是降低GIF图大小的三个原理；减色、使用单色：就是减少图片的颜色数量，删除重复的帧、删除第二帧、删除每三帧，、每隔4帧删除一次：就是减少GIF的帧数；有损GIF：降低GIF的质量，清晰度；</p>
+<p>原图3M，经过优化后图片的质量为500k；</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/171737/21/343/510522/605c526aE4b05879d/65c60449899b9100.gif" alt="优化后图片"></p>
+<p>此外，在这个宝藏网站上，我们还可以调整GIF图的动画速度和给GIF增加效果；</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/158383/36/15444/243419/605c5267Ead1122c5/c2d0cf6ef165a8cb.png" alt="变速"></p>
+<p>以上就是GIF导出的几种方法，GIF格式拥有非常强的兼容性，可以在大部分智能设备上直接预览，在各个平台上的兼容性也都很强。所以GIF成为设计师做概念展示时最受欢迎的格式。</p>
+<p>但GIF的缺点也是显而易见的，首先GIF对设备的性能占用很大，有时候满屏的GIF就会让页面卡顿；其次GIF作为一种有损格式，多少会对画面的色彩、质感有些影响；第三，GIF对于透明通道的支持有限，导出会出现白边。 </p>
+<p>所以，下篇文章我们来分享如何将动效转换成Lottlie，实现动效展示。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>小程序实用扩展工具类库总结</title>
     <url>/2020/12/13/%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%94%A8%E6%89%A9%E5%B1%95%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%BA%93%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<blockquote>
@@ -4083,6 +4256,30 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
       </tags>
   </entry>
   <entry>
+    <title>微信小程序canvas(一)：绘制圆角矩形或图片</title>
+    <url>/2020/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8Fcanvas(%E4%BA%8C)%EF%BC%9A%E7%BB%98%E5%88%B6%E5%9C%86%E8%A7%92%E7%9F%A9%E5%BD%A2%E6%88%96%E5%9B%BE%E7%89%87/</url>
+    <content><![CDATA[<p>参考了大牛文章的方案，链接如下：<a href="https://juejin.im/post/5b7e48566fb9a01a1059543f">https://juejin.im/post/5b7e48566fb9a01a1059543f</a><br>他的方案只能同时设置四个角的圆角值，在这里优化了大牛的方案，可根据需要给四个圆角设置不同的值。</p>
+<h3 id="需要定义生成圆角矩形的函数"><a href="#需要定义生成圆角矩形的函数" class="headerlink" title="需要定义生成圆角矩形的函数"></a>需要定义生成圆角矩形的函数</h3><ul>
+<li>参数定义：可以通过设置borderRadius或borderTopLeftRadius、borderTopRightRadius、 borderBottomRightRadius和borderBottomLeftRadius来生成四个方向的圆角矩形或图片<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 画圆角矩形、圆角边框和圆角图片所用到的方法</span><br><span class="line"> * @param params</span><br><span class="line"> * @param ctx</span><br><span class="line"> *&#x2F;</span><br><span class="line">const toDrawRadiusRect &#x3D; (params, ctx) &#x3D;&gt; &#123;</span><br><span class="line">  const &#123;</span><br><span class="line">    left, top, width, height, borderRadius,</span><br><span class="line">    borderTopLeftRadius, borderTopRightRadius, borderBottomRightRadius, borderBottomLeftRadius</span><br><span class="line">  &#125; &#x3D; params</span><br><span class="line">  ctx.beginPath()</span><br><span class="line">  if (borderRadius) &#123;</span><br><span class="line">    &#x2F;&#x2F; 全部有弧度</span><br><span class="line">    const br &#x3D; borderRadius &#x2F; 2</span><br><span class="line">    ctx.moveTo(left + br, top) &#x2F;&#x2F; 移动到左上角的点</span><br><span class="line">    ctx.lineTo(left + width - br, top) &#x2F;&#x2F; 画上边的线</span><br><span class="line">    ctx.arcTo(left + width, top, left + width, top + br, br) &#x2F;&#x2F; 画右上角的弧</span><br><span class="line">    ctx.lineTo(left + width, top + height - br) &#x2F;&#x2F; 画右边的线</span><br><span class="line">    ctx.arcTo(left + width, top + height, left + width - br, top + height, br) &#x2F;&#x2F; 画右下角的弧</span><br><span class="line">    ctx.lineTo(left + br, top + height) &#x2F;&#x2F; 画下边的线</span><br><span class="line">    ctx.arcTo(left, top + height, left, top + height - br, br) &#x2F;&#x2F; 画左下角的弧</span><br><span class="line">    ctx.lineTo(left, top + br) &#x2F;&#x2F; 画左边的线</span><br><span class="line">    ctx.arcTo(left, top, left + br, top, br) &#x2F;&#x2F; 画左上角的弧</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    const topLeftBr &#x3D; borderTopLeftRadius ? borderTopLeftRadius &#x2F; 2 : 0</span><br><span class="line">    const topRightBr &#x3D; borderTopRightRadius ? borderTopRightRadius &#x2F; 2 : 0</span><br><span class="line">    const bottomRightBr &#x3D; borderBottomRightRadius ? borderBottomRightRadius &#x2F; 2 : 0</span><br><span class="line">    const bottomLeftBr &#x3D; borderBottomLeftRadius ? borderBottomLeftRadius &#x2F; 2 : 0</span><br><span class="line">    ctx.moveTo(left + topLeftBr, top)</span><br><span class="line">    ctx.lineTo(left + width - topRightBr, top)</span><br><span class="line">    if (topRightBr) &#123; &#x2F;&#x2F; 画右上角的弧度</span><br><span class="line">      ctx.arcTo(left + width, top, left + width, top + topRightBr, topRightBr)</span><br><span class="line">    &#125;</span><br><span class="line">    ctx.lineTo(left + width, top + height - bottomRightBr) &#x2F;&#x2F; 画右边的线</span><br><span class="line">    if (bottomRightBr) &#123; &#x2F;&#x2F; 画右下角的弧度</span><br><span class="line">      ctx.arcTo(left + width, top + height,</span><br><span class="line">        left + width - bottomRightBr, top + height, bottomRightBr)</span><br><span class="line">    &#125;</span><br><span class="line">    ctx.lineTo(left + bottomLeftBr, top + height)</span><br><span class="line">    if (bottomLeftBr) &#123;</span><br><span class="line">      ctx.arcTo(left, top + height, left, top + height - bottomLeftBr, bottomLeftBr)</span><br><span class="line">    &#125;</span><br><span class="line">    ctx.lineTo(left, top + topLeftBr)</span><br><span class="line">    if (topLeftBr) &#123;</span><br><span class="line">      ctx.arcTo(left, top, left + topLeftBr, top, topLeftBr)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="绘制顶部或底部有凹凸弧度的线框、矩形或图片"><a href="#绘制顶部或底部有凹凸弧度的线框、矩形或图片" class="headerlink" title="绘制顶部或底部有凹凸弧度的线框、矩形或图片"></a>绘制顶部或底部有凹凸弧度的线框、矩形或图片</h3><ul>
+<li>画线框<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">toDrawRadiusRect(***)</span><br><span class="line">this.ctx.stroke()</span><br></pre></td></tr></table></figure></li>
+<li>画矩形<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">toDrawRadiusRect(***)</span><br><span class="line">this.ctx.fill()</span><br></pre></td></tr></table></figure></li>
+<li>画图片<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">this.ctx.save()</span><br><span class="line">toDrawRadiusRect(***) </span><br><span class="line">ctx.strokeStyle &#x3D; &#39;rgba(255,255,255,0)&#39;</span><br><span class="line">ctx.stroke()</span><br><span class="line">this.ctx.clip()</span><br><span class="line">this.ctx.drawImage(***)</span><br><span class="line">this.ctx.restore()</span><br></pre></td></tr></table></figure>
+_注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸。一旦剪切了某个区域，则所有之后的绘图都会被限制在被剪切的区域内（不能访问画布上的其他区域）。可以在使用 clip() 方法前通过使用 save() 方法对当前画布区域进行保存，并在以后的任意时间通过 restore() 方法对其进行恢复。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>小程序</category>
+      </categories>
+      <tags>
+        <tag>微信小程序</tag>
+        <tag>canvas</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>微信小程序暗黑模式</title>
     <url>/2020/11/01/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%9A%97%E9%BB%91%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<blockquote>
@@ -4178,30 +4375,6 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
 <li>必须配置darkmode和themeLocation才会生效</li>
 </ol>
 ]]></content>
-  </entry>
-  <entry>
-    <title>微信小程序canvas(一)：绘制圆角矩形或图片</title>
-    <url>/2020/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8Fcanvas(%E4%BA%8C)%EF%BC%9A%E7%BB%98%E5%88%B6%E5%9C%86%E8%A7%92%E7%9F%A9%E5%BD%A2%E6%88%96%E5%9B%BE%E7%89%87/</url>
-    <content><![CDATA[<p>参考了大牛文章的方案，链接如下：<a href="https://juejin.im/post/5b7e48566fb9a01a1059543f">https://juejin.im/post/5b7e48566fb9a01a1059543f</a><br>他的方案只能同时设置四个角的圆角值，在这里优化了大牛的方案，可根据需要给四个圆角设置不同的值。</p>
-<h3 id="需要定义生成圆角矩形的函数"><a href="#需要定义生成圆角矩形的函数" class="headerlink" title="需要定义生成圆角矩形的函数"></a>需要定义生成圆角矩形的函数</h3><ul>
-<li>参数定义：可以通过设置borderRadius或borderTopLeftRadius、borderTopRightRadius、 borderBottomRightRadius和borderBottomLeftRadius来生成四个方向的圆角矩形或图片<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 画圆角矩形、圆角边框和圆角图片所用到的方法</span><br><span class="line"> * @param params</span><br><span class="line"> * @param ctx</span><br><span class="line"> *&#x2F;</span><br><span class="line">const toDrawRadiusRect &#x3D; (params, ctx) &#x3D;&gt; &#123;</span><br><span class="line">  const &#123;</span><br><span class="line">    left, top, width, height, borderRadius,</span><br><span class="line">    borderTopLeftRadius, borderTopRightRadius, borderBottomRightRadius, borderBottomLeftRadius</span><br><span class="line">  &#125; &#x3D; params</span><br><span class="line">  ctx.beginPath()</span><br><span class="line">  if (borderRadius) &#123;</span><br><span class="line">    &#x2F;&#x2F; 全部有弧度</span><br><span class="line">    const br &#x3D; borderRadius &#x2F; 2</span><br><span class="line">    ctx.moveTo(left + br, top) &#x2F;&#x2F; 移动到左上角的点</span><br><span class="line">    ctx.lineTo(left + width - br, top) &#x2F;&#x2F; 画上边的线</span><br><span class="line">    ctx.arcTo(left + width, top, left + width, top + br, br) &#x2F;&#x2F; 画右上角的弧</span><br><span class="line">    ctx.lineTo(left + width, top + height - br) &#x2F;&#x2F; 画右边的线</span><br><span class="line">    ctx.arcTo(left + width, top + height, left + width - br, top + height, br) &#x2F;&#x2F; 画右下角的弧</span><br><span class="line">    ctx.lineTo(left + br, top + height) &#x2F;&#x2F; 画下边的线</span><br><span class="line">    ctx.arcTo(left, top + height, left, top + height - br, br) &#x2F;&#x2F; 画左下角的弧</span><br><span class="line">    ctx.lineTo(left, top + br) &#x2F;&#x2F; 画左边的线</span><br><span class="line">    ctx.arcTo(left, top, left + br, top, br) &#x2F;&#x2F; 画左上角的弧</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    const topLeftBr &#x3D; borderTopLeftRadius ? borderTopLeftRadius &#x2F; 2 : 0</span><br><span class="line">    const topRightBr &#x3D; borderTopRightRadius ? borderTopRightRadius &#x2F; 2 : 0</span><br><span class="line">    const bottomRightBr &#x3D; borderBottomRightRadius ? borderBottomRightRadius &#x2F; 2 : 0</span><br><span class="line">    const bottomLeftBr &#x3D; borderBottomLeftRadius ? borderBottomLeftRadius &#x2F; 2 : 0</span><br><span class="line">    ctx.moveTo(left + topLeftBr, top)</span><br><span class="line">    ctx.lineTo(left + width - topRightBr, top)</span><br><span class="line">    if (topRightBr) &#123; &#x2F;&#x2F; 画右上角的弧度</span><br><span class="line">      ctx.arcTo(left + width, top, left + width, top + topRightBr, topRightBr)</span><br><span class="line">    &#125;</span><br><span class="line">    ctx.lineTo(left + width, top + height - bottomRightBr) &#x2F;&#x2F; 画右边的线</span><br><span class="line">    if (bottomRightBr) &#123; &#x2F;&#x2F; 画右下角的弧度</span><br><span class="line">      ctx.arcTo(left + width, top + height,</span><br><span class="line">        left + width - bottomRightBr, top + height, bottomRightBr)</span><br><span class="line">    &#125;</span><br><span class="line">    ctx.lineTo(left + bottomLeftBr, top + height)</span><br><span class="line">    if (bottomLeftBr) &#123;</span><br><span class="line">      ctx.arcTo(left, top + height, left, top + height - bottomLeftBr, bottomLeftBr)</span><br><span class="line">    &#125;</span><br><span class="line">    ctx.lineTo(left, top + topLeftBr)</span><br><span class="line">    if (topLeftBr) &#123;</span><br><span class="line">      ctx.arcTo(left, top, left + topLeftBr, top, topLeftBr)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h3 id="绘制顶部或底部有凹凸弧度的线框、矩形或图片"><a href="#绘制顶部或底部有凹凸弧度的线框、矩形或图片" class="headerlink" title="绘制顶部或底部有凹凸弧度的线框、矩形或图片"></a>绘制顶部或底部有凹凸弧度的线框、矩形或图片</h3><ul>
-<li>画线框<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">toDrawRadiusRect(***)</span><br><span class="line">this.ctx.stroke()</span><br></pre></td></tr></table></figure></li>
-<li>画矩形<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">toDrawRadiusRect(***)</span><br><span class="line">this.ctx.fill()</span><br></pre></td></tr></table></figure></li>
-<li>画图片<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">this.ctx.save()</span><br><span class="line">toDrawRadiusRect(***) </span><br><span class="line">ctx.strokeStyle &#x3D; &#39;rgba(255,255,255,0)&#39;</span><br><span class="line">ctx.stroke()</span><br><span class="line">this.ctx.clip()</span><br><span class="line">this.ctx.drawImage(***)</span><br><span class="line">this.ctx.restore()</span><br></pre></td></tr></table></figure>
-_注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸。一旦剪切了某个区域，则所有之后的绘图都会被限制在被剪切的区域内（不能访问画布上的其他区域）。可以在使用 clip() 方法前通过使用 save() 方法对当前画布区域进行保存，并在以后的任意时间通过 restore() 方法对其进行恢复。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>小程序</category>
-      </categories>
-      <tags>
-        <tag>微信小程序</tag>
-        <tag>canvas</tag>
-      </tags>
   </entry>
   <entry>
     <title>数据库中的锁</title>
