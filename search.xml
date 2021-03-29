@@ -1,6 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>AE伪3DUI 界面小教程</title>
+    <url>/2021/03/29/AE%E4%BC%AA3DUI%20%E7%95%8C%E9%9D%A2%E5%B0%8F%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<p>本次给大家分享一个教程：使用Joysticks’n Sliders插件做一个3D-UI界面。</p>
+<p>效果如下：</p>
+<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/3bbb5637f8-84af49c0-906c-11eb-9b88-f5ecb3f063c1.gif" alt="动效"></p>
+<h3 id="插件介绍"><a href="#插件介绍" class="headerlink" title="插件介绍"></a>插件介绍</h3><p>本次3D-UI小动画主要用到的插件是：<strong>AE scripts Joystick‘n Sliders</strong>脚本：是一个二维动画绑定的插件，是通过创建控制杆或滑块来实现复杂的图形动画脚本。在图层上可以即时创建动画，只需在开始和结束位置设置关键帧，即可生成过渡动画，还可使用滑块来控制动画的任意位置，对于许多卡通角色制作，MG动画制作，等其他特殊动画制作，此脚本都可以提供高效的制作方案。</p>
+<p><strong>Joysticks’n Sliders插件的安装：</strong></p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/164976/33/8158/71038/60619625E9dfdf55a/8f7fc83cd14cdfe7.png" alt="插件安装"></p>
+<ol>
+<li>复制Joysticks_n_Sliders.jsxbin文件到AE脚本目录：</li>
+<li>Mac：应用程序\Adobe After Effects CC\Scripts\ScriptUI Panels\</li>
+<li>打开AE软件设置，勾选上*允许脚本读写和访问网络</li>
+</ol>
+<p>附上 Joysticks’n Sliders的下载地址：<a href="https://www.lookae.com/joysticks-171/">https://www.lookae.com/joysticks-171/</a></p>
+<h3 id="插件使用方法"><a href="#插件使用方法" class="headerlink" title="插件使用方法"></a>插件使用方法</h3><p>以下是插件中各个功能按钮的具体释义；</p>
+<p>插件的Joysticks部分功能看似很多，但大部分情况只需要创建控制器按钮就足够了；</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/163017/16/15520/421132/60619626E60c41995/cd6d6f118dfbbd84.png" alt="插件翻译"></p>
+<h3 id="3D-UI动画教程"><a href="#3D-UI动画教程" class="headerlink" title="3D-UI动画教程"></a>3D-UI动画教程</h3><h4 id="第一步：完成UI素材"><a href="#第一步：完成UI素材" class="headerlink" title="第一步：完成UI素材"></a>第一步：完成UI素材</h4><p>先在sketch里完成我们的UI设计稿；</p>
+<p>新建一个800*600px的画布为背景层，然后设置大背景色值为：#EBF0F3；UI矩形大小为：374x450px，border-radius：50px；阴影参数分别如下：</p>
+<p>阴影1：#D1D9E6    x and y：18px    模糊：30px    </p>
+<p>阴影2：#FFFFFF    x and y：-18px    模糊：30px  </p>
+<p>接下来就完成文字层、卡片层、按钮层的相关UI，最终效果如下；</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/164158/22/15319/311873/60619627Edac2a029/8090f8f3b7fbfdfc.png" alt="教程效果图-静态"></p>
+<p>接下来做好命名和分组，分别导出背景层、文字层、卡片层、按钮层；或者我们直接将sketch文件通过插件导入到AE中；</p>
+<p>再回忆一下将sketch文件导入到AE中的步骤：</p>
+<ul>
+<li>首先在Sketch中将所有需要运动的图层打组，然后在组命名前加上“#”，意味着该组属于一个图层不可编辑；</li>
+<li>然后选中所有需要导出的组，在插件中找到“Sketch2AE”，然后执行生成导出切片命令，此时可以看到每个组下方都会出现一个名为“Slice To AE”的新图层；</li>
+<li>然后再找到插件中的“Sketch2AE”，执行“导出画板命令”，然后在弹出的面板里设置合成时长和帧速率，并选择需要导出的画板，点击确定，同时给文件命名，然后选择导出的存放路径导出文件，此时在对应的路径下会自动生成一个.jsx的脚本文件和slice文件夹。</li>
+<li>打开AE后，在菜单栏选择文件-脚本-运行脚本文件，选择刚才导出的.jsx文件，这就算导入成功了。</li>
+</ul>
+<h4 id="第二步：动效合成设置导入素材"><a href="#第二步：动效合成设置导入素材" class="headerlink" title="第二步：动效合成设置导入素材"></a>第二步：动效合成设置导入素材</h4><p>在AE中，我们需要新建合成，参数如下：</p>
+<p>合成名称：3D-UI；宽高：800x600px；帧速率：30帧/秒；持续时间：3秒；</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/164735/1/15345/264393/60619627E159dd19b/017b51ee6d15db13.png" alt="新建合成"></p>
+<p>接下来就是导入我们的设计素材，按照设计稿效果调整素材的位置；并新建一个纯色图层；</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/157049/36/16258/1251424/60619625Eac24044d/16a0c00f74b2730b.png" alt="步骤二：导入素材"></p>
+<h4 id="第三步：调整属性，开启摄像机"><a href="#第三步：调整属性，开启摄像机" class="headerlink" title="第三步：调整属性，开启摄像机"></a>第三步：调整属性，开启摄像机</h4><p>选中四个图层，ctrl+D复制一层，此操作是需要副本，作为位置尺寸的参考；</p>
+<p>选中复制出来的四个图层，并打开3D开关，按快捷键P，打开位置属性，分别对文字、卡片、按钮位置属性中的Z轴设置：-50、-30、-30的参数。因为近大远小的原因，元素的位置、缩放参数都会发生改变，这时候我们再选中之前复制出来的四个图层，按快捷键shift+S，调出素材的缩放属性，根据原有位置调整素材大小，然后删掉复制前的素材文件。</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/157122/24/16067/1356620/60619626E9ddf96f4/ae983892eaad9191.png" alt="第三步：调整属性"></p>
+<h4 id="第四步：绑定插件"><a href="#第四步：绑定插件" class="headerlink" title="第四步：绑定插件"></a>第四步：绑定插件</h4><p>绑定插件之前，我们先需要新建一个摄像机图层，然后按快捷键：P，打开摄像机的位置属性，我们需要在第0帧打上关键帧参数不变；然后在第1帧打上关键帧：参数x=0，y=300；然后在第2帧打上关键帧：参数x=300，y=800；然后在第3帧打上关键帧：参数x=400，y=700；然后在第4帧打上关键帧：参数x=400，y=-100；</p>
+<p><strong>需要注意的是：是第1帧（01f）、第2帧（02f）…而不是1s、2s</strong></p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/172884/3/989/1124777/60619627E4dc987bc/ae075132266387ce.png" alt="第四步-新建摄像机"></p>
+<p>打好关键帧以后，我们选中摄像机图层，找到插件中的生成按钮，然后命名：3D-UI，点击按钮之后会自动生成一个控制器和控制区域，我们可以在效果控件中，将控制区域放大；然后拖动控制器，界面就产生了立体互动的效果；</p>
+<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/d53a57e753-c3265150-906f-11eb-9b88-f5ecb3f063c1.gif" alt="调整控制器"></p>
+]]></content>
+      <categories>
+        <category>After Effects</category>
+      </categories>
+      <tags>
+        <tag>After Effects</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>After Effects各功能基础认识</title>
     <url>/2021/03/22/After%20Effects%E5%90%84%E5%8A%9F%E8%83%BD%E5%9F%BA%E7%A1%80%E8%AE%A4%E8%AF%86/</url>
     <content><![CDATA[<h2 id="学习AE的必要性"><a href="#学习AE的必要性" class="headerlink" title="学习AE的必要性"></a>学习AE的必要性</h2><p>UI是基于静态页面来设计的，页面之间通过跳转切换。但是在设计过程中，设计师很重视单页的视觉效果，却经常忽略了对页面间跳转的处理。页面增加动效可以增强产品的趣味性和氛围。</p>
@@ -2217,6 +2270,9 @@
 </blockquote>
 <p>摩尔定律<br>每18到24个月，集成电路上可容纳的元器件数目便会增加一倍，芯片的性能也会随之翻一番</p>
 ]]></content>
+      <tags>
+        <tag>Nginx</tag>
+      </tags>
   </entry>
   <entry>
     <title>npm发包</title>
@@ -7090,7 +7146,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   </entry>
   <entry>
     <title></title>
-    <url>/2021/03/25/%E4%BB%A3%E7%A0%81%E7%9A%8422%E7%A7%8D%E5%9D%8F%E5%91%B3%E9%81%93/</url>
+    <url>/2021/03/29/%E4%BB%A3%E7%A0%81%E7%9A%8422%E7%A7%8D%E5%9D%8F%E5%91%B3%E9%81%93/</url>
     <content><![CDATA[<h2 id="类内味道"><a href="#类内味道" class="headerlink" title="类内味道"></a>类内味道</h2><h3 id="可度量的味道"><a href="#可度量的味道" class="headerlink" title="可度量的味道"></a>可度量的味道</h3><ol>
 <li>过长方法</li>
 </ol>
@@ -7420,6 +7476,76 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <li><input disabled="" type="checkbox"> <a href="https://blog.csdn.net/lovelion/article/details/9301691">https://blog.csdn.net/lovelion/article/details/9301691</a></li>
 </ul>
 ]]></content>
+  </entry>
+  <entry>
+    <title>关于HTTP和HTTPS的26问</title>
+    <url>/2021/03/25/%E5%85%B3%E4%BA%8EHTTP%E5%92%8CHTTPS%E7%9A%8426%E9%97%AE/</url>
+    <content><![CDATA[<p>Web前端就是当用户在浏览器地址栏中输入一行字母看到的页面结果。然而，从输入字母到看到页面中都发生了什么，数据是怎么得到的？这些都离不开HTTP/HTTPS。</p>
+<h3 id="HTTP与HTTPS有什么联系？它们的端口号是多少？"><a href="#HTTP与HTTPS有什么联系？它们的端口号是多少？" class="headerlink" title="HTTP与HTTPS有什么联系？它们的端口号是多少？"></a>HTTP与HTTPS有什么联系？它们的端口号是多少？</h3><p>HTTP通常承载于TCP之上，在HTTP和TCP之间添加一个安全协议层（SSL或TSL），这个时候，就成了我们常说的HTTPS。HTTP默认的端口号为80，Https默认的端口号为443。</p>
+<h3 id="为什么-HTTPS更安全？"><a href="#为什么-HTTPS更安全？" class="headerlink" title="为什么 HTTPS更安全？"></a>为什么 HTTPS更安全？</h3><p>在网络请求中，需要有很多服务器、路由器的转发。其中的节点都可能篡改信息，而如果使用HTTPS，密钥在终点站才有。HTTPS之所以比HTTP安全，是因为它利用 SSL/TLS协议传输。它包含证书、卸载、流量转发、负载均衡、页面适配、浏览器适配、 refer传递等技术，保障了传输过程的安全性。</p>
+<h3 id="关于HTTP-2你知道多少？"><a href="#关于HTTP-2你知道多少？" class="headerlink" title="关于HTTP/2你知道多少？"></a>关于HTTP/2你知道多少？</h3><p>HTTP/2引入了“服务器端推送”（server  push）的概念，它允许服务器端在客户端需要数据之前主动将数据发送到客户端缓存中，从而提高性能。<br>HTTP/2提供更多的加密支持。<br>HTTP2使用多路技术，允许多个消息在一个连接上同时交差。<br>它增加了头压缩（ header compression），因此请求非常小，请求和响应的 header都只会占用很小的带宽比例。</p>
+<h3 id="说出你知道的HTTP常见状态码。"><a href="#说出你知道的HTTP常见状态码。" class="headerlink" title="说出你知道的HTTP常见状态码。"></a>说出你知道的HTTP常见状态码。</h3><p>（1）100 Continue表示继续，一般在发送post请求时，已发送了 HTTP header之后，服务器端将返回此信息，表示确认，之后发送具体参数信息。<br>（2）200 OK表示正常返回信息<br>（3）201 Created表示请求成功并且服务器创建了新的资源。<br>（4）202 Accepted表示服务器已接受请求，但尚未处理。<br>（5）301 Moved Permanently表示请求的网页已永久移动到新位置。<br>（6）302 Found表示临时性重定向。<br>（7）303 See Other表示临时性重定向，且总是使用GET请求新的URI。<br>（8）304 Not Modified表示自从上次请求后，请求的网页未修改过，<br>（9）400 Bad Request表示服务器无法理解请求的格式，客户端不应当尝试再次使用相同的内容发起请求。<br>（10）401 Unauthorized表示请求未授权。<br>（11）403 Forbidden表示禁止访问。<br>（12）404 Not Found表示找不到如何与URI相匹配的资源。<br>（13）500 Internal Server error表示最常见的服务器端错误。<br>（14）503 Service Unavailable表示服务器端暂时无法处理请求（可能是过载或维护）。</p>
+<h3 id="完整的HTTP事务流程是怎样的？"><a href="#完整的HTTP事务流程是怎样的？" class="headerlink" title="完整的HTTP事务流程是怎样的？"></a>完整的HTTP事务流程是怎样的？</h3><p>基本流程如下。<br>（1）域名解析。<br>（2）发起TCP的3次握手。<br>（3）建立TCP连接后发起HTTP请求。<br>（4）服务器端响应HTTP请求，浏览器得到HTML代码。<br>（5）浏览器解析HTML代码，并请求HTML代码中的资源。<br>（6）浏览器对页面进行渲染并呈现给用户。</p>
+<h3 id="实现一个简单的HTTP服务器。"><a href="#实现一个简单的HTTP服务器。" class="headerlink" title="实现一个简单的HTTP服务器。"></a>实现一个简单的HTTP服务器。</h3><p>在Node.js中加载HTTP模块，并创建服务器，监听端口代码。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span>  http = <span class="built_in">require</span>（<span class="string">&#x27;http&#x27;</span>）；<span class="comment">//加载HTTP模块</span></span><br><span class="line">http.createServer(<span class="function"><span class="keyword">function</span>(<span class="params">req,res</span>) </span>&#123; </span><br><span class="line">  res.writeHead(<span class="number">200</span>，&#123;<span class="string">&#x27; Content-Type&#x27;</span>：<span class="string">&#x27;text/htm1&#x27;</span>&#125;)；</span><br><span class="line">  <span class="comment">//200代表状态成功，文档类型是</span></span><br><span class="line">  <span class="comment">//给浏览器识别用的</span></span><br><span class="line">  res.write（<span class="string">&#x27;&lt; meta charset=&quot;UTF-8&quot;&gt;&lt;h1&gt;有课前端网&lt;/h1&gt;1&#x27;</span>）；</span><br><span class="line">  <span class="comment">//返回给客户端的HTML数据</span></span><br><span class="line">  res.end ()；</span><br><span class="line">  <span class="comment">//结束输出流</span></span><br><span class="line">&#125;)</span><br><span class="line">http.listen（<span class="number">3000</span>）；<span class="comment">//绑定3000</span></span><br></pre></td></tr></table></figure>
+<h3 id="什么是HTTP？"><a href="#什么是HTTP？" class="headerlink" title="什么是HTTP？"></a>什么是HTTP？</h3><p>HTTP是客户端和服务器端之间数据传输的格式规范，表示“超文本传输协议”。</p>
+<h3 id="什么是HTTP无状态协议？如何克服HTTP无状态协议的缺陷？"><a href="#什么是HTTP无状态协议？如何克服HTTP无状态协议的缺陷？" class="headerlink" title="什么是HTTP无状态协议？如何克服HTTP无状态协议的缺陷？"></a>什么是HTTP无状态协议？如何克服HTTP无状态协议的缺陷？</h3><p>（1）无状态协议对于事务处理没有记忆能力。缺少状态意味着如果后续需要处理，需要前面提供的信息。<br>（2）克服无状态协议缺陷的办法是通过 cookie和会话保存信息。</p>
+<h3 id="HTTP的请求报文和响应报文包含哪些部分？"><a href="#HTTP的请求报文和响应报文包含哪些部分？" class="headerlink" title="HTTP的请求报文和响应报文包含哪些部分？"></a>HTTP的请求报文和响应报文包含哪些部分？</h3><p>请求报文包含3部分。<br>（1）请求行，包含请求方法、URI、HTTP版本信息。<br>（2）请求首部字段。<br>（3）请求内容实体。<br>响应报文包含3部分。<br>（1）状态行，包含HTTP版本、状态码、状态码的原因短语。<br>（2）响应首部字段。<br>（3）响应内容实体。</p>
+<h3 id="HTTP中有哪些请求方式？"><a href="#HTTP中有哪些请求方式？" class="headerlink" title="HTTP中有哪些请求方式？"></a>HTTP中有哪些请求方式？</h3><p>（1）GET：请求访问已经被URI（统一资源标识符）识别的资源，可以通过URL，给服务器传递参数数据<br>（2）POST：传输信息给服务器，主要功能与GET方法类似，但传递的数据量通常不受限制。<br>（3）PUT：传输文件，报文主体中包含文件内容，保存到对应URI位置。<br>（4）HEAD：获得报文首部，与GET方法类似，只是不返回报文主体，一般用于验证URI是否有效。<br>（5） DELETE：删除文件，与PUT方法相反，删除对应URL位置的文件。<br>（6）OPTIONS：查询相应URI支持的HTTP方法。</p>
+<h3 id="HTTP协议中1-0版本规范与1-1版本规范的区别是什么？"><a href="#HTTP协议中1-0版本规范与1-1版本规范的区别是什么？" class="headerlink" title="HTTP协议中1.0版本规范与1.1版本规范的区别是什么？"></a>HTTP协议中1.0版本规范与1.1版本规范的区别是什么？</h3><p>在HTTP1.0中，当建立连接后，客户端发送一个请求，服务器端返回一个信息后就关闭连接，当浏览器下次请求的时候又要建立连接。显然，这种不断建立连接的方式会造成很多问题。<br>在HTTP1.1中，引入了持续连接的概念。通过这种连接，浏览器可以在建立一个连接之后，发送请求并得到返回信息，然后继续发送请求再次等到返回信息。也就是说，客户端可以连续发送多个请求，而不用等待每一个响应的到来。</p>
+<h3 id="HTTP的首部字段包括哪些类型？"><a href="#HTTP的首部字段包括哪些类型？" class="headerlink" title="HTTP的首部字段包括哪些类型？"></a>HTTP的首部字段包括哪些类型？</h3><p>（1）通用首部字段（请求报文与响应报文都会使用的首部字段）。</p>
+<blockquote>
+<p>Date：创建报文的时间<br>Connection：连接的管理<br>Cache-Control：缓存的控制<br>Transfer-Encoding：报文主体的传输编码方式</p>
+</blockquote>
+<p>（2）请求首部字段（请求报文会使用的首部字段）。</p>
+<blockquote>
+<p>Host：请求资源所在服务器。<br>Accept：可处理的媒体类型。<br>Accept-Charset：可接受的字符集。<br>Accept-Encoding：可接受的内容编码。<br>Accept-Language：可接受的自然语言。</p>
+</blockquote>
+<p>（3）响应首部字段（响应报文会使用的首部字段）。</p>
+<blockquote>
+<p>Accept-Ranges：可接受的字节范围。<br>Location：令客户端重新定向到的URL。<br>Server : HTTP服务器的安装信息</p>
+</blockquote>
+<p>（4）实体首部字段（请求报文与响应报文的实体部分使用的首部字段）。</p>
+<blockquote>
+<p>Allow：资源可支持的HTTP方法。<br>Content-Type：实体主体的类型。<br>Content-Encoding：实体主体使用的编码方式。<br>Content-Language：实体主体的自然语言。<br>Content-Length：实体主体的字节数。<br>Content-Range：实体主体的位置范围，一般用于发出部分请求时使用。</p>
+</blockquote>
+<h3 id="与HTTPS相比，HTTP有什么缺点？"><a href="#与HTTPS相比，HTTP有什么缺点？" class="headerlink" title="与HTTPS相比，HTTP有什么缺点？"></a>与HTTPS相比，HTTP有什么缺点？</h3><p>HTTP的缺点如下。<br>（1）通信使用明文，不加密，内容可能被窃听，也就是被抓包分析。<br>（2）不验证通信方身份，可能遭到伪装。<br>（3）无法验证报文完整性，可能被篡改。<br>HTTPS就是HTTP+加密处理（一般是SSL安全通信线路）+认证+完整性保护。</p>
+<h3 id="如何优化HTTP请求？"><a href="#如何优化HTTP请求？" class="headerlink" title="如何优化HTTP请求？"></a>如何优化HTTP请求？</h3><p>利用负载均衡优化和加速HTTP应用请求；利用HTTP缓存来优化网站请求。</p>
+<h3 id="HTTP协议有哪些特征？"><a href="#HTTP协议有哪些特征？" class="headerlink" title="HTTP协议有哪些特征？"></a>HTTP协议有哪些特征？</h3><p>支持客户端/服务器模式，简单快速，灵活，无连接，无状态。</p>
+<h3 id="HTTP1-1版本的新特性有哪些？"><a href="#HTTP1-1版本的新特性有哪些？" class="headerlink" title="HTTP1.1版本的新特性有哪些？"></a>HTTP1.1版本的新特性有哪些？</h3><p>新特性如下所示。<br>（1）默认持久连接，节省通信量，只要客户端服务端中任意一端没有明确指出断开TCP连接，就一直保持连接，可以多次发送HTTP请求。<br>（2）管线化，客户端可以同时发出多个HTTP请求，而不用一个个等待响应。<br>（3）断点续传原理。</p>
+<h3 id="说说TCP传输的三次握手、四次挥手策略。"><a href="#说说TCP传输的三次握手、四次挥手策略。" class="headerlink" title="说说TCP传输的三次握手、四次挥手策略。"></a>说说TCP传输的三次握手、四次挥手策略。</h3><p>为了准确无误地把数据送达目标处，TCP采用了三次握手策略。用TCP把数据包发送出去后，TCP不会对传送后的数据置之不理，它一定会向对方确认是否成功送达。握手过程中使用了TCP的标志，即SYN和ACK。<br>发送端首先给接收端发送一个带SYN标志的数据包。接收端收到后，回传一个带有SYN/ACK标志的数据包以表示正确传达，并确认信息。最后，发送端再回传一个带ACK标志的数据包，代表“握手”结東。若在握手过程中的某个阶段莫名中断，TCP会再次以相同的顺序发送相同的数据包。<br>断开一个TCP连接则需要“四次握手”。<br>第一次握手：主动关闭方发送一个FIN，用来关闭主动关闭方到被动关闭方的数据传送，也就是主动关闭方告诉被动关闭方，主动关闭方已经不会再给被动关闭方发送数据了（当然，在FIN包之前发送出去的数据，如果没有收到对应的ACK确认报文主动关闭方依然会重发这些数据），但是，此时主动关闭方还可以接收数据。<br>第二次握手：被动关闭方收到FIN包后，给对方发送一个ACK，确认序号为收到序号+1（与SYN相同，一个FIN占用一个序号）。<br>第三次握手：被动关闭方发送一个FIN，用来关闭被动关闭方到主动关闭方的数据传送，也就是告诉主动关闭方，被动关闭方的数据也发送完了，不会再给主动关闭方发送数据了。<br>第四次握手：主动关闭方收到FIN后，给被动关闭方发送一个ACK，确认序号为收到序号+1，至此，完成四次握手。</p>
+<h3 id="说说TCP和UDP的区别。"><a href="#说说TCP和UDP的区别。" class="headerlink" title="说说TCP和UDP的区别。"></a>说说TCP和UDP的区别。</h3><p>TCP（ Transmission control protocol，传输控制协议）是基于连接的协议，也就是说，在正式收发数据前，必须和对方建立可靠的连接。一个TCP连接必须要经过3次“对话”才能建立起来。<br>UDP（ User Datagram Protocol，用户数据报协议）是与TCP相对应的协议。它是面向非连接的协议，它不与对方建立连接，而是直接就把数据包发送过去。UDP适用于次只传送少量数据、对可靠性要求不高的应用环境。</p>
+<h3 id="一个页面从输入URL到页面加载显示完成，这个过程中都发生了什么？"><a href="#一个页面从输入URL到页面加载显示完成，这个过程中都发生了什么？" class="headerlink" title="一个页面从输入URL到页面加载显示完成，这个过程中都发生了什么？"></a>一个页面从输入URL到页面加载显示完成，这个过程中都发生了什么？</h3><p>整个过程可分为4个步骤。</p>
+<ul>
+<li>当发送一个URL请求时，不管这个URL是Web页面的URL还是Web页面上毎个资源的URL，浏览器都会开启一个线程来处理这个请求，同时在远程DNS服务器上启动一个DNS查询。这能使浏览器获得请求对应的IP地址。</li>
+<li>浏览器与远程Web服务器通过TCP三次握手协商来建立一个TCPP连接。该握手包括一个同步报文、一个同步-应答报文和一个应答报文，这3个报文在浏览器和服务器之间传递。该握手首先由客户端尝试建立起通信，然后服务器应答并接受客户端的请求，最后由客户端发出已经接受该请求的报文。</li>
+<li>一旦TCP/IP连接建立，浏览器会通过该连接向远程服务器发送HTTP的GET请求。远程服务器找到资源并使用HTTP响应返回该资源，值为200的HTTP响应状态码表示一个正确的响应</li>
+<li>此时web服务器提供资源服务，客户端开始下载资源。请求返回后，便进入了浏览器端模块。浏览器会解析HTML生成 DOM Tree，其次会根据CSS生成CSS规则树，而 JavaScript又可以根据 DOM API操作DOM。<h3 id="网络分层模型有哪七层？"><a href="#网络分层模型有哪七层？" class="headerlink" title="网络分层模型有哪七层？"></a>网络分层模型有哪七层？</h3>七层分别是<blockquote>
+<p>应用（ Application）层: 允许访问OSI环境的手段。<br>表示（ Presentation）层: 对数据进行翻译、加密和压缩。<br>会话（ Session）层: 建立、管理和终止会话。<br>传输（ Transport）层: 提供端到端的可靠报文传递和错误恢复。<br>网络（ Network）层: 负责数据包从源到宿的传递和网际互联。<br>数据链路（Link）层: 将比特组装成帧并实现点到点的传递。<br>物理（ Physical）层: 通过媒介传输比特，确定机械及电气规范。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="网络七层模型中，你所熟知的协议有哪些？"><a href="#网络七层模型中，你所熟知的协议有哪些？" class="headerlink" title="网络七层模型中，你所熟知的协议有哪些？"></a>网络七层模型中，你所熟知的协议有哪些？</h3><p>有以下几种协议。</p>
+<ul>
+<li><p>ICMP，即因特网控制报文协议。它是TCP/IP协议族的一个子协议，用于在IP主机、路由器之间传递控制消息。</p>
+</li>
+<li><p>TFTP，即TCPP协议族中一个用来在客户机与服务器之间进行简单文件传输的协议，提供不复杂、开销不大的文件传输服务。</p>
+</li>
+<li><p>HTTP，即超文本传输协议，是一个属于应用层的面向对象的协议，由于其简捷快速的方式，适用于分布式超媒体信息系统。</p>
+</li>
+<li><p>DHCP，即动态主机配置协议，是一种让系统得以连接到网络并获取所需要配置参数的手段。</p>
+</li>
+</ul>
+<h3 id="304缓存的原理。"><a href="#304缓存的原理。" class="headerlink" title="304缓存的原理。"></a>304缓存的原理。</h3><p>服务器首先为请求生成ETag，服务器可在稍后的请求中，使用它来判断页面是否已经修改。本质上，客户端通过将该记号传回服务器要求服务器验证其（客户端）是否缓存。<br>304是HTTP状态码，服务器用它来标识这个文件没有修改，不返回内容，浏览器在接收到个状态码后，会使用浏览器已缓存的文件。<br>客户端请求页面A。服务器返回页面A，并给A加上一个ETag。客户端展现该页面，并将页面连同ETag一起缓存。<br>客户端再次请求页面A，并将上次请求时服务器返回的ETag起传递给服务器。<br>服务器检查该ETag，并判断岀该页面自上次客户端请求之后还未被修改，直接返回响应304（未修改一 Not modified）和一个空的响应体。</p>
+<h3 id="什么是Etag？"><a href="#什么是Etag？" class="headerlink" title="什么是Etag？"></a>什么是Etag？</h3><p>当发送一个服务器请求时，浏览器首先会进行缓存过期判断。浏览器根据缓存过期时间判断缓存文件是否过期若没有过期，则不向服务器发送请求，直接使用缓存中的结果。<br>此时，我们在浏览器控制台中可以看到200 OK（ from cache），这种情况就是完全使用缓存，浏览器和服务器没有任何交互。<br>若已过期，则向服务器发送请求。此时，请求中会带上文件修改时间和Etag，然后进行资源更新判断。<br>服务器根据浏览器传过来的文件修改时间，判断自浏览器上一次请求之后，文件是否被修改过。根据Etag，判断文件内容自上一次请求之后，有没有发生变化。<br>若两种判断的结论都是文件没有被修改过，服务器就不给浏览器发送新的内容，而是直接告诉浏览器，文件没有被修改过，可以继续使用缓存—-304 Not Modified。<br>此时，浏览器就会从本地缓存中获取请求资源的内容，这种情况叫协议缓存，浏览器和服务器之间有一次请求交互。<br>若修改时间或文件内容判断中有任意一个没有通过，则服务器会受理此次请求，并返回新的数据注意，只有get请求会被缓存，post请求不会。</p>
+<h3 id="ETag的应用。"><a href="#ETag的应用。" class="headerlink" title="ETag的应用。"></a>ETag的应用。</h3><p>Etag由服务器端生成，客户端通过 If-Match或者If-None-Match这个条件判断请求来验证资源是否修改。常见的是使用I-None-Match。请求一个文件的流程如下。<br>第一次请求时，客户端发起 Http Get请求，以获取一个文件，服务器处理请求，返回文件内容和请求头（包括Eag），并返回状态码200第二次请求时，客户端发起 Http Get请求，以获取一个文件。<br>注意，这个时候客户端同时发送一个If-None-Match头，这个头的内容就是第一次请求时服务器返回的Etag服务器判断发送过来的Etag和计算出来的Etag是否匹配。<br>如果If-None-Match为 False，不返回200，返回304，客户端继续使用本地缓存。<br>如果服务器设置了 Cache-Control:max-age和 Expires，服务器端在完全匹配 If-Modified-Since和 If-None-Match后，即检查完修改时间和Etag之后，才能返回304。</p>
+<h3 id="Expires和-Cache-Control的作用是什么？"><a href="#Expires和-Cache-Control的作用是什么？" class="headerlink" title="Expires和 Cache-Control的作用是什么？"></a>Expires和 Cache-Control的作用是什么？</h3><p>Expires要求客户端和服务器端的时间严格同步。HTTP1.1引入Cache-Control来克服 Expires头的限制。如果max-age和 Expires同时出现，则max-age有更高的优先级。<br>具体代码如下所示。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Cache-Control:no-cache, private, max-age=<span class="number">0</span></span><br><span class="line">ETag：<span class="string">&quot;8b4c-55f16e2e30000&quot;</span></span><br><span class="line">Expires:Thu, <span class="number">02</span> Dec <span class="number">2027</span> <span class="number">11</span>:<span class="number">37</span>:<span class="number">56</span> GMT</span><br><span class="line">Last-Modified:Wed, <span class="number">29</span> Nov <span class="number">2017</span> <span class="number">03</span>:<span class="number">39</span>:<span class="number">44</span> GMT</span><br></pre></td></tr></table></figure>
+<h3 id="什么是反向代理？"><a href="#什么是反向代理？" class="headerlink" title="什么是反向代理？"></a>什么是反向代理？</h3><p>反向代理（ Reverse Proxy）是指通过代理服务器来接收互联网上的连接请求，然后将请求转发给内部网络上的服务器，并把从服务器上得到的结果返回给互联网上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。</p>
+]]></content>
+      <tags>
+        <tag>Q&amp;A</tag>
+      </tags>
   </entry>
   <entry>
     <title>前端应用对比</title>
