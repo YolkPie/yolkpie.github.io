@@ -4782,6 +4782,122 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       </tags>
   </entry>
   <entry>
+    <title>移动端地图技术</title>
+    <url>/2021/03/30/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E5%9C%B0%E5%9B%BE%E6%8A%80%E6%9C%AF/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>介绍地图之前我们首先了解它的基本组成。相信大家都了解拼图游戏的原理，把一张大图切割成若干小块，然后按照一定的规则拼接起来。地图的原理也是一样。我搜罗的目前移动端比较常见的绘制地图的方法，与大家分享。</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>互联网地图服务商的在线地图都通过瓦片的方式提供，称为瓦片地图服务。最常见的地图瓦片是图片格式的，现在有的地图服务商也提供了矢量的瓦片数据，然后在用户端使用Canvas渲染成图片，如node-canvas实现百度地图个性化底图绘制。<br>在进行地图开发时，为获取特定经纬度所在区域的瓦片和获取瓦片上像素点对应的经纬度，经常需要进行经纬度坐标与瓦片坐标、像素坐标的相互转换。</p>
+<h3 id="主要经纬度坐标系"><a href="#主要经纬度坐标系" class="headerlink" title="主要经纬度坐标系"></a>主要经纬度坐标系</h3><p>国际标准的经纬度坐标是WGS84，Open Street Map、外国版的Google Map都是采用WGS84；高德地图使用的坐标系是GCJ-02；百度地图使用的坐标系是BD-09。高德地图和百度地图都提供了在线的单向坐标转换接口，将其他坐标系换化到自己的坐标系，但这种转换受限于http url请求字段长度和网络请求延迟，批量处理并不实用。离线相互转换可以通过开源JavaScript库coordtransform实现，误差在10米左右。<br>虽然各地图服务商经纬度坐标系不同，但某一互联网地图的经纬度坐标与瓦片坐标相互转换只与该地图商的墨卡托投影和瓦片编号的定义有关，跟地图商采用的大地坐标系标准无关。</p>
+<h3 id="瓦片切割和瓦片坐标"><a href="#瓦片切割和瓦片坐标" class="headerlink" title="瓦片切割和瓦片坐标"></a>瓦片切割和瓦片坐标</h3><p>地图瓦片具有以下特点：</p>
+<ul>
+<li><ol>
+<li>具有唯一的瓦片等级（Level）和瓦片坐标编号（tileX, tileY）。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>瓦片分辨率为256$\times$256。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>最小的地图等级是0，此时世界地图只由一张瓦片组成。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>瓦片等级越高，组成世界地图的瓦片数越多，可以展示的地图越详细。</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>某一瓦片等级地图的瓦片是由低一级的各瓦片切割成的4个瓦片组成，形成了瓦片金字塔。</li>
+</ol>
+</li>
+</ul>
+<p>瓦片坐标和经纬度坐标之间存在关系，而这层关系是通过后端接口加密处理并且一一映射后的，有自己的计算公式</p>
+<ul>
+<li>坐标转换图解<br><img src= "/img/loading.gif" data-src="66.png" alt="示例"></li>
+</ul>
+<h3 id="瓦片地图等级范围"><a href="#瓦片地图等级范围" class="headerlink" title="瓦片地图等级范围"></a>瓦片地图等级范围</h3><p>瓦片地图等级范围反映了地图可缩放的程度。<br>虽然最小的瓦片等级是0，但是部分地图并不提供0级或其他较小瓦片等级的地图，因为此时的世界地图将会很小，不能铺满用户设备窗口。<br>经过实际测试，各地图服务商的瓦片等级和测试链接如下：</p>
+<ul>
+<li><p>百度图片瓦片的层级是[3~18] <a href="http://online1.map.bdimg.com/onlinelabel/?qt=tile&amp;x=49310&amp;y=10242&amp;z=18">http://online1.map.bdimg.com/onlinelabel/?qt=tile&amp;x=49310&amp;y=10242&amp;z=18</a></p>
+</li>
+<li><p>百度主页的层级是[3~19] <a href="http://map.baidu.com/">http://map.baidu.com/</a></p>
+</li>
+<li><p>高德图片瓦片的层级是[1~19] <a href="http://wprd03.is.autonavi.com/appmaptile?style=7&amp;x=427289&amp;y=227618&amp;z=19">http://wprd03.is.autonavi.com/appmaptile?style=7&amp;x=427289&amp;y=227618&amp;z=19</a></p>
+</li>
+<li><p>高德地图官网介绍的高德地图层级：</p>
+</li>
+<li><p>获取当前地图缩放级别,在PC上，默认取值范围为[3,18]；在移动设备上，默认取值范围为[3-19]</p>
+</li>
+<li><p>谷歌地图瓦片层级是[0~21] <a href="http://mt2.google.cn/vt/lyrs=m@167000000&amp;hl=zh-CN&amp;gl=cn&amp;x=1709157&amp;y=910472&amp;z=21&amp;s=Galil">http://mt2.google.cn/vt/lyrs=m@167000000&amp;hl=zh-CN&amp;gl=cn&amp;x=1709157&amp;y=910472&amp;z=21&amp;s=Galil</a></p>
+</li>
+</ul>
+<p>下图是百度地图的一个瓦片图片展示：</p>
+<p><img src= "/img/loading.gif" data-src="44.png" alt="示例"></p>
+<ul>
+<li>瓦片等级由2的次方来划分的，即1到4，4到16，16到<br>如图示意：<br><img src= "/img/loading.gif" data-src="33.jpg" alt="示例"></li>
+</ul>
+<p><strong>需要注意的问题</strong></p>
+<ul>
+<li>瓦片像素坐标的起始点</li>
+</ul>
+<ol>
+<li>高德地图、谷歌地图的瓦片坐标起点在左上角，像素坐标（pixelX, pixelY）在瓦片中的起点为左上角。</li>
+<li>百度地图中，像素坐标（pixelX, pixelY）的起点为左下角。</li>
+</ol>
+<h3 id="百度地图技术介绍"><a href="#百度地图技术介绍" class="headerlink" title="百度地图技术介绍"></a>百度地图技术介绍</h3><p>简单介绍一个地图的底图的相关知识吧，我们眼中看到的丰富的地图信息，其中组成地图的主要元素，莫过于地图的一张张底图瓦片了。如下图所示，</p>
+<p>一般我们打开了一个地图，其实际上可能会像上图一样，由一堆瓦片组成。1，2，3，4表示不同的瓦片。 而某一张瓦片如下图所示<br>在线地址：<a href="http://developer.baidu.com/map/custom/">http://developer.baidu.com/map/custom/</a> </p>
+<h3 id="百度地图底图绘制技术现状"><a href="#百度地图底图绘制技术现状" class="headerlink" title="百度地图底图绘制技术现状"></a>百度地图底图绘制技术现状</h3><p>要想绘制上面所示的底图，目前现在主要有两类技术</p>
+<ul>
+<li><p><strong>栅格：</strong> 也就是传意义的图片技术，在server端把图片画好。浏览器使用node-canvas实现百度地图个性化底图绘制标签拼出来</p>
+</li>
+<li><p><strong>矢量：</strong>在浏览器使用canvas技术，将矢量的数据，在浏览器完成渲染。它最大的问题在于：只支持高端浏览器</p>
+</li>
+</ul>
+<p>百度地图，目前两种技术都已经实现，如果大家使用的是mapapi,在高端浏览器下打开，你会发现，他是使用canvas绘制的。<br>其中的地图底图在IE678等浏览器下，就是使用node-canvas在后端绘制出来的,获取当前绘制经纬度，之后通过接口调用瓦片，<br>经纬度坐标与瓦片坐标、像素坐标的相互转换，以平面坐标为中间量进行转换。主要代码为</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Bmap为百度JavaScript API V2.0的地图对象</span></span><br><span class="line">  <span class="function"><span class="title">lnglatToPoint</span>(<span class="params">longitude, latitude</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> projection = <span class="keyword">new</span> BMap.MercatorProjection();</span><br><span class="line">    <span class="keyword">let</span> lnglat = <span class="keyword">new</span> BMap.Point(longitude, latitude);</span><br><span class="line">    <span class="keyword">let</span> point = projection.lngLatToPoint(lnglat);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      pointX: point.x,</span><br><span class="line">      pointY: point.y</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">pointToLnglat</span>(<span class="params">pointX, pointY</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> projection = <span class="keyword">new</span> BMap.MercatorProjection();</span><br><span class="line">    <span class="keyword">let</span> point = <span class="keyword">new</span> BMap.Pixel(pointX, pointY);</span><br><span class="line">    <span class="keyword">let</span> lnglat = projection.pointToLngLat(point);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      lng: lnglat.lng,</span><br><span class="line">      lat: lnglat.lat</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="http://developer.baidu.com/map/jsdemo.htm#a1_2">http://developer.baidu.com/map/jsdemo.htm#a1_2</a></p>
+<p>有兴趣可以使用不同的浏览器打开看看就可以看出来。</p>
+<p>如图所示</p>
+<p><img src= "/img/loading.gif" data-src="55.jpg" alt="示例"></p>
+<h3 id="canvas绘制图片的优点"><a href="#canvas绘制图片的优点" class="headerlink" title="canvas绘制图片的优点"></a>canvas绘制图片的优点</h3><ul>
+<li>1.它允许我们使用canvas的语法和接口写成的js代码，放在server跑。</li>
+<li>2.减少大量的DOM操作可以大大提升性能。</li>
+</ul>
+<p>如介绍</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> Canvas = <span class="built_in">require</span>(<span class="string">&#x27;canvas&#x27;</span>)</span><br><span class="line">  , canvas = <span class="keyword">new</span> Canvas(<span class="number">200</span>,<span class="number">200</span>)</span><br><span class="line">  , ctx = canvas.getContext(<span class="string">&#x27;2d&#x27;</span>);</span><br><span class="line"></span><br><span class="line">ctx.font = <span class="string">&#x27;30px Impact&#x27;</span>;</span><br><span class="line">ctx.rotate(<span class="number">.1</span>);</span><br><span class="line">ctx.fillText(<span class="string">&quot;Awesome!&quot;</span>, <span class="number">50</span>, <span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> te = ctx.measureText(<span class="string">&#x27;Awesome!&#x27;</span>);</span><br><span class="line">ctx.strokeStyle = <span class="string">&#x27;rgba(0,0,0,0.5)&#x27;</span>;</span><br><span class="line">ctx.beginPath();</span><br><span class="line">ctx.lineTo(<span class="number">50</span>, <span class="number">102</span>);</span><br><span class="line">ctx.lineTo(<span class="number">50</span> + te.width, <span class="number">102</span>);</span><br><span class="line">ctx.stroke();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;node-canvas实现百度地图个性化底图绘制&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>目前使用canvas的原因有以下几点：</p>
+<ol>
+<li>百度地图已经很好的实现使用canvas技术在浏览器完成渲染。</li>
+</ol>
+<p>　　并有不错的展现效果和性能，在移动端体验更好。因为矢量的数据比请求图片的体积要小的多</p>
+<ol start="2">
+<li>在canvas的方案下，已经实现个性化底图的绘制效果</li>
+</ol>
+<p>　　底图绘制由样式+矢量数据组成。只要修改替换样式文件，就可以实现个性化地图的渲染。</p>
+<ol start="3">
+<li>低端浏览器如IE6-8等浏览器，是不支持canvas功能的。</li>
+</ol>
+<p>　　展现地图底图，必须使用栅格图实现。需要有后端技术来生成底图</p>
+<ol start="4">
+<li>由于不样的样式要求得到不同的底图。就需要图片是实时绘制的，而且要求性能必须好</li>
+</ol>
+<p>在线地址：<a href="http://api.map.baidu.com/customimage/tile?x=788&amp;y=293&amp;z=12&amp;customid=midnight">http://api.map.baidu.com/customimage/tile?x=788&amp;y=293&amp;z=12&amp;customid=midnight</a><br>可以看的出来，速度是很快的。<br><img src= "/img/loading.gif" data-src="22.png" alt="示例"><br>(9个瓦片生成的大图)  </p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
+<li><a href="https://en.wikipedia.org/wiki/Tile_Map_Service">瓦片地图服务</a></li>
+<li><a href="http://www.cnblogs.com/well1010/articles/baidu-map-node-canvas.html">node-canvas实现百度地图个性化底图绘制</a></li>
+<li><a href="http://blog.sina.com.cn/s/blog_517eed9f0102w4rm.html">地图投影的N种姿势</a></li>
+<li><a href="http://www.cnblogs.com/jz1108/archive/2011/07/02/2095376.html">百度地图API详解之地图坐标系统</a></li>
+<li><a href="http://lbs.amap.com/api/javascript-api/reference/map/">高德地图层级</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>H5</category>
+      </categories>
+      <tags>
+        <tag>H5</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>自定义webpack插件</title>
     <url>/2021/03/17/%E8%87%AA%E5%AE%9A%E4%B9%89webpack%E6%8F%92%E4%BB%B6/</url>
     <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>webpack 自身会提供一些基础插件，比如压缩、生成 html 文件、预加载等。有时，我们需要利用 webpack 提供的不同阶段钩子来做一些定制化功能的插件，以满足我们的业务需求，比如代码检查、打包后的文件处理(添加、删除、更改)。下面介绍如何自定义 webpack 插件。</p>
@@ -7146,7 +7262,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   </entry>
   <entry>
     <title></title>
-    <url>/2021/03/29/%E4%BB%A3%E7%A0%81%E7%9A%8422%E7%A7%8D%E5%9D%8F%E5%91%B3%E9%81%93/</url>
+    <url>/2021/03/30/%E4%BB%A3%E7%A0%81%E7%9A%8422%E7%A7%8D%E5%9D%8F%E5%91%B3%E9%81%93/</url>
     <content><![CDATA[<h2 id="类内味道"><a href="#类内味道" class="headerlink" title="类内味道"></a>类内味道</h2><h3 id="可度量的味道"><a href="#可度量的味道" class="headerlink" title="可度量的味道"></a>可度量的味道</h3><ol>
 <li>过长方法</li>
 </ol>
