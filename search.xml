@@ -654,7 +654,7 @@
   </entry>
   <entry>
     <title>SameSiteForCookie</title>
-    <url>/2021/03/03/SameSiteForCookie/</url>
+    <url>/2021/02/03/SameSiteForCookie/</url>
     <content><![CDATA[<h1 id="Cookie、Session、Token到底是什么"><a href="#Cookie、Session、Token到底是什么" class="headerlink" title="Cookie、Session、Token到底是什么"></a>Cookie、Session、Token到底是什么</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ol>
 <li>通天塔页面分享至京喜小程序中交互丢失</li>
 <li>定位问题为iOS14以上，跨站请求默认不再携带cookie</li>
@@ -1443,7 +1443,7 @@
   </entry>
   <entry>
     <title>git分支管理策略</title>
-    <url>/2021/03/03/git%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86%E7%AD%96%E7%95%A5/</url>
+    <url>/2021/02/23/git%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86%E7%AD%96%E7%95%A5/</url>
     <content><![CDATA[<h1 id="git分支管理策略"><a href="#git分支管理策略" class="headerlink" title="git分支管理策略"></a>git分支管理策略</h1><p><font size='4'>概述</font></p>
 <img src= "/img/loading.gif" data-src="./assets/img/git分支管理策略.png" width = "70%" alt="图片名称" align=center />
 
@@ -6826,7 +6826,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   </entry>
   <entry>
     <title>webcomponents实践</title>
-    <url>/2021/03/03/webcomponents%E5%AE%9E%E8%B7%B5/</url>
+    <url>/2021/01/03/webcomponents%E5%AE%9E%E8%B7%B5/</url>
     <content><![CDATA[<h1 id="web-Components能代替现下主流的框架么？"><a href="#web-Components能代替现下主流的框架么？" class="headerlink" title="web Components能代替现下主流的框架么？"></a>web Components能代替现下主流的框架么？</h1><p><a href="#%E5%90%89%E5%BE%B7%E6%9E%97%E6%B3%95%E5%88%99">吉德林法则</a></p>
 <h2 id="keydown之前想的事情"><a href="#keydown之前想的事情" class="headerlink" title="keydown之前想的事情"></a>keydown之前想的事情</h2><blockquote>
 <p><font color=#222 size=3>1. what 什么是web Components，有什么特点？</font> <br /><br><font color=#222 size=3>2. way 为什么要用web Components？</font> <br /><br><font color=#222 size=3>3. where web Components在那里用？</font> <br /><br><font color=#222 size=3>4. how web Components怎么用？</font> <br /><br><font color=#222 size=3>5. PS web Components使用注意事项</font></p>
@@ -7412,8 +7412,8 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/03/31/%E4%BB%A3%E7%A0%81%E7%9A%8422%E7%A7%8D%E5%9D%8F%E5%91%B3%E9%81%93/</url>
+    <title>代码的22种坏味道</title>
+    <url>/2021/03/06/%E4%BB%A3%E7%A0%81%E7%9A%8422%E7%A7%8D%E5%9D%8F%E5%91%B3%E9%81%93/</url>
     <content><![CDATA[<h2 id="类内味道"><a href="#类内味道" class="headerlink" title="类内味道"></a>类内味道</h2><h3 id="可度量的味道"><a href="#可度量的味道" class="headerlink" title="可度量的味道"></a>可度量的味道</h3><ol>
 <li>过长方法</li>
 </ol>
@@ -7743,6 +7743,9 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 <li><input disabled="" type="checkbox"> <a href="https://blog.csdn.net/lovelion/article/details/9301691">https://blog.csdn.net/lovelion/article/details/9301691</a></li>
 </ul>
 ]]></content>
+      <tags>
+        <tag>JS</tag>
+      </tags>
   </entry>
   <entry>
     <title>关于HTTP和HTTPS的26问</title>
