@@ -2621,6 +2621,157 @@ renderWithHooks()中有一个Component()方法，用来执行App()，此时又�
 ]]></content>
   </entry>
   <entry>
+    <title>whistle使用实践（vase篇）</title>
+    <url>/2021/03/27/whistle%E4%BD%BF%E7%94%A8%E5%AE%9E%E8%B7%B5%EF%BC%88vase%E7%AF%87%EF%BC%89/</url>
+    <content><![CDATA[<h1 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h1><p>之前我在<a href="https://yolkpie.net/2020/12/24/whistle%E4%BD%BF%E7%94%A8%E5%AE%9E%E8%B7%B5%EF%BC%88%E5%AE%9E%E4%BE%8B%E7%AF%87%EF%BC%89/">whistle使用实践（实例篇）</a>中的 mock 数据一节中说过使用 file 或者 tpl 就能满足大部分的工作需要，但是想 mock 的数据有更大的灵活性或者数据项中间有逻辑关系，可以使用whistle.vase。因为 vase 官网已经说的很详细了，而且我在工作中一般都手动改 json 文件，也没用上过 vase，本来不打算写这篇的。但是最近部门的测试同学遇到了在页面回退时需要变更 mock 数据的情况，来找我问解决方案，这让我想起了自己之前手动改 json 文件的繁琐，因此就以此为契机，记录下 whistle.vase 来 mock 数据的方式，仅供大家参考。</p>
+<p>这篇文章依然从实用性出发，只是介绍了对于前端人员最易上手的方式，如果想要了解更多，依然推荐去 <a href="https://github.com/whistle-plugins/whistle.vase">whistle.vase 官网</a>。 </p>
+<h1 id="whistle-vase"><a href="#whistle-vase" class="headerlink" title="whistle.vase"></a>whistle.vase</h1><p>whistle.vase 是 whsitle 的一个插件，内置了 default、doT、dust、ejs、handlebars、jade、mock、mustache、nunjucks、swig、vm 以及用于解析自定义脚本的 script 渲染引擎，通过该插件，我们可以更灵活的控制要 mock 的数据。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>whistle.vase 不是 whistle 内置的插件（whistle 没有内置任何插件），我们还需要手动安装一下:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">npm install -g whistle.vase</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>安装成功后，可以在 whistle 控制台的 Plugins 下面看到。如果没有的话，可以重启下 whistle。</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/157098/20/15542/552298/605e9e6dE8ded985b/75e0d92dda2c8ba8.jpg" alt="whistle Plugins"></p>
+<p>有两种方式可以打开 vase 的配置页面，一种是在上图中找到 vase 点进去，另一种是使用浏览器访问<a href="http://local.whistlejs.com/whistle.vase/%E3%80%82%E5%9B%A0%E4%B8%BA%E6%88%91%E4%B9%A0%E6%83%AF%E5%9C%A8%E4%B8%80%E4%B8%AA%E9%A1%B5%E9%9D%A2%E9%85%8D%E6%89%80%E6%9C%89%EF%BC%8C%E9%87%87%E7%94%A8%E7%9A%84%E6%98%AF%E7%AC%AC%E4%B8%80%E7%A7%8D%E6%96%B9%E5%BC%8F%E3%80%82">http://local.whistlejs.com/whistle.vase/。因为我习惯在一个页面配所有，采用的是第一种方式。</a></p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/156343/34/18186/548396/605e9e6cE9da59800/e3a05e272c9ee81e.jpg" alt="vase 配置界面"></p>
+<p>从上图可以看到，vase 的配置页面和 whistle 长的很像，如果使用 vase 的渲染引擎 mock 数据，就要在 vase 的配置页添加。</p>
+<h2 id="添加模板"><a href="#添加模板" class="headerlink" title="添加模板"></a>添加模板</h2><p>点 Create 按钮， 选择对应的渲染引擎，这里我们先选择 default。default 是 vase 的默认引擎，即直接输出设置的文本，不做任何加工。（感觉和 Values 的功能一样呢，存疑，这部分以后再了解。）</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/172683/28/616/656218/605e9e6bEb28c681a/b86f96870f45953d.jpg" alt="添加 default 模板"></p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>vase 的配置规则很简单，左侧是对应的文件，右侧是要匹配的规则：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vase:&#x2F;&#x2F;vase-file rule1 rule2 rule3</span><br></pre></td></tr></table></figure>
+
+<p>比如，我要 mock 京东首页的数据：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vase:&#x2F;&#x2F;hello.html https:&#x2F;&#x2F;m.jd.com&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>访问首页，结果如下：</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/163843/40/14672/1121348/605e9e69E2a1c705c/506874b21621653f.jpg" alt="mock 京东首页"></p>
+<h1 id="强大的-script"><a href="#强大的-script" class="headerlink" title="强大的 script"></a>强大的 script</h1><p>上面提到的 default 渲染引擎因为是静态的，依然解决不了灵活输出的问题，这时候就要用到我们前端人员最为熟悉的 script 了。</p>
+<blockquote>
+<p>script 是 vase 系统自定义的脚本解析器，保留了 JavaScript 的一些基本特性，如：基本类型、条件语句、循环体、方法等，剔除了 JavaScript 内置的一些 api，如：process、setTimeout、setInterval 等，并内置了一些方法用于读取及处理 vase 的模板、本地文件、线上文件等，且所有调用都是同步的方式。</p>
+</blockquote>
+<p>也就是说，除了 setTimeout 这些异步的方法之外，script 还提供了读取 vase 模板、本地和线上文件的功能，使我们能够更加灵活的获取数据源、控制输出。另外，script 还可以控制速度、分段输出、设置响应头、响应状态码、响应内容编码等，是不是很强大呢？</p>
+<p>script 模板的创建很简单，在创建的时候文件使用 .js 后缀，选择 script 引擎就可以了。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/162308/22/15178/687759/605efacaEbba851a7/f8caa826f75da9bf.jpg" alt="script 创建"></p>
+<p>本着一招鲜吃遍天的原则，script 是我认为的 vase 中最创新的（况且渲染时还可以使用所有上面列出来的渲染引擎，见script API 中render 方法）且是前端最容易掌握的，如果不想学其他的渲染引擎的话，我觉得这个就够了。我们先逐个看下 script 提供的方法吧。</p>
+<h2 id="script-API"><a href="#script-API" class="headerlink" title="script API"></a>script API</h2><ol>
+<li>out(data, delay, speed)  </li>
+</ol>
+<p>所有的数据都要通过该方法才能输出到响应中，也可以用 write。</p>
+<ul>
+<li>data：要输出的对象，可以是 json、文本，也可以是 vase 加载的资源。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 输出文本</span></span><br><span class="line">out(<span class="string">&#x27;hello world&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 json</span></span><br><span class="line">out(&#123;</span><br><span class="line">    content: <span class="string">&#x27;hello world&#x27;</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 vase 加载的资源（略，详见 14:render）</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>delay: 设置延迟多少毫秒输出。</li>
+<li>speed: 设置输出的速度(单位kbs)。</li>
+</ul>
+<ol start="2">
+<li>status<br>设置输出的http状态码，默认为200，也可以写成 statusCode(code);</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">out(status(500));</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>header(name, value)</li>
+</ol>
+<p>设置响应头。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 设置允许跨域的相应头</span></span><br><span class="line">out(header(<span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>, <span class="string">&#x27;*&#x27;</span>));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>headers(obj)<br>和 header 方法一样，用于设置相应头，不同的是 headers 可以同时设置多个。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 同时设置多个请求头</span></span><br><span class="line">out(headers(&#123;</span><br><span class="line">    <span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>: <span class="string">&#x27;*&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;content-type&#x27;</span>: <span class="string">&#x27;text/plain; charset=utf8&#x27;</span></span><br><span class="line">&#125;));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>file(path)<br>读取本地文件。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// mac</span></span><br><span class="line">out(file(<span class="string">&#x27;/User/xxx/hello.html&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// windows</span></span><br><span class="line">out(file(<span class="string">&#x27;D:/xxx/hello.html&#x27;</span>)); </span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>get(url|options)  </li>
+</ol>
+<p>通过get方式获取线上文件，支持https及http协议。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 参数为url</span></span><br><span class="line">out(get(<span class="string">&#x27;https://m.jd.com/&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 参数为options时，可以自定义请求头</span></span><br><span class="line">out(get(&#123;</span><br><span class="line">    url: <span class="string">&#x27;https://www.taobao.com/&#x27;</span>,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;vase/x.y.z&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>post(url|options)  </li>
+</ol>
+<p>通过post方式获取线上文件，支持https及http协议。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 和 get 不同之处：还可以自定义表单数据</span></span><br><span class="line">out(post(&#123;</span><br><span class="line">    url: <span class="string">&#x27;https://m.jd.com/&#x27;</span>,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;vase/x.y.z&#x27;</span></span><br><span class="line">    &#125;, </span><br><span class="line">    form: &#123;<span class="attr">key</span>:<span class="string">&#x27;value&#x27;</span>&#125;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li>request(options)  </li>
+</ol>
+<p>通过自定义方式获取线上文件，支持https及http协议。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">out(request(&#123;</span><br><span class="line">    url: <span class="string">&#x27;https://m.jd.com/&#x27;</span>,</span><br><span class="line">    method: <span class="string">&#x27;get&#x27;</span>,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;vase/x.y.z&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li>json(data)  </li>
+</ol>
+<p>将文本转换成json 对象。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 转换字符串</span></span><br><span class="line">out(json(<span class="string">&#x27;&#123;&quot;test&quot;: 123&#125;&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 转换本地加载的文件内容</span></span><br><span class="line">out(json(file(<span class="string">&#x27;/User/xxx/hello.txt&#x27;</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">//  转换线上获取到的内容</span></span><br><span class="line">out(json(get(<span class="string">&#x27;https://m.jd.com/xxx/hello.txt&#x27;</span>));</span><br></pre></td></tr></table></figure>
+
+<ol start="10">
+<li>merge(json, …, jsonN)</li>
+</ol>
+<p>合并 json 对象。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 合并不同来源的 json 数据</span></span><br><span class="line">out(merge(json(<span class="string">&#x27;&#123;&quot;test&quot;: 123&#125;&#x27;</span>), json(file(<span class="string">&#x27;/User/xxx/hello.txt&#x27;</span>))));</span><br><span class="line"></span><br><span class="line"><span class="comment">// vase &gt;= v1.3.1 时，支持深度合并 merge(deepMerge, json, ..., jsonN)</span></span><br><span class="line">out(<span class="literal">true</span>, merge(json(<span class="string">&#x27;&#123;&quot;test&quot;: 123&#125;&#x27;</span>), json(file(<span class="string">&#x27;/User/xxx/hello.txt&#x27;</span>))));</span><br></pre></td></tr></table></figure>
+
+<ol start="11">
+<li>random(arg1, …, argN)</li>
+</ol>
+<p>随机获取参数列表中的一个。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 随机取数</span></span><br><span class="line">out(random(<span class="number">1</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">10</span>));</span><br></pre></td></tr></table></figure>
+
+<ol start="12">
+<li>join(arr, seperator)</li>
+</ol>
+<p>与数组的 join 方法一样用于拼接数组，seperator默认为’’。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 返回拼接好的地址</span></span><br><span class="line">out(join([<span class="string">&#x27;province&#x27;</span>, <span class="string">&#x27;city&#x27;</span>, <span class="string">&#x27;county&#x27;</span>, <span class="string">&#x27;town&#x27;</span>], <span class="string">&#x27;-&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果使用默认的seperator， 可以写成join(arg1, ..., argN)</span></span><br><span class="line">out(join(<span class="string">&#x27;province&#x27;</span>, <span class="string">&#x27;city&#x27;</span>, <span class="string">&#x27;county&#x27;</span>, <span class="string">&#x27;town&#x27;</span>));</span><br></pre></td></tr></table></figure>
+
+<ol start="13">
+<li>req</li>
+</ol>
+<p>请求对象，包含：headers、method、body、query、url、locals(=merge(req.query, req.body))。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 判断请求对象的 method 是否为 OPTION，是的话放过</span></span><br><span class="line"><span class="keyword">if</span> (req.method === <span class="string">&#x27;OPTION&#x27;</span>) &#123;</span><br><span class="line">    out(status(<span class="number">200</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="14">
+<li>render(tpl[, locals[, engineType]])</li>
+</ol>
+<p>渲染模板。（这里是重点！）</p>
+<ul>
+<li><p>tpl：vase 的模板名称或模板字符串。</p>
+</li>
+<li><p>locals：可选，用于渲染的json对象。</p>
+</li>
+<li><p>engineType：可选，渲染引擎名称，包含 default、doT、dust、doT、ejs、jade、mock、mustache、nunjucks、swig、vm。</p>
+</li>
+</ul>
+<p>14.1 如果tpl是字符串或数字，且 vase 里面有对应名称的模板，则会自动加载 vase 的模板内容。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用 req.locals(=merge(req.query, req.body)) 的值作为模板的数据</span></span><br><span class="line">out(render(<span class="string">&#x27;test-tpl&#x27;</span>), req.locals);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用获取到的 json 数据作为模板的数据</span></span><br><span class="line"></span><br><span class="line">out(render(<span class="string">&#x27;test-tpl&#x27;</span>), json(get(<span class="string">&#x27;https://m.jd.com/xxx/test.txt&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果模板使用的是其他渲染引擎（如handlebars），还需要在第三个参数指定</span></span><br><span class="line">out(render(<span class="string">&#x27;test-tpl&#x27;</span>), req.locals, <span class="string">&#x27;handlebars&#x27;</span>);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>14.2 如果tpl是字符串或数字，且没有对应的vase模板，则这些字符串作为模板内容。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 字符串作为模板内容</span></span><br><span class="line">out(render(<span class="string">&#x27;Hello &#123;&#123;name&#125;&#125;&#x27;</span>, &#123;<span class="attr">name</span>: <span class="string">&#x27;World&#x27;</span>&#125;, <span class="string">&#x27;handlebars&#x27;</span>));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>14.3 可以渲染线上或本地文件模板</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 渲染线上模板</span></span><br><span class="line">out(render(get(<span class="string">&#x27;http://m.jd.com/&#x27;</span>), json(get(<span class="string">&#x27;https://m.jd.com/xxx/test.txt&#x27;</span>), <span class="string">&#x27;handlebars&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 渲染本地文件模板</span></span><br><span class="line">out(render(file(<span class="string">&#x27;/User/xxx/test-tpl.txt&#x27;</span>), json(get(<span class="string">&#x27;https://m.jd.com/xxx/test.txt&#x27;</span>), <span class="string">&#x27;handlebars&#x27;</span>));</span><br></pre></td></tr></table></figure>
+
+<p>从上面的 API 可以看出，vase 获取数据（本地文件、vase 模板、线上、字符串等数据内容，以及请求头内容req）、渲染数据（render 使用的模板和要渲染的数据可以有多种来源，可以使用多种渲染引擎）的方式都很灵活，还可以灵活的设置请求头和延迟时间，只要我们面对具体情况的时候善于组合，就妥妥的了。</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>回到测试同学遇到的问题，简单来说，测试需要的是同一个字段可以使用不同的值（0 和 1），看了上面的 API 之后，你应该就会觉得太简单了，随机下 0 和 1 就行了，杀鸡用牛刀的感觉：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">out(random(<span class="number">1</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">10</span>));</span><br></pre></td></tr></table></figure>
+
+<p>再稍微复杂点，比如在拍卖业务中，不同业务线返回的对象是不同的。那我们可以根据请求参数，渲染不同的模板或者返回不一样的值。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 使用不同模板</span></span><br><span class="line"><span class="keyword">if</span> (req.locals) &#123;</span><br><span class="line">    <span class="keyword">switch</span> (req.locals.publishSource === <span class="string">&#x27;OPTION&#x27;</span>) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;sifa&#x27;</span>:</span><br><span class="line">            <span class="comment">// render 方法可以同样根据 req 中拿到的数进行逻辑上的处理</span></span><br><span class="line">            out(render(<span class="string">&#x27;sifa-tpl&#x27;</span>)）;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;haiguan&#x27;</span>:</span><br><span class="line">            out(render(<span class="string">&#x27;sifa-tpl&#x27;</span>)）;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    out(status(<span class="number">200</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果你需要造很多条数据，也可以使用 vase 来写（当然，你也可以选一个模板来写循环）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 造100条数据</span></span><br><span class="line"><span class="keyword">let</span> arr = [];</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">  arr.push(&#123;</span><br><span class="line">    id: i,</span><br><span class="line">    name: <span class="string">`user<span class="subst">$&#123;i&#125;</span>`</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line">out(arr);</span><br></pre></td></tr></table></figure>
+
+<p>总之，灵活运用很重要。</p>
+<h1 id="追加的碎碎念"><a href="#追加的碎碎念" class="headerlink" title="追加的碎碎念"></a>追加的碎碎念</h1><p>whistle 真是个宝藏，所以我应该不会说什么不再写的 flag 了，如果再遇到具体的问题，这个系列就又要更新了。</p>
+]]></content>
+      <tags>
+        <tag>whistle</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>whistle使用实践（实例篇）</title>
     <url>/2020/12/24/whistle%E4%BD%BF%E7%94%A8%E5%AE%9E%E8%B7%B5%EF%BC%88%E5%AE%9E%E4%BE%8B%E7%AF%87%EF%BC%89/</url>
     <content><![CDATA[<h1 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h1><p>作为一名前端开发，利用代理工具抓包是最基础的技能。通过抓包，我们可以获取的信息有下面这些：</p>
@@ -7262,7 +7413,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   </entry>
   <entry>
     <title></title>
-    <url>/2021/03/30/%E4%BB%A3%E7%A0%81%E7%9A%8422%E7%A7%8D%E5%9D%8F%E5%91%B3%E9%81%93/</url>
+    <url>/2021/03/31/%E4%BB%A3%E7%A0%81%E7%9A%8422%E7%A7%8D%E5%9D%8F%E5%91%B3%E9%81%93/</url>
     <content><![CDATA[<h2 id="类内味道"><a href="#类内味道" class="headerlink" title="类内味道"></a>类内味道</h2><h3 id="可度量的味道"><a href="#可度量的味道" class="headerlink" title="可度量的味道"></a>可度量的味道</h3><ol>
 <li>过长方法</li>
 </ol>
