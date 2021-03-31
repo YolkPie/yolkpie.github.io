@@ -1,3 +1,3 @@
 webpackJsonp([26],{155:/*!*************************************************************************!*\
   !*** ./node_modules/raw-loader!./src/boilerplates/es-import/codepan.js ***!
-  \*************************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="import babel from '@babel/core'\nimport env from '@babel/preset-env'\n\nconst { code } = babel.transform(`\nclass Foo {\n  bar() {}\n}\n`, {\n  presets: [env]\n})\n\nconsole.log(code)\n"}});
+  \*************************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="import babel from '@babel/core'\r\nimport env from '@babel/preset-env'\r\n\r\nconst { code } = babel.transform(`\r\nclass Foo {\r\n  bar() {}\r\n}\r\n`, {\r\n  presets: [env]\r\n})\r\n\r\nconsole.log(code)\r\n"}});

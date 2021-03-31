@@ -1,3 +1,3 @@
 webpackJsonp([12],{172:/*!*******************************************************************!*\
   !*** ./node_modules/raw-loader!./src/boilerplates/vue/codepan.js ***!
-  \*******************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="new Vue({\n  el: '#app',\n  data: { count: 0 },\n  methods: {\n    inc() {\n      this.count++\n    },\n    dec() {\n      this.count--\n    }\n  }\n})\n"}});
+  \*******************************************************************//*! dynamic exports provided *//*! all exports used */function(a){a.exports="new Vue({\r\n  el: '#app',\r\n  data: { count: 0 },\r\n  methods: {\r\n    inc() {\r\n      this.count++\r\n    },\r\n    dec() {\r\n      this.count--\r\n    }\r\n  }\r\n})\r\n"}});
