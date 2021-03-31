@@ -4076,10 +4076,12 @@ window.requestAnimationFrame(changePosition);
 </blockquote>
 <h4 id="clip-path动画"><a href="#clip-path动画" class="headerlink" title="clip-path动画"></a>clip-path动画</h4><p>clip-path 另外一个强大之处在于可以进行 CSS transtion 与 CSS animation，也就是过渡和动画。</p>
 <p>看一个多边形的过渡切换动画。</p>
-<p><img src= "/img/loading.gif" data-src="https://mmbiz.qpic.cn/mmbiz_gif/SMw0rcHsoNKx4Cz1QzFjDVdxgHG7lN03iclweBjarRiazbCPfbII7E7qica6E1X6kP9W4V7fKyFo7L2Mwia9toLbEw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<!-- ![](https://mmbiz.qpic.cn/mmbiz_gif/SMw0rcHsoNKx4Cz1QzFjDVdxgHG7lN03iclweBjarRiazbCPfbII7E7qica6E1X6kP9W4V7fKyFo7L2Mwia9toLbEw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1) -->
+
 <p><a href="https://codepen.io/Chokcoco/pen/LLNWyZ">多边形过渡动画</a></p>
 <h4 id="图形变换动画"><a href="#图形变换动画" class="headerlink" title="图形变换动画"></a>图形变换动画</h4><p>除此之外，我们还可以尝试，将一个完整的图形，分割成多个小图形，这也是 clip-path 的魅力所在，纯 CSS 的图形变换：</p>
-<p><img src= "/img/loading.gif" data-src="https://mmbiz.qpic.cn/mmbiz_gif/SMw0rcHsoNKx4Cz1QzFjDVdxgHG7lN03tXLng1lZbHedTcbOz5NQHbEsKuuYudPJoFhSPCkS4KGrfg3icy7EGhA/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<!-- ![](https://mmbiz.qpic.cn/mmbiz_gif/SMw0rcHsoNKx4Cz1QzFjDVdxgHG7lN03tXLng1lZbHedTcbOz5NQHbEsKuuYudPJoFhSPCkS4KGrfg3icy7EGhA/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1) -->
+
 <p><a href="https://codepen.io/Chokcoco/pen/yXOjZm">Clip-path triangle2rect</a></p>
 <h4 id="clip-path-动画的局限"><a href="#clip-path-动画的局限" class="headerlink" title="clip-path 动画的局限"></a>clip-path 动画的局限</h4><p>clip-path 动画虽然美好，但是存在一定的局限性，那就是进行过渡的两个状态，坐标顶点的数量必须一致。</p>
 <p>也就是如果我希望从三角形过渡到矩形。假设三角形和矩形的 clip-path 分别为：</p>
@@ -4093,11 +4095,14 @@ window.requestAnimationFrame(changePosition);
 <li>三角形：clip-path: polygon(50% 0, 0 100%, 100% 0) -&gt; clip-path: polygon(50% 0, 50% 0, 0 100%, 100% 0)</li>
 </ul>
 <h4 id="N边形过渡动画"><a href="#N边形过渡动画" class="headerlink" title="N边形过渡动画"></a>N边形过渡动画</h4><p>随机生成 N（N&gt;=1000）边形，进行变换，会是什么效果呢？</p>
-<p><img src= "/img/loading.gif" data-src="https://mmbiz.qpic.cn/mmbiz_gif/SMw0rcHsoNKx4Cz1QzFjDVdxgHG7lN03M4hdQL0rVKicwdOxhiatG4zXsSR2bhSao1enTMkWE5zSibUCJic5DxZgSg/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<!-- ![](https://mmbiz.qpic.cn/mmbiz_gif/SMw0rcHsoNKx4Cz1QzFjDVdxgHG7lN03M4hdQL0rVKicwdOxhiatG4zXsSR2bhSao1enTMkWE5zSibUCJic5DxZgSg/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1) -->
+
 <p><a href="https://codepen.io/Chokcoco/pen/XgJRzO">2000边形过渡动画</a></p>
 <p>变换的瞬间很有爆炸的感觉。不过这里有个很大的问题，只是随机生成了 2000 个坐标点，然后使用 clip-path 将这些坐标点连接起来，并不是符合要求的多边形。</p>
 <p>在 <a href="https://vuefe.cn/v2/guide/transitioning-state.html#%E5%8A%A8%E6%80%81%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2">VUE官网</a>，有下面这样一个例子，一个规则的多边形进行不断的过渡动画，非常酷炫：</p>
-<p><img src= "/img/loading.gif" data-src="https://mmbiz.qpic.cn/mmbiz_gif/SMw0rcHsoNKx4Cz1QzFjDVdxgHG7lN03LcKsAibKWfl4O1G0ssmZkeeAMa1IkZZN5WBCIakURiaSIF3Yg8sJQic6w/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1"></p>
+<!-- ![](https://mmbiz.qpic.cn/mmbiz_gif/SMw0rcHsoNKx4Cz1QzFjDVdxgHG7lN03LcKsAibKWfl4O1G0ssmZkeeAMa1IkZZN5WBCIakURiaSIF3Yg8sJQic6w/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1) -->
+
+
 <p>使用 CSS clip-path 实现：<br><a href="https://codepen.io/Chokcoco/pen/NgqGOo">clip-path N polygon</a></p>
 <h3 id="shape-outside"><a href="#shape-outside" class="headerlink" title="shape-outside"></a>shape-outside</h3><blockquote>
 <p>只能和浮动 float 一起使用,它赋予了我们一种更为自由的图文混排的能力。</p>
