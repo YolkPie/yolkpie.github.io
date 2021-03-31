@@ -8190,8 +8190,8 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
       </tags>
   </entry>
   <entry>
-    <title>组件封装参考</title>
-    <url>/2021/01/27/%E7%BB%84%E4%BB%B6%E5%B0%81%E8%A3%85%E5%8F%82%E8%80%83/</url>
+    <title>组件封装概论</title>
+    <url>/2021/01/27/%E7%BB%84%E4%BB%B6%E5%B0%81%E8%A3%85%E6%A6%82%E8%AE%BA/</url>
     <content><![CDATA[<p>大家好，今天我们来谈谈前端每个人都在写的东西，组件。</p>
 <p>在当下react和vue这么流行的大环境下，相信你一定写过组件。如果你感觉你是职场小白，只从github或者npm下载过一些组件使用，自己没有写过，那么你就错了，你一定写过。因为往大一点说，一个页面可以是一个组件，往小了说，一个按钮也是一个组件，你写的区别只在于它的扩展性是不是好，通用性是不是强。所以，首先不要畏惧，我们每个人其实都在写组件，今天的分享，就是如何让我们更好的写组件</p>
 <h3 id="一、需求分析-构思组件"><a href="#一、需求分析-构思组件" class="headerlink" title="一、需求分析-构思组件"></a>一、需求分析-构思组件</h3><p>从接手项目，带你开启组件封装第一步：</p>
@@ -8296,6 +8296,529 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 
 
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>相信任何一个好的组件，都是经过实践历练，调试出来的，开始封装的组件没有那么多功能，没有那么完善不要灰心，坚持用，不好的地方我们可以在使用中改，经过多次使用的组件，一定会慢慢丰富和强健起来。最终可能经过3,5年时间，我们做的的组件库，可以达到项目的70%利用率，同时，我们的开发效率也会大大提高。代码更强健。<br>最后，本文档作为前端组件基本标准，我们会越来越细化它的要求。希望大家一起献计献策，完善我们的组件封装标准。</p>
+]]></content>
+      <categories>
+        <category>组件</category>
+      </categories>
+      <tags>
+        <tag>组件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>组件封装细则</title>
+    <url>/2021/03/31/%E7%BB%84%E4%BB%B6%E5%B0%81%E8%A3%85%E7%BB%86%E5%88%99/</url>
+    <content><![CDATA[<p>前端组件人人都在用，人人都在封装。目前已知的几个大型开源组件库也并没有给出具体的封装规范。但是根据其开放的组件样式、使用规则等我们也可以参考出一些具体的封装要求。延伸到业务和组件的使用场景，其要求可能又不完全一样。<br>本文章旨在以StoryBook为展示背景条件下，规范出一套基本的前端组件封装要求，提供一套更加适合大众使用的前端组件封装细则，供大家参考。</p>
+<h2 id="组件的分类、命名、文件结构"><a href="#组件的分类、命名、文件结构" class="headerlink" title="组件的分类、命名、文件结构"></a>组件的分类、命名、文件结构</h2><h3 id="组件的分类"><a href="#组件的分类" class="headerlink" title="组件的分类"></a><strong>组件的分类</strong></h3><h4 id="基础组件"><a href="#基础组件" class="headerlink" title="基础组件"></a>基础组件</h4><pre><code> 基础组件可以供多个项目使用，可配置项更多，展示形式及功能更灵活、丰富。
+ 作为基础组件，可以是业务组件封装的基础，默认的UI可能不能够直接用于项目，但是其功能及提供的配置参数，可以满足我们在此基础组件上封装业务组件。
+</code></pre>
+<ul>
+<li><p><strong>展示组件</strong><br>SrollView、盒子模型、Swiper、提示语等</p>
+</li>
+<li><p><strong>功能组件</strong><br>confirm弹窗、toast弹窗、全页面蒙层、滚动至顶部、tips、tab、swiper等</p>
+</li>
+</ul>
+<h4 id="业务组件"><a href="#业务组件" class="headerlink" title="业务组件"></a>业务组件</h4><pre><code>业务组件主要是为了能在更少时间更少配置的情况下，快速搭建同一业务条线下相同风格的的页面。减少开发成本，组件的利用率可能不会很高，但是使用成本却大大降低，因为它更贴近业务，包括接口数据格式和字段名称、UI样式等，都可以不单独配置。
+</code></pre>
+<ul>
+<li><p><strong>后台页面组件</strong><br> 后台组件一般设计风格都高度统一，对业务条线区分不细致。封装的组件利用率更高。但是，一般而言，目前开源的组件库，例如element-UI就已经很大部分基础组件可以支持后台系统使用。<br><strong>封装主要针对具有业务特性的组件</strong><br>例如：类目选择、图片上传、视频上传、toast提示、confirm提示等组件</p>
+</li>
+<li><p><strong>ToC页面组件</strong></p>
+<p> <strong>首页组件</strong> 金刚区、瀑布流、公告位、轮播图等<br> <strong>单品页组件</strong> 图片缩放、楼层盒子、流程图、推荐位、详情、视频、倒计时等<br> <strong>列表页组件</strong> 搜索项、地址、多选、单选、价格滑块、地址回填、卡片列表、分页加载等<br> <strong>其他页面</strong>  信息填写、表单提交、地址选择等<br> <strong>公共业务组件</strong> 搜索框、底部tab、空提示、错误提示d等</p>
+</li>
+</ul>
+<h3 id="组件的命名"><a href="#组件的命名" class="headerlink" title="组件的命名"></a><strong>组件的命名</strong></h3><ul>
+<li><p><strong>凸显作用</strong></p>
+<p>如果作为<strong>基础组件</strong>，命名可以大众，例如：Button、 Toast、Confirm、 Tips、 srollView等<br>如果作为<strong>业务组件</strong>，命名需要有特定开头，例如 ：</p>
+<ol>
+<li>首页组件-IndexConfirm、IndexSwiper等</li>
+<li>单品页组件-ItemSwiper、ItemRecommend、ItemVideo等</li>
+<li>如果组件不通用，又分了特定的业务条线，则需要增加业务前缀；例如：PMItemSwiper、PMItemRecommend、PMItemVideo、FangItemSwiper等</li>
+</ol>
+</li>
+<li><p><strong>首字母大些</strong><br>组件的命名需要统一风格，都以大些英文开头</p>
+</li>
+</ul>
+<h3 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a><strong>文件结构</strong></h3><p>   基于组件的分类和功能，文件结构清晰可以大大提高组件的查找及定位成本。所以，基本的文件结构需要构建</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">├── .storybook                     # 入口文件</span><br><span class="line">├── bin                            # 安装的依赖</span><br><span class="line">├── storybook-static               # 打包后静态资源文件夹</span><br><span class="line">└── src</span><br><span class="line">    ├── api                        # 接口</span><br><span class="line">    ├── assets                     # 静态资源</span><br><span class="line">    ├── components                 # 组件文件夹</span><br><span class="line">        ├── BaseComponent          # 基础组件文件夹</span><br><span class="line">        ├── PMComponent            # 业务组件文件夹1</span><br><span class="line">             ├── CommonComponent   # 业务-公共组件</span><br><span class="line">             ├── IdexComponent     # 业务-首页组件</span><br><span class="line">             ├── ItemComponent     # 业务-单品页组件</span><br><span class="line">             ├── ListComponent     # 业务-列表组件</span><br><span class="line">             ├── OtherComponent    # 业务-其他组件</span><br><span class="line">        ├── FangComponents         # 业务组件文件夹2</span><br><span class="line">    ├── utils                      # 工具文件</span><br><span class="line">    ├── index                      # 入口文件</span><br></pre></td></tr></table></figure>
+
+<h2 id="ClassName命名"><a href="#ClassName命名" class="headerlink" title="ClassName命名"></a>ClassName命名</h2><p>CSS 命名使用 BEM 命名规范，BEM 代表 “块（block）,元素（element）,修饰符（modifier）”</p>
+<h3 id="命名模式"><a href="#命名模式" class="headerlink" title="命名模式"></a>命名模式</h3><p>BEM 约定的命名模式为：</p>
+<blockquote>
+<p>namespace-block__element–modifier</p>
+</blockquote>
+<ul>
+<li> 中划线：    仅作为连字符使用，表示某个块或者某个子元素的多单词之间的连接记号；</li>
+<li>__ 双下划线：用来连接块和块的子元素；</li>
+<li>– 双中划线：用来描述一个块或者块的子元素的一种状态；<h4 id="命名空间（namespace）"><a href="#命名空间（namespace）" class="headerlink" title="命名空间（namespace）"></a>命名空间（namespace）</h4></li>
+</ul>
+<p>命名空间用来区分组件类别：</p>
+<ul>
+<li>yp: yolkpie缩写，表示通用组件；</li>
+<li>pm: 拍卖业务组件（太长了，要不要换个短点的）；</li>
+<li>fang： 房产业务组件（更长…）；<br>…</li>
+</ul>
+<h4 id="块（block）"><a href="#块（block）" class="headerlink" title="块（block）"></a>块（block）</h4><p>一个块就是一个组件。 块的命名规则如下：</p>
+<p>块的名称使用类名，不能是 ID；<br>块的名称与组件类名一致，小写，多个英文单词用小驼峰（如 topSwiper）；<br>块的命名要语义化，如果不是通用的组件，尽量不要占用通用命名（如 list、 item等）；<br>…</p>
+<h4 id="元素（element）"><a href="#元素（element）" class="headerlink" title="元素（element）"></a>元素（element）</h4><p>块中的子元素是块的子元素，并且<b>子元素的子元素在 BEM 里也被认为是块的直接子元素</b><br>元素的命名规则如下：</p>
+<p>使用 js 控制的元素要以 js 开头；<br>元素的命名也要语义化（比如按钮，要尽量说明功能，推荐使用confirmBtn 而不是 btn）<br>小写，多个英文单词用小驼峰（如 confirmBtn、jsCountdown）<br>…</p>
+<p>常见元素命名约定如下：</p>
+<p>wrap / container: 包裹容器<br>header: 头部<br>footer: 底部<br>content: 内容<br>title: 标题<br>label: 标签<br>btn: 按钮<br>text: 文本<br>img: 图片<br>icon: 图标<br>input: 输入框<br>…</p>
+<h4 id="修饰符（modifier）"><a href="#修饰符（modifier）" class="headerlink" title="修饰符（modifier）"></a>修饰符（modifier）</h4><p>一个修饰符可以理解为一个块的特定状态，标识着它持有一个特定的属性，如按钮的大小及选中状态等<br>修饰符的命名规则如下：</p>
+<p>修饰符尽量使用形容词<br>…<br>常见状态命名约定如下：</p>
+<ul>
+<li>尺寸：small / normal / big</li>
+<li>选中状态：selected</li>
+<li>激活状态：active / focus</li>
+<li>禁用状态：disabled<br>…</li>
+</ul>
+<h3 id="书写原则"><a href="#书写原则" class="headerlink" title="书写原则"></a>书写原则</h3><p>原则上不要出现两层以上选择器嵌套<br>出现多层嵌套时，有两种处理办法，一种是用命名来解耦，所有类名都为一层，另一种是检查下是否需要创建新块</p>
+<p>（1）用命名来解耦</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block&quot;</span>&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block__header&quot;</span>&gt;</span><br><span class="line">        &lt;h2 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block__header__title&quot;</span>&gt;&lt;/h2&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block__content&quot;</span>&gt;</span><br><span class="line">        &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block__content__img&quot;</span> src=<span class="string">&quot;&quot;</span> /&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 推荐（将title和img命名提升到block下）</span></span><br><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block&quot;</span>&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block__header&quot;</span>&gt;</span><br><span class="line">        &lt;h2 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block__title&quot;</span>&gt;&lt;/h2&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block__content&quot;</span>&gt;</span><br><span class="line">        &lt;img <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;yp-block__img&quot;</span> src=<span class="string">&quot;&quot;</span> /&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>（2）创建新块</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;section <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments&quot;</span>&gt;</span><br><span class="line">    &lt;h2 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__title&quot;</span>&gt;&lt;/h2&gt;</span><br><span class="line">    &lt;article <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__comment&quot;</span>&gt;</span><br><span class="line">        &lt;h3 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__comment__title&quot;</span>&gt;&lt;/h3&gt;</span><br><span class="line">    &lt;/article&gt;</span><br><span class="line">    &lt;article <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__comment&quot;</span>&gt;</span><br><span class="line">        &lt;h3 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__comment__title&quot;</span>&gt;&lt;/h3&gt;</span><br><span class="line">    &lt;/article&gt;</span><br><span class="line">&lt;/section&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 推荐（将comment提取为新块）</span></span><br><span class="line">&lt;section <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments&quot;</span>&gt;</span><br><span class="line">    &lt;h2 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__title&quot;</span>&gt;&lt;/h2&gt;</span><br><span class="line">    &lt;article <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comment&quot;</span>&gt;</span><br><span class="line">        &lt;h3 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comment__title&quot;</span>&gt;&lt;/h3&gt;</span><br><span class="line">    &lt;/article&gt;</span><br><span class="line">    &lt;article <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comment&quot;</span>&gt;</span><br><span class="line">        &lt;h3 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comment__title&quot;</span>&gt;&lt;/h3&gt;</span><br><span class="line">    &lt;/article&gt;</span><br><span class="line">&lt;/section&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>组件与组件嵌套时通过在子组件上增加 BEM 类名控制子组件样式</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 推荐</span></span><br><span class="line">&lt;section <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments&quot;</span>&gt;</span><br><span class="line">    &lt;h2 <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__title&quot;</span>&gt;&lt;/h2&gt;</span><br><span class="line">    &lt;comment <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__comment&quot;</span> /&gt;</span><br><span class="line">    &lt;comment <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;paimai-comments__comment&quot;</span> /&gt;</span><br><span class="line">&lt;/section&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="样式书写"><a href="#样式书写" class="headerlink" title="样式书写"></a>样式书写</h2><ul>
+<li><strong>最外层盒子不写宽高，使用自适应 （自适应）</strong></li>
+<li>使用父套子的方式，给类名加权重和作用域，以保证绝对的样式‘内部性’</li>
+<li>尽可能使用flex布局，不要写死宽高</li>
+<li><strong>避免使用！important写死样式</strong></li>
+<li>必要时限制max或者min</li>
+<li>避免使用标签选择器</li>
+<li><strong>有暴露外部的样式书写入口</strong></li>
+<li>统一使用scss书写</li>
+<li>遵循先盒子主体样式，后渲染样式，即遵循先定位、宽高、display等，再font-size、color、缩进，边框，背景色等书写顺序</li>
+<li>可以做适配，例如IPhoneX</li>
+<li>避免为0值制定单位，例如用 margin: 0; 而避免使用 margin: 0 px;</li>
+<li>对于小于1的值，省略前面的0，例如  .5 代替  0.5</li>
+<li>避免过量的使用简写，防止样式覆盖，例如 使用 background-color: red; 代替 background: red; </li>
+<li>对于 z-index 的值，在可控范围内，尽量写的小一点，分层级时区分数量级，同一层级，使用同一数量级值,<strong>(除弹窗外，不高于100；弹窗类最高999)</strong></li>
+<li>所有的声明都要以分号结尾，最后一个是可选项，但是也要书写，避免出错</li>
+<li>每条声明之后，都要有一个空格</li>
+<li>声明的花括号应该单独成行，单行声明除外</li>
+<li>分区块增加注释分割，<strong>书写顺序符合文档流顺序</strong></li>
+<li>书写托底的默认样式</li>
+</ul>
+<h2 id="外部传参数"><a href="#外部传参数" class="headerlink" title="外部传参数"></a>外部传参数</h2><ul>
+<li><strong>1. 数据结构标准化</strong><br>即数据类型符合一般渲染逻辑；例如：轮播图使用数组结构、基本信息使用对象、图片地址使用字符串等</li>
+<li><strong>2. 容错处理</strong><br>内部数据结构要紧凑、稳固，接收外部传入参数时，做各种格式化处理，此处包括（托底，容错，类型判断，防止因外部输入格式不对导致组件内部报错），</li>
+<li><strong>3. 可扩展</strong><br>为后续组件扩展留余地，不把数据结构写的太死。例如二位数组处理，数据分组格式化等</li>
+<li><strong>4. props需要指定类型</strong><br>视情况添加默认值及必填</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">props: [&#39;name&#39;, &#39;style&#39;]</span><br><span class="line"></span><br><span class="line">改为</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">props: &#123;</span><br><span class="line"></span><br><span class="line">   name: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &#39;&#39;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">   style: &#123;</span><br><span class="line">       type: Object,</span><br><span class="line">       require: true</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>5. 避免出现不同属性控制相同功能、样式</strong></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">props: &#123;</span><br><span class="line">   pageCount: Number,</span><br><span class="line">   pageSize: Number,</span><br><span class="line">   total: Number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">改为</span><br><span class="line"></span><br><span class="line">props: &#123;</span><br><span class="line">   pageSize: Number,</span><br><span class="line">   total: Number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">computed: &#123;</span><br><span class="line"></span><br><span class="line">   pageCount() &#123;</span><br><span class="line">       return Math.cell(this.total/this.pageSize) || 0</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>6. 以Object代替基础类型传参数</strong></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">my-button</span> <span class="attr">color</span>=<span class="string">&quot;red&quot;</span> <span class="attr">bgColor</span>=<span class="string">&quot;green&quot;</span>&gt;</span>确定<span class="tag">&lt;/<span class="name">my-button</span>&gt;</span></span><br><span class="line"></span><br><span class="line">改为</span><br><span class="line"></span><br><span class="line">const style = &#123;</span><br><span class="line"></span><br><span class="line">   color: &#x27;red&#x27;,</span><br><span class="line">    bgColor: &#x27;green&#x27;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">my-button</span> <span class="attr">:style</span>=<span class="string">&quot;style&quot;</span>&gt;</span>确定<span class="tag">&lt;/<span class="name">my-button</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="内部变量"><a href="#内部变量" class="headerlink" title="内部变量"></a>内部变量</h2><ul>
+<li><p>语意化（例如：size，表示组件的大小）</p>
+</li>
+<li><p>建议以_开头 变量名用小驼峰命名法； 如_tabList</p>
+</li>
+<li><p>要有默认值，需要外部必传的变量可以无默认值，但使用前必须做校验，且给出必要提示：如vue的el属性</p>
+</li>
+<li><p>组件内使用的定义组件级变量，function 内使用变量只定义在function内</p>
+</li>
+<li><p>常量 以const 定义，可变变量以 let定义，尽量少用var，防止变量提升引起的问题</p>
+</li>
+<li><p>对同一变量的操作，逻辑尽量放到一起，易读易理解</p>
+</li>
+</ul>
+<h2 id="方法命名"><a href="#方法命名" class="headerlink" title="方法命名"></a>方法命名</h2><p><strong>遵从 动-谓-宾 原则</strong></p>
+<p>常用动词</p>
+<table>
+<thead>
+<tr>
+<th>单词</th>
+<th>含义</th>
+<th>单词</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>get</td>
+<td>获取</td>
+<td>set</td>
+<td>设置,</td>
+</tr>
+<tr>
+<td>add</td>
+<td>增加</td>
+<td>remove</td>
+<td>删除</td>
+</tr>
+<tr>
+<td>create</td>
+<td>创建</td>
+<td>destory</td>
+<td>移除</td>
+</tr>
+<tr>
+<td>start</td>
+<td>启动</td>
+<td>stop</td>
+<td>停止</td>
+</tr>
+<tr>
+<td>open</td>
+<td>打开</td>
+<td>close</td>
+<td>关闭,</td>
+</tr>
+<tr>
+<td>read</td>
+<td>读取</td>
+<td>write</td>
+<td>写入</td>
+</tr>
+<tr>
+<td>load</td>
+<td>载入</td>
+<td>save</td>
+<td>保存,</td>
+</tr>
+<tr>
+<td>create</td>
+<td>创建</td>
+<td>destroy</td>
+<td>销毁</td>
+</tr>
+<tr>
+<td>begin</td>
+<td>开始</td>
+<td>end</td>
+<td>结束,</td>
+</tr>
+<tr>
+<td>backup</td>
+<td>备份</td>
+<td>restore</td>
+<td>恢复</td>
+</tr>
+<tr>
+<td>import</td>
+<td>导入</td>
+<td>export</td>
+<td>导出,</td>
+</tr>
+<tr>
+<td>split</td>
+<td>分割</td>
+<td>merge</td>
+<td>合并</td>
+</tr>
+<tr>
+<td>inject</td>
+<td>注入</td>
+<td>extract</td>
+<td>提取,</td>
+</tr>
+<tr>
+<td>attach</td>
+<td>附着</td>
+<td>detach</td>
+<td>脱离</td>
+</tr>
+<tr>
+<td>bind</td>
+<td>绑定</td>
+<td>separate</td>
+<td>分离,</td>
+</tr>
+<tr>
+<td>view</td>
+<td>查看</td>
+<td>browse</td>
+<td>浏览</td>
+</tr>
+<tr>
+<td>edit</td>
+<td>编辑</td>
+<td>modify</td>
+<td>修改,</td>
+</tr>
+<tr>
+<td>select</td>
+<td>选取</td>
+<td>mark</td>
+<td>标记</td>
+</tr>
+<tr>
+<td>copy</td>
+<td>复制</td>
+<td>paste</td>
+<td>粘贴,</td>
+</tr>
+<tr>
+<td>undo</td>
+<td>撤销</td>
+<td>redo</td>
+<td>重做</td>
+</tr>
+<tr>
+<td>insert</td>
+<td>插入</td>
+<td>delete</td>
+<td>移除,</td>
+</tr>
+<tr>
+<td>add</td>
+<td>加入</td>
+<td>append</td>
+<td>添加</td>
+</tr>
+<tr>
+<td>clean</td>
+<td>清理</td>
+<td>clear</td>
+<td>清除,</td>
+</tr>
+<tr>
+<td>index</td>
+<td>索引</td>
+<td>sort</td>
+<td>排序</td>
+</tr>
+<tr>
+<td>find</td>
+<td>查找</td>
+<td>search</td>
+<td>搜索,</td>
+</tr>
+<tr>
+<td>increase</td>
+<td>增加</td>
+<td>decrease</td>
+<td>减少</td>
+</tr>
+<tr>
+<td>play</td>
+<td>播放</td>
+<td>pause</td>
+<td>暂停,</td>
+</tr>
+<tr>
+<td>launch</td>
+<td>启动</td>
+<td>run</td>
+<td>运行</td>
+</tr>
+<tr>
+<td>compile</td>
+<td>编译</td>
+<td>execute</td>
+<td>执行,</td>
+</tr>
+<tr>
+<td>debug</td>
+<td>调试</td>
+<td>trace</td>
+<td>跟踪</td>
+</tr>
+<tr>
+<td>observe</td>
+<td>观察</td>
+<td>listen</td>
+<td>监听,</td>
+</tr>
+<tr>
+<td>build</td>
+<td>构建</td>
+<td>publish</td>
+<td>发布</td>
+</tr>
+<tr>
+<td>input</td>
+<td>输入</td>
+<td>output</td>
+<td>输出,</td>
+</tr>
+<tr>
+<td>encode</td>
+<td>编码</td>
+<td>decode</td>
+<td>解码</td>
+</tr>
+<tr>
+<td>encrypt</td>
+<td>加密</td>
+<td>decrypt</td>
+<td>解密,</td>
+</tr>
+<tr>
+<td>compress</td>
+<td>压缩</td>
+<td>decompress</td>
+<td>解压缩</td>
+</tr>
+<tr>
+<td>pack</td>
+<td>打包</td>
+<td>unpack</td>
+<td>解包,</td>
+</tr>
+<tr>
+<td>parse</td>
+<td>解析</td>
+<td>emit</td>
+<td>生成</td>
+</tr>
+<tr>
+<td>connect</td>
+<td>连接</td>
+<td>disconnect</td>
+<td>断开,</td>
+</tr>
+<tr>
+<td>send</td>
+<td>发送</td>
+<td>receive</td>
+<td>接收</td>
+</tr>
+<tr>
+<td>download</td>
+<td>下载</td>
+<td>upload</td>
+<td>上传,</td>
+</tr>
+<tr>
+<td>refresh</td>
+<td>刷新</td>
+<td>synchronize</td>
+<td>同步</td>
+</tr>
+<tr>
+<td>update</td>
+<td>更新</td>
+<td>revert</td>
+<td>复原,</td>
+</tr>
+<tr>
+<td>lock</td>
+<td>锁定</td>
+<td>unlock</td>
+<td>解锁</td>
+</tr>
+<tr>
+<td>check out</td>
+<td>签出</td>
+<td>check in</td>
+<td>签入,</td>
+</tr>
+<tr>
+<td>submit</td>
+<td>提交</td>
+<td>commit</td>
+<td>交付</td>
+</tr>
+<tr>
+<td>push</td>
+<td>推</td>
+<td>pull</td>
+<td>拉,</td>
+</tr>
+<tr>
+<td>expand</td>
+<td>展开</td>
+<td>collapse</td>
+<td>折叠</td>
+</tr>
+<tr>
+<td>begin</td>
+<td>起始</td>
+<td>end</td>
+<td>结束,</td>
+</tr>
+<tr>
+<td>start</td>
+<td>开始</td>
+<td>finish</td>
+<td>完成</td>
+</tr>
+<tr>
+<td>enter</td>
+<td>进入</td>
+<td>exit</td>
+<td>退出,</td>
+</tr>
+<tr>
+<td>abort</td>
+<td>放弃</td>
+<td>quit</td>
+<td>离开</td>
+</tr>
+<tr>
+<td>obsolete</td>
+<td>废弃</td>
+<td>depreciate</td>
+<td>废旧,</td>
+</tr>
+<tr>
+<td>collect</td>
+<td>收集</td>
+<td>aggregate</td>
+<td>聚集</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>驼峰式命名</p>
+</li>
+<li><p>使用英文拼写</p>
+</li>
+<li><p>不要自创缩写，不会可以全拼上去，不怕名字长</p>
+</li>
+<li><p>避免误导，同一组件中不要使用过于相似的命名</p>
+</li>
+</ul>
+<h2 id="方法暴露"><a href="#方法暴露" class="headerlink" title="方法暴露"></a>方法暴露</h2><ol>
+<li><p>尽可能多的暴露方法，关于内部的一些方法定义，如果可以使组件更具灵活性，可以考虑将内部方法暴露出来。例如：功能强大的swiper组件，就暴露了很多内部定义的方法，供用户灵活的定制自己的组件</p>
+</li>
+<li><p>暴露的方法如果接收多个入参，就将入参以对象的方式进行传入，方便扩展</p>
+</li>
+<li><p>暴露的方法名最好不要与公共方法名重复了，以免混淆</p>
+</li>
+<li><p>readme里面，写明使用方法</p>
+</li>
+</ol>
+<h2 id="公共资源"><a href="#公共资源" class="headerlink" title="公共资源"></a>公共资源</h2><p>工具类库的方法，使用统一引入方式，即安装引入</p>
+<p>公共样式也使用统一引入，不再单独书写</p>
+<h3 id="使用工具类库的两种方案"><a href="#使用工具类库的两种方案" class="headerlink" title="使用工具类库的两种方案"></a>使用工具类库的两种方案</h3><h4 id="使用目前已有的-yolkpie-utils-npm包安装到组件库"><a href="#使用目前已有的-yolkpie-utils-npm包安装到组件库" class="headerlink" title="使用目前已有的 @yolkpie/utils npm包安装到组件库"></a>使用目前已有的 @yolkpie/utils npm包安装到组件库</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 安装依赖包</span></span><br><span class="line">npm i @yolkpie/utils</span><br><span class="line"><span class="comment">// 在项目中引用</span></span><br><span class="line"><span class="keyword">import</span> &#123; addClass &#125; <span class="keyword">from</span> <span class="string">&#x27;@yolkpie/utils&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可能产生的问题是，由于是将各个类型的公共类方法统一打包到utils里面（通过Rollup 将小块代码编译成大块复杂的代码），可读性不高</p>
+<h4 id="直接在组件库里建立utils文件，阴影各个类型的公共方法"><a href="#直接在组件库里建立utils文件，阴影各个类型的公共方法" class="headerlink" title="直接在组件库里建立utils文件，阴影各个类型的公共方法"></a>直接在组件库里建立utils文件，阴影各个类型的公共方法</h4><h3 id="工具类库方法介绍"><a href="#工具类库方法介绍" class="headerlink" title="工具类库方法介绍"></a>工具类库方法介绍</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">utils</span><br><span class="line">├── array.js                   # 数组</span><br><span class="line">├── axios-jsonp.js             # axios jsonp跨域</span><br><span class="line">├── bom.js                     # 浏览器对象</span><br><span class="line">├── cache.js                   # 缓存</span><br><span class="line">├── cookies.js                 # cookie</span><br><span class="line">├── dom.js                     # 文档对象</span><br><span class="line">├── event.js                   # 事件</span><br><span class="line">├── fixMask.js                 # 显示弹层时固定背景</span><br><span class="line">├── floatCalculate.js          # 浮点数</span><br><span class="line">├── formatDate.js              # 格式化日期</span><br><span class="line">├── functional.js              # 函数式编程</span><br><span class="line">├── global.js                  # 全局</span><br><span class="line">├── math.js                    # 数值</span><br><span class="line">├── rem.js                     # 移动端适配</span><br><span class="line">├── string.js                  # 字符串</span><br><span class="line">├── tools.js                   # 工具</span><br><span class="line">└── url.js                     # 链接</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>1）array.js 数组相关处理函数</p>
+<p>2）axios-jsonp.js jsonp跨域数据请求方法</p>
+<p>3）bom.js浏览器或系统相关处理函数包含isIphoneX、isSupportWebp、getEnv(获取环境信息)等方法</p>
+<p>4）cache.js，缓存，本地存储处理操作封装（sessionStorage和localStorage</p>
+<p>5）cookies.js，获取cookie、设置cookie和删除cookie</p>
+<p>6）dom.js，dom相关处理函数</p>
+<p>7）event.js，包括事件监听器、绑定事件等</p>
+<p>8）fixMask.js，移动端浮层内滚动窗体不滚动的JS处理</p>
+<p>9）floatCalculate.js ，浮点数计算</p>
+<p>10）formatDate.js 日期格式化</p>
+<p>11）functional.js 函数式编程相关函数</p>
+<p>12）global.js 对象相关处理函数，包括根据键值获取键名、深拷贝等</p>
+<p>13）math.js 数字相关处理函数</p>
+<p>14）rem.js  移动端尺寸适配</p>
+<p>15）string.js 字符串相关处理函数</p>
+<p>16）tools.js 一些公共方法，包括throttle和debounce</p>
+<p>17）url.js 链接相关处理函数，包括获取链接参数方法等</p>
+<h3 id="公共样式"><a href="#公共样式" class="headerlink" title="公共样式"></a>公共样式</h3><p>1）base.scss，一些基础样式</p>
+<p>2）flex.scss，flex布局相关样式</p>
+<p>3）border.scss，1px像素问题方案</p>
+<p>4）font.scss，字体的引入</p>
+<p>5）animation，动画</p>
 ]]></content>
       <categories>
         <category>组件</category>
