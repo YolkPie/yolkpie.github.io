@@ -4739,6 +4739,51 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
 ]]></content>
   </entry>
   <entry>
+    <title>按钮权限控制实现方案</title>
+    <url>/2021/03/31/%E6%8C%89%E9%92%AE%E6%9D%83%E9%99%90%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/</url>
+    <content><![CDATA[<h1 id="按钮权限控制实现方案"><a href="#按钮权限控制实现方案" class="headerlink" title="按钮权限控制实现方案"></a>按钮权限控制实现方案</h1><p>背景：某些管理系统需增加 ”按钮权限控制“ 功能，对权限的控制粒度要普及到按钮层级</p>
+<h2 id="预期"><a href="#预期" class="headerlink" title="预期"></a>预期</h2><p>按钮权限控制的交互方式无非两种：”不可见” 和 “可见不可点”。</p>
+<h3 id="不可见"><a href="#不可见" class="headerlink" title="不可见"></a>不可见</h3><p>不可见的交互方式相对简单，我们可使用 v-if 控制其是否显示。使用 v-show 也行，但不够保险，毕竟 v-show 只是把样式改成 display: none，在真实的 DOM 渲染还是存在的，所以更推荐 v-if 来控制不可见。</p>
+<h3 id="可见不可点"><a href="#可见不可点" class="headerlink" title="可见不可点"></a>可见不可点</h3><p>“看是能看了，但你不行了”。</p>
+<ul>
+<li>样式控制（得加个禁用样式），什么 cursor: not-allowed ，置灰之类的云云；</li>
+<li>不可点击，即要禁用或屏蔽点击事件，好像有 preventDefault/stopProgration 可实现；</li>
+</ul>
+<p>最终产品需求选择了 “可见不可点”，原因可能就觉得不可见太简单了。(¬_¬)</p>
+<h2 id="思路探索"><a href="#思路探索" class="headerlink" title="思路探索"></a>思路探索</h2><ul>
+<li>给按钮点击事件的回调函数，加个包装函数，对其权限控制，进行事件拦截与触发。相当是做了个代理，有点高阶组件那意思（但对现有业务改动太大，得对每个@click绑定函数逐个修改，遂放弃该方案）；</li>
+<li>阻止按钮点击事件冒泡与触发，貌似能用上 preventDefautl/stopProgration, 感觉能用指令的方式对 DOM 元素进行事件监听，允许的话则让事件正常执行，不允许则拦截屏蔽；</li>
+</ul>
+<h2 id="实践方案"><a href="#实践方案" class="headerlink" title="实践方案"></a>实践方案</h2><p>最终选择了指令的方式，最小成本扩展，避免改动现有业务代码逻辑。<br>针对权限控制需做点击劫持的元素：</p>
+<ul>
+<li>el-button</li>
+<li>btn-wrapper（自封装组件）</li>
+<li>div/span/a 等标签</li>
+</ul>
+<p>具体实现：</p>
+<h3 id="权限入口：Vuex-控制，全局使用"><a href="#权限入口：Vuex-控制，全局使用" class="headerlink" title="权限入口：Vuex 控制，全局使用"></a>权限入口：Vuex 控制，全局使用</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 用户登陆后，获取该用户权限 CODE 码，并存储至 store</span></span><br><span class="line"><span class="built_in">this</span>.$store.commit(<span class="string">&#x27;SET_AUTH_CODE&#x27;</span>, authCodeList);</span><br><span class="line"></span><br><span class="line">SET_AUTH_CODE: <span class="function">(<span class="params">state, acthCode</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (acthCode) &#123;</span><br><span class="line">      state.autoCodeList = acthCode;</span><br><span class="line">  &#125;</span><br><span class="line">  setStore(&#123;</span><br><span class="line">    name: <span class="string">&#x27;autoCodeList&#x27;</span>,</span><br><span class="line">    content: state.autoCodeList || [],</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="定义权限指令"><a href="#定义权限指令" class="headerlink" title="定义权限指令"></a>定义权限指令</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> disableClickFn = <span class="function">(<span class="params">event</span>) =&gt;</span> &#123;</span><br><span class="line">    event &amp;&amp; event.stopImmediatePropagation();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> hasPermission = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    Vue.directive(<span class="string">&#x27;permission&#x27;</span>, &#123;</span><br><span class="line">        <span class="function"><span class="title">bind</span>(<span class="params">el, binding</span>)</span> &#123;</span><br><span class="line">            <span class="keyword">let</span> disalbe = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">if</span> (autoCodeList.length &amp;&amp; autoCodeList.includes(binding.value)) &#123;</span><br><span class="line">                disable = <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (disable) &#123;</span><br><span class="line">                el.classList.add(<span class="string">&#x27;permission-disabled&#x27;</span>);</span><br><span class="line">                el.setAttribute(<span class="string">&#x27;disabled&#x27;</span>, <span class="string">&#x27;disabled&#x27;</span>);</span><br><span class="line">                el.addEventListener(<span class="string">&#x27;click&#x27;</span>, disableClickFn, <span class="literal">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="function"><span class="title">unbind</span>(<span class="params">el</span>)</span> &#123;</span><br><span class="line">            el.removeEventListener(<span class="string">&#x27;click&#x27;</span>, disableClickFn);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>首先 addEventListener 第三个参数我们使用 useCapture 为 true 让其在捕获阶段触发，因此这里的事件监听器会优先 @click 触发回调；</li>
+<li>其次使用了 stopImmediatePropagation 阻止事件冒泡和其它相同事件监听器的触发；</li>
+</ul>
+<blockquote>
+<p>如果多个事件监听器被附加到相同元素的相同事件类型上，当此事件触发时，它们会按其被添加的顺序被调用。如果在其中一个事件监听器中执行 stopImmediatePropagation() ，那么剩下的事件监听器都不会被调用。</p>
+</blockquote>
+<h3 id="增加禁用的-CSS-样式"><a href="#增加禁用的-CSS-样式" class="headerlink" title="增加禁用的 CSS 样式"></a>增加禁用的 CSS 样式</h3><figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.permission-disabled</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">cursor</span>: not-allowed <span class="meta">!important</span>;</span><br><span class="line">    <span class="attribute">pointer-events</span>: none;  // 阻止元素成为鼠标事件</span><br><span class="line">    <span class="attribute">border</span>:none;</span><br><span class="line">    <span class="attribute">background-image</span>: none;</span><br><span class="line">    &amp;<span class="selector-pseudo">::after</span> &#123;</span><br><span class="line">        <span class="attribute">content</span>: <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">        <span class="attribute">position</span>: absolute;</span><br><span class="line">        <span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">        <span class="attribute">left</span>: <span class="number">0px</span>;</span><br><span class="line">        <span class="attribute">right</span>: <span class="number">0px</span>;</span><br><span class="line">        <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">        <span class="attribute">z-index</span>: <span class="number">9</span>;</span><br><span class="line">        <span class="attribute">background</span>: <span class="built_in">rgba</span>(<span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span>, <span class="number">0.5</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>CSS3 的 pointer-events 属性指定在什么情况下 (如果有) 某个特定的图形元素可以成为鼠标事件的 target。 </p>
+</blockquote>
+<p>这里使用 pointer-events 只是一个辅助功能，并不一定意味着元素上的事件监听器永远不会触发，如果后代元素有指定 pointer-events 并允许成为事件目标的话，是可以触发父元素事件，而且单纯依靠 CSS 属性来控制不点击，还是有风险，因此这里仅作辅助作用。</p>
+<h3 id="全局-“权限判断”-工具函数"><a href="#全局-“权限判断”-工具函数" class="headerlink" title="全局 “权限判断” 工具函数"></a>全局 “权限判断” 工具函数</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; getStore &#125; <span class="keyword">from</span> <span class="string">&#x27;@/util/store&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> autoCodeList = getStore(&#123; <span class="attr">name</span>: <span class="string">&#x27;autoCodeList&#x27;</span>, &#125;) || [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">hasPermission</span>(<span class="params">authName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> !(autoCodeList.length &gt; <span class="number">0</span> &amp;&amp; autoCodeList.includes(authName));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="具体使用"><a href="#具体使用" class="headerlink" title="具体使用"></a>具体使用</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 指令方式（这里的 sys/auth/save 就是对应用户登陆时 CODE 权限码）</span></span><br><span class="line">&lt;el-button v-permission=<span class="string">&quot;&#x27;sys:auth:save&#x27;&quot;</span>&gt;保存&lt;/el-button&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数方式</span></span><br><span class="line">&lt;el-button :disabled=<span class="string">&quot;hasPermission(&#x27;sys:auth:save&#x27;)&quot;</span>&gt;&lt;/el-button&gt;</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>Vue</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>数据库中的锁</title>
     <url>/2020/02/04/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E7%9A%84%E9%94%81/</url>
     <content><![CDATA[<h2 id="两段锁协议"><a href="#两段锁协议" class="headerlink" title="两段锁协议"></a>两段锁协议</h2><p>两段锁协议是指每个事务的执行可以分为两个阶段：生长阶段（加锁阶段）和衰退阶段（解锁阶段）。<br><strong>加锁阶段：</strong> 在该阶段可以进行加锁操作。在对任何数据进行读操作之前要申请并获得S锁，在进行写操作之前要申请并获得X锁。加锁不成功，则事务进入等待状态，直到加锁成功才继续执行。<br><strong>解锁阶段：</strong> 当事务释放了一个封锁以后，事务进入解锁阶段，在该阶段只能进行解锁操作不能再进行加锁操作。  </p>
