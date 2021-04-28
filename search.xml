@@ -5226,6 +5226,173 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       </tags>
   </entry>
   <entry>
+    <title>移动端表单校验参考</title>
+    <url>/2021/04/27/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E8%A1%A8%E5%8D%95%E6%A0%A1%E9%AA%8C%E5%8F%82%E8%80%83/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>最近做过不少的移动端表单提交的项目，跳了一些坑，也学习了一些技巧，总结了一下，等以后再做类似项目的时候拿来借鉴。同时也与大家分享。</p>
+<h3 id="常见的移动端表单校验问题"><a href="#常见的移动端表单校验问题" class="headerlink" title="常见的移动端表单校验问题"></a>常见的移动端表单校验问题</h3><ul>
+<li><ol>
+<li>电话格式校验</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>邮箱格式校验</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>汉字VS字母输入</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>value绑定与防抖</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>input框折行展示</li>
+</ol>
+</li>
+<li><ol start="6">
+<li>数字键盘的唤起</li>
+</ol>
+</li>
+<li><ol start="7">
+<li>提交按钮联动校验</li>
+</ol>
+</li>
+<li><ol start="8">
+<li>错误提示批量处理</li>
+</ol>
+</li>
+</ul>
+<h3 id="电话格式校验"><a href="#电话格式校验" class="headerlink" title="电话格式校验"></a>电话格式校验</h3><ol>
+<li><p><strong>手机号码</strong>：网上有很多校验手机的正则，但是随着手机号码格式的增多，严格的校验可能导致在不久的将来，你的代码就需要重新上线，以适应更多的号码区段。如果再考虑到国际长途，可能不仅仅是11位。所以建议只使用纯数字校验，关于位数因需求而异。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> reg = <span class="regexp">/^\d&#123;0,11&#125;$/</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>400电话</strong>：只做数字和位数的校验</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> reg = <span class="regexp">/^[400]\d&#123;0,n&#125;$/</span>;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>座机号码</strong>：做数字和位数的校验</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> reg = <span class="regexp">/^\d&#123;4,n&#125;$/</span>;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3 id="邮箱格式校验"><a href="#邮箱格式校验" class="headerlink" title="邮箱格式校验"></a>邮箱格式校验</h3><ol>
+<li><p>首来看几个合法邮箱的例子：</p>
+<p> 1234@qq.com（纯数字）<br> wang@126.com（纯字母）<br> wang123@126.com（数字、字母混合）<br> wang123@vip.163.com（多级域名）<br> wang_email@outlook.com（含下划线 _）<br> wang.email@jd.com（含英语句号 .）</p>
+</li>
+<li><p>根据对以上邮箱的观察，可将邮箱分为两部分（“@”左边和右边部分）来进行分析：</p>
+<p> 左边部分可以有数字、字母、下划线（_）和英语句号（.），因此可以表示成：[A-Za-z0-9]+([_.][A-Za-z0-9]+)*<br> 右边部分是域名，按照域名的规则，可以有数字、字母、短横线（-）和英语句号（.），另外顶级域名一般为 2 ~ 6 个英文字母（比如“cn”、“com”、“site”、“group”、“online”），故可表示为：([A-Za-z0-9-]+.)+[A-Za-z]{2,6}</p>
+<p> 要注意两点：</p>
+<p> 考虑到匹配邮箱时字符串的一头一尾不能有其它字符，故要加上开始标志元字符 ^ 和结束标志元字符 $。<br> 英语句号（.）是正则表达式的元字符，因此要进行转义（.）。</p>
+</li>
+<li><p>用于邮箱验证的函数及测试用例如下：</p>
+<p> 考虑可能扩展的邮箱后缀，关于位数可以放开</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> reg = <span class="regexp">/^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]&#123;2,n&#125;$/</span>;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3 id="React中-汉字VS字母输入"><a href="#React中-汉字VS字母输入" class="headerlink" title="React中-汉字VS字母输入"></a>React中-汉字VS字母输入</h3><p>Vue中的v-model已经做了对于输入中文的处理，这里我们不多说，感兴趣的同学，可以查看相关文档中。</p>
+<p>  在React输入汉字的文本框中，有时候我们会遇到书写‘我们’，直接输入了‘women’;这样的情况，可以考虑使用‘compositionend’<br>  首先了解三个事件</p>
+<ul>
+<li><p>要开始输入中文<br>compositionstart</p>
+</li>
+<li><p>插入新字符<br>compositionupdate</p>
+</li>
+<li><p>输入完成<br>compositionend</p>
+<p>这样就可以做到在普通情况下监听 input 事件，而当监听到 compositionstart 事件时，移除对 input 事件的监听或不处理监听到的 input 事件，而监听 compositionend 事件并处理。<br><strong>此处注意的是compositionend是在onChange方法之后触发的，所以需要如下：</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> isOnComposition = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">setInvoiceTitle = <span class="function">(<span class="params">&#123;target&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> value = target.value</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">    if (!isOnComposition) &#123;//解决compositionend不触发问题</span></span><br><span class="line"><span class="comment">      this.setState(&#123;</span></span><br><span class="line"><span class="comment">        invoiceTitle: value </span></span><br><span class="line"><span class="comment">      &#125;);</span></span><br><span class="line"><span class="comment">    &#125;</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="built_in">this</span>.setState(&#123;</span><br><span class="line">        invoiceTitle: value </span><br><span class="line">      &#125;)</span><br><span class="line">&#125;</span><br><span class="line">handleComposition = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (e.type === <span class="string">&#x27;compositionend&#x27;</span>) &#123;</span><br><span class="line">        isOnComposition = <span class="literal">false</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        isOnComposition = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">render</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div className=<span class="string">&quot;detail__item&quot;</span> &gt;</span><br><span class="line">        &lt;div className=<span class="string">&quot;detail__lable&quot;</span> &gt;抬头名称&lt;/div&gt;</span><br><span class="line">        &lt;div className=<span class="string">&quot;detail__value_box&quot;</span> &gt;</span><br><span class="line">            &lt;input className=<span class="string">&quot;detail__input&quot;</span>  onChange=&#123;<span class="built_in">this</span>.setInvoiceTitle&#125; onCompositionStart=&#123;<span class="built_in">this</span>.handleComposition&#125;</span><br><span class="line">            onCompositionEnd=&#123;<span class="built_in">this</span>.handleComposition&#125; type=<span class="string">&quot;text&quot;</span> placeholder=&#123;<span class="string">&quot;请填写单位名称&quot;</span>&#125;/&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="value绑定与防抖"><a href="#value绑定与防抖" class="headerlink" title="value绑定与防抖"></a>value绑定与防抖</h3><p>  考虑移动端的校验经常是边输入边校验，我们就有必要做一些性能优化，比如常见的防抖</p>
+<ol>
+<li><p>减少value绑定；一些情况下，我们是没有必要将input框的value值与我们所需要的值进行绑定的。这样的情况下我们就不要做绑定，可以减少性能消耗。</p>
+<p><strong>减少value绑定</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//减少value绑定</span></span><br><span class="line"></span><br><span class="line">setInvoiceTitle = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> value = e.target.value</span><br><span class="line">    <span class="built_in">this</span>.setState(&#123;</span><br><span class="line">        invoiceTitle: value </span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line">handleComposition = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (e.type === <span class="string">&#x27;compositionend&#x27;</span>) &#123;</span><br><span class="line">        isOnComposition = <span class="literal">false</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        isOnComposition = <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">render</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; invoiceTitle &#125; = <span class="built_in">this</span>.state</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;div className=<span class="string">&quot;detail__item&quot;</span> &gt;</span><br><span class="line">        &lt;div className=<span class="string">&quot;detail__lable&quot;</span> &gt;抬头名称&lt;/div&gt;</span><br><span class="line">        &lt;div className=<span class="string">&quot;detail__value_box&quot;</span> &gt;</span><br><span class="line">            &lt;input className=<span class="string">&quot;detail__input&quot;</span>  value=&#123;invoiceTitle&#125; onChange=&#123;<span class="built_in">this</span>.setInvoiceTitle&#125; onCompositionStart=&#123;<span class="built_in">this</span>.handleComposition&#125;</span><br><span class="line">            onCompositionEnd=&#123;<span class="built_in">this</span>.handleComposition&#125; type=<span class="string">&quot;text&quot;</span> placeholder=&#123;<span class="string">&quot;请填写单位名称&quot;</span>&#125;/&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在一些输入框中做校验，为了节约性能，不做不必要的频繁校验，需要使用防抖。</p>
+<p><strong>防抖</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//防抖</span></span><br><span class="line"><span class="keyword">let</span> timer = <span class="literal">null</span></span><br><span class="line">debounce = <span class="function">(<span class="params">callback</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">clearTimeout</span>(timer);</span><br><span class="line">    timer = <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">      callback &amp;&amp; callback()</span><br><span class="line">    &#125;, <span class="number">600</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setInvoiceTitle = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> value = e.target.value</span><br><span class="line">    <span class="keyword">let</span> setTitle = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.setState(&#123;</span><br><span class="line">          invoiceTitle: value </span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">this</span>.debounce(setTitle)  </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3 id="input框折行展示"><a href="#input框折行展示" class="headerlink" title="input框折行展示"></a>input框折行展示</h3><p>表单常见的输入还有一种情况是折行，如图：</p>
+<p><img src= "/img/loading.gif" data-src="1.jpg" alt="示例"><img src= "/img/loading.gif" data-src="4.jpg" alt="示例"><img src= "/img/loading.gif" data-src="5.jpg" alt="示例"></p>
+<p>这样的效果，我考虑到的方法有3种：</p>
+<ul>
+<li><ol>
+<li>放一个textarea框，可以支持多行输入和展示；<br><img src= "/img/loading.gif" data-src="2.jpg" alt="示例"></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//HTML</span></span><br><span class="line">&lt;textarea className=&#123;TextareaMore?<span class="string">&#x27;detail__textarea_more&#x27;</span>:<span class="string">&quot;detail__textarea&quot;</span>&#125; onCompositionStart=&#123;<span class="built_in">this</span>.handleComposition&#125; onCompositionEnd=&#123;<span class="built_in">this</span>.handleComposition&#125; onChange=&#123;<span class="built_in">this</span>.setAddressText&#125; placeholder=<span class="string">&quot;请输入详细地址&quot;</span>&gt;&lt;/textarea&gt; </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>优点</strong><br>可以设置placeholder属性值；多行展示；多行输入；</p>
+<p><strong>缺点</strong><br>高度不能自适应，如果高度写死，输入一行和两行不同情况的时候，文字上下会不居中</p>
+<p><strong>解决</strong><br>默认一行的高度，这样可以保证placeholder垂直居中。然后动态判断输入文字高度，动态设置文本框的高度。</p>
+</li>
+</ul>
+<ul>
+<li><ol start="2">
+<li>放一个input框和一个div，等到失焦的时候显示div,聚焦的时候隐藏div;<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//JS</span></span><br><span class="line">  showInputClick = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.setState(&#123;</span><br><span class="line">          showInput: <span class="literal">true</span></span><br><span class="line">      &#125;) </span><br><span class="line">      <span class="built_in">setTimeout</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">          <span class="built_in">this</span>.refs.input.focus()</span><br><span class="line">      &#125;, <span class="number">60</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  onInput = <span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> value = e.target.value</span><br><span class="line">      <span class="built_in">this</span>.setState(&#123;</span><br><span class="line">          addressText: value</span><br><span class="line">      &#125;) </span><br><span class="line">  &#125;</span><br><span class="line">  onBlur = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.setState(&#123;</span><br><span class="line">          showInput: <span class="literal">false</span></span><br><span class="line">      &#125;) </span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">//HTML</span></span><br><span class="line">&lt;input className=&#123;showInput?<span class="string">&#x27;showDom&#x27;</span>:<span class="string">&quot;hideDom&quot;</span>&#125; ref=<span class="string">&#x27;input&#x27;</span> onInput=&#123;<span class="built_in">this</span>.onInput&#125; onBlur=&#123;<span class="built_in">this</span>.onBlur&#125; type=<span class="string">&quot;text&quot;</span> placeholder=<span class="string">&quot;请输入详细地址&quot;</span> value=&#123;addressText&#125; /&gt;</span><br><span class="line">&lt;div className=&#123;showInput?<span class="string">&#x27;hideDom&#x27;</span>:<span class="string">&quot;showDom&quot;</span>&#125; onClick=&#123;<span class="built_in">this</span>.showInputClick&#125;&gt;&#123;addressText&#125;&lt;/div&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>优点</strong><br>  相对于textarea不需要动态设置高度。</p>
+<p><strong>缺点</strong><br>  在失焦和聚焦的时候。动态隐藏和显示input框。安卓和ios有兼容问题。在点击div的时候显示input框并且使其聚焦，聚焦这个动作有的不能实现。</p>
+<p><strong>解决</strong><br>  加上延时后，可能会有改善的情况，需测试</p>
+</li>
+<li><ol start="3">
+<li>放一个div给它一个<strong>contentEditable</strong>属性；</li>
+</ol>
+<p><strong>优点</strong><br>  没有动态设置的属性和操作</p>
+<p><strong>缺点</strong><br>  安全性不好；<br>  不能设置placeholder；</p>
+<p><strong>解决</strong><br>可以手动放placeholder；毕竟前端黑科技很多。目前我没有使用，因为查找有很多坑，就没敢用，感兴趣的小伙伴可以试试。</p>
+</li>
+</ul>
+<h3 id="数字键盘的唤起"><a href="#数字键盘的唤起" class="headerlink" title="数字键盘的唤起"></a>数字键盘的唤起</h3><p>在部分要求只输入数字的input框中，要求唤起数字键盘；</p>
+<p><img src= "/img/loading.gif" data-src="6.jpg" alt="示例"><br><img src= "/img/loading.gif" data-src="7.jpg" alt="示例"></p>
+<ul>
+<li><ol>
+<li>使用 <strong>type=”number”</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;input className=<span class="string">&quot;detail__input&quot;</span> type=<span class="string">&quot;number&quot;</span> pattern=<span class="string">&quot;\d*&quot;</span> value=&#123;zip&#125;  onChange=&#123;<span class="built_in">this</span>.setZip&#125; placeholder=<span class="string">&quot;请输入邮政编码&quot;</span>/&gt;</span><br><span class="line">&lt;input className=<span class="string">&quot;detail__input&quot;</span> type=<span class="string">&quot;number&quot;</span> pattern=<span class="string">&quot;[0-9]*&quot;</span> value=&#123;zip&#125; onChange=&#123;<span class="built_in">this</span>.setZip&#125; placeholder=<span class="string">&quot;请输入邮政编码&quot;</span>/&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>iOS中，只有[0-9]* 才可以调起九宫格数字键盘，\d 无效</p>
+<p>Android 4.4以下(包括X5内核)，两者都调起数字键盘；</p>
+<p>Android 4.4.4以上，只认 type 属性，也就是说，如果上面的代码将 type=“number” 改为 type=“text” ，将调起全键盘而不会是九宫格数字键盘。<br><strong>缺点</strong><br>  键盘调用显示有兼容性，即有的有小数点和加减号，有的没有。对于只要求数字的需求，使用**type=”number”**并不友好</p>
+</li>
+<li><ol start="2">
+<li>使用 <strong>type=”tel”</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;input className=<span class="string">&quot;detail__input&quot;</span> type=<span class="string">&quot;tel&quot;</span> value=&#123;phone&#125; maxLength=&#123;<span class="number">11</span>&#125; onChange=&#123;<span class="built_in">this</span>.setPhone&#125; placeholder=<span class="string">&quot;请输入收票人手机&quot;</span>/&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+可调用（有英文字母的大概）键盘，能获取到输入的数字以及各种符号 ，能用正则表达式限制输入内容！！！一般情况下可用这个</li>
+</ol>
+</li>
+</ul>
+<h3 id="提交按钮联动校验"><a href="#提交按钮联动校验" class="headerlink" title="提交按钮联动校验"></a>提交按钮联动校验</h3><p>随着移动端用户体验不断优化，有些场景要求表单按钮的提交状态呈现动态提示。即要求用户每一次动作都和按钮的高亮和置灰联动。<br>这要求每一步操作都有全局的校验。如果处理不好，不仅代码看起来重复冗长，对性能也有较大影响。所以需要注意以下几点：</p>
+<ol>
+<li>全局的优先级较高的校验，放在前面，如果信息未填写完整的情况下，在输入某个文本框的自身校验时不再进行全局校验。</li>
+<li>封装方法，校验统一的check方法，不重复书写校验代码。<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">checkoutAllItemTrue () &#123;</span><br><span class="line">  <span class="keyword">if</span>( <span class="built_in">this</span>.valueComp &amp;&amp; <span class="built_in">this</span>.addrFId  &amp;&amp; <span class="built_in">this</span>.addrSId  &amp;&amp; <span class="built_in">this</span>.addrTId &amp;&amp; <span class="built_in">this</span>.valueAddrD)&#123;</span><br><span class="line">    <span class="built_in">this</span>.canotSubmit = <span class="literal">false</span></span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="built_in">this</span>.canotSubmit = <span class="literal">true</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h3 id="错误提示批量处理"><a href="#错误提示批量处理" class="headerlink" title="错误提示批量处理"></a>错误提示批量处理</h3><ol>
+<li>如果表单提交项交多，有相似的输入结构放在同一个方法处理。</li>
+<li>封装一个全局统一的提示方法，通过传入不同的value值，调用统一的提示方法。<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">checkoutAllItem () &#123;</span><br><span class="line">      <span class="keyword">if</span> (!<span class="built_in">this</span>.valueComp) &#123;</span><br><span class="line">        <span class="built_in">this</span>.$toast(<span class="string">&#x27;请填写机构名称&#x27;</span>, &#123;</span><br><span class="line">          type: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.addrFId != <span class="string">&#x27;&#x27;</span> &amp;&amp; <span class="built_in">this</span>.addrSId != <span class="string">&#x27;&#x27;</span> &amp;&amp; <span class="built_in">this</span>.addrTId != <span class="string">&#x27;&#x27;</span>) &#123;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$toast(<span class="string">&#x27;请选择机构所在地&#x27;</span>, &#123;</span><br><span class="line">          type: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (!<span class="built_in">this</span>.valueAddrD) &#123;</span><br><span class="line">        <span class="built_in">this</span>.$toast(<span class="string">&#x27;请填写详细地址&#x27;</span>, &#123;</span><br><span class="line">          type: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (!<span class="built_in">this</span>.valueName) &#123;</span><br><span class="line">        <span class="built_in">this</span>.$toast(<span class="string">&#x27;请填写姓名&#x27;</span>, &#123;</span><br><span class="line">          type: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (!<span class="built_in">this</span>.valueTel) &#123;</span><br><span class="line">        <span class="built_in">this</span>.$toast(<span class="string">&#x27;请填写电话&#x27;</span>, &#123;</span><br><span class="line">          type: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">let</span> codeId = <span class="built_in">this</span>.$refs.codeId.value</span><br><span class="line">      <span class="keyword">if</span> (!codeId) &#123;</span><br><span class="line">        <span class="built_in">this</span>.$toast(<span class="string">&#x27;请填写验证码&#x27;</span>, &#123;</span><br><span class="line">          type: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (!<span class="built_in">this</span>.valueMail) &#123;</span><br><span class="line">        <span class="built_in">this</span>.$toast(<span class="string">&#x27;请填写邮箱&#x27;</span>, &#123;</span><br><span class="line">          type: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (!<span class="built_in">this</span>.fileList.length) &#123;</span><br><span class="line">        <span class="built_in">this</span>.$toast(<span class="string">&#x27;请选择文件&#x27;</span>, &#123;</span><br><span class="line">          type: <span class="string">&#x27;error&#x27;</span></span><br><span class="line">        &#125;)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>表单 校验</category>
+      </categories>
+      <tags>
+        <tag>H5</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>自定义webpack插件</title>
     <url>/2021/03/17/%E8%87%AA%E5%AE%9A%E4%B9%89webpack%E6%8F%92%E4%BB%B6/</url>
     <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>webpack 自身会提供一些基础插件，比如压缩、生成 html 文件、预加载等。有时，我们需要利用 webpack 提供的不同阶段钩子来做一些定制化功能的插件，以满足我们的业务需求，比如代码检查、打包后的文件处理(添加、删除、更改)。下面介绍如何自定义 webpack 插件。</p>
