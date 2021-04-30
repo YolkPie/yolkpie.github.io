@@ -5687,6 +5687,261 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       </tags>
   </entry>
   <entry>
+    <title>Lua</title>
+    <url>/2021/04/30/Lua/</url>
+    <content><![CDATA[<h1 id="Lua简介"><a href="#Lua简介" class="headerlink" title="Lua简介"></a>Lua简介</h1><p>Lua 是一种轻量小巧的脚本语言，用标准C语言编写并以源代码形式开放， 其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。是巴西里约热内卢天主教大学里的一个研究小组于 1993 年开发的。</p>
+<h2 id="设计目的"><a href="#设计目的" class="headerlink" title="设计目的"></a>设计目的</h2><p>其设计目的是为了嵌入应用程序中，从而为应用程序提供灵活的扩展和定制功能。</p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><ul>
+<li><strong>轻量级:</strong> 它用标准C语言编写并以源代码形式开放，编译后仅仅一百余K，可以很方便的嵌入别的程序里。</li>
+<li><strong>可扩展:</strong> Lua提供了非常易于使用的扩展接口和机制：由宿主语言(通常是C或C++)提供这些功能，Lua可以使用它们，就像是本来就内置的功能一样。</li>
+<li><strong>其他特性:</strong><ul>
+<li>支持面向过程编程和函数式编程；</li>
+<li>自动内存管理；只提供了一种通用类型的表（table），用它可以实现数组，哈希表，集合，对象；</li>
+<li>语言内置模式匹配；闭包(closure)；函数也可以看做一个值；提供多线程（协同进程，并非操作系统所支持的线程）支持；</li>
+<li>通过闭包和table可以很方便地支持面向对象编程所需要的一些关键机制，比如数据抽象，虚函数，继承和重载等。</li>
+</ul>
+</li>
+</ul>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><ul>
+<li>游戏开发</li>
+<li>独立应用脚本</li>
+<li>Web 应用脚本</li>
+<li>扩展和数据库插件如：MySQL Proxy 和 MySQL WorkBench</li>
+<li>安全系统，如入侵检测系统</li>
+</ul>
+<h1 id="安装Lua"><a href="#安装Lua" class="headerlink" title="安装Lua"></a>安装Lua</h1><h2 id="Mac-系统"><a href="#Mac-系统" class="headerlink" title="Mac 系统"></a>Mac 系统</h2><figure class="highlight plain"><figcaption><span>-R -O</span><a href="http://www.lua.org/ftp/lua-5.3.0.tar.gz">link</a></figcaption><table><tr><td class="code"><pre><span class="line">tar zxf lua-5.3.0.tar.gz</span><br><span class="line">cd lua-5.3.0</span><br><span class="line">make macosx test</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">brew install lua</span><br></pre></td></tr></table></figure>
+
+<h2 id="Windows-系统"><a href="#Windows-系统" class="headerlink" title="Windows 系统"></a>Windows 系统</h2><blockquote>
+<p>下载地址：<a href="https://github.com/rjpcomputing/luaforwindows/releases%EF%BC%8C">https://github.com/rjpcomputing/luaforwindows/releases，</a><br>双击安装后即可在该环境下编写 Lua 程序并运行。<br>windows下你可以使用一个叫”SciTE”的IDE环境来执行lua程序。</p>
+</blockquote>
+<p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/162297/36/15434/38802/6062bfedEc939a251/3a32aa64ba897736.png"></p>
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="变量定义"><a href="#变量定义" class="headerlink" title="变量定义"></a>变量定义</h2><p>Lua 中的变量全是全局变量，那怕是语句块或是函数里，除非用 local 显式声明为局部变量。<br>局部变量的作用域为从声明位置开始到所在语句块结束。<br>变量的默认值均为 nil。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a &#x3D; 5               -- 全局变量</span><br><span class="line">local b &#x3D; 5         -- 局部变量</span><br><span class="line"></span><br><span class="line">function joke()</span><br><span class="line">    c &#x3D; 5           -- 全局变量</span><br><span class="line">    local d &#x3D; 6     -- 局部变量</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">joke()</span><br><span class="line">print(c,d)          --&gt; 5 nil</span><br><span class="line"></span><br><span class="line">do</span><br><span class="line">    local a &#x3D; 6     -- 局部变量</span><br><span class="line">    b &#x3D; 6           -- 对局部变量重新赋值</span><br><span class="line">    print(a,b);     --&gt; 6 6</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">print(a,b)      --&gt; 5 6</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>do … end这种表达方式只是一种定义局部变量和执行一个语句块的组合，没有其他特殊含义。</p>
+</blockquote>
+<h2 id="变量赋值"><a href="#变量赋值" class="headerlink" title="变量赋值"></a>变量赋值</h2><p>Lua 可以对一个变量进行赋值，也可以对多个变量同时赋值，变量列表和值列表的各个元素用逗号分开，赋值语句右边的值会依次赋给左边的变量。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a &#x3D; 1 </span><br><span class="line">i,j &#x3D; 2,3</span><br><span class="line">x,y,z &#x3D; 4,5</span><br><span class="line">print(a, i, j, x, y, z)</span><br></pre></td></tr></table></figure>
+
+<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><p>Lua 是动态类型语言，变量不要类型定义,只需要为变量赋值。 值可以存储在变量中，作为参数传递或结果返回。<br>Lua 中有 8 个基本类型分别为：nil、boolean、number、string、userdata、function、thread 和 table。</p>
+<table>
+<thead>
+<tr>
+<th align="center">数据类型</th>
+<th>类型描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">nil</td>
+<td>只有值nil属于该类，表示一个无效值（在条件表达式中相当于false）</td>
+</tr>
+<tr>
+<td align="center">boolean</td>
+<td>包含两个值：false和true</td>
+</tr>
+<tr>
+<td align="center">number</td>
+<td>表示双精度类型的实浮点数</td>
+</tr>
+<tr>
+<td align="center">string</td>
+<td>字符串由一对双引号或单引号来表示</td>
+</tr>
+<tr>
+<td align="center">table</td>
+<td>Lua 中的表（table）其实是一个”关联数组”（associative arrays），数组的索引可以是数字、字符串或表类型。在 Lua 里，table 的创建是通过”构造表达式”来完成，最简单构造表达式是{}，用来创建一个空表</td>
+</tr>
+<tr>
+<td align="center">function</td>
+<td>由 C 或 Lua 编写的函数</td>
+</tr>
+<tr>
+<td align="center">thread</td>
+<td>表示执行的独立线路，用于执行协同程序</td>
+</tr>
+<tr>
+<td align="center">userdata</td>
+<td>表示任意存储在变量中的C数据结构</td>
+</tr>
+</tbody></table>
+<p>我们可以使用 type 函数测试给定变量或者值的类型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">print(type(&quot;Hello world&quot;))      --&gt; string</span><br><span class="line">print(type(10.4*3))             --&gt; number</span><br><span class="line">print(type(print))              --&gt; function</span><br><span class="line">print(type(type))               --&gt; function</span><br><span class="line">print(type(true))               --&gt; boolean</span><br><span class="line">print(type(nil))                --&gt; nil</span><br><span class="line">print(type(type(X)))            --&gt; string</span><br></pre></td></tr></table></figure>
+<h2 id="nil（空）"><a href="#nil（空）" class="headerlink" title="nil（空）"></a>nil（空）</h2><ul>
+<li>nil 类型表示一种没有任何有效值，它只有一个值 – nil，例如打印一个没有赋值的变量，便会输出一个 nil 值</li>
+<li>对于全局变量和 table，nil 还有一个”删除”作用，给全局变量或者 table 表里的变量赋一个 nil 值，等同于把它们删掉，执行下面代码就知：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a&#x3D;1</span><br><span class="line">print(a)</span><br><span class="line">a&#x3D;nil</span><br><span class="line">print(a)</span><br><span class="line">print(b)</span><br></pre></td></tr></table></figure></li>
+<li>**nil 作比较时应该加上双引号 “**，试下如下代码<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type(X)&#x3D;&#x3D;nil</span><br><span class="line">type(X)&#x3D;&#x3D;&quot;nil&quot;</span><br></pre></td></tr></table></figure>
+type(X)==nil 结果为 false 的原因是 type(X) 实质是返回的 “nil” 字符串，是一个 string 类型，不信你执行一下 <code>type(type(X))</code></li>
+</ul>
+<h2 id="boolean（布尔）"><a href="#boolean（布尔）" class="headerlink" title="boolean（布尔）"></a>boolean（布尔）</h2><p>boolean 类型只有两个可选值：true和 false，Lua 把 false 和 nil 看作是 false，其他的都为 true，<strong>数字 0 也是 true</strong>:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">if false or nil then</span><br><span class="line">    print(&quot;至少有一个是 true&quot;)</span><br><span class="line">else</span><br><span class="line">    print(&quot;false 和 nil 都为 false&quot;)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">if 0 then</span><br><span class="line">    print(&quot;数字 0 是 true&quot;)</span><br><span class="line">else</span><br><span class="line">    print(&quot;数字 0 为 false&quot;)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h2 id="number（数字）"><a href="#number（数字）" class="headerlink" title="number（数字）"></a>number（数字）</h2><p>Lua 默认只有一种 number 类型 – double（双精度）类型，以下几种写法都被看作是 number 类型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">print(type(2))</span><br><span class="line">print(type(2.2))</span><br><span class="line">print(type(0.2))</span><br><span class="line">print(type(2e+1))</span><br><span class="line">print(type(0.2e-1))</span><br><span class="line">print(type(7.8263692594256e-06))</span><br></pre></td></tr></table></figure>
+<h2 id="string（字符串）"><a href="#string（字符串）" class="headerlink" title="string（字符串）"></a>string（字符串）</h2><h3 id="字符串的定义"><a href="#字符串的定义" class="headerlink" title="字符串的定义"></a>字符串的定义</h3><ul>
+<li>字符串由一对双引号或单引号来表示：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string1 &#x3D; &quot;this is string1&quot;</span><br><span class="line">string2 &#x3D; &#39;this is string2&#39;</span><br></pre></td></tr></table></figure></li>
+<li>也可以用 2 个方括号 “[[]]” 来表示”一块”字符串：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">html &#x3D; [[</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;&lt;&#x2F;head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;a href&#x3D;&quot;http:&#x2F;&#x2F;www.baidu.com&#x2F;&quot;&gt;百度&lt;&#x2F;a&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br><span class="line">]]</span><br><span class="line">print(html)</span><br></pre></td></tr></table></figure></li>
+<li>在对一个数字字符串上进行算术操作时，Lua 会尝试将这个数字字符串转成一个数字,试运行如下代码:<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">print(&quot;2&quot; + 6)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="字符串常见的操作"><a href="#字符串常见的操作" class="headerlink" title="字符串常见的操作"></a>字符串常见的操作</h3><p>Lua 提供了很多的方法来支持字符串的操作：</p>
+<ul>
+<li><p>字符串全部转为大写字母。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string.upper(&#39;lua&#39;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串全部转为小写字母。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string.lower(&#39;LUA&#39;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在字符串中替换。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string.gsub(&quot;aaa&quot;,&quot;a&quot;,&quot;z&quot;,3); -- aaa要操作的字符串；a 被 z 替换 3 次 (如果忽略3，则表示全部替换)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在一个指定的目标字符串中搜索指定的内容,返回其具体位置。不存在则返回 nil。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string.find(&quot;Hello Lua user&quot;, &quot;Lua&quot;) </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>返回一个类似printf的格式化字符串</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">string.format(&quot;the value is:%d&quot;,4) -- %d, %i 接受一个数字并将其转化为有符号的整数格式</span><br><span class="line">string.format(&quot;the value is:%f&quot;,9.990000) -- %f 接受一个数字并将其转化为浮点数格式</span><br><span class="line">string.format(&quot;the value is:%s&quot;,&#39;a&#39;) -- %s 接受一个字符串并按照给定的参数格式化该字符串</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>计算字符串长度。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">str &#x3D; &#39;abc&#39;</span><br><span class="line">string.len(str) 或者</span><br><span class="line">print(#str)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>连接两个字符串，使用的是 ..</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">print(&quot;abc&quot;..&quot;xyz&quot;)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串截取</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">str&#x3D;&#39;m.jd.com&#39;</span><br><span class="line">string.sub(str, 4, -1) -- str要操作的字符串；4 截取开始的位置；截取结束位置，默认为 -1，最后一个字符。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="table（表）"><a href="#table（表）" class="headerlink" title="table（表）"></a>table（表）</h2><h3 id="table（表）的定义"><a href="#table（表）的定义" class="headerlink" title="table（表）的定义"></a>table（表）的定义</h3><p>在 Lua 里，table 的创建是通过”构造表达式”来完成，最简单构造表达式是{}，用来创建一个空表。也可以在表里添加一些数据，直接初始化表:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 创建一个空的 table</span><br><span class="line">local tbl1 &#x3D; &#123;&#125;</span><br><span class="line"> </span><br><span class="line">-- 直接初始表</span><br><span class="line">local tbl2 &#x3D; &#123;&quot;apple&quot;, &quot;pear&quot;, &quot;orange&quot;, &quot;grape&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Lua 中的表（table）其实是一个”关联数组”，数组的索引可以是数字或者是字符串:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a &#x3D; &#123;&#125;</span><br><span class="line">a[&quot;key&quot;] &#x3D; &quot;value&quot;</span><br><span class="line">key &#x3D; 10</span><br><span class="line">a[key] &#x3D; 22</span><br><span class="line">a[key] &#x3D; a[key] + 11</span><br><span class="line">for k, v in pairs(a) do</span><br><span class="line">    print(k .. &quot; : &quot; .. v)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>不同于其他语言的数组把 0 作为数组的初始索引，在 Lua 里表的默认初始索引默认以 1 开始。</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">local tbl &#x3D; &#123;&quot;apple&quot;, &quot;pear&quot;, &quot;orange&quot;, &quot;grape&quot;&#125;</span><br><span class="line">for key, val in pairs(tbl) do</span><br><span class="line">    print(&quot;Key&quot;, key)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>table 不会固定长度大小，有新数据添加时 table 长度会自动增长，没初始的 table 都是 nil。</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a &#x3D; &#123;&#125;</span><br><span class="line">for i &#x3D; 1, 5 do</span><br><span class="line">    a[i] &#x3D; i</span><br><span class="line">end</span><br><span class="line">for key, val in pairs(a) do</span><br><span class="line">  print(key, val)</span><br><span class="line">end</span><br><span class="line">a[&quot;key1&quot;] &#x3D; &quot;val&quot;</span><br><span class="line">print(a[&quot;key1&quot;])</span><br><span class="line">print(a[&quot;key2&quot;])</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="table（表）的操作"><a href="#table（表）的操作" class="headerlink" title="table（表）的操作"></a>table（表）的操作</h3><ul>
+<li>Table 连接</li>
+<li>插入和移除</li>
+<li>Table 排序</li>
+<li>Table 最大值</li>
+</ul>
+<h4 id="Table-连接"><a href="#Table-连接" class="headerlink" title="Table 连接"></a><strong>Table 连接</strong></h4><p>可以使用 concat() 输出一个列表中元素连接成的字符串:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fruits &#x3D; &#123;&quot;banana&quot;,&quot;orange&quot;,&quot;apple&quot;&#125;</span><br><span class="line">-- 返回连接后的字符串</span><br><span class="line">print(&quot;连接后的字符串 &quot;,table.concat(fruits))</span><br><span class="line"></span><br><span class="line">-- 指定连接字符</span><br><span class="line">print(&quot;连接后的字符串 &quot;,table.concat(fruits,&quot;, &quot;))</span><br><span class="line"></span><br><span class="line">-- 指定索引来连接</span><br><span class="line">print(&quot;连接后的字符串 &quot;,table.concat(fruits,&quot;, &quot;, 2,3))</span><br></pre></td></tr></table></figure>
+
+<h4 id="插入和删除"><a href="#插入和删除" class="headerlink" title="插入和删除"></a><strong>插入和删除</strong></h4><p>可以使用 insert() 和 remove() 来分别实现 table的插入和删除：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fruits &#x3D; &#123;&quot;banana&quot;,&quot;orange&quot;,&quot;apple&quot;&#125;</span><br><span class="line"></span><br><span class="line">-- 在末尾插入</span><br><span class="line">table.insert(fruits,&quot;mango&quot;)</span><br><span class="line">print(&quot;索引为 4 的元素为 &quot;,fruits[4])</span><br><span class="line"></span><br><span class="line">-- 在索引为 2 的键处插入</span><br><span class="line">table.insert(fruits,2,&quot;grapes&quot;)</span><br><span class="line">print(&quot;索引为 2 的元素为 &quot;,fruits[2])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">for key, val in pairs(fruits) do</span><br><span class="line">    print(val)</span><br><span class="line">end</span><br><span class="line">table.remove(fruits)</span><br><span class="line">print(&quot;------------&quot;)</span><br><span class="line">for key, val in pairs(fruits) do</span><br><span class="line">    print(val)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h4 id="Table-排序"><a href="#Table-排序" class="headerlink" title="Table 排序"></a><strong>Table 排序</strong></h4><p>使用sort() 方法对 Table 进行排序，默认排序顺序是根据字符串Unicode码点。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fruits &#x3D; &#123;&quot;banana&quot;,&quot;orange&quot;,&quot;apple&quot;,&quot;grapes&quot;&#125;</span><br><span class="line">for k,v in ipairs(fruits) do</span><br><span class="line">    print(k,v)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">table.sort(fruits)</span><br><span class="line">print(&quot;--------------------&quot;)</span><br><span class="line">for k,v in ipairs(fruits) do</span><br><span class="line">    print(k,v)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h4 id="Table-最大值"><a href="#Table-最大值" class="headerlink" title="Table 最大值"></a>Table 最大值</h4><p>table.maxn 在 Lua5.2 之后该方法已经不存在了。</p>
+<h2 id="function（函数）"><a href="#function（函数）" class="headerlink" title="function（函数）"></a>function（函数）</h2><p>在 Lua 中，函数是被看作是”第一类值”，函数可以存在变量里。</p>
+<blockquote>
+<p>第一类值表示函数与其他传统类型的值（例如数字和字符串类型）具有相同的权利。即函数可以存储在变量中，可以作为实参传递给其他函数，还可以作为其他函数的返回值，如下两段代码:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">--函数可以存储在变量中:</span><br><span class="line"></span><br><span class="line">local function f1()</span><br><span class="line">    print(&quot;Hello&quot;)</span><br><span class="line">end</span><br><span class="line">--等价于</span><br><span class="line">local f1 &#x3D; function()</span><br><span class="line">    print(&quot;Hello&quot;)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">--以匿名函数的方式通过参数传递:</span><br><span class="line"></span><br><span class="line">function testFun(tab,fun)</span><br><span class="line">    for k ,v in pairs(tab) do</span><br><span class="line">        print(fun(k,v));</span><br><span class="line">    end</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">tab&#x3D;&#123;key1&#x3D;&quot;val1&quot;,key2&#x3D;&quot;val2&quot;&#125;;</span><br><span class="line">testFun(tab,</span><br><span class="line">    function(key,val)--匿名函数</span><br><span class="line">        return key..&quot;&#x3D;&quot;..val;</span><br><span class="line">    end</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="函数的定义"><a href="#函数的定义" class="headerlink" title="函数的定义"></a>函数的定义</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">optional_function_scope function function_name( argument1, argument2, argument3..., argumentn)</span><br><span class="line">    function_body</span><br><span class="line">    return result_params_comma_separated</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<ul>
+<li>optional_function_scope: 该参数是可选的制定函数是全局函数还是局部函数，未设置该参数默认为全局函数，如果你需要设置函数为局部函数需要使用关键字 local。</li>
+<li>function_name: 指定函数名称。</li>
+<li>argument1, argument2, argument3…, argumentn: 函数参数，多个参数以逗号隔开，函数也可以不带参数。</li>
+<li>function_body: 函数体，函数中需要执行的代码语句块。</li>
+<li>result_params_comma_separated: 函数返回值，Lua函数可以返回多个值，每个值以逗号隔开。</li>
+</ul>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><ul>
+<li>以下实例定义了函数 max()，参数为 num1, num2，用于比较两值的大小，并返回最大值：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function max(num1, num2)</span><br><span class="line">   if (num1 &gt; num2) then</span><br><span class="line">      result &#x3D; num1;</span><br><span class="line">   else</span><br><span class="line">      result &#x3D; num2;</span><br><span class="line">   end</span><br><span class="line">   return result;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">-- 调用函数</span><br><span class="line">print(&quot;两值比较最大值为 &quot;,max(10,4))</span><br><span class="line">&#96;&#96;&#96; </span><br><span class="line"></span><br><span class="line">- 可以将函数作为参数传递给函数，如下实例：</span><br></pre></td></tr></table></figure>
+myprint = function(param)<br> print(“这是打印函数 -   ##”,param,”##”)<br>end</li>
+</ul>
+<p>function add(num1,num2,functionPrint)<br>   result = num1 + num2<br>   – 调用传递的函数参数<br>   functionPrint(result)<br>end<br>– myprint 函数作为参数传递<br>add(2,5,myprint)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">### 多返回值</span><br><span class="line">Lua函数可以返回多个结果值，在return后列出要返回的值的列表即可返回多值，如：</span><br></pre></td></tr></table></figure>
+<p>– 获取table中的最大值</p>
+<p>function maximum (a)<br>    local mi = 1             – 最大值索引<br>    local m = a[mi]          – 最大值<br>    for i,val in ipairs(a) do<br>       if val &gt; m then<br>           mi = i<br>           m = val<br>       end<br>    end<br>    return m, mi<br>end</p>
+<p>print(maximum({8,10,23,12,5}))</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">### 可变参数</span><br><span class="line">Lua 函数可以接受可变数目的参数。</span><br><span class="line">- 在函数参数列表中使用三点 ... 表示函数有可变的参数；</span><br><span class="line">- 可以通过 &quot;#&quot; 来获取可变参数的数量。</span><br></pre></td></tr></table></figure>
+<p>– 求平均值</p>
+<p>function average(…)<br>   result = 0<br>   local arg={…}    – arg 为一个表，局部变量<br>   for i,v in ipairs(arg) do<br>      result = result + v<br>   end<br>   print(“总共传入 “ .. #arg .. “ 个数”)<br>   return result/#arg<br>end</p>
+<p>print(“平均值为”,average(10,5,3,4,5,6))</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">## thread（线程）</span><br><span class="line">在 Lua 里，最主要的线程是协同程序（coroutine）。它跟线程差不多，拥有自己独立的栈、局部变量和指令指针，可以跟其他协同程序共享全局变量和其他大部分东西。</span><br><span class="line"></span><br><span class="line">|  方法   | 描述  |</span><br><span class="line">|  :----:  | :----  |</span><br><span class="line">| create() | 创建 coroutine，返回 coroutine， 参数是一个函数，当和 resume 配合使用的时候就唤醒函数调用 |</span><br><span class="line">| resume() | 启动 coroutine，和 create 配合使用 |</span><br><span class="line">| yield() | 挂起 coroutine，将 coroutine 设置为挂起状态，这个和 resume 配合使用能有很多有用的效果 |</span><br><span class="line">| status() | 查看 coroutine 的状态 (coroutine 的状态有三种：dead，suspended，running) |</span><br><span class="line">| running() | 返回正在跑的 coroutine，一个 coroutine 就是一个线程，当使用running的时候，就是返回一个 corouting 的线程号 |</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 简单示例</span><br></pre></td></tr></table></figure>
+<p>co = coroutine.create(<br>    function(i)<br>        print(i);<br>    end<br>)<br>coroutine.resume(co, 1)   – 1<br>print(coroutine.status(co))  – dead</p>
+<p>print(“————-“)</p>
+<p>co2 = coroutine.create(<br>    function()<br>        for i=1,10 do<br>            print(i)<br>            if i == 3 then<br>                print(coroutine.status(co2))  –running<br>                print(coroutine.running()) –thread:XXXXXX<br>            end<br>            coroutine.yield()<br>        end<br>    end<br>)</p>
+<p>coroutine.resume(co2) –1<br>coroutine.resume(co2) –2<br>coroutine.resume(co2) –3</p>
+<p>print(coroutine.status(co2))   – suspended<br>print(coroutine.running())</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; 当create一个coroutine的时候就是在新线程中注册了一个事件。当使用resume触发事件的时候，create的coroutine函数就被执行了，当遇到yield的时候就代表挂起当前线程，等候再次resume触发事件。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 详细示例</span><br></pre></td></tr></table></figure>
+<p>function foo (a)<br>    print(“foo 函数输出”, a)<br>    return coroutine.yield(2 * a) – 返回  2*a 的值<br>end</p>
+<p>co = coroutine.create(function (a , b)<br>    print(“第一次协同程序执行输出”, a, b) – co-body 1 10<br>    local r = foo(a + 1)</p>
+<pre><code>print(&quot;第二次协同程序执行输出&quot;, r)
+local r, s = coroutine.yield(a + b, a - b)  -- a，b的值为第一次调用协同程序时传入
+ 
+print(&quot;第三次协同程序执行输出&quot;, r, s)
+return b, &quot;结束协同程序&quot;                   -- b的值为第二次调用协同程序时传入
+</code></pre>
+<p>end)</p>
+<p>print(“main”, coroutine.resume(co, 1, 10)) – true, 4<br>print(“–分割线—-“)<br>print(“main”, coroutine.resume(co, “r”)) – true 11 -9<br>print(“—分割线—“)<br>print(“main”, coroutine.resume(co, “x”, “y”)) – true 10 end<br>print(“—分割线—“)<br>print(“main”, coroutine.resume(co, “x”, “y”)) – cannot resume dead coroutine<br>print(“—分割线—“)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">&gt; resume和yield的配合强大之处在于，resume处于主程中，它将外部状态（数据）传入到协同程序内部；而yield则将内部的状态（数据）返回到主程中。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 生产者-消费者问题</span><br></pre></td></tr></table></figure>
+<p>local newProductor</p>
+<p>function productor()<br>    local i = 0<br>    while true do<br>        i = i + 1<br>        send(i)     – 将生产的物品发送给消费者<br>    end<br>end</p>
+<p>function consumer()<br>    while true do<br>        local i = receive()     – 从生产者那里得到物品<br>        print(i)<br>    end<br>end</p>
+<p>function receive()<br>    local status, value = coroutine.resume(newProductor)<br>    return value<br>end</p>
+<p>function send(x)<br>    coroutine.yield(x)     – x表示需要发送的值，值返回以后，就挂起该协同程序<br>end</p>
+<p>– 启动程序<br>newProductor = coroutine.create(productor)<br>consumer()</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">以上代码执行步骤：</span><br><span class="line">- 创建newProductor协同程序</span><br><span class="line">- 执行consumer函数</span><br><span class="line">- 到consumer中执行recieve（）</span><br><span class="line">- recieve中启动newProductor，执行productor函数</span><br><span class="line">- 到productor中执行send（1）&#x2F;&#x2F;生产者中i &#x3D; 1</span><br><span class="line">- send（1）挂起newProductor，并发送1</span><br><span class="line">**注意协同程序下次从这里继续**</span><br><span class="line">- 继续执行receive，value&#x3D;1，</span><br><span class="line">- 到consumer（）中local i&#x3D;1，打印i</span><br><span class="line">- 执行consumer（）中的while循环</span><br><span class="line">- ......</span><br><span class="line"></span><br><span class="line">## userdata（自定义类型）</span><br><span class="line">userdata 是一种用户自定义数据，用于表示一种由应用程序或 C&#x2F;C++ 语言库所创建的类型，可以将任意 C&#x2F;C++ 的任意数据类型的数据（通常是 struct 和 指针）存储到 Lua 变量中调用。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 数组</span><br><span class="line">Lua并没有提供专门的数组对象来对数组进行操作，Lua的数组是使用table来实现的。当 key 为整数时，table 就可以当成数组来用。而且这个数组是一个 索引从1开始 ，没有固定长度，可以根据需要自动增长的数组。可以是一维数组和多维数组。</span><br><span class="line"></span><br><span class="line">## Table的长度</span><br><span class="line">### 对于一个数组我们通常可以使用#和table.getn来获取其长度</span><br></pre></td></tr></table></figure>
+<p>array = {“a”, “b”}<br>print(#array)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">### 如果不是数组，使用#是不能获取table长度的，可以使用如下方法进行获取：</span><br></pre></td></tr></table></figure>
+<p>tabletest = {a=1,b=2,c=3,d=4,e=5}<br>local count=0<br>for k,v in pairs(tabletest) do<br>    count = count + 1<br>end<br>print(count)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 一维数组</span><br></pre></td></tr></table></figure>
+<p>array = {“a”, “b”}<br>for i= 0, #array do<br>   print(array[i])<br>end</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">## 二维数组</span><br><span class="line">多维数组即数组中包含数组或一维数组的索引键对应一个数组。</span><br></pre></td></tr></table></figure>
+<p>array = { {1,2},{‘a’,’b’},3,’c’ }<br>for i=1, #array do<br>  if (type(array[i]) == ‘table’) then<br>    for j=1, #array[i] do<br>      print(array[i][j])<br>    end<br>  else<br>    print(array[i])<br>  end<br>end</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"># Lua 流程控制</span><br><span class="line">Lua 编程语言流程控制语句通过程序设定一个或多个条件语句来设定。在条件为 true 时执行指定程序代码，在条件为 false 时执行其他指定代码。</span><br><span class="line">## if 语句</span><br></pre></td></tr></table></figure>
+<p>–[ 0 为 true ]<br>if(0)<br>then<br>    print(“0 为 true”)<br>end</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">## if...else 语句</span><br></pre></td></tr></table></figure>
+<p>a = 100;</p>
+<p>if( a &lt; 20 )<br>then<br>   print(“a 小于 20” )<br>else<br>   print(“a 大于 20” )<br>end</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">## if 嵌套语句</span><br></pre></td></tr></table></figure>
+<p>a = 100;<br>b = 200;</p>
+<p>if( a == 100 )<br>then<br>   if( b == 200 )<br>   then<br>      print(“a 的值为 100 b 的值为 200” );<br>   end<br>end</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"># 循环</span><br><span class="line">很多情况下我们需要做一些有规律性的重复操作，因此在程序中就需要重复执行某些语句。</span><br><span class="line">一组被重复执行的语句称之为循环体，能否继续重复，决定循环的终止条件。</span><br><span class="line">循环结构是在一定条件下反复执行某段程序的流程结构，被反复执行的程序被称为循环体。</span><br><span class="line">循环语句是由循环体及循环的终止条件两部分组成的。</span><br><span class="line">## for 循环</span><br><span class="line">### 数值for循环</span><br></pre></td></tr></table></figure>
+<p>for var=exp1,exp2,exp3 do<br>    &lt;循环体&gt;<br>end  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; var 从 exp1 变化到 exp2，每次变化以 exp3 为步长递增 var，并执行一次 &quot;执行体&quot;。exp3 是可选的，如果不指定，默认为1。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>for i=1,10 do<br>    print(i)<br>end</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">### 泛型for循环</span><br><span class="line">泛型 for 循环通过一个迭代器函数来遍历所有值。</span><br></pre></td></tr></table></figure>
+<p>–打印数组a的所有值<br>a = {“one”, “two”, “three”}<br>for i, v in ipairs(a) do<br>    print(i, v)<br>end </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; i是数组索引值，v是对应索引的元素值。ipairs是Lua提供的一个迭代器函数，用来迭代数组。</span><br><span class="line">## while 循环</span><br><span class="line">Lua 编程语言中 while 循环语句在判断条件为 true 时会重复执行循环体语句。</span><br></pre></td></tr></table></figure>
+<p>while(循环条件)<br>do<br>   &lt;循环体&gt;<br>end</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;&#96;&#96;</span><br><span class="line">a&#x3D;10</span><br><span class="line">while( a &lt; 20 )</span><br><span class="line">do</span><br><span class="line">   print(&quot;a 的值为:&quot;, a)</span><br><span class="line">   a &#x3D; a+1</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h2 id="循环嵌套"><a href="#循环嵌套" class="headerlink" title="循环嵌套"></a>循环嵌套</h2><p>以下实例使用了for循环嵌套:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for m&#x3D;1,9 do                           </span><br><span class="line">    local s &#x3D; &quot;&quot;                       </span><br><span class="line">    for n&#x3D;1,9 do                       </span><br><span class="line">        if n &lt;&#x3D; m then                 </span><br><span class="line">            s &#x3D; s..m..&quot;x&quot;..n..&quot;&#x3D;&quot;..m*n </span><br><span class="line">            if n ~&#x3D; m then   -- ~&#x3D; 不等于           </span><br><span class="line">                s &#x3D; s..&quot;, &quot;            </span><br><span class="line">            end</span><br><span class="line">        end        </span><br><span class="line">    end</span><br><span class="line">    print(s)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h2 id="循环控制语句"><a href="#循环控制语句" class="headerlink" title="循环控制语句"></a>循环控制语句</h2><p>循环控制语句用于控制程序的流程， 以实现程序的各种结构方式。</p>
+<ul>
+<li>break</li>
+<li>goto<h3 id="break"><a href="#break" class="headerlink" title="break"></a><strong>break</strong></h3>Lua 编程语言 break 语句插入在循环体中，用于退出当前循环或语句，并开始脚本执行紧接着的语句。<br>如果你使用循环嵌套，break语句将停止最内层循环的执行，并开始执行的外层的循环语句。<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for i&#x3D;1,10 do</span><br><span class="line">  if(i&gt;5) </span><br><span class="line">  then </span><br><span class="line">    break</span><br><span class="line">  else  </span><br><span class="line">    print(i)</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<h3 id="goto"><a href="#goto" class="headerlink" title="goto"></a><strong>goto</strong></h3>goto 语句允许将控制流程无条件地转到被标记的语句处。<br>语法格式如下所示：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">goto label</span><br></pre></td></tr></table></figure>
+Label 的格式为：<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:: Label ::</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>以下实例中使用了 goto：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">for i&#x3D;1, 3 do</span><br><span class="line">    if i &lt;&#x3D; 2 then</span><br><span class="line">        print(i, &quot;yes continue&quot;)</span><br><span class="line">        goto continue</span><br><span class="line">    end</span><br><span class="line">    print(i, &quot; no continue&quot;)</span><br><span class="line">    ::continue::</span><br><span class="line">    print([[i&#39;m end]])</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+]]></content>
+  </entry>
+  <entry>
     <title>Redux基础及原理探究</title>
     <url>/2020/08/31/Redux%E5%9F%BA%E7%A1%80%E5%8F%8A%E5%8E%9F%E7%90%86%E6%8E%A2%E7%A9%B6/</url>
     <content><![CDATA[<h3 id="1-核心概念"><a href="#1-核心概念" class="headerlink" title="1.核心概念"></a>1.核心概念</h3><ul>
