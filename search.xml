@@ -3248,6 +3248,126 @@ renderWithHooks()中有一个Component()方法，用来执行App()，此时又�
       </tags>
   </entry>
   <entry>
+    <title>为什么选择使用TS</title>
+    <url>/2021/06/05/%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9%E4%BD%BF%E7%94%A8TS/</url>
+    <content><![CDATA[<h1 id="为什么选择使用TS"><a href="#为什么选择使用TS" class="headerlink" title="为什么选择使用TS"></a>为什么选择使用TS</h1><p>一个非常有争议性的观点：由于 TypeScript 具有更强的可扩展性 并且 可以带给开发者更好的体验，开发者应该更愿意选择 TypeScript 而不是 JavaScript。</p>
+<p><strong>开发者回避使用 TypeScript 的三个借口</strong></p>
+<ol>
+<li>它让 JavaScript 更像 Java 和 .NET</li>
+</ol>
+<p>优秀的 JavaScript 开发者会提醒你避免使用 OOP 的风格。太多开发者一上来就写个class的原因通常是因为 他/她 是从OOP背景过来的 —— 在Java，你不能光秃秃地定义一个常量，一个函数或者一个表达式，你得先有个类，然后在类里定义一个静态不可变的属性 （public static final 三连） 才能产生一个常量，类似的，也只能在类里定义一个（静态或者非静态）的方法才能让函数有容身之地<br><a href="https://zhuanlan.zhihu.com/p/158956514">在大部分场景下不鼓励使用JavaScript class</a></p>
+<blockquote>
+<p>问题的关键是：TypeScript 不会改变 JavaScript，它只是被加到 JavaScript 中。</p>
+</blockquote>
+<ol start="2">
+<li>它使代码变得不必要的冗长/复杂</li>
+</ol>
+<p>TypeScript 意味着更多的代码，但这些东西是元数据ーー它有助于描述你正在操纵的数据，从而降低了整体的认知成本。</p>
+<blockquote>
+<p>TypeScript 通过减少记忆成本和消除打开不相关的文件手动检查类型 来提高开发速度。</p>
+</blockquote>
+<ol start="3">
+<li>脚本不需要类型，应用程序需要</li>
+</ol>
+<p>如果你想创建一个使用鼠标拖动 div 的程序，那么你只需要编写一个小型的 JS 脚本。添加类型是没有意义的。在编写大多数脚本时（就用途而言，简单的程序调用内置方法并处理很少的数据），JavaScript 通常就足够了，添加类型会不必要地增加冗长性。</p>
+<blockquote>
+<p>对于较大的应用程序,TypeScript 允许我们描述数据结构，而不必记住或手动查阅它们。我们的 IDE 和编译器可以捕获我们所犯的任何错误</p>
+</blockquote>
+<p><strong>TS是谁写给谁看/用的？</strong></p>
+<p>TS是定义者给使用者写的。为了让使用者更方便（VSCode提示）以及更安全（约束）的使用他提供的方法或者类。</p>
+<ol>
+<li>VSCode提示</li>
+</ol>
+<p>定义者指定了一个方法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">name: string</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> name.length</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么作为使用者可以通过VSCode准确了解到该函数的参数和返回值</p>
+<p><img src= "/img/loading.gif" data-src="./assets/vscode.webp"></p>
+<ol start="2">
+<li>巧用注释</li>
+</ol>
+<p>为了更完美的展示提示信息，我们还可以添加注释</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** foo function</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description </span>count string size</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">name: string</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> name.length</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这时使用者会看到</p>
+<p><img src= "/img/loading.gif" data-src="./assets/640.webp"></p>
+<ol start="3">
+<li>类型推断</li>
+</ol>
+<p>TypeScript 强大的静态类型检查系统的一个基本特性是 类型推断。根据每个变量的初始值，重新赋值 或 依赖关系，TypeScript 可以推导出每个变量可赋的最具体的类型。</p>
+<p>让我们假设我们有 users，一个 User 对象数组，然后我们可以取出一个有特定 ID 的用户：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> user = users.find(<span class="function"><span class="params">u</span> =&gt;</span> u.id === <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>因为用户是 User[] 类型的，并且基于 Array.find() 的函数签名，所以 TypeScript 知道 user 会是 User 类型。因此，为它定义类型是多余的：</p>
+<blockquote>
+<p>值得注意的一点，如果项目路径配置了别名，那么可能引入的方法没有正确提示，此时只需要在tsconfig.json这里的compilerOptions选项添加一个paths配置</p>
+</blockquote>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;paths&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;@/*&quot;</span>: [<span class="string">&quot;src/*&quot;</span>]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>案例展示TypeScript是多么的有用</strong></p>
+<ol>
+<li>Vue: 难以理解的 “payload”</li>
+</ol>
+<p>VueX 为 Vue 应用程序提供了一个中央状态，帮开发者避免在组件之间杂乱的传递 props。</p>
+<p>为了修改存储的状态，我们定义了一个变异函数，该函数接受两个参数: 当前的 state 和一个包含更改信息的 payload。</p>
+<p>假设我们希望保持用 JavaScript 对象表示的待办事项的中心状态。我们可以使用空数组初始化状态，如下所示:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">state = &#123;</span><br><span class="line">  todos: [],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在我们可以定义一个 mutation，使我们能够更新这个待办事项列表：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">updateTodos: <span class="function">(<span class="params">state, payload</span>) =&gt;</span> &#123;</span><br><span class="line">  state.todos = payload;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这足够简单了。但是我们必须从另一个模块中调用这个 mutation，比如一个组件。如果没有明确的类型，我们就需要猜测（或者回忆） updatetodo 需要一个 Todo 对象列表。这不是件好事。</p>
+<p>事情不止于此。假设另一个开发人员加入了我们的团队，我们要求他们修改 updateTodos这个 mutation，以便它也更新状态的另一部分，比如一个跟踪已完成的待办事项数量的变量（由 someTodo.isComplete 得到）。</p>
+<p>要做到这一点，开发人员必须首先确定 payload 的类型，包括以下步骤：</p>
+<p>开发者必须假定当前版本的 updateTodos 是正确的（即 payload 和 state.todos是相同类型）</p>
+<p>开发者必须一路滚动到初始化状态对象的代码位置，以检查 todos 的类型（或者，如果 updateTodos 已经被调用，在代码中搜索调用的位置）。</p>
+<p>开发者必须确定每个 to-do 对象的结构，才能确定它是已经被完成了。</p>
+<p>在这一切结束之后，由于一路上所做的所有假设，开发者除了测试一下，没有其他方法来检查解决方案的正确性。</p>
+<p>通过定义 Todo 类型并将 payload 的类型指定为 Todo[] ，我们就解决了所有这些问题。</p>
+<p>毫无疑问，至少在这种情况下，TypeScript 为开发团队提供了一个有重大价值的优势，提高准确性、减少开发者的头痛、加快开发速度并且降低类似 bug 的发生几率。</p>
+<ol start="2">
+<li>为 JSON 响应 添加类型</li>
+</ol>
+<p>许多 JavaScript 应用程序会向远程 API 发出网络请求来获取数据。通常，在使用这些 API 时，我们会在开发时了解期望收到的响应的结构。</p>
+<p>例如，假设我们正在从后端获取数据。我们的后端团队编写了全面的文档，详细描述了每个请求和响应对象的结构。</p>
+<p>文档提到，每个响应都有以下结构:</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;status&quot;</span>: <span class="string">&quot;success&quot;</span> or <span class="string">&quot;failure&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;data&quot;</span>: &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这可以生成如下的 TypeScript 数据定义：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">interface ApiResponse &#123;</span><br><span class="line">  status: <span class="string">&quot;success&quot;</span> | <span class="string">&quot;failure&quot;</span>;</span><br><span class="line">  data: any;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们可以参数化 ApiResponse 来指定它的数据字段的类型：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">interface ApiResponse&lt;T&gt; &#123;</span><br><span class="line">  status: <span class="string">&quot;success&quot;</span> | <span class="string">&quot;failure&quot;</span>;</span><br><span class="line">  data: T;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们的 API 方法在返回类型方面可以更加具体:：例如，我们可以返回一个ApiResponse&lt;User[]&gt; 表示用户列表，而不是仅仅返回一个 ApiResponse。</p>
+<p>让我们来看看这是如何提高开发速度的。假设你有一个从后端获取用户列表的方法：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">getUsers</span>(<span class="params"></span>): <span class="title">Promise</span>&lt;<span class="title">ApiResponse</span>&lt;<span class="title">User</span>[]&gt;&gt; </span>&#123; </span><br><span class="line">  ... </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在组件中使用它来获取用户信息：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> users = <span class="keyword">await</span> getUsers();</span><br></pre></td></tr></table></figure>
+
+<p>然后我们映射用户信息得到他们的姓名:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> userNames = users.map(<span class="function"><span class="params">u</span> =&gt;</span> u.name);</span><br></pre></td></tr></table></figure>
+
+<p>对吧？</p>
+<p>错。你发现错误了吗？可能没有，但静态类型检查会。我们忘记了响应包含我们 首先需要处理的 success 和 data 字段。多亏了 TypeScript，我们的 IDE 可以立即捕捉到这个错误。</p>
+<p>对于新手 JavaScript 开发者来说，处理 API 响应是一个常见的 “问题”。</p>
+<p>随着 JavaScript 经验的提升，你将养成每次都手动检查 API 客户端响应类型的习惯。但 TypeScript 帮你做了这些事之后，难道你还需要要为这些问题烦心吗？它不仅节省时间，还能防止疏忽引发的问题。</p>
+<p>现在想象一下，你正在从一个体育 API 中获取数据。你使用 /upcoming 拉取即将开始的体育比赛数据。API 文档提供了以下响应结构：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;id&quot;</span>: <span class="number">247283</span>,</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;New York Knicks at Atlanta Hawks&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;date&quot;</span>: <span class="string">&quot;2021-05-23T02:00:00+00:00&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;competitors&quot;</span>: [<span class="string">&quot;New York Knicks&quot;</span>, <span class="string">&quot;Atlanta Hawks&quot;</span>],</span><br><span class="line">  <span class="attr">&quot;venue&quot;</span>: <span class="string">&quot;Madison Square Garden&quot;</span>,</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果不使用 TypeScript，你将不得不频繁参考文档来了解响应中的字段及其类型。如果多个团队成员正在处理这段代码，那么你必须与您的团队共享这些文档。</p>
+<p>这意味着更多的时间，更多的努力，更大的犯错几率。出现越来越多的坏事，情况越来越糟。</p>
+<p>但是使用 TypeScript，只需添加一个类型定义：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">interface SportsApiResponse &#123;</span><br><span class="line">  id: number;</span><br><span class="line">  name: string;</span><br><span class="line">  date: string;</span><br><span class="line">  competitors: [string, string];</span><br><span class="line">  venue: string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在，任何时候你使用 SportsApiResponse，你都会准确地知道哪些字段可用以及它们的类型。这样可以节省大量的时间，并最大限度地减少字段名拼写错误或将字符串错当成数字的可能性。</p>
+<p><strong>参考</strong><br><a href="https://juejin.cn/post/6953500339425247246">为什么要用那么复杂的TS</a><br><a href="https://zhuanlan.zhihu.com/p/158956514">应该在JavaScript中使用Class吗？</a><br><a href="https://betterprogramming.pub/the-bad-reasons-people-avoid-typescript-and-the-better-reasons-why-they-shouldnt-86f8d98534de">应当使用 TypeScript 的更有说服力的原因</a></p>
+]]></content>
+      <tags>
+        <tag>TS</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>京东小程序-爬坑路-一</title>
     <url>/2020/10/13/%E4%BA%AC%E4%B8%9C%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E7%88%AC%E5%9D%91%E8%B7%AF-%E4%B8%80/</url>
     <content><![CDATA[<h3 id="京东小程序开发经验谈-一"><a href="#京东小程序开发经验谈-一" class="headerlink" title="京东小程序开发经验谈-一"></a>京东小程序开发经验谈-一</h3><p>简介：</p>
@@ -5773,7 +5893,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
   </entry>
   <entry>
     <title></title>
-    <url>/2021/06/08/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
+    <url>/2021/06/11/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
     <content><![CDATA[<h2 id="需要解决的问题点"><a href="#需要解决的问题点" class="headerlink" title="需要解决的问题点"></a>需要解决的问题点</h2><p>1、子应用lazy load 之后，浏览器重新刷新，主框架资源重新加载，同时异步加载子应用； 因为异步加载子应用，所以会导致找不到路由的情况； 跳转NotFound页<br>解决方案，实现自己的路由劫持，动态路由功能，<br>2、子应用入口形式？</p>
 <ul>
 <li>jsEntry  VS Html Entry<br><img src= "/img/loading.gif" data-src="jsVShtml.jpg" alt="JS Entry vs Html Entry"></li>
