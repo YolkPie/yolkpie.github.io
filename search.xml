@@ -1,6 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>AE伪3DUI 界面小教程</title>
+    <url>/2021/03/29/AE%E4%BC%AA3DUI%20%E7%95%8C%E9%9D%A2%E5%B0%8F%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<p>本次给大家分享一个教程：使用Joysticks’n Sliders插件做一个3D-UI界面。</p>
+<p>效果如下：</p>
+<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/3bbb5637f8-84af49c0-906c-11eb-9b88-f5ecb3f063c1.gif" alt="动效"></p>
+<h3 id="插件介绍"><a href="#插件介绍" class="headerlink" title="插件介绍"></a>插件介绍</h3><p>本次3D-UI小动画主要用到的插件是：<strong>AE scripts Joystick‘n Sliders</strong>脚本：是一个二维动画绑定的插件，是通过创建控制杆或滑块来实现复杂的图形动画脚本。在图层上可以即时创建动画，只需在开始和结束位置设置关键帧，即可生成过渡动画，还可使用滑块来控制动画的任意位置，对于许多卡通角色制作，MG动画制作，等其他特殊动画制作，此脚本都可以提供高效的制作方案。</p>
+<p><strong>Joysticks’n Sliders插件的安装：</strong></p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/164976/33/8158/71038/60619625E9dfdf55a/8f7fc83cd14cdfe7.png" alt="插件安装"></p>
+<ol>
+<li>复制Joysticks_n_Sliders.jsxbin文件到AE脚本目录：</li>
+<li>Mac：应用程序\Adobe After Effects CC\Scripts\ScriptUI Panels\</li>
+<li>打开AE软件设置，勾选上*允许脚本读写和访问网络</li>
+</ol>
+<p>附上 Joysticks’n Sliders的下载地址：<a href="https://www.lookae.com/joysticks-171/">https://www.lookae.com/joysticks-171/</a></p>
+<h3 id="插件使用方法"><a href="#插件使用方法" class="headerlink" title="插件使用方法"></a>插件使用方法</h3><p>以下是插件中各个功能按钮的具体释义；</p>
+<p>插件的Joysticks部分功能看似很多，但大部分情况只需要创建控制器按钮就足够了；</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/163017/16/15520/421132/60619626E60c41995/cd6d6f118dfbbd84.png" alt="插件翻译"></p>
+<h3 id="3D-UI动画教程"><a href="#3D-UI动画教程" class="headerlink" title="3D-UI动画教程"></a>3D-UI动画教程</h3><h4 id="第一步：完成UI素材"><a href="#第一步：完成UI素材" class="headerlink" title="第一步：完成UI素材"></a>第一步：完成UI素材</h4><p>先在sketch里完成我们的UI设计稿；</p>
+<p>新建一个800*600px的画布为背景层，然后设置大背景色值为：#EBF0F3；UI矩形大小为：374x450px，border-radius：50px；阴影参数分别如下：</p>
+<p>阴影1：#D1D9E6    x and y：18px    模糊：30px    </p>
+<p>阴影2：#FFFFFF    x and y：-18px    模糊：30px  </p>
+<p>接下来就完成文字层、卡片层、按钮层的相关UI，最终效果如下；</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/164158/22/15319/311873/60619627Edac2a029/8090f8f3b7fbfdfc.png" alt="教程效果图-静态"></p>
+<p>接下来做好命名和分组，分别导出背景层、文字层、卡片层、按钮层；或者我们直接将sketch文件通过插件导入到AE中；</p>
+<p>再回忆一下将sketch文件导入到AE中的步骤：</p>
+<ul>
+<li>首先在Sketch中将所有需要运动的图层打组，然后在组命名前加上“#”，意味着该组属于一个图层不可编辑；</li>
+<li>然后选中所有需要导出的组，在插件中找到“Sketch2AE”，然后执行生成导出切片命令，此时可以看到每个组下方都会出现一个名为“Slice To AE”的新图层；</li>
+<li>然后再找到插件中的“Sketch2AE”，执行“导出画板命令”，然后在弹出的面板里设置合成时长和帧速率，并选择需要导出的画板，点击确定，同时给文件命名，然后选择导出的存放路径导出文件，此时在对应的路径下会自动生成一个.jsx的脚本文件和slice文件夹。</li>
+<li>打开AE后，在菜单栏选择文件-脚本-运行脚本文件，选择刚才导出的.jsx文件，这就算导入成功了。</li>
+</ul>
+<h4 id="第二步：动效合成设置导入素材"><a href="#第二步：动效合成设置导入素材" class="headerlink" title="第二步：动效合成设置导入素材"></a>第二步：动效合成设置导入素材</h4><p>在AE中，我们需要新建合成，参数如下：</p>
+<p>合成名称：3D-UI；宽高：800x600px；帧速率：30帧/秒；持续时间：3秒；</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/164735/1/15345/264393/60619627E159dd19b/017b51ee6d15db13.png" alt="新建合成"></p>
+<p>接下来就是导入我们的设计素材，按照设计稿效果调整素材的位置；并新建一个纯色图层；</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/157049/36/16258/1251424/60619625Eac24044d/16a0c00f74b2730b.png" alt="步骤二：导入素材"></p>
+<h4 id="第三步：调整属性，开启摄像机"><a href="#第三步：调整属性，开启摄像机" class="headerlink" title="第三步：调整属性，开启摄像机"></a>第三步：调整属性，开启摄像机</h4><p>选中四个图层，ctrl+D复制一层，此操作是需要副本，作为位置尺寸的参考；</p>
+<p>选中复制出来的四个图层，并打开3D开关，按快捷键P，打开位置属性，分别对文字、卡片、按钮位置属性中的Z轴设置：-50、-30、-30的参数。因为近大远小的原因，元素的位置、缩放参数都会发生改变，这时候我们再选中之前复制出来的四个图层，按快捷键shift+S，调出素材的缩放属性，根据原有位置调整素材大小，然后删掉复制前的素材文件。</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/157122/24/16067/1356620/60619626E9ddf96f4/ae983892eaad9191.png" alt="第三步：调整属性"></p>
+<h4 id="第四步：绑定插件"><a href="#第四步：绑定插件" class="headerlink" title="第四步：绑定插件"></a>第四步：绑定插件</h4><p>绑定插件之前，我们先需要新建一个摄像机图层，然后按快捷键：P，打开摄像机的位置属性，我们需要在第0帧打上关键帧参数不变；然后在第1帧打上关键帧：参数x=0，y=300；然后在第2帧打上关键帧：参数x=300，y=800；然后在第3帧打上关键帧：参数x=400，y=700；然后在第4帧打上关键帧：参数x=400，y=-100；</p>
+<p><strong>需要注意的是：是第1帧（01f）、第2帧（02f）…而不是1s、2s</strong></p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/172884/3/989/1124777/60619627E4dc987bc/ae075132266387ce.png" alt="第四步-新建摄像机"></p>
+<p>打好关键帧以后，我们选中摄像机图层，找到插件中的生成按钮，然后命名：3D-UI，点击按钮之后会自动生成一个控制器和控制区域，我们可以在效果控件中，将控制区域放大；然后拖动控制器，界面就产生了立体互动的效果；</p>
+<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/d53a57e753-c3265150-906f-11eb-9b88-f5ecb3f063c1.gif" alt="调整控制器"></p>
+]]></content>
+      <categories>
+        <category>After Effects</category>
+      </categories>
+      <tags>
+        <tag>After Effects</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>After Effects各功能基础认识</title>
     <url>/2021/03/22/After%20Effects%E5%90%84%E5%8A%9F%E8%83%BD%E5%9F%BA%E7%A1%80%E8%AE%A4%E8%AF%86/</url>
     <content><![CDATA[<h2 id="学习AE的必要性"><a href="#学习AE的必要性" class="headerlink" title="学习AE的必要性"></a>学习AE的必要性</h2><p>UI是基于静态页面来设计的，页面之间通过跳转切换。但是在设计过程中，设计师很重视单页的视觉效果，却经常忽略了对页面间跳转的处理。页面增加动效可以增强产品的趣味性和氛围。</p>
@@ -160,59 +213,6 @@
       </tags>
   </entry>
   <entry>
-    <title>AE伪3DUI 界面小教程</title>
-    <url>/2021/03/29/AE%E4%BC%AA3DUI%20%E7%95%8C%E9%9D%A2%E5%B0%8F%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[<p>本次给大家分享一个教程：使用Joysticks’n Sliders插件做一个3D-UI界面。</p>
-<p>效果如下：</p>
-<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/3bbb5637f8-84af49c0-906c-11eb-9b88-f5ecb3f063c1.gif" alt="动效"></p>
-<h3 id="插件介绍"><a href="#插件介绍" class="headerlink" title="插件介绍"></a>插件介绍</h3><p>本次3D-UI小动画主要用到的插件是：<strong>AE scripts Joystick‘n Sliders</strong>脚本：是一个二维动画绑定的插件，是通过创建控制杆或滑块来实现复杂的图形动画脚本。在图层上可以即时创建动画，只需在开始和结束位置设置关键帧，即可生成过渡动画，还可使用滑块来控制动画的任意位置，对于许多卡通角色制作，MG动画制作，等其他特殊动画制作，此脚本都可以提供高效的制作方案。</p>
-<p><strong>Joysticks’n Sliders插件的安装：</strong></p>
-<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/164976/33/8158/71038/60619625E9dfdf55a/8f7fc83cd14cdfe7.png" alt="插件安装"></p>
-<ol>
-<li>复制Joysticks_n_Sliders.jsxbin文件到AE脚本目录：</li>
-<li>Mac：应用程序\Adobe After Effects CC\Scripts\ScriptUI Panels\</li>
-<li>打开AE软件设置，勾选上*允许脚本读写和访问网络</li>
-</ol>
-<p>附上 Joysticks’n Sliders的下载地址：<a href="https://www.lookae.com/joysticks-171/">https://www.lookae.com/joysticks-171/</a></p>
-<h3 id="插件使用方法"><a href="#插件使用方法" class="headerlink" title="插件使用方法"></a>插件使用方法</h3><p>以下是插件中各个功能按钮的具体释义；</p>
-<p>插件的Joysticks部分功能看似很多，但大部分情况只需要创建控制器按钮就足够了；</p>
-<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/163017/16/15520/421132/60619626E60c41995/cd6d6f118dfbbd84.png" alt="插件翻译"></p>
-<h3 id="3D-UI动画教程"><a href="#3D-UI动画教程" class="headerlink" title="3D-UI动画教程"></a>3D-UI动画教程</h3><h4 id="第一步：完成UI素材"><a href="#第一步：完成UI素材" class="headerlink" title="第一步：完成UI素材"></a>第一步：完成UI素材</h4><p>先在sketch里完成我们的UI设计稿；</p>
-<p>新建一个800*600px的画布为背景层，然后设置大背景色值为：#EBF0F3；UI矩形大小为：374x450px，border-radius：50px；阴影参数分别如下：</p>
-<p>阴影1：#D1D9E6    x and y：18px    模糊：30px    </p>
-<p>阴影2：#FFFFFF    x and y：-18px    模糊：30px  </p>
-<p>接下来就完成文字层、卡片层、按钮层的相关UI，最终效果如下；</p>
-<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/164158/22/15319/311873/60619627Edac2a029/8090f8f3b7fbfdfc.png" alt="教程效果图-静态"></p>
-<p>接下来做好命名和分组，分别导出背景层、文字层、卡片层、按钮层；或者我们直接将sketch文件通过插件导入到AE中；</p>
-<p>再回忆一下将sketch文件导入到AE中的步骤：</p>
-<ul>
-<li>首先在Sketch中将所有需要运动的图层打组，然后在组命名前加上“#”，意味着该组属于一个图层不可编辑；</li>
-<li>然后选中所有需要导出的组，在插件中找到“Sketch2AE”，然后执行生成导出切片命令，此时可以看到每个组下方都会出现一个名为“Slice To AE”的新图层；</li>
-<li>然后再找到插件中的“Sketch2AE”，执行“导出画板命令”，然后在弹出的面板里设置合成时长和帧速率，并选择需要导出的画板，点击确定，同时给文件命名，然后选择导出的存放路径导出文件，此时在对应的路径下会自动生成一个.jsx的脚本文件和slice文件夹。</li>
-<li>打开AE后，在菜单栏选择文件-脚本-运行脚本文件，选择刚才导出的.jsx文件，这就算导入成功了。</li>
-</ul>
-<h4 id="第二步：动效合成设置导入素材"><a href="#第二步：动效合成设置导入素材" class="headerlink" title="第二步：动效合成设置导入素材"></a>第二步：动效合成设置导入素材</h4><p>在AE中，我们需要新建合成，参数如下：</p>
-<p>合成名称：3D-UI；宽高：800x600px；帧速率：30帧/秒；持续时间：3秒；</p>
-<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/164735/1/15345/264393/60619627E159dd19b/017b51ee6d15db13.png" alt="新建合成"></p>
-<p>接下来就是导入我们的设计素材，按照设计稿效果调整素材的位置；并新建一个纯色图层；</p>
-<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/157049/36/16258/1251424/60619625Eac24044d/16a0c00f74b2730b.png" alt="步骤二：导入素材"></p>
-<h4 id="第三步：调整属性，开启摄像机"><a href="#第三步：调整属性，开启摄像机" class="headerlink" title="第三步：调整属性，开启摄像机"></a>第三步：调整属性，开启摄像机</h4><p>选中四个图层，ctrl+D复制一层，此操作是需要副本，作为位置尺寸的参考；</p>
-<p>选中复制出来的四个图层，并打开3D开关，按快捷键P，打开位置属性，分别对文字、卡片、按钮位置属性中的Z轴设置：-50、-30、-30的参数。因为近大远小的原因，元素的位置、缩放参数都会发生改变，这时候我们再选中之前复制出来的四个图层，按快捷键shift+S，调出素材的缩放属性，根据原有位置调整素材大小，然后删掉复制前的素材文件。</p>
-<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/157122/24/16067/1356620/60619626E9ddf96f4/ae983892eaad9191.png" alt="第三步：调整属性"></p>
-<h4 id="第四步：绑定插件"><a href="#第四步：绑定插件" class="headerlink" title="第四步：绑定插件"></a>第四步：绑定插件</h4><p>绑定插件之前，我们先需要新建一个摄像机图层，然后按快捷键：P，打开摄像机的位置属性，我们需要在第0帧打上关键帧参数不变；然后在第1帧打上关键帧：参数x=0，y=300；然后在第2帧打上关键帧：参数x=300，y=800；然后在第3帧打上关键帧：参数x=400，y=700；然后在第4帧打上关键帧：参数x=400，y=-100；</p>
-<p><strong>需要注意的是：是第1帧（01f）、第2帧（02f）…而不是1s、2s</strong></p>
-<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/172884/3/989/1124777/60619627E4dc987bc/ae075132266387ce.png" alt="第四步-新建摄像机"></p>
-<p>打好关键帧以后，我们选中摄像机图层，找到插件中的生成按钮，然后命名：3D-UI，点击按钮之后会自动生成一个控制器和控制区域，我们可以在效果控件中，将控制区域放大；然后拖动控制器，界面就产生了立体互动的效果；</p>
-<p><img src= "/img/loading.gif" data-src="https://storage.360buyimg.com/imgtools/d53a57e753-c3265150-906f-11eb-9b88-f5ecb3f063c1.gif" alt="调整控制器"></p>
-]]></content>
-      <categories>
-        <category>After Effects</category>
-      </categories>
-      <tags>
-        <tag>After Effects</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>H5 项目如何适配暗黑模式</title>
     <url>/2021/05/23/H5%20%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E9%80%82%E9%85%8D%E6%9A%97%E9%BB%91%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h2 id="H5-项目如何适配暗黑模式"><a href="#H5-项目如何适配暗黑模式" class="headerlink" title="H5 项目如何适配暗黑模式"></a>H5 项目如何适配暗黑模式</h2><p><strong>背景</strong></p>
@@ -298,7 +298,7 @@
 </ul>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// JavaScript监听判断</span></span><br><span class="line"><span class="keyword">const</span> mediaQuery = <span class="built_in">window</span>.matchMedia(<span class="string">&#x27;(prefers-color-scheme: dark)&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">darkModeHandler</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mediaQuery.matches) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;现在是深色模式&#x27;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">&#x27;现在是浅色模式&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断当前模式</span></span><br><span class="line">darkModeHandler()</span><br><span class="line"><span class="comment">// 监听模式变化</span></span><br><span class="line">mediaQuery.addListener(darkModeHandler)</span><br></pre></td></tr></table></figure>]]></content>
       <tags>
-        <tag>git</tag>
+        <tag>暗黑模式</tag>
       </tags>
   </entry>
   <entry>
@@ -1891,31 +1891,6 @@
       </tags>
   </entry>
   <entry>
-    <title>MD To Html 的前端实现</title>
-    <url>/2021/03/25/md2html%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/</url>
-    <content><![CDATA[<p>.md文件是markdown的一种标记语言，和html比较起来，更简单快捷，主要体现在：标记符的数量和书写上。</p>
-<blockquote>
-<p>标记符的数量：html文档要用N多个标记符加上css来控制样式； 而markdown文档只用到4个基本的标记符号。<br>标记符的书写：HTML文档需要&lt;开始&gt;和&lt;结束&gt;标识一个网页，而markdown文档只要在开始位置标记即可# 这是一个md文档。</p>
-</blockquote>
-<p>下面看看前端是如何实现.md文件转换成.html文件。</p>
-<h2 id="方式一：使用i5ting-toc插件"><a href="#方式一：使用i5ting-toc插件" class="headerlink" title="方式一：使用i5ting_toc插件"></a>方式一：使用i5ting_toc插件</h2><p>需要先安装npm（安装node.js后会自带npm），然后才能安装i5ting插件：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install i5ting_toc -g</span><br></pre></td></tr></table></figure>
-<p>执行命令行生成html文件，在输入前要进入到对应根目录下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">i5ting_toc -f **.md</span><br></pre></td></tr></table></figure>
-<p>需要注意的是：写md文档的特殊符号时记得添加空格。</p>
-<h2 id="方式二：使用gitbook"><a href="#方式二：使用gitbook" class="headerlink" title="方式二：使用gitbook"></a>方式二：使用gitbook</h2><p>同样先需要安装node，然后运行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i gitbook gitbook-cli -g</span><br></pre></td></tr></table></figure>
-<p>生成md文件,这个命令会生成相应的md的文件，然后在相应的文件里写你的内容即可:</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gitbook init</span><br></pre></td></tr></table></figure>
-<p>md转html,生成一个_doc目录，打开就可以看到你html文件了。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gitbook build</span><br></pre></td></tr></table></figure>
-<h2 id="方式三：利用前端代码"><a href="#方式三：利用前端代码" class="headerlink" title="方式三：利用前端代码"></a>方式三：利用前端代码</h2><p>实现原理是采用node.js搭建服务器，读取md文件转化为html片断。浏览器发送ajax请求获取片段后再渲染生成html网页。  </p>
-<p><code>node代码</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> bodyParser = <span class="built_in">require</span>(<span class="string">&#x27;body-parser&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> marked = <span class="built_in">require</span>(<span class="string">&#x27;marked&#x27;</span>);    <span class="comment">// 将md转化为html的js包</span></span><br><span class="line"><span class="keyword">var</span> app = express();</span><br><span class="line"></span><br><span class="line">app.use(express.static(<span class="string">&#x27;src&#x27;</span>));  <span class="comment">//加载静态文件</span></span><br><span class="line"><span class="keyword">var</span> urlencodedParser = bodyParser.urlencoded(&#123; <span class="attr">extended</span>: <span class="literal">false</span> &#125;);</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">&#x27;/getMdFile&#x27;</span>,urlencodedParser, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = fs.readFileSync(<span class="string">&#x27;src/test.md&#x27;</span>, <span class="string">&#x27;utf-8&#x27;</span>);    <span class="comment">//读取本地的md文件</span></span><br><span class="line">    res.end(<span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">        body : marked(data)</span><br><span class="line">    &#125;));</span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line"><span class="comment">//启动端口监听</span></span><br><span class="line"><span class="keyword">var</span> server = app.listen(<span class="number">8088</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> host = server.address().address;</span><br><span class="line">    <span class="keyword">var</span> port = server.address().port;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;应用实例，访问地址为 http://%s:%s&quot;</span>, host, port)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>前端</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;content&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span> <span class="attr">class</span>=<span class="string">&quot;title&quot;</span>&gt;</span>md-to-HTML web app<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;article&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/JavaScript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;js/jquery-1.11.3.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> article = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;article&#x27;</span>);</span></span><br><span class="line"><span class="javascript">    $.ajax(&#123;</span></span><br><span class="line"><span class="javascript">        url: <span class="string">&quot;/getMdFile&quot;</span>, <span class="attr">success</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;  </span></span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(<span class="string">&#x27;数据获取成功&#x27;</span>);</span></span><br><span class="line"><span class="javascript">            article.innerHTML = <span class="built_in">JSON</span>.parse(result).body;</span></span><br><span class="line"><span class="javascript">        &#125;, <span class="attr">error</span>: <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(err);</span></span><br><span class="line"><span class="handlebars"><span class="xml">            article.innerHTML = &#x27;<span class="tag">&lt;<span class="name">p</span>&gt;</span>获取数据失败<span class="tag">&lt;/<span class="name">p</span>&gt;</span>&#x27;;</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
-  </entry>
-  <entry>
     <title>基于Hexo的个人博客搭建</title>
     <url>/2020/09/11/hexo/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>搭建博客其实很简单，但要注意很多细节问题，之前本人也搭建过博客，那时也踩过一些坑，但是现在重新搭建博客，感觉自己又把之前踩过的坑又踩了一遍。所以为了避免以后搭建博客采坑，所以在此记录一下搭建博客的全流程以及一些注意事项。<br>本文搭建的博客基于<a href="https://hexo.io/zh-cn/">Hexo</a>，主题选用<a href="https://demo.jerryc.me/posts/21cfbf15/">Butterfly</a>，使用<a href="https://travis-ci.com/">Travis CI</a>自动部署到Github Pages和Coding Pages上，并在腾讯云上申请个人域名与博客进行绑定。</p>
@@ -2071,6 +2046,31 @@
         <tag>hexo</tag>
         <tag>blog</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>MD To Html 的前端实现</title>
+    <url>/2021/03/25/md2html%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>.md文件是markdown的一种标记语言，和html比较起来，更简单快捷，主要体现在：标记符的数量和书写上。</p>
+<blockquote>
+<p>标记符的数量：html文档要用N多个标记符加上css来控制样式； 而markdown文档只用到4个基本的标记符号。<br>标记符的书写：HTML文档需要&lt;开始&gt;和&lt;结束&gt;标识一个网页，而markdown文档只要在开始位置标记即可# 这是一个md文档。</p>
+</blockquote>
+<p>下面看看前端是如何实现.md文件转换成.html文件。</p>
+<h2 id="方式一：使用i5ting-toc插件"><a href="#方式一：使用i5ting-toc插件" class="headerlink" title="方式一：使用i5ting_toc插件"></a>方式一：使用i5ting_toc插件</h2><p>需要先安装npm（安装node.js后会自带npm），然后才能安装i5ting插件：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install i5ting_toc -g</span><br></pre></td></tr></table></figure>
+<p>执行命令行生成html文件，在输入前要进入到对应根目录下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">i5ting_toc -f **.md</span><br></pre></td></tr></table></figure>
+<p>需要注意的是：写md文档的特殊符号时记得添加空格。</p>
+<h2 id="方式二：使用gitbook"><a href="#方式二：使用gitbook" class="headerlink" title="方式二：使用gitbook"></a>方式二：使用gitbook</h2><p>同样先需要安装node，然后运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm i gitbook gitbook-cli -g</span><br></pre></td></tr></table></figure>
+<p>生成md文件,这个命令会生成相应的md的文件，然后在相应的文件里写你的内容即可:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gitbook init</span><br></pre></td></tr></table></figure>
+<p>md转html,生成一个_doc目录，打开就可以看到你html文件了。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gitbook build</span><br></pre></td></tr></table></figure>
+<h2 id="方式三：利用前端代码"><a href="#方式三：利用前端代码" class="headerlink" title="方式三：利用前端代码"></a>方式三：利用前端代码</h2><p>实现原理是采用node.js搭建服务器，读取md文件转化为html片断。浏览器发送ajax请求获取片段后再渲染生成html网页。  </p>
+<p><code>node代码</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> express = <span class="built_in">require</span>(<span class="string">&#x27;express&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">&#x27;http&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> bodyParser = <span class="built_in">require</span>(<span class="string">&#x27;body-parser&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> marked = <span class="built_in">require</span>(<span class="string">&#x27;marked&#x27;</span>);    <span class="comment">// 将md转化为html的js包</span></span><br><span class="line"><span class="keyword">var</span> app = express();</span><br><span class="line"></span><br><span class="line">app.use(express.static(<span class="string">&#x27;src&#x27;</span>));  <span class="comment">//加载静态文件</span></span><br><span class="line"><span class="keyword">var</span> urlencodedParser = bodyParser.urlencoded(&#123; <span class="attr">extended</span>: <span class="literal">false</span> &#125;);</span><br><span class="line"></span><br><span class="line">app.get(<span class="string">&#x27;/getMdFile&#x27;</span>,urlencodedParser, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = fs.readFileSync(<span class="string">&#x27;src/test.md&#x27;</span>, <span class="string">&#x27;utf-8&#x27;</span>);    <span class="comment">//读取本地的md文件</span></span><br><span class="line">    res.end(<span class="built_in">JSON</span>.stringify(&#123;</span><br><span class="line">        body : marked(data)</span><br><span class="line">    &#125;));</span><br><span class="line">&#125; );</span><br><span class="line"></span><br><span class="line"><span class="comment">//启动端口监听</span></span><br><span class="line"><span class="keyword">var</span> server = app.listen(<span class="number">8088</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> host = server.address().address;</span><br><span class="line">    <span class="keyword">var</span> port = server.address().port;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;应用实例，访问地址为 http://%s:%s&quot;</span>, host, port)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>前端</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;content&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span> <span class="attr">class</span>=<span class="string">&quot;title&quot;</span>&gt;</span>md-to-HTML web app<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;article&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/JavaScript&quot;</span> <span class="attr">src</span>=<span class="string">&quot;js/jquery-1.11.3.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> article = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;article&#x27;</span>);</span></span><br><span class="line"><span class="javascript">    $.ajax(&#123;</span></span><br><span class="line"><span class="javascript">        url: <span class="string">&quot;/getMdFile&quot;</span>, <span class="attr">success</span>: <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;  </span></span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(<span class="string">&#x27;数据获取成功&#x27;</span>);</span></span><br><span class="line"><span class="javascript">            article.innerHTML = <span class="built_in">JSON</span>.parse(result).body;</span></span><br><span class="line"><span class="javascript">        &#125;, <span class="attr">error</span>: <span class="function"><span class="keyword">function</span> (<span class="params">err</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(err);</span></span><br><span class="line"><span class="handlebars"><span class="xml">            article.innerHTML = &#x27;<span class="tag">&lt;<span class="name">p</span>&gt;</span>获取数据失败<span class="tag">&lt;/<span class="name">p</span>&gt;</span>&#x27;;</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
     <title>mysql 索引</title>
@@ -3071,8 +3071,60 @@ renderWithHooks()中有一个Component()方法，用来执行App()，此时又�
 <p><a href="https://webglfundamentals.org/webgl/lessons/zh_cn/webgl-cors-permission.html">WebGL 跨域图像</a></p>
 ]]></content>
       <tags>
-        <tag>cookie</tag>
+        <tag>three</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>WebSocket</title>
+    <url>/2020/11/20/websocket/</url>
+    <content><![CDATA[<h2 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>WebSocket protocol是HTML5一种新的协议。它实现了浏览器与服务器全双工通信(full-duplex)。一开始的握手需要借助HTTP请求完成。</p>
+<h3 id="原理-amp-机制"><a href="#原理-amp-机制" class="headerlink" title="原理&amp;机制"></a>原理&amp;机制</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>网站上的即时通讯是很常见的，比如网页的QQ，微信等。按照以往的技术能力通常是采用轮询等技术解决。<br>HTTP协议是非持久化的，单向的网络协议，在建立连接后只允许浏览器向服务器发出请求后，服务器才能返回相应的数据。<br>当需要即时通讯时，通过轮询在特定的时间间隔（如1秒），由浏览器向服务器发送Request请求，然后将最新的数据返回给浏览器。<br>缺点：会导致过多不必要的请求，浪费流量和服务器资源，每一次请求、应答，都浪费了一定流量在相同的头部信息上，而在WebSocket中，只需要服务器和浏览器通过HTTP协议进行一个握手的动作，然后单独建立一条TCP的通信通道进行数据的传送。<br>WebSocket同HTTP一样也是应用层的协议，但是它是一种双向通信协议，是建立在TCP之上的。<br>广泛被用来做即时通讯，以替代轮询。</p>
+<h4 id="机制"><a href="#机制" class="headerlink" title="机制"></a>机制</h4><p>WebSocket是HTML5的新的协议。它实现了浏览器与服务器全双工通信，能更好的节省服务器资源和带宽并达到实时通讯，它建立在TCP之上，同HTTP一样通过 TCP 来传输数据，但是它和 HTTP 最大不同在于：</p>
+<ul>
+<li>WebSocket 是一种双向通信协议，在建立连接后，WebSocket 服务器和<br>Browser/Client Agent 都能主动的向对方发送或接收数据，就像 Socket 一样。</li>
+<li>WebSocket 需要类似TCP的客户端和服务器端通过握手连接，连接成功后<br>才能相互通信。</li>
+</ul>
+<p>WebSocket是类似Socket的TCP长连接的通讯模式，一旦 WebSocket 连接建立后，后续数据都以帧序列的形式传输。<br>在客户端断开 WebSocket 连接或 Server 端断掉连接前，不需要客户端和服务端重新发起连接请求。<br>在海量并发及客户端与服务器交互负载流量大的情况下，极大的节省了网络带宽资源的消耗，有明显的性能优势，且客户端发送和接受消息是在同一个持久连接上发起，实时性优势明显。</p>
+<h3 id="连接过程-amp-特点"><a href="#连接过程-amp-特点" class="headerlink" title="连接过程&amp;特点"></a>连接过程&amp;特点</h3><h4 id="连接过程"><a href="#连接过程" class="headerlink" title="连接过程"></a>连接过程</h4><ul>
+<li>浏览器、服务器建立TCP连接，三次握手。这是通信的基础，传输控制层，若失败后<br>续都不执行。</li>
+<li>TCP连接成功后，浏览器通过HTTP协议向服务器传送WebSocket支持的版本号等信息。<br>（开始前的HTTP握手）</li>
+<li>服务器收到客户端的握手请求后，同样采用HTTP协议回馈数据。</li>
+<li>当收到了连接成功的消息后，通过TCP通道进行传输通信。<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4></li>
+<li>建立在 TCP 协议之上，服务器端的实现比较容易。</li>
+<li>与 HTTP 协议有着良好的兼容性。默认端口也是80和443，并且握手阶段采用 HTTP<br>协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。</li>
+<li>数据格式比较轻量，性能开销小，通信高效。</li>
+<li>可以发送文本，也可以发送二进制数据。</li>
+<li>没有同源限制，客户端可以与任意服务器通信。</li>
+<li>协议标识符是ws（如果加密，则为wss），服务器网址就是 URL</li>
+</ul>
+<h3 id="保持连接-心跳"><a href="#保持连接-心跳" class="headerlink" title="保持连接+心跳"></a>保持连接+心跳</h3><p>WebSocket为了保持客户端、服务端的实时双向通信，需要确保客户端、服务端之间的TCP通道保持连接没有断开。然而，对于长时间没有数据往来的连接，如果依旧长时间保持着，可能会浪费包括的连接资源。<br>但不排除有些场景，客户端、服务端虽然长时间没有数据往来，但仍需要保持连接。这个时候，可以采用心跳来实现。<br>发送方-&gt;接收方：ping<br>接收方-&gt;发送方：pong<br>ping、pong的操作，对应的是WebSocket的两个控制帧，opcode分别是0x9、0xA。<br>举例，WebSocket服务端向客户端发送ping，只需要如下代码（采用ws模块）</p>
+<h3 id="主要Api"><a href="#主要Api" class="headerlink" title="主要Api"></a>主要Api</h3><h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><p>WebSocket 对象作为一个构造函数，用于新建 WebSocket 实例。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const ws &#x3D; new WebSocket(&#39;ws:&#x2F;&#x2F;localhost:80&#39;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="webSocket-readyState"><a href="#webSocket-readyState" class="headerlink" title="webSocket.readyState"></a>webSocket.readyState</h4><p>readyState属性返回实例对象的当前状态，例如</p>
+<ul>
+<li>CONNECTING：值为0，表示正在连接。</li>
+<li>OPEN：值为1，表示连接成功，可以通信了。</li>
+<li>CLOSING：值为2，表示连接正在关闭。</li>
+<li>CLOSED：值为3，表示连接已经关闭，或者打开连接失败。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">switch (ws.readyState) &#123;</span><br><span class="line">  case WebSocket.CONNECTING:</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">    break;</span><br><span class="line">  case WebSocket.OPEN:</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">    break;</span><br><span class="line">  case WebSocket.CLOSING:</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">    break;</span><br><span class="line">  case WebSocket.CLOSED:</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">    break;</span><br><span class="line">  default:</span><br><span class="line">    &#x2F;&#x2F; this never happens</span><br><span class="line">    break;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="webSocket-onopen"><a href="#webSocket-onopen" class="headerlink" title="webSocket.onopen"></a>webSocket.onopen</h4><p>实例对象的onopen属性，用于指定连接成功后的回调函数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ws.onopen &#x3D; function () &#123;</span><br><span class="line">  ws.send(&#39;Hello WebSocket!&#39;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="webSocket-onclose"><a href="#webSocket-onclose" class="headerlink" title="webSocket.onclose"></a>webSocket.onclose</h4><p>实例对象的onclose属性，用于指定连接关闭后的回调函数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ws.onclose &#x3D; function(event) &#123;</span><br><span class="line">  const &#123;code, reason, wasClean&#125; &#x3D; event;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="webSocket-onmessage"><a href="#webSocket-onmessage" class="headerlink" title="webSocket.onmessage"></a>webSocket.onmessage</h4><p>实例对象的onmessage属性，用于指定收到服务器数据后的回调函数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ws.onmessage &#x3D; function(event)&#123;</span><br><span class="line">  if(typeof event.data &#x3D;&#x3D;&#x3D; String) &#123;</span><br><span class="line">    &#x2F;&#x2F;</span><br><span class="line">  &#125;else&#123;</span><br><span class="line">    &#x2F;&#x2F;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="webSocket-send"><a href="#webSocket-send" class="headerlink" title="webSocket.send"></a>webSocket.send</h4><p>实例对象的send()方法用于向服务器发送数据。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 发送文本的例子。(也可以发送图片等其他文件对象)</span><br><span class="line">ws.send(&#39;your message&#39;);</span><br></pre></td></tr></table></figure>
+<h4 id="webSocket-onerror"><a href="#webSocket-onerror" class="headerlink" title="webSocket.onerror"></a>webSocket.onerror</h4><p>实例对象的onerror属性，用于指定报错时的回调函数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">socket.onerror &#x3D; function(event) &#123;</span><br><span class="line">  console.log(event)</span><br><span class="line">  &#x2F;&#x2F;处理错误异常</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const ws &#x3D; new WebSocket(&quot;wss:&#x2F;&#x2F;localhost:80&quot;);  </span><br><span class="line">ws.onopen &#x3D; function(evt) &#123;   </span><br><span class="line">  console.log(&quot;Connection open ...&quot;);   </span><br><span class="line">  ws.send(&quot;Hello WebSockets!&quot;); </span><br><span class="line">&#125;;  </span><br><span class="line">ws.onmessage &#x3D; function(evt) &#123;  </span><br><span class="line">  console.log( &quot;Received Message: &quot; + evt.data);</span><br><span class="line">  &#x2F;&#x2F;Received Message: Hello WebSockets!</span><br><span class="line">  ws.close(); </span><br><span class="line">&#125;;  </span><br><span class="line">ws.onclose &#x3D; function(evt) &#123;  </span><br><span class="line">  console.log(&quot;Connection closed.&quot;); </span><br><span class="line">&#125;; </span><br></pre></td></tr></table></figure>
+
+<h3 id="WebSocket与HTTP的不同-（图解）"><a href="#WebSocket与HTTP的不同-（图解）" class="headerlink" title="WebSocket与HTTP的不同 （图解）"></a>WebSocket与HTTP的不同 （图解）</h3><p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/142749/34/13761/207298/5fa93d0dE977b31a4/b2458a2ffda633bb.jpg"></p>
+]]></content>
   </entry>
   <entry>
     <title>whistle使用实践（vase篇）</title>
@@ -3224,58 +3276,6 @@ renderWithHooks()中有一个Component()方法，用来执行App()，此时又�
       <tags>
         <tag>whistle</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>WebSocket</title>
-    <url>/2020/11/20/websocket/</url>
-    <content><![CDATA[<h2 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>WebSocket protocol是HTML5一种新的协议。它实现了浏览器与服务器全双工通信(full-duplex)。一开始的握手需要借助HTTP请求完成。</p>
-<h3 id="原理-amp-机制"><a href="#原理-amp-机制" class="headerlink" title="原理&amp;机制"></a>原理&amp;机制</h3><h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>网站上的即时通讯是很常见的，比如网页的QQ，微信等。按照以往的技术能力通常是采用轮询等技术解决。<br>HTTP协议是非持久化的，单向的网络协议，在建立连接后只允许浏览器向服务器发出请求后，服务器才能返回相应的数据。<br>当需要即时通讯时，通过轮询在特定的时间间隔（如1秒），由浏览器向服务器发送Request请求，然后将最新的数据返回给浏览器。<br>缺点：会导致过多不必要的请求，浪费流量和服务器资源，每一次请求、应答，都浪费了一定流量在相同的头部信息上，而在WebSocket中，只需要服务器和浏览器通过HTTP协议进行一个握手的动作，然后单独建立一条TCP的通信通道进行数据的传送。<br>WebSocket同HTTP一样也是应用层的协议，但是它是一种双向通信协议，是建立在TCP之上的。<br>广泛被用来做即时通讯，以替代轮询。</p>
-<h4 id="机制"><a href="#机制" class="headerlink" title="机制"></a>机制</h4><p>WebSocket是HTML5的新的协议。它实现了浏览器与服务器全双工通信，能更好的节省服务器资源和带宽并达到实时通讯，它建立在TCP之上，同HTTP一样通过 TCP 来传输数据，但是它和 HTTP 最大不同在于：</p>
-<ul>
-<li>WebSocket 是一种双向通信协议，在建立连接后，WebSocket 服务器和<br>Browser/Client Agent 都能主动的向对方发送或接收数据，就像 Socket 一样。</li>
-<li>WebSocket 需要类似TCP的客户端和服务器端通过握手连接，连接成功后<br>才能相互通信。</li>
-</ul>
-<p>WebSocket是类似Socket的TCP长连接的通讯模式，一旦 WebSocket 连接建立后，后续数据都以帧序列的形式传输。<br>在客户端断开 WebSocket 连接或 Server 端断掉连接前，不需要客户端和服务端重新发起连接请求。<br>在海量并发及客户端与服务器交互负载流量大的情况下，极大的节省了网络带宽资源的消耗，有明显的性能优势，且客户端发送和接受消息是在同一个持久连接上发起，实时性优势明显。</p>
-<h3 id="连接过程-amp-特点"><a href="#连接过程-amp-特点" class="headerlink" title="连接过程&amp;特点"></a>连接过程&amp;特点</h3><h4 id="连接过程"><a href="#连接过程" class="headerlink" title="连接过程"></a>连接过程</h4><ul>
-<li>浏览器、服务器建立TCP连接，三次握手。这是通信的基础，传输控制层，若失败后<br>续都不执行。</li>
-<li>TCP连接成功后，浏览器通过HTTP协议向服务器传送WebSocket支持的版本号等信息。<br>（开始前的HTTP握手）</li>
-<li>服务器收到客户端的握手请求后，同样采用HTTP协议回馈数据。</li>
-<li>当收到了连接成功的消息后，通过TCP通道进行传输通信。<h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4></li>
-<li>建立在 TCP 协议之上，服务器端的实现比较容易。</li>
-<li>与 HTTP 协议有着良好的兼容性。默认端口也是80和443，并且握手阶段采用 HTTP<br>协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。</li>
-<li>数据格式比较轻量，性能开销小，通信高效。</li>
-<li>可以发送文本，也可以发送二进制数据。</li>
-<li>没有同源限制，客户端可以与任意服务器通信。</li>
-<li>协议标识符是ws（如果加密，则为wss），服务器网址就是 URL</li>
-</ul>
-<h3 id="保持连接-心跳"><a href="#保持连接-心跳" class="headerlink" title="保持连接+心跳"></a>保持连接+心跳</h3><p>WebSocket为了保持客户端、服务端的实时双向通信，需要确保客户端、服务端之间的TCP通道保持连接没有断开。然而，对于长时间没有数据往来的连接，如果依旧长时间保持着，可能会浪费包括的连接资源。<br>但不排除有些场景，客户端、服务端虽然长时间没有数据往来，但仍需要保持连接。这个时候，可以采用心跳来实现。<br>发送方-&gt;接收方：ping<br>接收方-&gt;发送方：pong<br>ping、pong的操作，对应的是WebSocket的两个控制帧，opcode分别是0x9、0xA。<br>举例，WebSocket服务端向客户端发送ping，只需要如下代码（采用ws模块）</p>
-<h3 id="主要Api"><a href="#主要Api" class="headerlink" title="主要Api"></a>主要Api</h3><h4 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h4><p>WebSocket 对象作为一个构造函数，用于新建 WebSocket 实例。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const ws &#x3D; new WebSocket(&#39;ws:&#x2F;&#x2F;localhost:80&#39;);</span><br></pre></td></tr></table></figure>
-
-<h4 id="webSocket-readyState"><a href="#webSocket-readyState" class="headerlink" title="webSocket.readyState"></a>webSocket.readyState</h4><p>readyState属性返回实例对象的当前状态，例如</p>
-<ul>
-<li>CONNECTING：值为0，表示正在连接。</li>
-<li>OPEN：值为1，表示连接成功，可以通信了。</li>
-<li>CLOSING：值为2，表示连接正在关闭。</li>
-<li>CLOSED：值为3，表示连接已经关闭，或者打开连接失败。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">switch (ws.readyState) &#123;</span><br><span class="line">  case WebSocket.CONNECTING:</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">    break;</span><br><span class="line">  case WebSocket.OPEN:</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">    break;</span><br><span class="line">  case WebSocket.CLOSING:</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">    break;</span><br><span class="line">  case WebSocket.CLOSED:</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">    break;</span><br><span class="line">  default:</span><br><span class="line">    &#x2F;&#x2F; this never happens</span><br><span class="line">    break;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="webSocket-onopen"><a href="#webSocket-onopen" class="headerlink" title="webSocket.onopen"></a>webSocket.onopen</h4><p>实例对象的onopen属性，用于指定连接成功后的回调函数。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ws.onopen &#x3D; function () &#123;</span><br><span class="line">  ws.send(&#39;Hello WebSocket!&#39;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="webSocket-onclose"><a href="#webSocket-onclose" class="headerlink" title="webSocket.onclose"></a>webSocket.onclose</h4><p>实例对象的onclose属性，用于指定连接关闭后的回调函数。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ws.onclose &#x3D; function(event) &#123;</span><br><span class="line">  const &#123;code, reason, wasClean&#125; &#x3D; event;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h4 id="webSocket-onmessage"><a href="#webSocket-onmessage" class="headerlink" title="webSocket.onmessage"></a>webSocket.onmessage</h4><p>实例对象的onmessage属性，用于指定收到服务器数据后的回调函数。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ws.onmessage &#x3D; function(event)&#123;</span><br><span class="line">  if(typeof event.data &#x3D;&#x3D;&#x3D; String) &#123;</span><br><span class="line">    &#x2F;&#x2F;</span><br><span class="line">  &#125;else&#123;</span><br><span class="line">    &#x2F;&#x2F;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="webSocket-send"><a href="#webSocket-send" class="headerlink" title="webSocket.send"></a>webSocket.send</h4><p>实例对象的send()方法用于向服务器发送数据。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 发送文本的例子。(也可以发送图片等其他文件对象)</span><br><span class="line">ws.send(&#39;your message&#39;);</span><br></pre></td></tr></table></figure>
-<h4 id="webSocket-onerror"><a href="#webSocket-onerror" class="headerlink" title="webSocket.onerror"></a>webSocket.onerror</h4><p>实例对象的onerror属性，用于指定报错时的回调函数。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">socket.onerror &#x3D; function(event) &#123;</span><br><span class="line">  console.log(event)</span><br><span class="line">  &#x2F;&#x2F;处理错误异常</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<h4 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const ws &#x3D; new WebSocket(&quot;wss:&#x2F;&#x2F;localhost:80&quot;);  </span><br><span class="line">ws.onopen &#x3D; function(evt) &#123;   </span><br><span class="line">  console.log(&quot;Connection open ...&quot;);   </span><br><span class="line">  ws.send(&quot;Hello WebSockets!&quot;); </span><br><span class="line">&#125;;  </span><br><span class="line">ws.onmessage &#x3D; function(evt) &#123;  </span><br><span class="line">  console.log( &quot;Received Message: &quot; + evt.data);</span><br><span class="line">  &#x2F;&#x2F;Received Message: Hello WebSockets!</span><br><span class="line">  ws.close(); </span><br><span class="line">&#125;;  </span><br><span class="line">ws.onclose &#x3D; function(evt) &#123;  </span><br><span class="line">  console.log(&quot;Connection closed.&quot;); </span><br><span class="line">&#125;; </span><br></pre></td></tr></table></figure>
-
-<h3 id="WebSocket与HTTP的不同-（图解）"><a href="#WebSocket与HTTP的不同-（图解）" class="headerlink" title="WebSocket与HTTP的不同 （图解）"></a>WebSocket与HTTP的不同 （图解）</h3><p><img src= "/img/loading.gif" data-src="https://m.360buyimg.com/img/jfs/t1/142749/34/13761/207298/5fa93d0dE977b31a4/b2458a2ffda633bb.jpg"></p>
-]]></content>
   </entry>
   <entry>
     <title>whistle使用实践（实例篇）</title>
