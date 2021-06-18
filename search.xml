@@ -4766,6 +4766,163 @@ window.requestAnimationFrame(changePosition);
       </tags>
   </entry>
   <entry>
+    <title>如何监听容器高度变化（二）</title>
+    <url>/2021/06/18/%E5%A6%82%E4%BD%95%E7%9B%91%E5%90%AC%E5%AE%B9%E5%99%A8%E9%AB%98%E5%BA%A6%E5%8F%98%E5%8C%96%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
+    <content><![CDATA[<p>在<a href="https://yolkpie.net/2021/06/17/%E5%A6%82%E4%BD%95%E7%9B%91%E5%90%AC%E5%AE%B9%E5%99%A8%E9%AB%98%E5%BA%A6%E5%8F%98%E5%8C%96%EF%BC%88%E4%B8%80%EF%BC%89/">【如何监听容器高度变化（一）】</a> 中介绍了几种使用模拟（iframe/object/scroll）的方式获取容器实时高度的方法，这篇文章主要介绍可以监听变化的API。</p>
+<h2 id="Mutation-Events"><a href="#Mutation-Events" class="headerlink" title="Mutation Events"></a>Mutation Events</h2><p>容器高度是由 dom 节点的操作（如插入、渲染、移除等）引起的，如果我们可以监听到 dom 节点的子节点、属性、文本节点等的变化，就可以获取到此时容器的高度，从而实现对于容器高度的监听。</p>
+<p>Mutation Events 是 DOM3 中定义的针对 dom 节点更改的事件，支持的事件如下：</p>
+<ul>
+<li>DOMAttrModified：dom 属性变更</li>
+<li>DOMAttributeNameChanged：dom 属性名修改</li>
+<li>DOMCharacterDataModified：dom 文本数据发生修改</li>
+<li>DOMElementNameChanged：dom 元素名发生变化</li>
+<li>DOMNodeInserted：dom 节点插入</li>
+<li>DOMNodeInsertedIntoDocument：dom 节点插入</li>
+<li>DOMNodeRemoved：dom 节点删除</li>
+<li>DOMNodeRemovedFromDocument：dom 节点删除</li>
+<li>DOMSubtreeModified：dom 子元素修改</li>
+</ul>
+<p>备注：<a href="https://www.w3.org/TR/DOM-Level-3-Events/#event-type-DOMNodeInsertedIntoDocument">W3C文档</a>上 DOMNodeInsertedIntoDocument 会先于 DOMNodeInserted 触发，但是测试过程中插入节点时 DOMNodeInsertedIntoDocument 没有被触发，DOMNodeInserted 有被触发。另外，和 DOMNodeInserted 相比，DOMNodeInsertedIntoDocument 兼容的浏览器更少。DOMNodeRemovedFromDocument 的情况也是一样的。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;main&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">&quot;main&quot;</span>);</span></span><br><span class="line"><span class="javascript">  container.addEventListener(<span class="string">&quot;DOMSubtreeModified&quot;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(<span class="string">&quot;DOMSubtreeModified&quot;</span>); <span class="comment">// 控制台输出 DOMSubtreeModified</span></span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(container.clientHeight); <span class="comment">// 控制台输出 16</span></span></span><br><span class="line">  &#125;);</span><br><span class="line">  container.innerHTML =</span><br><span class="line"><span class="handlebars"><span class="xml">    &#x27;<span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;https://img30.360buyimg.com/babel/s590x470_jfs/t1/175659/2/14809/204433/60c88e44Eb9ffa27a/1cc8a1d4d8a5205b.jpg.webp&quot;</span> /&gt;</span>&#x27;;</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的代码中，监听了 DOMSubtreeModified 事件，修改 dom 内容的时候被触发，但是也可以看到，使用这种方式也并没有获取到 dom 的正确高度。其实很好理解，因为图片是异步加载的，当 img 标签插入到 dom 中的时候，图片并没有加载完成，高度没有撑开。因此，这种方式的适用情况依然是有限度的，对于需要异步加载的资源不适用。</p>
+<p>Mutation Events 存在很多问题，在 DOM4 中已经被废弃：</p>
+<ol>
+<li>兼容性问题：<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/190118/2/8890/53322/60cc10dcE6b0339d0/3bb4d01d8c7cf762.png" alt="Mutation Events兼容"></li>
+</ol>
+<ul>
+<li>上图标注1的浏览器不支持 DOMAttrModified</li>
+<li>上图标注2的浏览器不支持 DOMNodeInsertedIntoDocument 和 DOMNodeRemovedFromDocument</li>
+</ul>
+<ol start="2">
+<li>性能问题</li>
+</ol>
+<ul>
+<li>Mutation Events 是同步执行的，每次调用都需要从事件队列中取出事件，执行，然后事件队列中移除。如果事件触发频繁，上述步骤会多次调用，会对浏览器性能造成影响。</li>
+<li>Mutation Events 本身是事件，所以捕获是采用的是事件冒泡的形式，如果冒泡捕获期间又触发了其他的 Mutation Events，很有可能就会导致阻塞 Javascript 线程，甚至导致浏览器崩溃。</li>
+</ul>
+<h2 id="MutationObserver"><a href="#MutationObserver" class="headerlink" title="MutationObserver"></a>MutationObserver</h2><p>MutationObserver 接口是 Mutation Events 功能的替代品，同样用于监视 dom 节点的更改。概念上，MutationObserver 可以理解为 dom 发生变动就会触发 Mutation Observer 事件。但是，它与事件有一个本质不同：事件是同步触发，也就是说，dom 的变动立刻会触发相应的事件；Mutation Observer 则是异步触发，dom 的变动并不会马上触发，而是要等到当前所有 dom 操作都结束才触发。</p>
+<p>MutationObserver 的特点如下：</p>
+<ul>
+<li>等待所有脚本任务完成后，才会运行（即异步触发方式）</li>
+<li>把 dom 变动记录封装成一个数组进行处理，而不是一条条个别处理 dom 变动</li>
+<li>既可以观察 dom 的所有类型变动，也可以指定只观察某一类变动</li>
+</ul>
+<p>MutationObserver的兼容性如下：<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/178582/35/9773/41975/60cc33c5Ebc03d8eb/f69fa11f951f98cf.png" alt="MutationObserver兼容性"></p>
+<p>上图中，中间有-的黄色矩形表示需要加webkit前缀。</p>
+<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>MutationObserver()</p>
+<p>使用时，首先使用 MutationObserver 构造函数，新建一个观察器实例，同时指定这个实例的回调函数。该回调函数接受两个参数，一个是变动的数组，另一个是观察器实例。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> MutationObserver(<span class="function"><span class="keyword">function</span>(<span class="params">mutations, observer</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(observer)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; mutations.length; i++) &#123;</span><br><span class="line">        <span class="keyword">var</span> mutation = mutations[i];</span><br><span class="line">        <span class="built_in">console</span>.log(mutation);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ol>
+<li>observe()</li>
+</ol>
+<p>observe 方法用来启动监听，接受两个参数，一个是要监听的 dom 节点，一个是配置项 options。</p>
+<p>options 中可以配置要监听的变动类型（必须有其中的一种或几种，否则会报错），如下：</p>
+<ul>
+<li>childList：布尔值，表示子节点的变动（指新增，删除或者更改）</li>
+<li>attributes：布尔值，表示属性的变动</li>
+<li>characterData：布尔值，表示节点内容或节点文本的变动（比如可以监听 input 值的变化）</li>
+</ul>
+<p>此外，还可以设置以下属性：</p>
+<ul>
+<li>subtree：布尔值，表示是否将该观察器应用于该节点的所有后代节点</li>
+<li>attributeOldValue：布尔值，表示观察 attributes 变动时，是否需要记录变动前的属性值</li>
+<li>characterDataOldValue：布尔值，表示观察 characterData 变动时，是否需要记录变动前的值</li>
+<li>attributeFilter：数组，表示需要观察的特定属性（比如[‘class’,’src’]）</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">&quot;main&quot;</span>);</span><br><span class="line">observer.observe(container, &#123;</span><br><span class="line">attributes: <span class="literal">true</span>,</span><br><span class="line">characterData: <span class="literal">true</span>,</span><br><span class="line">childList: <span class="literal">true</span>,</span><br><span class="line">subtree: <span class="literal">true</span>,</span><br><span class="line">attributeOldValue: <span class="literal">true</span>,</span><br><span class="line">characterDataOldValue: <span class="literal">true</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>对一个节点添加观察器，就像使用 addEventListener 方法一样，多次添加同一个观察器是无效的，回调函数依然只会触发一次。但是，如果指定不同的 options 对象，就会被当作两个不同的观察器。</p>
+<ol start="2">
+<li>disconnect()</li>
+</ol>
+<p>disconnect 方法用来停止观察。调用该方法后，dom 再发生变动，也不会触发观察器。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">observer.disconnect();</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>takeRecords()</li>
+</ol>
+<p>takeRecords 方法用来清除变动记录，即不再处理未处理的变动。该方法返回变动记录的数组。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> changes = observer.takeRecords(); <span class="comment">// 保存没有被处理的变动</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="MutationRecord"><a href="#MutationRecord" class="headerlink" title="MutationRecord"></a>MutationRecord</h3><p>MutationObserver() 构造函数回调中的 mutation 是 MutationRecord 的实例，包含的属性如下：</p>
+<ul>
+<li>type：观察的变动类型（attribute、characterData或者childList）</li>
+<li>target：发生变动的 dom 节点</li>
+<li>addedNodes：新增的 dom 节点</li>
+<li>removedNodes：删除的 dom 节点</li>
+<li>previousSibling：前一个同级节点，如果没有则返回 null</li>
+<li>nextSibling：下一个同级节点，如果没有则返回 null</li>
+<li>attributeName：发生变动的属性。如果设置了 attributeFilter，则只返回预先指定的属性</li>
+<li>oldValue：变动前的值。这个属性只对 attribute 和 characterData 变动有效，如果发生 childList 变动，则返回 null</li>
+</ul>
+<p>对 MutationObserver 进行了简单的了解之后，我们回到监听容器高度的需求上来：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;main&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">&quot;main&quot;</span>);</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> currentHeight = container.clientHeight;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> observer = <span class="keyword">new</span> MutationObserver(<span class="function"><span class="keyword">function</span> (<span class="params">mutations, observer</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">var</span> newHeight = container.clientHeight;</span></span><br><span class="line">    if (currentHeight !== newHeight) &#123;</span><br><span class="line"><span class="javascript">      <span class="built_in">console</span>.log(<span class="string">&quot;高度变化了：&quot;</span> + newHeight); <span class="comment">// 控制台输出 高度变化了：16</span></span></span><br><span class="line">      currentHeight = newHeight;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  observer.observe(container, &#123;</span><br><span class="line"><span class="javascript">    attributes: <span class="literal">true</span>,</span></span><br><span class="line"><span class="javascript">    characterData: <span class="literal">true</span>,</span></span><br><span class="line"><span class="javascript">    childList: <span class="literal">true</span>,</span></span><br><span class="line"><span class="javascript">    subtree: <span class="literal">true</span>,</span></span><br><span class="line">  &#125;);</span><br><span class="line">  container.innerHTML =</span><br><span class="line"><span class="handlebars"><span class="xml">    &#x27;<span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;https://img30.360buyimg.com/babel/s590x470_jfs/t1/175659/2/14809/204433/60c88e44Eb9ffa27a/1cc8a1d4d8a5205b.jpg.webp&quot;</span> /&gt;</span>&#x27;;</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>MutationObserver 和 Mutation Event 一样都是监听 dom 节点的变化，同样不能监听到异步资源加载后高度的变化。另外，因为 MutationObserver 监听的范围不包含样式属性的变化，因此如果通过 CSS 动画改变容器高度的话是检测不到的。我们需要在动画（transitionend、animationend）停止事件触发时监听高宽变化。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">  <span class="keyword">@keyframes</span> changeHeight &#123;</span></span><br><span class="line"><span class="css">    <span class="selector-tag">from</span>,</span></span><br><span class="line"><span class="css">    <span class="selector-tag">to</span> &#123;</span></span><br><span class="line"><span class="css">      <span class="attribute">height</span>: <span class="number">100px</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line">    50% &#123;</span><br><span class="line"><span class="css">      <span class="attribute">height</span>: <span class="number">300px</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;main&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height: 100px; background: red; animation: changeHeight ease-in-out 5000ms&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">&quot;main&quot;</span>);</span></span><br><span class="line"><span class="javascript">  container.addEventListener(<span class="string">&quot;animationend&quot;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="built_in">console</span>.log(getComputedStyle(container).height); <span class="comment">// 控制台输出 100px</span></span></span><br><span class="line">  &#125;);</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>综上，MutationObserver 的事件处理是异步的，调用也比较简单，但仍有以下局限：</p>
+<ol>
+<li>IE10 及以下版本不兼容，需要和 Mutation Events 配合使用</li>
+<li>不能监听异步资源加载完成后造成的高度变化，不能监听 flex 布局挤压造成的高度变化</li>
+<li>CSS动画造成的高度变化需要使用 transitionend或animationend 方法监听停止后的高度，动画进行中的高度变化监听不到</li>
+</ol>
+<h2 id="ResizeObserver"><a href="#ResizeObserver" class="headerlink" title="ResizeObserver"></a>ResizeObserver</h2><p>ResizeObserver 是一个实验中的功能，可以监听到 Element 的内容区域或 SVGElement的边界框改变。内容区域则需要减去内边距padding。</p>
+<blockquote>
+<p>ResizeObserver 避免了在自身回调中调整大小，从而触发的无限回调和循环依赖。它仅通过在后续帧中处理 dom 中更深层次的元素来实现这一点。如果（浏览器）遵循规范，只会在绘制前或布局后触发调用。</p>
+</blockquote>
+<p>ResizeObserver 的兼容性如下：<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/176414/28/14602/46065/60cc45c8Ed316895e/3eaa3a1c156ac584.png" alt="ResizeObserver兼容性"></p>
+<h3 id="构造函数-1"><a href="#构造函数-1" class="headerlink" title="构造函数"></a>构造函数</h3><p>ResizeObserver()</p>
+<p>首先使用 ResizeObserver 构造函数，新建一个观察器实例，同时指定这个实例的回调函数。该回调函数接受一个参数，一个是变动的数组，另一个是观察器实例。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> observer = <span class="keyword">new</span> ResizeObserver(<span class="function"><span class="keyword">function</span>(<span class="params">entries, observer</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(observer)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; entries.length; i++) &#123;</span><br><span class="line">        <span class="keyword">var</span> entry = entries[i];</span><br><span class="line">        <span class="built_in">console</span>.log(entry);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>构造函数回调中 entry 为 ResizeObserverEntry 对象的实例，包含属性如下：</p>
+<ul>
+<li>target：大小发生变化的 dom 节点</li>
+<li>contentRect：dom 节点的 contentRect，包含 width/height/top/left/right/bottom/x/y</li>
+<li>borderBoxSize：dom 含边框的尺寸大小，为数组，数组中对象包含 blockSize/inlineSize（为高度/宽度）</li>
+<li>contentBoxSize：dom 内容区域大小（不含边框和 padding），（同上）</li>
+<li>devicePixelContentBoxSize：contentBoxSize * window.devicePixelRatio的大小,（同上）</li>
+</ul>
+<h3 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h3><ol>
+<li>observe()</li>
+</ol>
+<p>observe 方法用来启动监听，接受一个参数，即要监听的 dom 节点。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">&quot;main&quot;</span>);</span><br><span class="line">observer.observe(container);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>unobserve()</li>
+</ol>
+<p>observe 方法用来停止监听，接收一个参数，即要停止监听的 dom 节点。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">observer.observe(container);</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>disconnect()</li>
+</ol>
+<p>disconnect 方法用来停止 observer 下所有的监听。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">observer.disconnect();</span><br></pre></td></tr></table></figure>
+
+<p>用 ResizeObserver 监听容器高度变化的代码如下：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;main&quot;</span> <span class="attr">style</span>=<span class="string">&quot;border: 10px solid red; padding: 40px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> container = <span class="built_in">document</span>.getElementById(<span class="string">&quot;main&quot;</span>);</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> currentHeight = container.clientHeight;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">var</span> observer = <span class="keyword">new</span> ResizeObserver(<span class="function"><span class="keyword">function</span> (<span class="params">entries, observer</span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; entries.length; i++) &#123;</span></span><br><span class="line"><span class="javascript">      <span class="keyword">var</span> entry = entries[i];</span></span><br><span class="line"><span class="javascript">      <span class="keyword">var</span> newHeight = entry.borderBoxSize[<span class="number">0</span>].blockSize;</span></span><br><span class="line">      if (newHeight !== currentHeight) &#123;</span><br><span class="line"><span class="javascript">        <span class="built_in">console</span>.log(<span class="string">&quot;高度变化了：&quot;</span> + newHeight);  <span class="comment">// 控制台输出 高度变化了：573</span></span></span><br><span class="line">        currentHeight = newHeight;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  observer.observe(container);</span><br><span class="line">  container.innerHTML =</span><br><span class="line"><span class="handlebars"><span class="xml">    &#x27;<span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;https://img30.360buyimg.com/babel/s590x470_jfs/t1/175659/2/14809/204433/60c88e44Eb9ffa27a/1cc8a1d4d8a5205b.jpg.webp&quot;</span> /&gt;</span>&#x27;;</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>此外，对 flex 挤压和 CSS 动画造成的高度变化进行了测试，ResizeObserver 都可以监听到。</p>
+<p>注意：网上有人反馈 ResizeObserver 回调内如果涉及到会导致 reflow 的设置，在 chrome 中可能会报错： Error：ResizeObserver loop limit exceeded。解决办法是在回调中增加 requestAnimationFrame 来进行节流处理。<a href="https://www.zhangxinxu.com/wordpress/2020/03/dom-resize-api-resizeobserver/">【在这里的评论部分】</a></p>
+<p>综上，ResizeObserver 可以实现动态监听元素高度的需求，美中不足的是不兼容 IE。这点可以使用 polyfill 来弥补：<a href="https://github.com/que-etc/resize-observer-polyfill">resize-observer-polyfill</a>，可以兼容到 IE9。（测试中发现 IE 浏览器中回调中 entry 参数中只有 target 和 contentRect 两个属性，不包含 borderBoxSize/contentBoxSize/devicePixelContentBoxSize。）</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>结合上一篇文章<a href="https://yolkpie.net/2021/06/17/%E5%A6%82%E4%BD%95%E7%9B%91%E5%90%AC%E5%AE%B9%E5%99%A8%E9%AB%98%E5%BA%A6%E5%8F%98%E5%8C%96%EF%BC%88%E4%B8%80%EF%BC%89/">【如何监听容器高度变化（一）】</a> 的内容，如果要监听容器高度的实时变化，推荐以下三种：</p>
+<ol>
+<li>使用 object 模拟</li>
+<li>监听 scroll 事件</li>
+<li>使用 ResizeObserver + polyfill</li>
+</ol>
+<p>当然，如果只需要知道窗口的实时高度，使用 resize 方法就行，不过要记得使用节流函数。</p>
+]]></content>
+      <tags>
+        <tag>Mutation Events, MutationObserver, ResizeObserver</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>安装证书</title>
     <url>/2020/12/22/%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6/</url>
     <content><![CDATA[<p>证书的安装不依赖于代理工具，Fiddler、Charles、Whistle都可以依照下面的步骤安装。(注意：证书的下载方式在不同代理工具中是不同的，这里默认已经下载了证书)</p>
@@ -6089,7 +6246,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
   </entry>
   <entry>
     <title></title>
-    <url>/2021/06/17/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
+    <url>/2021/06/18/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
     <content><![CDATA[<h2 id="需要解决的问题点"><a href="#需要解决的问题点" class="headerlink" title="需要解决的问题点"></a>需要解决的问题点</h2><p>1、子应用lazy load 之后，浏览器重新刷新，主框架资源重新加载，同时异步加载子应用； 因为异步加载子应用，所以会导致找不到路由的情况； 跳转NotFound页<br>解决方案，实现自己的路由劫持，动态路由功能，<br>2、子应用入口形式？</p>
 <ul>
 <li>jsEntry  VS Html Entry<br><img src= "/img/loading.gif" data-src="jsVShtml.jpg" alt="JS Entry vs Html Entry"></li>
@@ -9625,7 +9782,7 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
   <entry>
     <title>如何监听容器高度变化（一）</title>
     <url>/2021/06/17/%E5%A6%82%E4%BD%95%E7%9B%91%E5%90%AC%E5%AE%B9%E5%99%A8%E9%AB%98%E5%BA%A6%E5%8F%98%E5%8C%96%EF%BC%88%E4%B8%80%EF%BC%89/</url>
-    <content><![CDATA[<h1 id="如何监听容器高度变化（一）"><a href="#如何监听容器高度变化（一）" class="headerlink" title="如何监听容器高度变化（一）"></a>如何监听容器高度变化（一）</h1><p>首先说一下场景：单品页详情模块有一个折叠展示的功能，如果内容超出指定高度只展示一部分并显示“查看全部”的按钮。因为详情部分除了文字、表格之外，还会有图片等异步加载的资源会影响内容整体的高度，所以需要获取内容部分的实时高度。</p>
+    <content><![CDATA[<p>首先说一下场景：单品页详情模块有一个折叠展示的功能，如果内容超出指定高度只展示一部分并显示“查看全部”的按钮。因为详情部分除了文字、表格之外，还会有图片等异步加载的资源会影响内容整体的高度，所以需要获取内容部分的实时高度。</p>
 <p>如果要实现上面的功能，有以下方式：</p>
 <ol>
 <li>变通一下，因为详情模块不会在首屏展示，可以修改成滚动到该模块的时候再获取高度。这纯粹是个懒办法，如果有相似功能的模块在首屏展示，这种方法不适用。</li>
