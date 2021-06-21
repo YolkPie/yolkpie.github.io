@@ -6246,7 +6246,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
   </entry>
   <entry>
     <title></title>
-    <url>/2021/06/18/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
+    <url>/2021/06/21/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
     <content><![CDATA[<h2 id="需要解决的问题点"><a href="#需要解决的问题点" class="headerlink" title="需要解决的问题点"></a>需要解决的问题点</h2><p>1、子应用lazy load 之后，浏览器重新刷新，主框架资源重新加载，同时异步加载子应用； 因为异步加载子应用，所以会导致找不到路由的情况； 跳转NotFound页<br>解决方案，实现自己的路由劫持，动态路由功能，<br>2、子应用入口形式？</p>
 <ul>
 <li>jsEntry  VS Html Entry<br><img src= "/img/loading.gif" data-src="jsVShtml.jpg" alt="JS Entry vs Html Entry"></li>
@@ -6258,6 +6258,44 @@ https://www.jianshu.com/p/38bd5f1cf2f2
 <p>Html Entry 天然具备样式隔离</p>
 <ul>
 <li>JS 隔离<br>如何确保各个子应用之间的全局变量不会互相干扰，从而保证每个子应用之间的软隔离？<br>约定方式：全局变量通过约定特殊前缀或名称， 来避免冲突。因为人为因素太多，容易产生bug<br>全局快照<br>每次加载子应用时，给全局状态做一缓存备份，然后在应用卸载时，回退备份的缓存数据</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2021/06/21/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%BA%8C/npx/</url>
+    <content><![CDATA[<h2 id="NPX的主要作用"><a href="#NPX的主要作用" class="headerlink" title="NPX的主要作用"></a>NPX的主要作用</h2><h3 id="调用项目安装的模块"><a href="#调用项目安装的模块" class="headerlink" title="调用项目安装的模块"></a>调用项目安装的模块</h3><p>npx主要解决的问题： 调用项目内部安装的模块; 如测试工具 Mocha</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install -D mocha</span><br><span class="line"></span><br><span class="line"><span class="comment"># 未使用npx 项目的根目录下执行</span></span><br><span class="line">$ node-modules/.bin/mocha --version</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用npx 就方便多了</span></span><br><span class="line">$ npx mocha --version</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>npx 的原理很简单，就是运行的时候，会到node_modules/.bin路径和环境变量$PATH里面，检查命令是否存在。</p>
+<p>由于 npx 会检查环境变量$PATH，所以系统命令也可以调用。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 等同于 ls</span></span><br><span class="line">$ npx ls</span><br></pre></td></tr></table></figure>
+
+<h3 id="避免全局安装模块"><a href="#避免全局安装模块" class="headerlink" title="避免全局安装模块"></a>避免全局安装模块</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># npx 将create-react-app下载到一个临时目录，使用以后再删除。所以，以后再次执行上面的命令，会重新下载create-react-app</span></span><br><span class="line">$ npx create-react-app my-react-app</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装指定版本 </span></span><br><span class="line">$ npx uglify-js@3.1.0 main.js -o ./dist/main.js</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意，只要 npx 后面的模块无法在本地发现，就会下载同名模块</span></span><br><span class="line"><span class="comment"># 本地没有安装http-server模块，下面的命令会自动下载该模块，在当前目录启动一个 Web 服务。</span></span><br><span class="line">$ npx http-server</span><br><span class="line"></span><br><span class="line"><span class="comment"># --no-install 强制使用本地模块，不下载远程模块, 如果不存在就报错</span></span><br><span class="line">$ npx --no-install http-server</span><br><span class="line"></span><br><span class="line"><span class="comment"># --ignore-existing 忽略本地的同名模块，强制安装使用远程模块</span></span><br><span class="line">$ npx --ignore-existing create-react-app my-react-app</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用不同版本的node"><a href="#使用不同版本的node" class="headerlink" title="使用不同版本的node"></a>使用不同版本的node</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">$ npx node@<span class="number">0.12</span><span class="number">.8</span> -v</span><br><span class="line">v0<span class="number">.12</span><span class="number">.8</span></span><br></pre></td></tr></table></figure>
+<p>使用 0.12.8 版本的 Node 执行脚本。原理是从 npm 下载这个版本的 node，使用后再删掉。<br>某些场景下，这个方法用来切换 Node 版本，要比 nvm 那样的版本管理器方便一些。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2021/06/21/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%BA%8C/%E7%BA%AF%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<h1 id="纯函数"><a href="#纯函数" class="headerlink" title="纯函数"></a>纯函数</h1><p>晦涩的定义是这样的：一个函数的返回结果只依赖于它的参数，并且在执行过程里面没有副作用;</p>
+<p>总共2点：</p>
+<blockquote>
+<ol>
+<li>结果只依赖参数</li>
+<li>执行过程中没有副作用</li>
+</ol>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// demo1</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">b</span>) =&gt;</span> a + b</span><br><span class="line">foo(<span class="number">2</span>) <span class="comment">// =&gt; 3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// demo2</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">x, b</span>) =&gt;</span> x + b</span><br><span class="line">foo(<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// =&gt; 3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// demo3</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">obj, b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> obj.x + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> counter = &#123; <span class="attr">x</span>: <span class="number">1</span> &#125;</span><br><span class="line">foo(counter, <span class="number">2</span>) <span class="comment">// =&gt; 3</span></span><br><span class="line">counter.x <span class="comment">// =&gt; 1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// demo4 </span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">obj, b</span>) =&gt;</span> &#123;</span><br><span class="line">  obj.x = <span class="number">2</span></span><br><span class="line">  <span class="keyword">return</span> obj.x + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> counter = &#123; <span class="attr">x</span>: <span class="number">1</span> &#125;</span><br><span class="line">foo(counter, <span class="number">2</span>) <span class="comment">// =&gt; 4</span></span><br><span class="line">counter.x <span class="comment">// =&gt; 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// demo5</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> obj = &#123; <span class="attr">x</span>: <span class="number">1</span> &#125;</span><br><span class="line">  obj.x = <span class="number">2</span></span><br><span class="line">  <span class="keyword">return</span> obj.x + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<font color="white">
+
+<p>分析<br>1、demo1: 不是。 因为函数结果还依赖了外部变量a<br>2、demo2: 是。<br>3、demo3: 是。 只依赖入参，不产生副作用<br>4、demo4: 不是。 产生副作用。修改了obj.x的值<br>5、demo5: 是。 对内部变量obj的修改，外部程序不可见，无副作用<br></font></p>
+<ul>
+<li>副作用都包含哪些？<br>1、调用 DOM API 修改页面；<br>2、发送了 Ajax 请求；<br>3、调用 window.reload 刷新浏览器；<br>4、甚至是 console.log 往控制台打印数据；</li>
 </ul>
 ]]></content>
   </entry>
@@ -9839,6 +9877,230 @@ import Vue from ‘vue’<br>import Vuex from ‘vuex’<br>Vue.use(Vuex)<br>// 
 ]]></content>
       <tags>
         <tag>resize, object, iframe, scroll</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微前端实践二</title>
+    <url>/2021/06/21/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%BA%8C/</url>
+    <content><![CDATA[<h2 id="微前端架构之single-spa"><a href="#微前端架构之single-spa" class="headerlink" title="微前端架构之single-spa"></a>微前端架构之single-spa</h2><h3 id="single-spa是什么"><a href="#single-spa是什么" class="headerlink" title="single-spa是什么"></a>single-spa是什么</h3><p>Single-spa 是一个将多个单页面应用聚合为一个整体应用的 JavaScript 微前端框架。<br>好处：</p>
+<ul>
+<li>在同一页面上使用多个前端框架 而不用刷新页面 (React, AngularJS, Angular, Ember, 你正在使用的框架)</li>
+<li>独立部署每一个单页面应用</li>
+<li>新功能使用新框架，旧的单页应用不用重写可以共存</li>
+<li>改善初始加载时间，迟加载代码</li>
+</ul>
+<h3 id="single-spa做了什么"><a href="#single-spa做了什么" class="headerlink" title="single-spa做了什么"></a>single-spa做了什么</h3><p>single-spa是一个顶层路由。当路由处于活动状态时，它将下载并执行该路由下的相关代码。</p>
+<p>路由的代码被称为应用，每个代码都可以（可选）拥有自己的git仓库、CI进程，并且可以独立部署。这些应用即可以用相同框架实现，也可以用不同框架实现。</p>
+<h3 id="single-spa包括些什么"><a href="#single-spa包括些什么" class="headerlink" title="single-spa包括些什么:"></a>single-spa包括些什么:</h3><ul>
+<li>1、Applications，每个应用程序本身就是一个完整的 SPA (某种程度上)。 每个应用程序都可以响应 url 路由事件，并且必须知道如何从 DOM 中初始化、挂载和卸载自己。 传统 SPA 应用程序和 Single SPA 应用程序的主要区别在于，<code>它们必须能够与其他应用程序共存，而且它们没有各自的 html 页面</code>。<blockquote>
+<p>例如，React 或 Vue spa 就是应用程序。 当激活时，它们监听 url 路由事件并将内容放在 DOM上。 当它们处于非活动状态时，它们不侦听 url 路由事件，并且完全从 DOM 中删除。</p>
+</blockquote>
+</li>
+<li>一个 single-spa-config配置, 这是html页面和向Single SPA注册应用程序的JavaScript。每个应用程序都注册了三件东西<ul>
+<li>A name (应用的标识)</li>
+<li>A function (加载应用程序的代码)</li>
+<li>A function (确定应用程序何时处于活动状态/非活动状态)</li>
+</ul>
+</li>
+</ul>
+<h3 id="single-spa的使用方式"><a href="#single-spa的使用方式" class="headerlink" title="single-spa的使用方式"></a>single-spa的使用方式</h3><p>Single-spa 适用于 ES5、 ES6 + 、 TypeScript、 Webpack、 SystemJS、 Gulp、 Grunt、 Bower、 ember-cli 或 任何可用的构建系统。 您可以 npm 安装它，jspm 安装它，如果您愿意，甚至可以使用 &lt;script&gt; 标签。</p>
+<h3 id="新项目中使用single-spa"><a href="#新项目中使用single-spa" class="headerlink" title="新项目中使用single-spa"></a>新项目中使用single-spa</h3><h4 id="1、创建相当简单-create-single-spa-cli"><a href="#1、创建相当简单-create-single-spa-cli" class="headerlink" title="1、创建相当简单 create-single-spa cli"></a>1、创建相当简单 create-single-spa cli</h4><p><a href="https://github.com/single-spa/create-single-spa/">https://github.com/single-spa/create-single-spa/</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 全局安装</span></span><br><span class="line">npm install --global create-single-spa</span><br><span class="line"><span class="comment"># or</span></span><br><span class="line">yarn global add create-single-spa</span><br><span class="line"><span class="comment"># 之后执行</span></span><br><span class="line">create-single-spa</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地安装</span></span><br><span class="line">npm init single-spa</span><br><span class="line"><span class="comment"># or</span></span><br><span class="line">npx create-single-spa</span><br><span class="line"><span class="comment"># or </span></span><br><span class="line">yarn create single-spa</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="推荐设置"><a href="#推荐设置" class="headerlink" title="推荐设置"></a>推荐设置</h4><p>我们建议使用浏览器内ES模块 + import maps (或者SystemJS填充这些，如果你需要更好的浏览器支持)的设置。这种设置有几个优点:</p>
+<ul>
+<li><ol>
+<li>公共模块易于管理，并且只下载一次。如果使用SystemJS，也可以预加载它们来提高速度。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>共享代码/函数/变量就像导入/导出一样简单，就像在一个整体中设置一样。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>延迟加载应用程序很容易，这使您能够加速初始加载时间。</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>每个应用程序(又名微服务，又名ES模块)都可以独立开发和部署。团队可以按照自己的进度工作、实验(在组织定义的合理范围内)、QA和部署。这通常也意味着发布周期可以缩短到几天，而不是几周或几个月。</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>很棒的开发人员体验(DX):转到dev环境并添加一个导入映射，该映射将应用程序的url指向您的本地主机。请参阅下面的章节了解详细信息。</li>
+</ol>
+</li>
+</ul>
+<h4 id="single-spa中微前端的类型"><a href="#single-spa中微前端的类型" class="headerlink" title="single-spa中微前端的类型"></a>single-spa中微前端的类型</h4><ul>
+<li><ol>
+<li>single-spa applications:为一组特定路由渲染组件的微前端。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>single-spa parcels: 不受路由控制，渲染组件的微前端。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>utility modules: 非渲染组件，用于暴露共享javascript逻辑的微前端。</li>
+</ol>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>容器Root</th>
+<th align="center">应用程序</th>
+<th align="center">沙箱</th>
+<th align="center">公共模块</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主路由</td>
+<td align="center">有多个路由</td>
+<td align="center">无路由</td>
+<td align="center">无路由</td>
+</tr>
+<tr>
+<td>API</td>
+<td align="center">声明API</td>
+<td align="center">必要的API</td>
+<td align="center">没有single-spa API</td>
+</tr>
+<tr>
+<td>渲染UI</td>
+<td align="center">渲染UI</td>
+<td align="center">渲染UI</td>
+<td align="center">不直接渲染UI</td>
+</tr>
+<tr>
+<td>生命周期</td>
+<td align="center">single-spa管理生命周期</td>
+<td align="center">自定义管理生命周期</td>
+<td align="center">没有生命周期</td>
+</tr>
+<tr>
+<td>什么时候用</td>
+<td align="center">核心构建模块</td>
+<td align="center">仅在多个框架中需要</td>
+<td align="center">共享通用逻辑时使用</td>
+</tr>
+</tbody></table>
+<h4 id="应用程序"><a href="#应用程序" class="headerlink" title="应用程序"></a>应用程序</h4><p>single-spa 提供 <code>registerApplication</code> API注册应用</p>
+<h4 id="沙箱"><a href="#沙箱" class="headerlink" title="沙箱"></a>沙箱</h4><p>主要是让您在多个框架中编写应用程序时可以在应用程序之间重用UI。<br>管理parcels的生命周期<br><code>mountParcel</code> 或 <code>mountRootParcel</code> 将立即挂载parcel并返回这个parcel对象。 需要卸载需要手动调用 parcel的 <code>unmount</code>.</p>
+<blockquote>
+<p>Parcels 最适合在框架之间共享UI部分 ???<br>如： application1 用Vue编写，包含创建用户的所有UI和逻辑。 application2是用React编写的，需要创建一个用户。 使用single-spa parcels可以让您包装application2Vue组件。尽管框架不同，但它可以在`application2’内部运行。 将Parcels视为Web组件的single-spa特定实现。</p>
+</blockquote>
+<h4 id="公共模块"><a href="#公共模块" class="headerlink" title="公共模块"></a>公共模块</h4><p>共享通用逻辑，可以是一个普通的js对象<br>如： 登录授权、 读取数据fetch<br>1、每个应用都访问服务器，这会在每个应用中创建重复的工作；<br>2、使用公共模块，创建一个实现授权逻辑的模块，通过导出/导入的方式使用这些授权</p>
+<h4 id="Root-Config"><a href="#Root-Config" class="headerlink" title="Root Config"></a>Root Config</h4><p>根目录下的两个配置，用于启动single-spa应用</p>
+<ul>
+<li>所有微前端应用共享的根Html页面 【index.ejs】</li>
+<li>调用 <code>singleSpa.registerApplication()</code>的js 【study-root-config.js】</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// single-spa-config.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; registerApplication, start &#125; <span class="keyword">from</span> <span class="string">&#x27;single-spa&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// param1: 一个应用的标识</span></span><br><span class="line"><span class="comment">// param2: Function 一个应用要执行的代码</span></span><br><span class="line"><span class="comment">// param3: Function 何时激活这些应用：主路由</span></span><br><span class="line"><span class="comment">// param4: 可选的扩展参数</span></span><br><span class="line">registerApplication(</span><br><span class="line">  <span class="string">&#x27;app2&#x27;</span>, </span><br><span class="line">  () =&gt; <span class="keyword">import</span>(<span class="string">&#x27;src/app2/main.js&#x27;</span>), </span><br><span class="line">  (location) =&gt; location.pathname.startsWith(<span class="string">&#x27;/app2&#x27;</span>), </span><br><span class="line">  &#123; <span class="attr">some</span>: <span class="string">&#x27;value&#x27;</span> &#125; </span><br><span class="line">);</span><br><span class="line">registerApplication(&#123;</span><br><span class="line">  name: <span class="string">&#x27;app1&#x27;</span>,</span><br><span class="line">  app: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;src/app1/main.js&#x27;</span>),</span><br><span class="line">  activeWhen: <span class="string">&#x27;/app1&#x27;</span>,</span><br><span class="line">  customProps: &#123;</span><br><span class="line">    some: <span class="string">&#x27;value&#x27;</span>,</span><br><span class="line">  &#125;</span><br><span class="line">);</span><br><span class="line">start();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>参数说明</p>
+<ul>
+<li><p>name:<br>应用的标识，必须Sting</p>
+</li>
+<li><p>Loading Function or Application<br><code>registerApplication</code> 可以是一个Promise类型的 加载函数，也可以是一个已经被解析的应用。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> application = &#123;</span><br><span class="line">  bootstrap: <span class="function">() =&gt;</span> <span class="built_in">Promise</span>.resolve(), <span class="comment">//bootstrap function</span></span><br><span class="line">  mount: <span class="function">() =&gt;</span> <span class="built_in">Promise</span>.resolve(), <span class="comment">//mount function</span></span><br><span class="line">  unmount: <span class="function">() =&gt;</span> <span class="built_in">Promise</span>.resolve(), <span class="comment">//unmount function</span></span><br><span class="line">&#125;</span><br><span class="line">registerApplication(<span class="string">&#x27;applicationName&#x27;</span>, application, activityFunction)</span><br></pre></td></tr></table></figure></li>
+<li><p>加载函数<br><code>registerApplication</code>的第二个参数必须是返回<code>promise</code>的函数(或”<code>async function</code>“方法)。这个函数没有入参，会在应用第一次被下载时调用。返回的<code>Promise resolve</code>之后的结果必须是一个可以被解析的应用。常见的实现方法是使用<code>import</code>加载：<code>() =&gt; import(&#39;/path/to/application.js&#39;)</code></p>
+</li>
+<li><p>激活函数<br>第3个参数要求是一个纯函数(只依赖参数，不产生副作用), 根据 location.path决定哪个应用被激活。<br>single-spa根据顶级路由查找应用，每个应用自己处理自身的子路由。<br>支持通配符方式配置：’/users/:userId/profile’<br>支持多路径方式配置：[‘/pathname/#/hash’, ‘/app1’]</p>
+<p>包含以下情况</p>
+<blockquote>
+<p>1、<code>hashchange or popstate</code>事件触发时<br>  2、<code>pushState or replaceState</code>被调用时<br>  3、在single-spa上手动调用[<code>triggerAppChange</code>] 方法<br>  4、<code>checkActivityFunctions</code>方法被调用时</p>
+</blockquote>
+</li>
+<li><p>自定义属性<br>第4个参数：参数会传给single-spa的 <code>lifecycle</code>函数</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">singleSpa.registerApplication(&#123;</span><br><span class="line">  name: <span class="string">&#x27;myApp&#x27;</span>,</span><br><span class="line">  app: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;src/myApp/main.js&#x27;</span>),</span><br><span class="line">  activeWhen: [<span class="string">&#x27;/myApp&#x27;</span>, <span class="function">(<span class="params">location</span>) =&gt;</span> location.pathname.startsWith(<span class="string">&#x27;/some/other/path&#x27;</span>)],</span><br><span class="line">  customProps: &#123;</span><br><span class="line">    some: <span class="string">&#x27;value&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">singleSpa.registerApplication(&#123;</span><br><span class="line">  name: <span class="string">&#x27;myApp&#x27;</span>,</span><br><span class="line">  app: <span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;src/myApp/main.js&#x27;</span>),</span><br><span class="line">  activeWhen: [<span class="string">&#x27;/myApp&#x27;</span>, <span class="function">(<span class="params">location</span>) =&gt;</span> location.pathname.startsWith(<span class="string">&#x27;/some/other/path&#x27;</span>)],</span><br><span class="line">  <span class="comment">// 函数时，参数1：应用名：myapp， 参数2： window.location</span></span><br><span class="line">  customProps: <span class="function">(<span class="params">name, location</span>) =&gt;</span> (&#123;</span><br><span class="line">    some: <span class="string">&#x27;value&#x27;</span>,</span><br><span class="line">  &#125;),</span><br><span class="line">  </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+<li><p>最后调用 <code>singleSpa.start()</code><br><code>start()</code> 方法，必须被single-spa的配置文件调用, 这样应用才会真的被挂载。 在start被调用之前，应用先被下载，但不会初始化/挂载/卸载。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; start &#125; <span class="keyword">from</span> <span class="string">&#x27;single-spa&#x27;</span>;</span><br><span class="line"><span class="comment">/*在注册应用之前调用start意味着single-spa可以立即安装应用，无需等待单页应用的任何初始设置。*/</span></span><br><span class="line">start();</span><br><span class="line"><span class="comment">// 注册应用。。。。</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>同时注册两个路由<br>一个path的变动，同时两个应用被激活?? 可以。</p>
+</li>
+</ul>
+<div>需要一个id，这个id的以single-spa-application前缀开头，后面接着你的应用的名字。比如，如果你的应用名字叫做app-name，就创建一个id为 single-spa-application:app-name的div。
+
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;single-spa-application:app-name&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;single-spa-application:other-app&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="构建应用"><a href="#构建应用" class="headerlink" title="构建应用"></a>构建应用</h3><p>single-spa 应用与普通的单页面是一样的，只不过它没有HTML页面。在一个single-spa中，有N多被注册的应用，这些应用可以框架不同，自己维护自己的路由，只需要挂载便可以渲染自己的页面及功能。<br>“挂载”(mounted)的概念指的是被注册的应用内容是否已展示在DOM上。我们可通过应用的activity function来判断其是否已被挂载。未挂载前，一直休眠。</p>
+<p><strong>创建并注册应用</strong><br>要添加一个应用，首先需要注册该应用。一旦应用被注册后，必须在其入口文件(entry point)实现下面提到的各个生命周期函数。</p>
+<p><strong>生命周期</strong></p>
+<ul>
+<li><strong>下载(loaded)</strong>: 注册的应用在第1次 activity时开始下载，下载过程中尽可能执行少的操作，如果需要下载时执行的操作，可以放到子应用入口文件中。</li>
+<li>**初始化(bootstrap/initialized)**：required 第1次被挂载前执行一次</li>
+<li><strong>被挂载(mounted)</strong> required 应用被激活时执行，会根据当前url激活主路由，创建dom,监听事件，render等，子路由的改变（如:hashchange 或 popstate）不会再触发，需要应用自己处理</li>
+<li><strong>卸载(unmounted)</strong> required 应用由激活变为未激活时触发，会清理挂载应用的dom,event,内存，全局变量，消息订阅等</li>
+<li><strong>被移除（unloaded）</strong> 可选 无代表应用无需被移除，移除的应用，下次激活时，会重新初始化。可以实现 热下载。</li>
+</ul>
+<blockquote>
+<p>注：<br>1、bootstrap, mount, and unmount的实现是必须的，unload则是可选的<br>2、生命周期函数必须有返回值，可以是Promise或者async函数<br>3、如果导出的是函数数组而不是单个函数，这些函数会被依次调用，对于promise函数，会等到resolve之后再调用下一个函数<br>4、如果 single-spa 未启动，各个应用会被下载，但不会被初始化、挂载或卸载。</p>
+</blockquote>
+<p><strong>超时配置</strong><br>millis: 最终控制台输出的警告毫秒数<br>warningMillis: 警告每隔多少毫秒输出一次</p>
+<p><strong>切换应用时的过渡</strong><br>在生命周期函数中自己实现过滤效果<br>demo:<br><a href="https://github.com/frehner/singlespa-transitions">https://github.com/frehner/singlespa-transitions</a><br><a href="https://github.com/reactjs/react-transition-group">https://github.com/reactjs/react-transition-group</a></p>
+<h3 id="旧项目迁移至single-spa"><a href="#旧项目迁移至single-spa" class="headerlink" title="旧项目迁移至single-spa"></a>旧项目迁移至single-spa</h3><h4 id="拆分应用"><a href="#拆分应用" class="headerlink" title="拆分应用"></a>拆分应用</h4><p>前端系统应用</p>
+<ul>
+<li><strong>1、一个代码仓库, 一个build包</strong><br>优点：容易部署，有单一版本控制的优点（monorepo）<br>不足：项目越大时，打包越慢；构建部署在捆绑在一起，不能临时发版</li>
+<li><strong>2、NPM包</strong><br>优点：开发熟悉，易实现；发布到npm前可以分别打包<br>不足：父应用必须重装子应用重新构建部署</li>
+<li><strong>2、动态加载模块</strong><br>优点：灵活，代码独立<br>不足：搭建难度稍大<br>实现：<ol>
+<li>web服务器，创建动态脚本加载子应用正确版本；</li>
+<li>使用模块加载,如： systemJs在浏览器动态下载并执行js</li>
+</ol>
+</li>
+</ul>
+<h4 id="迁移现在应用"><a href="#迁移现在应用" class="headerlink" title="迁移现在应用"></a>迁移现在应用</h4><blockquote>
+<p>三步<br>  1、创建一个single-spa配置<br>  2、将spa应用转为注册应用<br>  3、调整html，使用single-spa配置生效</p>
+</blockquote>
+<p><strong>1、实现生命周期</strong><br>single-spa 生态系统 包含了single-spa对大部分框架的支持<br><a href="https://single-spa.js.org/docs/ecosystem/">https://single-spa.js.org/docs/ecosystem/</a><br>自己实现，就需要在 <code>unmount</code> 中，能够清理其 DOM 节点，DOM 事件侦听（所有的事件侦听，尤其是 hashchange 和 popstate）以及释放内存。</p>
+<p><strong>2、解决css、font、script依赖问题</strong><br>现有spa应用转为无html应用后，这些资源依赖问题都需要解决：一种方案全部打包到js中; 其他方案呢？</p>
+<h4 id="沙箱-Parcels"><a href="#沙箱-Parcels" class="headerlink" title="沙箱 Parcels"></a>沙箱 Parcels</h4><p>single-spa的一个高级特性，与框架无关，api与注册应用一致，不同的是：parcel组件需要手动挂载，而不是通过 activity 方法被动激活。在不熟悉它之前，尽量不要用。</p>
+<p><strong>示例</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// parcel 的实现</span></span><br><span class="line"><span class="keyword">const</span> parcelConfig = &#123;</span><br><span class="line">  <span class="function"><span class="title">bootstrap</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 初始化</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve()</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="function"><span class="title">mount</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 使用某个框架来创建和初始化dom</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve()</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="function"><span class="title">unmount</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 使用某个框架卸载dom，做其他的清理工作</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.resolve()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 如何挂载parcel</span></span><br><span class="line"><span class="keyword">const</span> domElement = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;place-in-dom-to-mount-parcel&#x27;</span>)</span><br><span class="line"><span class="keyword">const</span> parcelProps = &#123;domElement, <span class="attr">customProp1</span>: <span class="string">&#x27;foo&#x27;</span>&#125;</span><br><span class="line"><span class="keyword">const</span> parcel = singleSpa.mountRootParcel(parcelConfig, parcelProps)</span><br><span class="line"><span class="comment">// parcel 被挂载，在mountPromise中结束挂载</span></span><br><span class="line">parcel.mountPromise.then(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;finished mounting parcel!&#x27;</span>)</span><br><span class="line">  <span class="comment">// 如果我们想重新渲染parcel，可以调用update生命周期方法，其返回值是一个 promise</span></span><br><span class="line">  parcelProps.customProp1 = <span class="string">&#x27;bar&#x27;</span></span><br><span class="line">  <span class="keyword">return</span> parcel.update(parcelProps)</span><br><span class="line">&#125;)</span><br><span class="line">.then(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 在此处调用unmount生命周期方法来卸载parcel. 返回promise</span></span><br><span class="line">  <span class="keyword">return</span> parcel.unmount()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>Pacel配置</strong><br>一个parcel只是一个由3到4个方法组成的对象。每个方法返回的都是一个prmise。 生命周期与应用基本一致。</p>
+<ul>
+<li>初始化(Bootstrap) 在parcel第一次挂载前调用一次</li>
+<li>挂载(mount) 在mountParcel方法被调用且parcel未挂载时触发，一般会创建DOM元素、初始化事件监听等，从而为用户提供展示内容。</li>
+<li>卸载(unmount) parcel已经被挂载，且满足下列某个条件：1、unmount()被调用; 2、父parcel或者应用被卸载</li>
+<li>更新(Update) 可选  调用parcel.update()时触发，使用者调用前需确认parcel已实现</li>
+</ul>
+<h3 id="single-spa的API"><a href="#single-spa的API" class="headerlink" title="single-spa的API"></a>single-spa的API</h3><p>参考文档: <a href="https://zh-hans.single-spa.js.org/docs/api">https://zh-hans.single-spa.js.org/docs/api</a></p>
+<h3 id="single-spa的扩展"><a href="#single-spa的扩展" class="headerlink" title="single-spa的扩展"></a>single-spa的扩展</h3><p>一般来说，微前端需要解决的问题分为两大类：</p>
+<p><strong>1、应用的加载与切换</strong><br><strong>2、应用的隔离与通信</strong></p>
+<p>应用的加载与切换需要解决的问题包括：<strong>路由问题、应用入口、应用加载</strong>；应用的隔离与通信需要解决的问题包括：<strong>js隔离、css样式隔离、应用间通信。</strong></p>
+<p>single-spa很好地解决了路由和应用入口两个问题，但并没有解决应用加载问题，而是将该问题暴露出来由使用者实现（一般可以用system.js或原生script标签来实现）；qiankun在此基础上封装了一个应用加载方案（即<strong>import-html-entry</strong>），并给出了js隔离、css样式隔离和应用间通信三个问题的解决方案，同时提供了预加载功能。</p>
+<h4 id="single-spa原理"><a href="#single-spa原理" class="headerlink" title="single-spa原理"></a>single-spa原理</h4><p><img src= "/img/loading.gif" data-src="single-spa%E5%8E%9F%E7%90%86.png" alt="single-spa原理"></p>
+<p><strong>应用入口</strong><br>single-spa采用的是协议入口，即只要实现了single-spa的入口协议规范，它就是可加载的应用。single-spa的规范要求应用入口必须暴露出以下三个生命周期钩子函数，且必须返回Promise，以保证single-spa可以注册回调函数：<br><img src= "/img/loading.gif" data-src="single-spa%E5%BA%94%E7%94%A8%E5%85%A5%E5%8F%A3.png" alt="single-spa应用入口"></p>
+<p><strong>应用加载</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script type=<span class="string">&quot;systemjs-importmap&quot;</span>&gt;</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="string">&quot;imports&quot;</span>: &#123;</span><br><span class="line">      <span class="string">&quot;app1&quot;</span>: <span class="string">&quot;http://localhost:8080/app1.js&quot;</span>,</span><br><span class="line">      <span class="string">&quot;app2&quot;</span>: <span class="string">&quot;http://localhost:8081/app2.js&quot;</span>,</span><br><span class="line">      <span class="string">&quot;single-spa&quot;</span>: <span class="string">&quot;https://cdnjs.cloudflare.com/ajax/libs/single-spa/4.3.7/system/single-spa.min.js&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">... <span class="comment">// system.js的相关依赖文件</span></span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="comment">// 加载single-spa</span></span><br><span class="line">  System.import(<span class="string">&#x27;single-spa&#x27;</span>).then(<span class="function">(<span class="params">res</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> singleSpa = res;</span><br><span class="line">    <span class="comment">// 注册子应用</span></span><br><span class="line">    singleSpa.registerApplication(<span class="string">&#x27;app1&#x27;</span>,</span><br><span class="line">      () =&gt; System.import(<span class="string">&#x27;app1&#x27;</span>),</span><br><span class="line">      location =&gt; location.hash.startsWith(<span class="string">`#/app1`</span>);</span><br><span class="line">    );</span><br><span class="line">    singleSpa.registerApplication(<span class="string">&#x27;app2&#x27;</span>,</span><br><span class="line">      () =&gt; System.import(<span class="string">&#x27;app2&#x27;</span>),</span><br><span class="line">      location =&gt; location.hash.startsWith(<span class="string">`#/app2`</span>);</span><br><span class="line">    );</span><br><span class="line">    <span class="comment">// 启动single-spa</span></span><br><span class="line">    singleSpa.start();</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">// single-spa 的start方法</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">start</span>(<span class="params">opts</span>) </span>&#123;</span><br><span class="line">  started = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">if</span> (opts &amp;&amp; opts.urlRerouteOnly) &#123;</span><br><span class="line">    setUrlRerouteOnly(opts.urlRerouteOnly);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (isInBrowser) &#123;</span><br><span class="line">    reroute();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>single-spa的弊端:<br>首先我们必须手动实现应用加载逻辑，挨个罗列子应用需要加载的资源，这在大型项目里是十分困难的（特别是使用了文件名hash时）；另外它只能以js文件为入口，无法直接以html为入口，这使得嵌入子应用变得很困难，也正因此，single-spa不能直接加载jQuery应用。<br>single-spa只是负责把应用加载到一个页面中，至于应用能否协同工作，是很难保证的</p>
+<h4 id="qiankun解决方案"><a href="#qiankun解决方案" class="headerlink" title="qiankun解决方案"></a>qiankun解决方案</h4><p><a href="https://github.com/umijs/qiankun">https://github.com/umijs/qiankun</a></p>
+<p><strong>1、应用加载</strong><br>使用npm插件  import-html-entry</p>
+<blockquote>
+<p>主要方法：importHTML(url, opts = {})<br>简单点说：importHtml 通过fetch获取远程的脚本、样式文件内容， 然后通过正则表达式，把js,css提取出来，放到各自的数组里，js能过eval执行，并导出供其他模块调用<br><img src= "/img/loading.gif" data-src="import-html.png" alt="import-html"></p>
+</blockquote>
+<p><strong>2、css,js隔离</strong></p>
+<ul>
+<li>通过importHtml 加载html并把外部样式转为内部样式(使用类个shandow dom 或 vue scope)方式， 实现样式隔离</li>
+<li>execScripts方法: 为应用生成一个window的代理对象，作为参数传入，以保证不影响全局window; 在ie11通过快照方式实现隔离<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//正常实现js隔离</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">window</span>, <span class="built_in">arguments</span></span>)</span>&#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">&#125;)(<span class="built_in">window</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// execScripts</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">window</span>, <span class="built_in">arguments</span></span>)</span>&#123;</span><br><span class="line">  <span class="comment">// do something</span></span><br><span class="line">&#125;)(<span class="built_in">window</span>.proxy)</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>4、应用通信</strong><br><img src= "/img/loading.gif" data-src="%E5%BA%94%E7%94%A8%E9%80%9A%E4%BF%A1.png" alt="应用通信"></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基座中</span></span><br><span class="line"><span class="keyword">import</span> &#123; initGlobalState, MicroAppStateActions &#125; <span class="keyword">from</span> <span class="string">&#x27;qiankun&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> initialState = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> actions: MicroAppStateActions = initGlobalState(initialState);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> actions;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子应用中监听</span></span><br><span class="line">actions.onGlobalStateChange (globalState, oldGlobalState) &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子应用中修改</span></span><br><span class="line">actions.setGlobalState(...);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="webpack5-模块联邦-VS-single-spa"><a href="#webpack5-模块联邦-VS-single-spa" class="headerlink" title="webpack5 模块联邦 VS single-spa"></a>webpack5 模块联邦 VS single-spa</h3><p>模块联邦: webpack 受打包工具 和 生态的限制，<br><img src= "/img/loading.gif" data-src="%E6%A8%A1%E5%9D%97%E8%81%94%E9%82%A6.png" alt="模块联邦"><br>single-spa: 已经有一些成熟的解决方案：qiankun &amp; 京东的MicroApp<br><img src= "/img/loading.gif" data-src="single-spa.png" alt="single-spa"></p>
+<p>京东出品微前端框架MicroApp介绍与落地实践<br><a href="https://mp.weixin.qq.com/s/6A6TqQpWgN1_KoxUMx3FFw">https://mp.weixin.qq.com/s/6A6TqQpWgN1_KoxUMx3FFw</a><br>QA:</p>
+<h4 id="如何在应用程序间共享状态"><a href="#如何在应用程序间共享状态" class="headerlink" title="如何在应用程序间共享状态"></a>如何在应用程序间共享状态</h4><p>1、建议尽量避免应用共享状态，如果出现，可以优先考虑重新划分应用的边界<br>2、实现方案：</p>
+<ol>
+<li>创建可以缓存请求及其响应的共享API请求库。如果同一个API被多个应用重复命中，则使用缓存数据。 </li>
+<li>将共享状态公开为导出，其他的库可以导入它。可观测值(如：RxJS) 在这里很有用，因为他们能够将新值流式传输给订阅服务器。 </li>
+<li>使用custom browser events来交流。 </li>
+<li>使用cookies， local/session storage或其他能够存取状态的工具。</li>
+</ol>
+<p>参考文档：<br><a href="https://single-spa.js.org/">https://single-spa.js.org/</a><br><a href="https://single-spa.js.org/docs/examples/">https://single-spa.js.org/docs/examples/</a></p>
+<p><a href="https://github.com/systemjs/systemjs">https://github.com/systemjs/systemjs</a><br>SystemJS &gt;=3 已实现IE11的polyfill 目前已到 6.10.1</p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+      <tags>
+        <tag>微前端</tag>
       </tags>
   </entry>
   <entry>

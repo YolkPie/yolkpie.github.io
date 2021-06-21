@@ -1,0 +1,34 @@
+<h2 id="NPX的主要作用"><a href="#NPX的主要作用" class="headerlink" title="NPX的主要作用"></a>NPX的主要作用</h2><h3 id="调用项目安装的模块"><a href="#调用项目安装的模块" class="headerlink" title="调用项目安装的模块"></a>调用项目安装的模块</h3><p>npx主要解决的问题： 调用项目内部安装的模块; 如测试工具 Mocha</p>
+<pre><code class="bash">$ npm install -D mocha
+
+# 未使用npx 项目的根目录下执行
+$ node-modules/.bin/mocha --version
+
+# 使用npx 就方便多了
+$ npx mocha --version
+</code></pre>
+<p>npx 的原理很简单，就是运行的时候，会到node_modules/.bin路径和环境变量$PATH里面，检查命令是否存在。</p>
+<p>由于 npx 会检查环境变量$PATH，所以系统命令也可以调用。</p>
+<pre><code class="bash"># 等同于 ls
+$ npx ls
+</code></pre>
+<h3 id="避免全局安装模块"><a href="#避免全局安装模块" class="headerlink" title="避免全局安装模块"></a>避免全局安装模块</h3><pre><code class="bash"># npx 将create-react-app下载到一个临时目录，使用以后再删除。所以，以后再次执行上面的命令，会重新下载create-react-app
+$ npx create-react-app my-react-app
+
+# 安装指定版本 
+$ npx uglify-js@3.1.0 main.js -o ./dist/main.js
+
+# 注意，只要 npx 后面的模块无法在本地发现，就会下载同名模块
+# 本地没有安装http-server模块，下面的命令会自动下载该模块，在当前目录启动一个 Web 服务。
+$ npx http-server
+
+# --no-install 强制使用本地模块，不下载远程模块, 如果不存在就报错
+$ npx --no-install http-server
+
+# --ignore-existing 忽略本地的同名模块，强制安装使用远程模块
+$ npx --ignore-existing create-react-app my-react-app
+</code></pre>
+<h3 id="使用不同版本的node"><a href="#使用不同版本的node" class="headerlink" title="使用不同版本的node"></a>使用不同版本的node</h3><pre><code class="js">$ npx node@0.12.8 -v
+v0.12.8
+</code></pre>
+<p>使用 0.12.8 版本的 Node 执行脚本。原理是从 npm 下载这个版本的 node，使用后再删掉。<br>某些场景下，这个方法用来切换 Node 版本，要比 nvm 那样的版本管理器方便一些。</p>

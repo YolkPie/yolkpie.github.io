@@ -1,0 +1,53 @@
+<h1 id="纯函数"><a href="#纯函数" class="headerlink" title="纯函数"></a>纯函数</h1><p>晦涩的定义是这样的：一个函数的返回结果只依赖于它的参数，并且在执行过程里面没有副作用;</p>
+<p>总共2点：</p>
+<blockquote>
+<ol>
+<li>结果只依赖参数</li>
+<li>执行过程中没有副作用</li>
+</ol>
+</blockquote>
+<pre><code class="js">// demo1
+const a = 1
+const foo = (b) =&gt; a + b
+foo(2) // =&gt; 3
+
+
+// demo2
+const a = 1
+const foo = (x, b) =&gt; x + b
+foo(1, 2) // =&gt; 3
+
+
+// demo3
+const a = 1
+const foo = (obj, b) =&gt; {
+  return obj.x + b
+}
+const counter = { x: 1 }
+foo(counter, 2) // =&gt; 3
+counter.x // =&gt; 1
+
+
+// demo4 
+const a = 1
+const foo = (obj, b) =&gt; {
+  obj.x = 2
+  return obj.x + b
+}
+const counter = { x: 1 }
+foo(counter, 2) // =&gt; 4
+counter.x // =&gt; 2
+
+// demo5
+const foo = (b) =&gt; {
+  const obj = { x: 1 }
+  obj.x = 2
+  return obj.x + b
+}
+</code></pre>
+<font color="white">
+
+<p>分析<br>1、demo1: 不是。 因为函数结果还依赖了外部变量a<br>2、demo2: 是。<br>3、demo3: 是。 只依赖入参，不产生副作用<br>4、demo4: 不是。 产生副作用。修改了obj.x的值<br>5、demo5: 是。 对内部变量obj的修改，外部程序不可见，无副作用<br></font></p>
+<ul>
+<li>副作用都包含哪些？<br>1、调用 DOM API 修改页面；<br>2、发送了 Ajax 请求；<br>3、调用 window.reload 刷新浏览器；<br>4、甚至是 console.log 往控制台打印数据；</li>
+</ul>
