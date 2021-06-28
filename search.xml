@@ -213,6 +213,115 @@
       </tags>
   </entry>
   <entry>
+    <title>深色模式的应用</title>
+    <url>/2021/06/28/Dark%20Mode%E6%B7%B1%E8%89%B2%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="什么是深色模式"><a href="#什么是深色模式" class="headerlink" title="什么是深色模式"></a>什么是深色模式</h2><p>深色模式（也有人叫暗黑模式）确实不是人机界面领域的新概念了。曾几何时，绿色字符呈现在漆黑屏幕上的模式就是我们所拥有的全部。如今的屏幕色彩越来越丰富，但深色模式依然存在，到底为什么呢？</p>
+<p>从使用场景上来说，深色模式是区别于夜间模式的；</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/182489/30/9416/274406/60c9ba13Efd22ff87/6597418d9c70ebaa.png" alt="夜间模式和暗黑模式"></p>
+<p>深色模式对浅色主题的一种场景化补充，是满足用户日间的使用需求，让使用者更加专注自己的操作任务，带来视觉沉浸感；所以深色模式在信息内容的表达上会更注重视觉性；</p>
+<p>同时，设置深色模式，会降低设备屏幕发出的亮度，目前的中高端手机大多采用OLED屏幕，这一材质自发光的特性使得屏幕能够独立控制单个像素是否发光，深色主题会降低设备屏幕发出的亮度，同时仍能满足最低色彩对比度。</p>
+<p>而传统的夜间模式更注重于弱光场景下的体验。是从用户的健康角度出发考虑的，当用户舒服的躺在被窝里，或关灯玩手机时，通过降低屏幕亮度和对比度，不会过于刺眼，以达到帮助保护眼睛的效果。夜间模式在亮光环境使用时很可能并不保证所有信息都具有可读性。</p>
+<h2 id="深色模式的优点"><a href="#深色模式的优点" class="headerlink" title="深色模式的优点"></a>深色模式的优点</h2><p><strong>优点一：提升视觉沉浸感；</strong>让使用者更加专注自己的操作和界面内容。</p>
+<p><strong>优点二：减少屏幕明度；</strong>缩小屏幕显示内容与环境光强度的差距，减少眼睛的负担。</p>
+<p><strong>优点三：降低耗电量；</strong>根据谷歌官方数据来看，采用OLED屏幕的手机在「深色模式」下，耗电量可以大幅度下降。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/187331/38/8517/900974/60c9ba0aE142e2f54/82ddb0c68d23406a.png" alt="耗电量对比"></p>
+<p><strong>优点四：营造高端感；</strong>深色模式给人以高级、神秘的语义象征，相比于浅色模式，深色模式藏着更多可能性。</p>
+<h2 id="深色模式行业内的设计规范"><a href="#深色模式行业内的设计规范" class="headerlink" title="深色模式行业内的设计规范"></a>深色模式行业内的设计规范</h2><h3 id="Material-Design的深色模式"><a href="#Material-Design的深色模式" class="headerlink" title="Material Design的深色模式"></a>Material Design的深色模式</h3><h4 id="（一）应用原则："><a href="#（一）应用原则：" class="headerlink" title="（一）应用原则："></a>（一）应用原则：</h4><p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/179829/7/9465/83901/60c9ba13Ed33d3fcc/aa4d232f7b7d1074.png" alt="应用原则"></p>
+<p><strong>1. 灰色而不是黑色</strong></p>
+<p>使用深灰色而不是黑色来表示具有更宽深度范围的环境中的高度与空间。(解释：由于深色主题中无法像常规MD设计中使用阴影，因此使用不同亮度的灰色来表示Z轴的空间关系，不以纯黑色作为大范围使用的底色可以提供更宽的色域来体现Z轴深度关系)</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/195982/32/8337/164966/60c9ba14Eae908532/f551baeef1e10bdc.png" alt="Z轴"></p>
+<p>简单说下Z轴概念：</p>
+<p>一般来说，在平面的界面中想要表现出立体感和深度，我们会通过物体阴影或者透视关系来表现。在 Material Design 中，Z 轴概念的引入则可以轻松解决这个问题。下图中，组件在 Z 轴处于不同的高度，间接影响着阴影的表现。</p>
+<p>那么引入 Z 轴难道只是为了画个阴影？当然不是的！更重要的还是用于表现出 UI 组件的次序及重要程度。下图中 Card View 在 Z 轴上低于 App bar，因为正常来说 Card View 上下滚动时是被遮挡在 App bar 之下的；而 FAB 处于最高的位置（8dp），因为它的重要程度是最高的，并且高于 App bar 上的 actions。</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/178783/31/9496/155679/60c9ba14Ea29d32b4/70e81aa90c01bf5b.png" alt="Z轴说明"></p>
+<p><strong>2. 颜色与强调</strong></p>
+<p>在深色主题中只用有限的颜色用来做强调，从而使大部分区域都使用深色。</p>
+<p><strong>3. 节约能源</strong></p>
+<p>在需要效率的产品（例如带有 OLED 屏幕的设备）中，通过减少光像素的使用来延长电池寿命。</p>
+<p><strong>4. 增强可访问性</strong></p>
+<p>通过满足可访问性颜色对比度标准来满足常规深色模式用户（例如弱视用户）的需求。</p>
+<h4 id="（二）特性-amp-特点："><a href="#（二）特性-amp-特点：" class="headerlink" title="（二）特性&amp;特点："></a>（二）特性&amp;特点：</h4><ul>
+<li><strong>对比度：</strong>深色表面和 100% 白色正文的对比度至少为 15.8:1</li>
+<li><strong>深度：</strong>在更高的海拔水平上，组件通过显示较浅的表面颜色来表达深度</li>
+<li><strong>去饱和度：</strong>原色去饱和度，因此它们在所有高度级别都通过了至少 4.5:1</li>
+<li><strong>有限的颜色：</strong>大表面使用深色表面颜色，具有有限的色彩强调（浅色、不饱和和明亮、饱和的颜色）</li>
+</ul>
+<p>对比度可以通过万维网W3C进行颜色的对比检查，也可以进行对比度的计算；</p>
+<p><a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html">https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html</a></p>
+<h4 id="（三）层级剖析："><a href="#（三）层级剖析：" class="headerlink" title="（三）层级剖析："></a>（三）层级剖析：</h4><p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/181557/27/9165/270215/60c9b9fdEb8605f7e/f9155d62284b2df1.png" alt="层级剖析"></p>
+<p>可能看起来有点混乱，但以上各层级是遵循MD的Z轴理论的，在深度上有区别，同时保证了内容的高对比度。概括下来即在转变为深色模式的同时继承了常规场景下的MD的Z轴原则(白色背景下通过阴影和颜色体现纵深)，同时还能保证了信息的获取效率。</p>
+<h4 id="（四）属性："><a href="#（四）属性：" class="headerlink" title="（四）属性："></a>（四）属性：</h4><p><strong>解释：</strong>黑色主题使用深灰色而不是黑色作为组件的主要表面颜色。深灰色表面可以表现出更广泛的颜色、高度和深度，因为我们更容易看到灰色(而不是黑色)上的阴影。</p>
+<p>深灰色表面还可以减少眼睛疲劳，因为深灰色表面上的浅色文字比黑色表面上的浅色文字具有更低的对比度。官方推荐的深色主题的表面颜色：#121212。</p>
+<p><strong>1. 海拔高度</strong></p>
+<p>在黑暗主题中，组件应当保留与较亮主题中的组件相同的默认高度级别和阴影，这需要通过表面的不同亮度来体现这种纵深高度的区别。</p>
+<p><strong>海拔越高表面越轻：</strong>表面高度越高(越接近隐含光源)，表面越轻。通过应用半透明白色覆盖层来表达这种轻盈，随着表面变高，颜色变浅。深色主题表面是通过在组件表面上放置半透明覆盖层来构建的，通过应用半透明白色覆盖层，表面变得更亮，通过调整表面颜色来表达高度。</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/174284/26/15006/765623/60c9ba09E2732595e/44acb4cf44df3130.gif" alt="海拔高度"></p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/187793/23/8491/1254224/60c9b9feE4fcd4532/a2763aa3b38b037d.gif" alt="层级展示"></p>
+<p>默认主题使用阴影来表达高度，而深色主题也通过调整表面颜色深浅来表达高度。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/191053/10/8512/93975/60c9b9fdEf80e1f60/1258d38fd74cb5be.jpg" alt="表面叠加的白色"></p>
+<p>这些表面覆盖值旨在最大限度地提高易读性，同时确保不同的高度水平彼此可辨别。高度叠加透明度范围从最低级别的0％到最高级别的16％。叠加层阐明了组件之间的高度差异。</p>
+<p><strong>2. 可访问性与对比度</strong></p>
+<p>深色模式表面必须足够暗以显示白色文本。<strong>文本和背景之间至少应该达到15.8:1的对比度级别。</strong>这确保了当应用于最高(和最轻)高度的表面时，正文文本通过WCAG的AA标准至少能达到4.5:1。如果背景颜色不够深，无法在白色文本和表面之间达到至少15.8:1的对比度，则最高(和最轻)高度表面的文本将无法通过4.5:1标准。</p>
+<p><strong>想要使用带有品牌色的深色该怎么应用呢？</strong></p>
+<p>要创建带有品牌的深色背景，可以在推荐的深色主题背景颜色(＃121212)上叠加品牌颜色的透明度。下图的案例中颜色＃1F1B24是组合深色模式的背景颜色＃121212和8％原色的结果。</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/192675/30/8609/22126/60c9ba0aE43a2def1/464fbd97d9740828.jpg" alt="品牌颜色"></p>
+<h4 id="（五）在UI应用程序中的运用"><a href="#（五）在UI应用程序中的运用" class="headerlink" title="（五）在UI应用程序中的运用"></a>（五）<strong>在UI应用程序中的运用</strong></h4><p><strong>1. 主题颜色</strong></p>
+<p>所有深色主题颜色都应显示具有足够对比度的元素，当应用于所有高度的层级表面时，WCAG的AA标准至少为4.5:1。<strong>使用饱和度低的颜色，以提高可访问性。</strong></p>
+<p>一个黑暗的主题应该避免使用过度饱和的颜色，饱和颜色还会在深色背景下产生光学振动，这会引起眼睛疲劳。</p>
+<p>相反，不饱和的颜色可以用作更清晰的替代品。避免使用下图中这样饱和度过高的颜色，会在深色背景下造成视觉震动。</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/191041/14/7811/37254/60c9ba13Ed246893a/117f72dc173d51a3.jpg" alt="主题色"></p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/173075/19/14823/36735/60c9ba13Ee2f89469/73c7cae542788596.jpg" alt="正常模式的颜色"></p>
+<p><strong>2. 主色的选择</strong></p>
+<p>主要颜色是应用程序屏幕和组件中最常显示的颜色。基于Material Design深色主题的规范，请使用原色的200色调；</p>
+<p><strong>特殊情况：</strong>具有浅表面的组件可以显示暗主题的主要颜色的变体。如下图中白色浮层上的文字链按钮使用的700的深色。</p>
+<p><a href="https://material.io/design/color/the-color-system.html#tools-for-picking-colors">https://material.io/design/color/the-color-system.html#tools-for-picking-colors</a></p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/172153/5/14943/103779/60c9ba0aEf6af683e/75a610d26e044ba4.jpg" alt="浅表面的颜色"></p>
+<p><strong>3. 辅助色的选择</strong></p>
+<p>辅助颜色可用于突出UI的重要部分。在深色模式中，辅助色应该降低饱和度以满足4.5:1的对比度水平。如下图，紫色为主色，绿色为辅助色。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/175335/13/14802/106350/60c9b9feE1e4d229b/8c0b146588ebfa4c.jpg" alt="辅助色"></p>
+<p><strong>4. 强调色</strong></p>
+<p>在深色主题中，灰色界面占据了UI的大部分。强调色通常是浅色(不饱和柔和色)或明亮(饱和，鲜艳的色彩)，以帮助强调元素使其脱颖而出。应谨慎使用它们来强调关键元素，例如文本或按钮。</p>
+<p>为了在深色主题中提供更多灵活性和可用性，建议在深色主题中使用较浅色调(200-50)，而不是默认颜色主题(饱和色调范围为900-500)。</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/187250/6/8610/30224/60c9ba0aE2adfff1d/c46a5307dc1d8a98.jpg" alt="强调色"></p>
+<p><strong>5. 品牌颜色</strong></p>
+<p>为了保持品牌标识，品牌颜色可以在深色主题中以完全饱和度使用，但应用应限于一个或两个品牌元素，例如徽标或品牌按钮。通过谨慎使用品牌颜色，使元素在层次结构中保持突出。</p>
+<p>不饱和的颜色仍应在黑暗主题UI的其余部分中使用，如下图：</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/185733/19/9438/138111/60c9ba0aE418859ab/56b4fab7d58a0220.jpg" alt="品牌色"></p>
+<p><strong>6. 错误颜色</strong></p>
+<p>错误颜色用于指示<strong>错误状态</strong>。对于谷歌规范中，深色模式错误颜色为＃CF6679。这种深色主题颜色是通过采用浅色主题错误颜色(＃B00020)并使用40％白色覆盖物照亮它来创建的，该颜色通过了AA级对比度标准。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/179716/34/9453/26700/60c9b9feE5ec79c5f/66ea00ca5237a4b2.jpg" alt="错误颜色"></p>
+<p><strong>7. 文字颜色</strong></p>
+<p>深色背景下的文字颜色：<br>当浅色文本出现在深色背景上(此处显示为黑色)时，应使用以下不透明度级别：</p>
+<ul>
+<li>高强度文本的不透明度为87％；</li>
+<li>中等重点文字和提示文字的透明度为60％；</li>
+<li>禁用文字的不透明度为38％；</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/177758/23/9447/20149/60c9ba13Ed0c7d7da/db18fd2512d5ec83.jpg" alt="文字颜色"></p>
+<h3 id="iOS的深色模式"><a href="#iOS的深色模式" class="headerlink" title="iOS的深色模式"></a>iOS的深色模式</h3><h4 id="（一）iOS颜色"><a href="#（一）iOS颜色" class="headerlink" title="（一）iOS颜色"></a>（一）iOS颜色</h4><p>iOS引用了6中不同的灰度，在深色模式下，采用纯黑色作为背景，用不同程度的灰色来承载页面内容。</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/174515/32/15044/514260/60c9ba14E6e775226/702444aea77f71bd.png" alt="ios界面对比"></p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/187341/34/8514/75597/60c9b9fdE229a1013/caf52712a03c57e5.png" alt="白色模式和黑色模式"></p>
+<h4 id="（二）层级"><a href="#（二）层级" class="headerlink" title="（二）层级"></a>（二）层级</h4><p>iOS通过背景、投影来表达层级关系。列表内容至于纯黑色背景的上方，表明层级越高的内容，背景颜色就会越亮一些；</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/188415/24/8546/446684/60c9ba14Edfa4fcf0/5a5c0a6690b39f04.png" alt="ios页面"></p>
+<h2 id="深色模式的设计建议"><a href="#深色模式的设计建议" class="headerlink" title="深色模式的设计建议"></a>深色模式的设计建议</h2><p><strong>1.不要简单的将白变黑或者随意减低亮度</strong></p>
+<p>通过背景颜色、卡片颜色、文字颜色来建立信息层级，让内容更好的呈现出来。</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/187709/3/8534/488168/60c9b9fcEdfd1b708/62047d9f9c9b8788.png" alt="案例"></p>
+<p><strong>2.不要使用纯黑色背景和纯白色文字</strong></p>
+<p>不要同时使用纯黑色（#000000）和纯白色（¥ffffff）作为文本颜色。高强度对比会对用户产生视觉疲劳。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/186388/28/7939/847658/60c9b9feE2ec807af/6d704cc92f70d96c.png" alt="纯黑纯白"></p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/176479/6/15013/822875/60c9ba0aEf8c3a5bb/b2dde989f488410d.png" alt="加入品牌色"></p>
+<p><strong>3.注意UGC产品的颜色适配</strong></p>
+<p>在微信公众号可以看到，部分在白色模式下很美观的排版，但是在深色模式下，出现内容看不清的情况，在设计上给到用户较好的选择，尽量避免透明图片的使用。</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/189166/8/8115/573130/60c9ba09Ee3621e2d/c348141321c6c490.png" alt="公众号"></p>
+<h2 id="如何设计深色模式"><a href="#如何设计深色模式" class="headerlink" title="如何设计深色模式"></a>如何设计深色模式</h2><p><strong>1.建立色彩规范</strong></p>
+<p>建立色彩规范，在在纯黑色（#000000）背景中或者（#121212）背景中，加入20%的品牌色，然后通过调整HSB的B值，得到有序的系列背景色；</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/175934/34/14983/71112/60c9ba0aEaeab3453/ee5623776364bc3d.png" alt="设计深色模式"></p>
+<p><strong>2.文字规范</strong></p>
+<p>在浅色模式下，我们大多数用过一套很常规的标准文字色值：#333、#666、#999、#ccc，通过查看它们的HSB可以发现，分别对应的是（H0  S0  B20）、（H0  S0  B40）、（H0  S0  B60）、（H0  S0  B80），这些文字色值也是遵循20、40、60、80序列值做颜色层级，在深色模式下，我们也可以这样做。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/187647/24/8615/185985/60c9ba0bE5ff33111/36e028e069f27281.png" alt="深色模式文字"></p>
+]]></content>
+  </entry>
+  <entry>
     <title>H5 项目如何适配暗黑模式</title>
     <url>/2021/05/23/H5%20%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E9%80%82%E9%85%8D%E6%9A%97%E9%BB%91%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h2 id="H5-项目如何适配暗黑模式"><a href="#H5-项目如何适配暗黑模式" class="headerlink" title="H5 项目如何适配暗黑模式"></a>H5 项目如何适配暗黑模式</h2><p><strong>背景</strong></p>
@@ -300,6 +409,31 @@
       <tags>
         <tag>暗黑模式</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>JS中的纯函数</title>
+    <url>/2021/06/28/JS%E4%B8%AD%E7%9A%84%E7%BA%AF%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<h1 id="纯函数"><a href="#纯函数" class="headerlink" title="纯函数"></a>纯函数</h1><p>晦涩的定义是这样的：一个函数的返回结果只依赖于它的参数，并且在执行过程里面没有副作用;</p>
+<p>总共2点：</p>
+<blockquote>
+<ol>
+<li>结果只依赖参数</li>
+<li>执行过程中没有副作用</li>
+</ol>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// demo1</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">b</span>) =&gt;</span> a + b</span><br><span class="line">foo(<span class="number">2</span>) <span class="comment">// =&gt; 3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// demo2</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">x, b</span>) =&gt;</span> x + b</span><br><span class="line">foo(<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// =&gt; 3</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// demo3</span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">obj, b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> obj.x + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> counter = &#123; <span class="attr">x</span>: <span class="number">1</span> &#125;</span><br><span class="line">foo(counter, <span class="number">2</span>) <span class="comment">// =&gt; 3</span></span><br><span class="line">counter.x <span class="comment">// =&gt; 1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// demo4 </span></span><br><span class="line"><span class="keyword">const</span> a = <span class="number">1</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">obj, b</span>) =&gt;</span> &#123;</span><br><span class="line">  obj.x = <span class="number">2</span></span><br><span class="line">  <span class="keyword">return</span> obj.x + b</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> counter = &#123; <span class="attr">x</span>: <span class="number">1</span> &#125;</span><br><span class="line">foo(counter, <span class="number">2</span>) <span class="comment">// =&gt; 4</span></span><br><span class="line">counter.x <span class="comment">// =&gt; 2</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// demo5</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="function">(<span class="params">b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> obj = &#123; <span class="attr">x</span>: <span class="number">1</span> &#125;</span><br><span class="line">  obj.x = <span class="number">2</span></span><br><span class="line">  <span class="keyword">return</span> obj.x + b</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<font color="white">
+
+<p>分析<br>1、demo1: 不是。 因为函数结果还依赖了外部变量a<br>2、demo2: 是。<br>3、demo3: 是。 只依赖入参，不产生副作用<br>4、demo4: 不是。 产生副作用。修改了obj.x的值<br>5、demo5: 是。 对内部变量obj的修改，外部程序不可见，无副作用<br></font></p>
+<ul>
+<li>副作用都包含哪些？<br>1、调用 DOM API 修改页面；<br>2、发送了 Ajax 请求；<br>3、调用 window.reload 刷新浏览器；<br>4、甚至是 console.log 往控制台打印数据；</li>
+</ul>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
   </entry>
   <entry>
     <title>JS自定义功能函数(一)：动态拼接或修改url地址参数和参数值</title>
@@ -5492,6 +5626,61 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
       </tags>
   </entry>
   <entry>
+    <title>情绪版的应用</title>
+    <url>/2021/06/28/%E6%83%85%E7%BB%AA%E7%89%88%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<p>在很多项目总结中，我们几乎都能看到情绪板的运用，精美的图片搭配符合主题的关键词，可以向需求方和产品侧准确地表达出页面的设计方向和风格。那什么是情绪版呢，我们又该怎么建立情绪版呢，以下是我写的一点点总结。</p>
+<h3 id="什么是情绪板？"><a href="#什么是情绪板？" class="headerlink" title="什么是情绪板？"></a><strong>什么是情绪板？</strong></h3><p>情绪板定义</p>
+<p>情绪板（Mood Board），主要是对设计的产品和相关主题方向的色彩、图片、影像或其他材料的收集，从而引起某些情绪反应，以此作为设计方向或者形式的参考，是常用的表达设计定义和方向的设计方法论。帮助设计师明确视觉设计需求，用于提取配色方案、视觉风格、质感材质，以指导视觉设计，为设计师提供灵感。</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/194598/6/10655/1045228/60d93285E801ddbeb/2ce4c81f06300fa3.png" alt="情绪版@1x"></p>
+<h3 id="情绪板的作用"><a href="#情绪板的作用" class="headerlink" title="情绪板的作用"></a>情绪板的作用</h3><p>情绪板首先能组织整个项目的灵感，保持风格和美学的一致性，并与客户的目标和期望保持一致。</p>
+<p>情绪板是在开始实际设计前确定和完善产品风格的好方法。在资源和时间方面，情绪版比模型或原型的成本要低得多，并且能直接传达出关于最终设计风格的信息。</p>
+<p>对设计师来说：情绪板是定义视觉风格和指导设计方向的依据；对团队：在团队之间传递设计灵感与设计思路，从而使想法充分融合，深化设计。情绪板能够巧妙地向客户传达设计理念。例如当设计师在说扁平化或极简等设计风格时，客户或者我们的产品可能并不知道这些风格是怎样的。这个时候我们就需要建立情绪版向客户和产品传达我们的想法。</p>
+<h3 id="情绪板的组成"><a href="#情绪板的组成" class="headerlink" title="情绪板的组成"></a>情绪板的组成</h3><p>每个情绪板都是不同的，包含的内容会根据项目需要而有所不同。</p>
+<p>重要的是要包含尽可能多的元素，让想表现的设计思路更清晰。情绪板中包含的内容包括以下几种。</p>
+<h4 id="（1）图片"><a href="#（1）图片" class="headerlink" title="（1）图片"></a>（1）图片</h4><p>主要包括品牌图片、图库上的摄影/产品图片、插画、logo等。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/172489/16/17137/803628/60d93288Ec8047ade/954179ae0c9be644.png" alt="图片"></p>
+<h4 id="（2）颜色"><a href="#（2）颜色" class="headerlink" title="（2）颜色"></a>（2）颜色</h4><p>色板是情绪板的重要组成部分，根据搜集的素材我们能确定哪种色系跟整体需求更相近，再通过吸色来获得配色信息。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/175197/22/17008/771196/60d93285E622aff07/8ef9f31d2045ddd3.png" alt="色彩情绪版"></p>
+<h4 id="（3）文字"><a href="#（3）文字" class="headerlink" title="（3）文字"></a>（3）文字</h4><p>搜集与品牌或主题相关的文案，或者展示选用的某种特定的字体。</p>
+<p><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/188821/18/10548/470121/60d93288E5f4b4ed0/6ef9e81859df59e9.png" alt="文字"></p>
+<h4 id="（4）纹理"><a href="#（4）纹理" class="headerlink" title="（4）纹理"></a>（4）纹理</h4><p>设计中涉及到的纹理或图案都应该包含在情绪板上。</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/196488/8/10487/568483/60d93288Eaec17d82/54e2fbb0288dea97.png" alt="纹理"></p>
+<h3 id="建立情绪板的步骤"><a href="#建立情绪板的步骤" class="headerlink" title="建立情绪板的步骤"></a>建立情绪板的步骤</h3><p>当我们接到一个界面改版需求时，会考虑哪些点呢？大部分人都会重点关注美观度，但是这往往是不够的，我们既要把界面做得好看，也要做得科学。这次要说的情绪板，就可以帮助我们做出一个更加有理有据的界面设计。 </p>
+<p>那么情绪板到底如何使用呢？我们先来看看整体的操作流程: </p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/188256/31/10563/26036/60d93284Ec8460dec/d90aa10d9581cd12.png" alt="流程"></p>
+<h4 id="（1）确定原生关键词"><a href="#（1）确定原生关键词" class="headerlink" title="（1）确定原生关键词"></a>（1）确定原生关键词</h4><p>通过产品定位、涉众访谈和以往的用户研究数据，可以获得大量的关键词，而这些关键词并不是都能用得上，我们需要筛选出既符合产品定位又能达到用户心理预期的。比如我们要做一个金融产品，最终可以提取3个基础关键词：收益、安全、灵活。</p>
+<p>注意要点：基础关键词一般在3-5个之间，同时原生关键词，一定要抽象化，不能过于具体。（例如：咖啡就是个具体名次，脑海中一下子就能联想出该物体） </p>
+<p>﻿<img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/196817/29/10379/199885/60d93289Eb5cbf094/5d5359accaf48bf1.png" alt="原生关键词"></p>
+<h4 id="（2）确定衍生关键词"><a href="#（2）确定衍生关键词" class="headerlink" title="（2）确定衍生关键词"></a>（2）确定衍生关键词</h4><p>由于第一步的原生关键词大多都比较抽象，因此需要对其进行发散和联想。从而需要更多具体关键词，这样我们后面才能更容易找到相应的图片，具体关键词一般都是具体的物体。为了更科学地找图，第一步确定3-5个原生关键词，第二步在每个原生关键词下拓展3个衍生关键词。﻿</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/180228/16/10911/232102/60d93289Eb37fb6aa/556ac43dee29ec4f.png" alt="衍生关键词"></p>
+<h4 id="（3）搜集图片素材"><a href="#（3）搜集图片素材" class="headerlink" title="（3）搜集图片素材"></a>（3）搜集图片素材</h4><p>关键词确定好后，我们终于可以在图库中，使用关键词进行图片的搜集了。这时候如果图片太多，不但会增加我们搜图的工作量，后期也不方便用户进行筛选，如果图片太多，则可能搜到的图片重复率太高，导致得出的结论不够准确。所以一般来说1个关键词对应搜3－5张图片就足够了。﻿</p>
+<p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/193167/33/10669/3161906/60d93287E954c990f/c6c801d94de61159.png" alt="收益"></p>
+<h4 id="（4）创建图片库式的情绪板"><a href="#（4）创建图片库式的情绪板" class="headerlink" title="（4）创建图片库式的情绪板"></a>（4）创建图片库式的情绪板</h4><p>搜集好图片后，可以先在部门内部筛选一次，再将挑选出来的图片打乱并依次排列，邀请目标用户进行再次挑选，下图为一部分图片： </p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/175413/37/17190/402505/60d93286E88d0c987/0c3e151963d2a9d3.png" alt="收集图片"></p>
+<p>在挑选图片的过程中，我们需要问产品或者客户2个问题：</p>
+<ol>
+<li><p>分别选择最能代表“投资收益”、“资金安全”、“周转灵活”的几张图片。</p>
+</li>
+<li><p>为什么选择了这张图片？图片的哪个元素让你觉得有安全的感觉？</p>
+</li>
+</ol>
+<p>问题1：是为了挑选出最终能代表关键词的图片；</p>
+<p>问题2：是为了能让我们了解用户选择图片的原因，挖掘出用户的心理情绪，从而了解到用户的视觉偏好，而这2个点都可以为我们后面做视觉设计做好铺垫，如下图：</p>
+<p>经过这样一轮分析，我们选择的任何一个颜色，都将会有理有据，具备科学度。</p>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/194200/26/10572/320604/60d93287Ec4002ba8/27964263f4b3cd9d.png" alt="收益产品图"></p>
+<h3 id="情绪板的应用"><a href="#情绪板的应用" class="headerlink" title="情绪板的应用"></a>情绪板的应用</h3><h4 id="（1）情绪板在彩色化卡片的运用"><a href="#（1）情绪板在彩色化卡片的运用" class="headerlink" title="（1）情绪板在彩色化卡片的运用"></a>（1）情绪板在彩色化卡片的运用</h4><p>彩色化卡片，是一个非常常见的功能入口，拥有各类颜色，但问题是：我们如何行之有效地提升细节感？</p>
+<p>经过之前情绪板的铺垫，彩色化版块在设计时应该做到了色彩属性与业务属性相连接，才能与用户的认知匹配。比如稳健投资的业务属性是稳定，而蓝色的色彩属性也有安全、稳定的意思，那么就做到了图标色彩的选取连接业务属性。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/175034/34/16902/63151/60d93284E2319b4fa/9333a1282e09620a.png" alt="彩色卡片"></p>
+<h4 id="（2）情绪板在图标风格上的运用"><a href="#（2）情绪板在图标风格上的运用" class="headerlink" title="（2）情绪板在图标风格上的运用"></a>（2）情绪板在图标风格上的运用</h4><p>根据用户画像可以发现用户在投资过程中容易出现紧张不安的心理情绪，大多数用户都倾向寻求一个“靠谱”的平台。</p>
+<p>且通过之前情绪板的调研发现，用户觉得一个图片能给他安全感，除了颜色之外，坚固圆润的造型，同样也能传递安全的感受。因此在图标设计中采用圆角而非直角的设计细节也是为了缓和用户情绪，表达一种稳重和安全感。如Tab栏图标和列表流图标，都采用较为圆胖的圆角设计。</p>
+<p><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/192417/3/10515/130451/60d93288Ed559e587/f5b01f1ddc0a315e.png" alt="图标"></p>
+<h4 id="（3）情绪板在界面呼吸感的运用"><a href="#（3）情绪板在界面呼吸感的运用" class="headerlink" title="（3）情绪板在界面呼吸感的运用"></a>（3）情绪板在界面呼吸感的运用</h4><p>同样的，界面风格采用大留白的设计来增加页面的呼吸感，也是了缓解用户紧张不安的心理情绪。</p>
+<p>什么样的图片能给用户带来安全？探索图片本质，我们同样能运用至界面设计，这就是情绪板的多样性。</p>
+<p>﻿﻿<img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/172256/31/17126/159621/60d93284Ed1cf4c45/3bd167c63255260f.png" alt="界面"></p>
+<p>以上就是我所理解的情绪版的应用。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>按钮权限控制实现方案</title>
     <url>/2021/03/31/%E6%8C%89%E9%92%AE%E6%9D%83%E9%99%90%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/</url>
     <content><![CDATA[<h1 id="按钮权限控制实现方案"><a href="#按钮权限控制实现方案" class="headerlink" title="按钮权限控制实现方案"></a>按钮权限控制实现方案</h1><p>背景：某些管理系统需增加 ”按钮权限控制“ 功能，对权限的控制粒度要普及到按钮层级</p>
@@ -6246,7 +6435,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
   </entry>
   <entry>
     <title></title>
-    <url>/2021/06/21/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
+    <url>/2021/06/28/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
     <content><![CDATA[<h2 id="需要解决的问题点"><a href="#需要解决的问题点" class="headerlink" title="需要解决的问题点"></a>需要解决的问题点</h2><p>1、子应用lazy load 之后，浏览器重新刷新，主框架资源重新加载，同时异步加载子应用； 因为异步加载子应用，所以会导致找不到路由的情况； 跳转NotFound页<br>解决方案，实现自己的路由劫持，动态路由功能，<br>2、子应用入口形式？</p>
 <ul>
 <li>jsEntry  VS Html Entry<br><img src= "/img/loading.gif" data-src="jsVShtml.jpg" alt="JS Entry vs Html Entry"></li>
@@ -6263,7 +6452,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
   </entry>
   <entry>
     <title></title>
-    <url>/2021/06/21/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%BA%8C/npx/</url>
+    <url>/2021/06/28/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%BA%8C/npx/</url>
     <content><![CDATA[<h2 id="NPX的主要作用"><a href="#NPX的主要作用" class="headerlink" title="NPX的主要作用"></a>NPX的主要作用</h2><h3 id="调用项目安装的模块"><a href="#调用项目安装的模块" class="headerlink" title="调用项目安装的模块"></a>调用项目安装的模块</h3><p>npx主要解决的问题： 调用项目内部安装的模块; 如测试工具 Mocha</p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install -D mocha</span><br><span class="line"></span><br><span class="line"><span class="comment"># 未使用npx 项目的根目录下执行</span></span><br><span class="line">$ node-modules/.bin/mocha --version</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用npx 就方便多了</span></span><br><span class="line">$ npx mocha --version</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -6279,7 +6468,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
   </entry>
   <entry>
     <title></title>
-    <url>/2021/06/21/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%BA%8C/%E7%BA%AF%E5%87%BD%E6%95%B0/</url>
+    <url>/2021/06/28/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%BA%8C/%E7%BA%AF%E5%87%BD%E6%95%B0/</url>
     <content><![CDATA[<h1 id="纯函数"><a href="#纯函数" class="headerlink" title="纯函数"></a>纯函数</h1><p>晦涩的定义是这样的：一个函数的返回结果只依赖于它的参数，并且在执行过程里面没有副作用;</p>
 <p>总共2点：</p>
 <blockquote>
