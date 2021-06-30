@@ -6730,7 +6730,7 @@ https://www.jianshu.com/p/38bd5f1cf2f2
   </entry>
   <entry>
     <title></title>
-    <url>/2021/06/29/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
+    <url>/2021/06/30/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
     <content><![CDATA[<h2 id="需要解决的问题点"><a href="#需要解决的问题点" class="headerlink" title="需要解决的问题点"></a>需要解决的问题点</h2><p>1、子应用lazy load 之后，浏览器重新刷新，主框架资源重新加载，同时异步加载子应用； 因为异步加载子应用，所以会导致找不到路由的情况； 跳转NotFound页<br>解决方案，实现自己的路由劫持，动态路由功能，<br>2、子应用入口形式？</p>
 <ul>
 <li>jsEntry  VS Html Entry<br><img src= "/img/loading.gif" data-src="jsVShtml.jpg" alt="JS Entry vs Html Entry"></li>
