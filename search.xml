@@ -6977,23 +6977,6 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/06/30/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%80/%E9%9C%80%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%82%B9/</url>
-    <content><![CDATA[<h2 id="需要解决的问题点"><a href="#需要解决的问题点" class="headerlink" title="需要解决的问题点"></a>需要解决的问题点</h2><p>1、子应用lazy load 之后，浏览器重新刷新，主框架资源重新加载，同时异步加载子应用； 因为异步加载子应用，所以会导致找不到路由的情况； 跳转NotFound页<br>解决方案，实现自己的路由劫持，动态路由功能，<br>2、子应用入口形式？</p>
-<ul>
-<li>jsEntry  VS Html Entry<br><img src= "/img/loading.gif" data-src="jsVShtml.jpg" alt="JS Entry vs Html Entry"></li>
-</ul>
-<p>3、应用隔离</p>
-<ul>
-<li>样式隔离<br>WebComments 的 Shandom Dom, 像弹框这种，需要把样式应用到body上的，就需要把样式暴露到主文档<br>CSS Module  BEM<br>约定前缀方式， 对新项目可行，但对老项目改动就稍大了；另外如果依赖三框架的不同版本，版本之间又有样式冲突，怎么办<br>动态样式<br>应用加载/卸载的同时，加载/卸载样式表，原理是浏览器会对所有样式表的插入、移除做整个 CSSOM 的重构，从而达到 插入、卸载 样式的目的</li>
-</ul>
-<p>Html Entry 天然具备样式隔离</p>
-<ul>
-<li>JS 隔离<br>如何确保各个子应用之间的全局变量不会互相干扰，从而保证每个子应用之间的软隔离？<br>约定方式：全局变量通过约定特殊前缀或名称， 来避免冲突。因为人为因素太多，容易产生bug<br>全局快照<br>每次加载子应用时，给全局状态做一缓存备份，然后在应用卸载时，回退备份的缓存数据</li>
-</ul>
-]]></content>
-  </entry>
-  <entry>
     <title>Jest单元测试（上）</title>
     <url>/2020/06/19/Jest%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%88%E4%B8%8A%EF%BC%89/</url>
     <content><![CDATA[<h2 id="为什么要进行单元测试"><a href="#为什么要进行单元测试" class="headerlink" title="为什么要进行单元测试"></a>为什么要进行单元测试</h2><p>测试是开发工作的一个重要环节，但是往往由于编写和维护测试代码的成本问题，编写测试代码这个环节往往是被忽略的。首先说说前端单元测试为什么是重要的。  </p>
