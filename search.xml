@@ -3435,7 +3435,7 @@ renderWithHooks()中有一个Component()方法，用来执行App()，此时又�
 </blockquote>
 <ul>
 <li>元素的顶部：元素盒模型的顶部，包含margin</li>
-<li>整行的顶部：行框盒子的顶部（如果对行框盒子不了解，请看这里：[css行高line-height的一些理解](<a href="https://yolkpie.net/2020/09/29/css%E8%A1%8C%E9%AB%98line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/%EF%BC%89">https://yolkpie.net/2020/09/29/css%E8%A1%8C%E9%AB%98line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/）</a></li>
+<li>整行的顶部：行框盒子的顶部。如果对行框盒子不了解，请看这里：[css行高line-height的一些理解](<a href="https://yolkpie.net/2020/09/29/css%E8%A1%8C%E9%AB%98line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/%EF%BC%89">https://yolkpie.net/2020/09/29/css%E8%A1%8C%E9%AB%98line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E7%90%86%E8%A7%A3/）</a></li>
 </ul>
 <p>下面的例子中，div 为 inline-block，右侧的字体设置了 margin-top: 20px。内联盒子和幽灵节点的标注为黄色，行框盒子的标注为绿色，可以看到，盒子的顶部是对齐的。<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/189699/34/14117/48245/60f68e60E1bfaa8ad/159f50fccf019ce1.jpg" alt="top的box拆分"></p>
 <p>如果把中间的文字设置margin-bottom: 100px，其他子元素的对齐方式由 top 变为 bottom，效果如下：<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/196386/36/13857/53504/60f69068E5c17673b/0b3d7981c0208058.jpg" alt="bottom"></p>
@@ -3454,7 +3454,7 @@ renderWithHooks()中有一个Component()方法，用来执行App()，此时又�
 <p>现在我们来看下开头的第一个问题：为什么父元素底部还有段间距？</p>
 <p>首先，我们先来确定每个子元素的基线：按照 baseline 的定义，因为两个 inline-block 的 div 中没有元素，所以这两个 div 的基线为div的下边缘。另外，每个行框盒子的最前面都有一个幽灵节点，继承了父级的行高和字体，我们可以用一个 x 来模拟这个幽灵节点，所以幽灵节点的基线就是字母 x 的下边缘。子元素的基线确定好了之后，我们来看下父元素的基线，父元素的基线是最后一个元素，也就是第二个 div 的基线，即第二个div的下边缘。让子元素的基线和父元素的基线挨个对齐（如下图），因为幽灵节点（最左侧 x）占有高度，所以父元素底部还是有段间距的。</p>
 <p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/175280/21/20204/15111/60f6a48fE9c78ad9d/0c82afb21cb01e2a.jpg" alt="baseline"></p>
-<p>这个底部间距的问题我们也会经常遇到，最常见的就是图片（对应例子中的 inline-block 的 div 元素）的底部会有间距。要去掉这个间距，有下面几种方式()：</p>
+<p>这个底部间距的问题我们也会经常遇到，最常见的就是图片（对应例子中的 inline-block 的 div 元素）的底部会有间距。要去掉这个间距，有下面几种方式：</p>
 <ol>
 <li>设置 line-height 为 0</li>
 </ol>
@@ -3489,8 +3489,6 @@ renderWithHooks()中有一个Component()方法，用来执行App()，此时又�
 <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&quot;display:inline-block;height: 100%;vertical-align: middle;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/193366/24/14097/25238/60f7bf9eE4c58b131/9c725c1e32a17c70.jpg" alt="middle 垂直居中"></p>
-<p>上图中，span 的中线和父元素的中线对齐，100% 的高度撑开了父元素的行框盒子。</p>
-<p>解决了图片上下居中的问题，可能还有人</p>
 <h2 id="数值类百分比类（20px-2rem-20-…）"><a href="#数值类百分比类（20px-2rem-20-…）" class="headerlink" title="数值类百分比类（20px/2rem/20%…）"></a>数值类百分比类（20px/2rem/20%…）</h2><p>数值类百分比类的定义如下：</p>
 <ul>
 <li>length: 使元素的基线对齐到父元素的基线之上的给定长度。可以是负数</li>
