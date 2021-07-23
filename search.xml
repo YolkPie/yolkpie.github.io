@@ -2316,46 +2316,46 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/07/23/line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<h2 id="行高"><a href="#行高" class="headerlink" title="行高"></a>行高</h2><p>“行高”，顾名思义是指的一行文字的高度，按照我们的理解,行高指的应该是两行文字间基线的距离。<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/base_line.jpg" alt="这是图片"><br>vertical-align中有top,middle,baseline,bottom与之是由关联的。但是由于中英文的差异，所以基线在中文中可能并不适用，实际表现不符合预期</p>
+    <title>line-height的一些原理</title>
+    <url>/2021/07/22/line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<h2 id="行高"><a href="#行高" class="headerlink" title="行高"></a>行高</h2><p>“行高”，顾名思义是指的一行文字的高度，按照我们的理解,行高指的应该是两行文字间基线的距离。<br><img src= "/img/loading.gif" data-src="base_line.jpg" alt="这是图片"><br>vertical-align中有top,middle,baseline,bottom与之是由关联的。但是由于中英文的差异，所以基线在中文中可能并不适用，实际表现不符合预期</p>
 <h3 id="行高的作用"><a href="#行高的作用" class="headerlink" title="行高的作用"></a>行高的作用</h3><p>CSS中起高度作用的除了我们熟知的height，另外line-height在css中也起了高度的作用，如果一个标签未定义高度（包括百分比高度），那么最终表现的高度一定是由line-height起作用的。</p>
 <p>之前，在我的认知中，若不设置高度，父盒子的高度应该是由内层文字撑起来的，但是是不是这样呢?</p>
 <p>我们来看一个实验：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;test1&quot;</span>&gt;测试&lt;/div&gt;</span><br><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;test2&quot;</span>&gt;测试&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">.test1 &#123;</span><br><span class="line">  font-size: 20px;</span><br><span class="line">  line-height: <span class="number">0</span>;</span><br><span class="line">  border:1px solid #cccccc; </span><br><span class="line">  background:#eeeeee;</span><br><span class="line"></span><br><span class="line">  margin: 40px auto;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.test2 &#123;</span><br><span class="line">  font-size: <span class="number">0</span>;</span><br><span class="line">  line-height: 20px;</span><br><span class="line">  border:1px solid #cccccc; </span><br><span class="line">  background:#eeeeee;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/%E4%BC%81%E4%B8%9A%E5%92%9A%E5%92%9A20210204150236.png" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="%E4%BC%81%E4%B8%9A%E5%92%9A%E5%92%9A20210204150236.png" alt="这是图片"></p>
 <p>结果可以看出，div是由line-height撑开的，并不是我们之前认为的由文字撑开。</p>
 <p>那么line-height是怎么产生高度的呢？在inline box中，有个line box（行框盒子）,line box没有其他特性，只有高度。所以一个没有设置高度的div的高度是由一个一个line box的高度堆砌而成。  </p>
 <p>其实line box也不是真正的生产者，在它之中，还包含着一个inline box（内联盒子），包括span等… line box会取line-height最高的值来呈现。</p>
 <h3 id="行高的垂直居中性"><a href="#行高的垂直居中性" class="headerlink" title="行高的垂直居中性"></a>行高的垂直居中性</h3><p>行高还有一个重要特性，即垂直居中性。line-height的最终表现是通过line box（行框盒子）呈现的，而无论line box所占据的高度有多少，无论比文字大还是比文字小，它都会以文字的中垂线对称分布，我们就是利用这一特性来实现文字或图片的垂直居中。</p>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/2009-11-28_002310.png" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="2009-11-28_002310.png" alt="这是图片"></p>
 <p>test1，line box高度为0，但是还是以文字的中垂线对称分布。</p>
 <h3 id="单行或多行文字居中的应用"><a href="#单行或多行文字居中的应用" class="headerlink" title="单行或多行文字居中的应用"></a>单行或多行文字居中的应用</h3><h4 id="1-单行文字垂直居中"><a href="#1-单行文字垂直居中" class="headerlink" title="1.单行文字垂直居中"></a>1.单行文字垂直居中</h4><p>网上都是这么说的，把line-height值设置为height一样大小的值可以实现单行文字的垂直居中。这句话确实是正确的，但其实也是有问题的。问题在于height，看我的表述：“把line-height设置为您需要的box的大小可以实现单行文字的垂直居中”。  </p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;single_line&quot;</span>&gt;</span><br><span class="line">        &lt;span&gt;单行文字居中&lt;/span&gt;</span><br><span class="line">&lt;/p&gt;</span><br><span class="line">.single_line &#123;</span><br><span class="line">  border: 1px dashed #cccccc;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.single_line span &#123;</span><br><span class="line">  line-height: 40px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/QQ%E5%9B%BE%E7%89%8720210322113259.png" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="QQ%E5%9B%BE%E7%89%8720210322113259.png" alt="这是图片"></p>
 <h4 id="2-多行文字垂直居中"><a href="#2-多行文字垂直居中" class="headerlink" title="2.多行文字垂直居中"></a>2.多行文字垂直居中</h4><p>之前常见的多行文字居中常见的有flex、table等，而现在，我们同样可以利用line-height来实现。因为行高的垂直居中性，并且它可以撑起盒子的高度，所以我们用line-height来代替外层盒子的height。</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;mulit_line&quot;</span>&gt;</span><br><span class="line">    &lt;span style=&#123;&#123;<span class="attr">fontSize</span>:<span class="number">12</span>&#125;&#125;&gt;</span><br><span class="line">        Xx这里是高度为<span class="number">150</span>像素的标签内的多行文字，文字大小为12Px。</span><br><span class="line">        &lt;br /&gt;</span><br><span class="line">        这里是第二行，用来测试多行的显示效果。</span><br><span class="line">    &lt;/span&gt;</span><br><span class="line">&lt;/p&gt;</span><br><span class="line">.mulit_line &#123;</span><br><span class="line">  line-height: 150px;</span><br><span class="line">  border: 1px dashed #cccccc;</span><br><span class="line">  padding-left: 5px;</span><br><span class="line">&#125;</span><br><span class="line">.mulit_line span &#123;</span><br><span class="line">  display: -moz-inline-stack;</span><br><span class="line">  display: inline-block;</span><br><span class="line">  line-height: <span class="number">1.</span>4em;</span><br><span class="line">  vertical-align: middle;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/QQ%E5%9B%BE%E7%89%8720210322103735.png" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="QQ%E5%9B%BE%E7%89%8720210322103735.png" alt="这是图片"></p>
 <h2 id="line-height坑人的默认值：normal"><a href="#line-height坑人的默认值：normal" class="headerlink" title="line-height坑人的默认值：normal"></a>line-height坑人的默认值：normal</h2><p>line-height 的值可以是一个长度或者是一个数字，它的默认值是 normal。那么，normal 是什么呢？我们经常将 normal 理解为 1，或者 1.2，甚至连 CSS 规格文档都没有提到这一问题。</p>
 <h3 id="font-size"><a href="#font-size" class="headerlink" title="font-size"></a>font-size</h3><p>一个简单的例子：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;a&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;b&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;c&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">p  &#123; font-size: 100px &#125;</span><br><span class="line">.a &#123; font-family: Helvetica &#125;</span><br><span class="line">.b &#123; font-family: Gruppo    &#125;</span><br><span class="line">.c &#123; font-family: Catamaran &#125;</span><br></pre></td></tr></table></figure>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/QQ%E5%9B%BE%E7%89%8720210322104320.png" alt="这是图片"><br>相同的font-size，得出的span高度却是不同的，这是为什么呢？<br>原因在于字体本身，一款字体会定义一个em-square，它是用来盛放字符的容器，一般设定为宽高均为1000，但是也可能是1024、2048等<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-4c684524b8d37789295f6db964201c74_720w.png" alt="这是图片"><br>字体度量都是基于这个相对单位设置的，包括 ascender、descender、capital height、x-height 等。注意这里面的值是允许相对于 em-square 出去（bleed outside）的<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-7f1590fecc2f79484b22f38e2869d83b_720w.jpg" alt="这是图片"><br>在浏览器中绘制时，字体会按照你的font-size缩放。</p>
+<p><img src= "/img/loading.gif" data-src="QQ%E5%9B%BE%E7%89%8720210322104320.png" alt="这是图片"><br>相同的font-size，得出的span高度却是不同的，这是为什么呢？<br>原因在于字体本身，一款字体会定义一个em-square，它是用来盛放字符的容器，一般设定为宽高均为1000，但是也可能是1024、2048等<br><img src= "/img/loading.gif" data-src="v2-4c684524b8d37789295f6db964201c74_720w.png" alt="这是图片"><br>字体度量都是基于这个相对单位设置的，包括 ascender、descender、capital height、x-height 等。注意这里面的值是允许相对于 em-square 出去（bleed outside）的<br><img src= "/img/loading.gif" data-src="v2-7f1590fecc2f79484b22f38e2869d83b_720w.jpg" alt="这是图片"><br>在浏览器中绘制时，字体会按照你的font-size缩放。</p>
 <p>我们把 Catamaran 字体放到 FontForge 中，分析它的字体度量：</p>
 <ul>
 <li>em-square 是 1000</li>
-<li>ascender 是 1100，descender 是 540。通过测试发现，macOS 上的浏览器使用了 HHead Ascent 和 HHead Descent 值，Windows 上的浏览器使用了 Win Ascent 和 Win Descent（而且两个平台上的值不一样）。我们还看到 Capital Height 是 680，X height 是 485。<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-8fa5fa46b571db21c79bda208d6263c3_720w.png" alt="这是图片"></li>
+<li>ascender 是 1100，descender 是 540。通过测试发现，macOS 上的浏览器使用了 HHead Ascent 和 HHead Descent 值，Windows 上的浏览器使用了 Win Ascent 和 Win Descent（而且两个平台上的值不一样）。我们还看到 Capital Height 是 680，X height 是 485。<br><img src= "/img/loading.gif" data-src="v2-8fa5fa46b571db21c79bda208d6263c3_720w.png" alt="这是图片"></li>
 </ul>
 <p>这意味着 Catamaran 字体占据了 1100 + 540 个相对单位，尽管它的 em-square 只有 1000 个相对单位，所以当我们设置 font-size:100px 时，这个字体里的文字高度是 164px。这个计算出来的高度决定了 HTML 元素的 content-area（内容区域）。你可以认为 content-area 就是 background 作用的区域。</p>
 <p>我们还能看出大写字母的高度是 68px，小写字母的高度（x-height）是 49px。所以 1ex = 49px，1em = 100px，而不是 164px。（em 是基于 font-size，而不是基于计算出来的高度）</p>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-cb05dd4dc6908e522c0f69392ed1fe87_r.png" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="v2-cb05dd4dc6908e522c0f69392ed1fe87_r.png" alt="这是图片"></p>
 <p>如果我们修改一下最初的 HTML 代码：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p&gt;</span><br><span class="line">    Good design will be better.</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;a&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;b&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;c&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    We get to make a consequence.</span><br><span class="line">&lt;/p&gt;</span><br></pre></td></tr></table></figure>
 
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-cc56c718642f701c3f8739ee7a4453cf_r.png" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="v2-cc56c718642f701c3f8739ee7a4453cf_r.png" alt="这是图片"></p>
 <p>可以看到，第二行的高度略高，这就是之前提到的，line box会取最大的inline box的高度，而不是content-area的高度。</p>
-<p><em>这句话是什么意思呢？</em><br>一个inline box（内联元素）包含两个高度：content-area和virtual-area（实际区域，可以理解成line-height，这是作者自定义的单词）<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-efe30b60d553cb6237f9c0cbdebb240b_720w.png" alt="这是图片"></p>
+<p><em>这句话是什么意思呢？</em><br>一个inline box（内联元素）包含两个高度：content-area和virtual-area（实际区域，可以理解成line-height，这是作者自定义的单词）<br><img src= "/img/loading.gif" data-src="v2-efe30b60d553cb6237f9c0cbdebb240b_720w.png" alt="这是图片"></p>
 <p>注：<em>按这种理解，line-height表示的并不是两个baseline之间的距离。个人感觉有些争议，，，</em></p>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-0301a379ebf7d2dfcbb995c4a2cfc7fa_r.jpg" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="v2-0301a379ebf7d2dfcbb995c4a2cfc7fa_r.jpg" alt="这是图片"></p>
 <p>virtual-area 和 content-area 高度的差异叫做 leading。leading 的一半会被加到 content-area 顶部，另一半会被加到底部。因此 content-area 总是处于 virtual-area 的中间。</p>
 <p>计算出来的 line-height（也就是 virtual-area 的高度）可以等于、大于或小于 content-area。如果 virtual-area 小于 content-area，那么 leading 就是负的，因此 line-box 看起来就比内容还矮了。</p>
 <p>常见的内联元素：</p>
@@ -2365,9 +2365,9 @@
 <li>处于某种特殊格式化上下文的内联元素，例如 flexbox 元素中的子元素都处于 flex formatting context（弹性格式化上下文）中，这些子元素的 display 值都是「blockified」</li>
 </ul>
 <p>如果你将其 height 设置为 auto 的话，那么其高度的取值就是 line-height，其 content-area 的取值也是 line-height</p>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-924b688268ae43ff1c6ccda3bec78123_r.png" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="v2-924b688268ae43ff1c6ccda3bec78123_r.png" alt="这是图片"></p>
 <p>现在为止，还是没有解释line-height:normal。</p>
-<p>回到上图：<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-8fa5fa46b571db21c79bda208d6263c3_720w.png" alt="这是图片"><br>除了EM Size还看到了许多其他值，</p>
+<p>回到上图：<br><img src= "/img/loading.gif" data-src="v2-8fa5fa46b571db21c79bda208d6263c3_720w.png" alt="这是图片"><br>除了EM Size还看到了许多其他值，</p>
 <ul>
 <li>常规的 Ascent/Descent：ascender 是 770，descender 是 230，用于渲染字符。</li>
 <li>规格 Ascent/Descent：ascender 是 1100，descender 是 540。用于计算 content-area 的高度</li>
@@ -2382,7 +2382,7 @@
 </ul>
 <p>所有这些值都是由字体设计师设置的。</p>
 <p>当 line-height 的值是一个数字时，其实就是相对 font-size 的倍数，而不是相对于 content-area。所以 line-height:1 很有可能使得 virtual-area 比 content-area 矮，从而引发很多其他的问题。</p>
-<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-01f0ec3f893c7162af0b6104cfc304e5_720w.png" alt="这是图片"></p>
+<p><img src= "/img/loading.gif" data-src="v2-01f0ec3f893c7162af0b6104cfc304e5_720w.png" alt="这是图片"></p>
 <p>不仅仅是 line-height:1 有问题，电脑上的 1117 款字体中，大概有 1059 款字体的 line-height 比 1 大，最低的是 0.618，最高的是 3.378。这说明，字体之间行高差距非常大。</p>
 <p>line-box 计算的一些细节：</p>
 <ul>
@@ -5633,49 +5633,6 @@ window.requestAnimationFrame(changePosition);
       </tags>
   </entry>
   <entry>
-    <title>安装证书</title>
-    <url>/2020/12/22/%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6/</url>
-    <content><![CDATA[<p>证书的安装不依赖于代理工具，Fiddler、Charles、Whistle都可以依照下面的步骤安装。(注意：证书的下载方式在不同代理工具中是不同的，这里默认已经下载了证书)</p>
-<blockquote>
-<p>安装证书的核心在<b>信任</b>证书的这步操作上，这两个字其实也是本文的核心。</p>
-</blockquote>
-<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><ol>
-<li>双击下载好的证书文件，点击安装<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/156646/1/1360/31950/5fe08c03E16ab94c8/093f9c23c5030147.png" alt="双击安装"></li>
-<li>选择存储位置为当前用户<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/151347/26/11830/32386/5fe08c03Ea91634e2/1a0e934cf9607b8c.png" alt="选择存储位置"></li>
-<li>选择将所有的证书都放入下列存储<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/148989/23/19257/26999/5fe08c03E9306869d/5198463e9213d285.png" alt="指定证书存储位置"></li>
-<li>这一步是关键的“信任”的步骤：点击浏览按钮，选择受信任的根证书颁发机构<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/152242/3/10881/34116/5fe08c03E8faf6f6d/08fb718ae8980a7f.png" alt="受信任的根证书颁发机构"></li>
-<li>导入完成<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/156009/19/1351/24923/5fe08c03Eb5448a05/9e74fa3a66015d80.png" alt="导入完成"></li>
-</ol>
-<h2 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h2><ol>
-<li>双击下载好的证书，系统会将证书添加到钥匙串并自动打开钥匙串的窗口，在钥匙串中找到wistle证书并选中，会发现页面提示该证书不受信任<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/140214/23/19534/558122/5fe15be5E6fe5c218/5b1347299597881c.jpg" alt="钥匙串"></li>
-<li>右键该证书，选择简介 -&gt; 信任 -&gt; 使用此证书修改为始终信任<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/145084/17/19471/414745/5fe15c4bE14c0903d/5e2cb0436e61b9f7.jpg" alt="信任证书"></li>
-<li>关闭窗口时系统会要求输入电脑密码，照做就行</li>
-<li>回到钥匙串窗口，此时页面会提示此证书已标记为受账户信任<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/143587/12/19500/553727/5fe15c29E8d3c1aa9/8ae332a26633593c.jpg" alt="此证书已标记为受账户信任"></li>
-</ol>
-<h2 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h2><ol>
-<li>系统设置 -&gt; 通用 -&gt; 描述文件与设备管理<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/153496/23/10319/52081/5fdc5922Ee183d0e0/86ddce16d2a308bb.jpg" alt="描述文件与设备管理"></li>
-<li>选择已经下载的证书<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/146189/7/18958/44348/5fdc5925E454049d7/3a9ee4b2484fd6c9.jpg" alt="选择证书"></li>
-<li>点击安装<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/153162/21/10375/41967/5fdc5925Ebf5a2b6f/e0c179099bca7278.jpg" alt="安装证书"></li>
-<li>输入密码，这个密码是手机的开机密码<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/141566/40/19047/38951/5fdc5925E470ec670/5c687269928aff3c.jpg" alt="输入密码"></li>
-<li>继续点击安装<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/130565/20/20599/52481/5fdc5925Edae2a1d9/bded077f3e57dc42.jpg" alt="警告"></li>
-<li>安装完成。别急，不要忘了核心的信任二字：iOS 10.3以下的版本会自动给安装的证书添加信任，如果你的iOS版本是<a href="https://support.apple.com/zh-cn/HT204477">10.3及以上</a>，还要手动给证书设置信任才行<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/150193/14/18800/37854/5fdc5922Eabd28996/b198eeceeb40b830.jpg" alt="安装完成"></li>
-<li>回到 设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/143797/4/19061/59581/5fdc5925E982c7de5/6b99488bfb0f6302.jpg" alt="证书信任设置"></li>
-<li>第2步我们选择的证书名称为whistle.1560220575433369（你会发现这个名称和Mac安装时whistle的钥匙串名称是一样的），这里选择该证书，并打开信任开关。到这一步，iOS的证书就真的是安装完成了。<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/140144/16/18961/335450/5fdc5926E1f261a6e/2ca582daf46a390c.png" alt="选择已安装证书"></li>
-</ol>
-<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><p>在Android手机中，如果下载了证书，浏览器会自动提示要不要安装，但因为这样安装的证书经常不被系统信任，建议不要使用这种安装方式。</p>
-<ol>
-<li>设置 -&gt; 安全和隐私 -&gt; 更多安全设置 -&gt; 从SD卡安装（这里以华为mate 10 为例，不同Android机型的设置选项是不同的，总的来说都是要在设置的选项里先找到与“安全”相关的配置，再找到与“用户凭据”或者“从SD卡安装”相关的内容，之后选择已经下载好的证书安装即可）<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/155127/4/10869/138769/5fe090f3Ecdad6eff/33b27c69761a8567.jpg" alt="从SD卡安装"></li>
-<li>选择刚才下载的证书文件（默认的文件夹里没有的话需要按照下载文件的实际路径选择）<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/144057/37/19303/96168/5fe090e6Ebc38a41d/5d9cdc8f6f3079cd.jpg" alt="选择证书文件"></li>
-<li>输入锁屏密码</li>
-<li>为证书命名，安装完成<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/141887/25/19384/143601/5fe090b7E39859168/89aa9d09a8dd7ff5.jpg" alt="为证书命名"></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>代理</tag>
-        <tag>证书</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>实时对话界面设计思考</title>
     <url>/2020/09/27/%E5%AE%9E%E6%97%B6%E5%AF%B9%E8%AF%9D%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>日常生活中，我们经常会用到即时通讯软件，对聊天对话界面已经很熟悉了。打开聊天界面，最主要的三个UI元素有：头像、文字气泡、和对话缩略图。那我们有没有想过，为什么有的头像是圆形的，有的是方形的？气泡的极限值应该怎么定义？对话中的缩略图又有什么样的展示比例？</p>
@@ -6475,6 +6432,49 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
       <tags>
         <tag>数据库</tag>
         <tag>锁</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>安装证书</title>
+    <url>/2020/12/22/%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6/</url>
+    <content><![CDATA[<p>证书的安装不依赖于代理工具，Fiddler、Charles、Whistle都可以依照下面的步骤安装。(注意：证书的下载方式在不同代理工具中是不同的，这里默认已经下载了证书)</p>
+<blockquote>
+<p>安装证书的核心在<b>信任</b>证书的这步操作上，这两个字其实也是本文的核心。</p>
+</blockquote>
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><ol>
+<li>双击下载好的证书文件，点击安装<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/156646/1/1360/31950/5fe08c03E16ab94c8/093f9c23c5030147.png" alt="双击安装"></li>
+<li>选择存储位置为当前用户<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/151347/26/11830/32386/5fe08c03Ea91634e2/1a0e934cf9607b8c.png" alt="选择存储位置"></li>
+<li>选择将所有的证书都放入下列存储<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/148989/23/19257/26999/5fe08c03E9306869d/5198463e9213d285.png" alt="指定证书存储位置"></li>
+<li>这一步是关键的“信任”的步骤：点击浏览按钮，选择受信任的根证书颁发机构<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/152242/3/10881/34116/5fe08c03E8faf6f6d/08fb718ae8980a7f.png" alt="受信任的根证书颁发机构"></li>
+<li>导入完成<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/156009/19/1351/24923/5fe08c03Eb5448a05/9e74fa3a66015d80.png" alt="导入完成"></li>
+</ol>
+<h2 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h2><ol>
+<li>双击下载好的证书，系统会将证书添加到钥匙串并自动打开钥匙串的窗口，在钥匙串中找到wistle证书并选中，会发现页面提示该证书不受信任<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/140214/23/19534/558122/5fe15be5E6fe5c218/5b1347299597881c.jpg" alt="钥匙串"></li>
+<li>右键该证书，选择简介 -&gt; 信任 -&gt; 使用此证书修改为始终信任<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/145084/17/19471/414745/5fe15c4bE14c0903d/5e2cb0436e61b9f7.jpg" alt="信任证书"></li>
+<li>关闭窗口时系统会要求输入电脑密码，照做就行</li>
+<li>回到钥匙串窗口，此时页面会提示此证书已标记为受账户信任<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/143587/12/19500/553727/5fe15c29E8d3c1aa9/8ae332a26633593c.jpg" alt="此证书已标记为受账户信任"></li>
+</ol>
+<h2 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h2><ol>
+<li>系统设置 -&gt; 通用 -&gt; 描述文件与设备管理<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/153496/23/10319/52081/5fdc5922Ee183d0e0/86ddce16d2a308bb.jpg" alt="描述文件与设备管理"></li>
+<li>选择已经下载的证书<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/146189/7/18958/44348/5fdc5925E454049d7/3a9ee4b2484fd6c9.jpg" alt="选择证书"></li>
+<li>点击安装<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/153162/21/10375/41967/5fdc5925Ebf5a2b6f/e0c179099bca7278.jpg" alt="安装证书"></li>
+<li>输入密码，这个密码是手机的开机密码<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/141566/40/19047/38951/5fdc5925E470ec670/5c687269928aff3c.jpg" alt="输入密码"></li>
+<li>继续点击安装<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/130565/20/20599/52481/5fdc5925Edae2a1d9/bded077f3e57dc42.jpg" alt="警告"></li>
+<li>安装完成。别急，不要忘了核心的信任二字：iOS 10.3以下的版本会自动给安装的证书添加信任，如果你的iOS版本是<a href="https://support.apple.com/zh-cn/HT204477">10.3及以上</a>，还要手动给证书设置信任才行<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/150193/14/18800/37854/5fdc5922Eabd28996/b198eeceeb40b830.jpg" alt="安装完成"></li>
+<li>回到 设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/143797/4/19061/59581/5fdc5925E982c7de5/6b99488bfb0f6302.jpg" alt="证书信任设置"></li>
+<li>第2步我们选择的证书名称为whistle.1560220575433369（你会发现这个名称和Mac安装时whistle的钥匙串名称是一样的），这里选择该证书，并打开信任开关。到这一步，iOS的证书就真的是安装完成了。<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/140144/16/18961/335450/5fdc5926E1f261a6e/2ca582daf46a390c.png" alt="选择已安装证书"></li>
+</ol>
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><p>在Android手机中，如果下载了证书，浏览器会自动提示要不要安装，但因为这样安装的证书经常不被系统信任，建议不要使用这种安装方式。</p>
+<ol>
+<li>设置 -&gt; 安全和隐私 -&gt; 更多安全设置 -&gt; 从SD卡安装（这里以华为mate 10 为例，不同Android机型的设置选项是不同的，总的来说都是要在设置的选项里先找到与“安全”相关的配置，再找到与“用户凭据”或者“从SD卡安装”相关的内容，之后选择已经下载好的证书安装即可）<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/155127/4/10869/138769/5fe090f3Ecdad6eff/33b27c69761a8567.jpg" alt="从SD卡安装"></li>
+<li>选择刚才下载的证书文件（默认的文件夹里没有的话需要按照下载文件的实际路径选择）<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/144057/37/19303/96168/5fe090e6Ebc38a41d/5d9cdc8f6f3079cd.jpg" alt="选择证书文件"></li>
+<li>输入锁屏密码</li>
+<li>为证书命名，安装完成<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/141887/25/19384/143601/5fe090b7E39859168/89aa9d09a8dd7ff5.jpg" alt="为证书命名"></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>代理</tag>
+        <tag>证书</tag>
       </tags>
   </entry>
   <entry>
