@@ -6173,6 +6173,130 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
 ]]></content>
   </entry>
   <entry>
+    <title>我如何解决Android上字体不能垂直居中的问题</title>
+    <url>/2021/07/23/%E6%88%91%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3Android%E4%B8%8A%E5%AD%97%E4%BD%93%E4%B8%8D%E8%83%BD%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<h1 id="我如何解决Android上字体不能垂直居中的问题"><a href="#我如何解决Android上字体不能垂直居中的问题" class="headerlink" title="我如何解决Android上字体不能垂直居中的问题"></a>我如何解决Android上字体不能垂直居中的问题</h1><p>某个风和日丽（coding）的下午，老大突然发给我一个截图，[单品页标签文字不居中.png]</p>
+<p><img src= "/img/loading.gif" data-src="./unnamed.jpeg"></p>
+<p>拿出iPhone测试机检查 ？？？ 是居中的呀。。。。。。</p>
+<p>看来事情并不简单，基本是Android手机兼容性的问题</p>
+<p>换了两个Android手机测试，果然都有不同程度的偏移</p>
+<p>而且发现同一页面上，有的会偏移有的却能正常垂直居中</p>
+<p>通过测试，发现字体小于12px会产生很明显的偏移</p>
+<h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>Android手机上当字体小于12px通过lineheight或padding撑开无法做到垂直居中</p>
+<h3 id="听他们说"><a href="#听他们说" class="headerlink" title="听他们说"></a>听他们说</h3><p><a href="https://blog.csdn.net/yangxiqian/article/details/80204072">字体原因及解决办法</a></p>
+<blockquote>
+<p>字体基本不可取，UI已经指定字体</p>
+</blockquote>
+<h3 id="实践出真知"><a href="#实践出真知" class="headerlink" title="实践出真知"></a>实践出真知</h3><ul>
+<li>table布局</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;solution&quot;</span> <span class="attr">style</span>=<span class="string">&quot;display: table; height: 16px;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&quot; display: table-cell; font-size: 10px; vertical-align: middle;&quot;</span>&gt;</span>table 布局<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>文本偏上</p>
+</blockquote>
+<ul>
+<li>flex 布局</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;div class&#x3D;&quot;solution&quot; style&#x3D;&quot;display: inline-flex; align-items: center; height: 16px; line-height: 1; font-size: 10px;&quot;&gt;</span><br><span class="line">  &lt;span&gt;flex 布局&lt;&#x2F;span&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>文本偏上</p>
+</blockquote>
+<ul>
+<li>zoom 缩放</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;solution&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height: 32px; line-height: 32px; font-size: 20px; zoom: 0.5;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>zoom 缩放<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>文本偏上</p>
+</blockquote>
+<ul>
+<li>固定高度+内边距+行高设定为字体大小</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;solution&quot;</span> <span class="attr">style</span>=<span class="string">&quot;box-sizing: border-box; height: 16px; padding: 3px 0; line-height: 10px; font-size: 10px;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>固定高度+内边距+行高设定为字体大小<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>文本偏上</p>
+</blockquote>
+<ul>
+<li>固定高度+内边距+行高设为 normal</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;solution&quot;</span> <span class="attr">style</span>=<span class="string">&quot;box-sizing: border-box; height: 16px; padding: 3px; line-height: normal; font-size: 10px;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>固定高度+内边距+行高设为 normal<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>文本偏上</p>
+</blockquote>
+<ul>
+<li>内边距+行高设为 normal</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;solution&quot;</span> <span class="attr">style</span>=<span class="string">&quot;box-sizing: border-box; padding: 2px; line-height: normal; font-size: 10px;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>内边距+行高设为 normal<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>文本居中，但在部分客户端上不居中</p>
+</blockquote>
+<ul>
+<li>行高+字体大小设为 initial</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;solution&quot;</span> <span class="attr">style</span>=<span class="string">&quot;line-height: 16px; font-size: initial;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">style</span>=<span class="string">&quot;font-size: 10px;&quot;</span>&gt;</span>行高+字体大小设为 initial<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>文本居中，在最新的 Chrome 浏览器上不居中</p>
+</blockquote>
+<ul>
+<li>transform 缩放</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;solution&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height: 32px; line-height: 32px; font-size: 20px; transform: scale(0.5, 0.5); transform-origin: left top;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>transform 缩放<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>文本居中了，但是 transform 不能还原元素在 dom 上的占用区域大小</p>
+</blockquote>
+<h3 id="综上所述"><a href="#综上所述" class="headerlink" title="综上所述"></a>综上所述</h3><p>只有transform缩放能完全解决居中问题，同时带来的问题是，transform不会引起重排，所以会有大面积占用空间</p>
+<p>那我们只有能解决多余的占用空间问题不就能做到完全居中了么</p>
+<p>那怎么解决多余的空间占用问题？</p>
+<p>众所周知<a href="https://zhuanlan.zhihu.com/p/25892372">margin是可以设置为负值的</a> 并且有一些应用margin设置为负值实现的布局</p>
+<p>那么我们是否可以通过设置margin，来解决多余空间的占用问题？</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;solution&quot;</span> <span class="attr">style</span>=<span class="string">&quot;height: 32px; line-height: 32px; margin: -8px -8%; font-size: 20px; transform: scale(0.5, 0.5); transform-origin: center center;&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span>&gt;</span>transform 缩放<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>结果出奇的好，基本实现了相同的占用空间</p>
+<p>现在为止，基本方向已经确定了，但是这种固定数值还是有些死板，同时随着dom宽度的改变 margin的值并不完全准确</p>
+<p>此时我想到可以借助js来确定margin 的值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;span</span><br><span class="line">    class&#x3D;&quot;tag-view&quot;</span><br><span class="line">    :class&#x3D;&quot;&#123; &#39;tag-view_android&#39;: isAndroid &#125;&quot;</span><br><span class="line">    :style&#x3D;&quot;&#96;margin: -0.16rem -$&#123;widthMeth - 4&#125;px -0.16rem -$&#123;widthMeth&#125;px&#96;&quot;</span><br><span class="line">    v-show&#x3D;&quot;message&quot;</span><br><span class="line">  &gt;</span><br><span class="line">    &#123;&#123; message &#125;&#125;</span><br><span class="line">  &lt;&#x2F;span&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  data() &#123;</span><br><span class="line">    return &#123;</span><br><span class="line">      isAndroid: this.isAndroid(),</span><br><span class="line">      widthMeth: 0,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  props: &#123;</span><br><span class="line">    message: &#123;</span><br><span class="line">      type: String,</span><br><span class="line">      default: &quot;&quot;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    isAndroid() &#123;</span><br><span class="line">      const u &#x3D; navigator.userAgent</span><br><span class="line">      return u.indexOf(&#39;Android&#39;) &gt; -1 || u.indexOf(&#39;Adr&#39;) &gt; -1</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line">  watch: &#123;</span><br><span class="line">    message: &#123;</span><br><span class="line">      handler() &#123;</span><br><span class="line">        this.$nextTick(() &#x3D;&gt; &#123;</span><br><span class="line">          this.widthMeth &#x3D; this.$el.offsetWidth &#x2F; 4;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;,</span><br><span class="line"></span><br><span class="line">      immediate: true,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;style lang&#x3D;&quot;less&quot; scoped&gt;</span><br><span class="line">.tag-view &#123;</span><br><span class="line">  background: rgba(240, 242, 245, 1);</span><br><span class="line">  border-radius: 0.04rem;</span><br><span class="line">  padding: 0 0.15rem;</span><br><span class="line">  height: 0.32rem;</span><br><span class="line">  line-height: 0.32rem;</span><br><span class="line">  font-size: 0.22rem;</span><br><span class="line">  color: rgba(66, 72, 84, 1);</span><br><span class="line">  display: inline-block;</span><br><span class="line">  margin-right: 0.1rem;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.tag-view_android &#123;</span><br><span class="line">  font-family: miui;</span><br><span class="line">  padding: 0 0.3rem;</span><br><span class="line">  height: 0.64rem;</span><br><span class="line">  line-height: 0.64rem;</span><br><span class="line">  font-size: 0.44rem;</span><br><span class="line">  transform: scale(0.5, 0.5);</span><br><span class="line">  transform-origin: center center;</span><br><span class="line">  margin: -0.16rem -9%;</span><br><span class="line">&#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+<p>至此，margin的准确性解决了</p>
+<p>但是如果想应用到项目里，一个样式就要封装一个组件未免也太麻烦了吧，而且对于已经存在的样式，改动也蛮多的</p>
+<p>那能不能像 v-bind 一样 通过自定义指令来实现呢？</p>
+<p>说干就干！</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Vue.directive(<span class="string">&#x27;tag&#x27;</span>, &#123;</span><br><span class="line">  <span class="function"><span class="title">inserted</span>(<span class="params">el, binding, vnode</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(!isAndroid()) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">const</span> needBook = [</span><br><span class="line">      <span class="string">&#x27;fontSize&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;height&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;paddingTop&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;paddingLeft&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;paddingBottom&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;paddingRight&#x27;</span>,</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    needBook.map(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">let</span> value = getComputedStyle(el)[item]</span><br><span class="line">      <span class="keyword">if</span> (getValue(value)) &#123;</span><br><span class="line">        el.style[item] = getValue(value) * <span class="number">2</span> + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">        <span class="keyword">if</span>(item === <span class="string">&#x27;height&#x27;</span>) &#123;</span><br><span class="line">          el.style.lineHeight = getValue(value) * <span class="number">2</span> + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    el.style.transform = <span class="string">&#x27;scale(0.5, 0.5)&#x27;</span></span><br><span class="line">    el.style.transformOrigin = <span class="string">&#x27;center center&#x27;</span></span><br><span class="line">    el.style.margin = <span class="string">`-<span class="subst">$&#123;el.offsetHeight <span class="regexp">/ 4&#125;px -$&#123;el.offsetWidth /</span> <span class="number">4</span> - <span class="number">4</span>&#125;</span>px -<span class="subst">$&#123;el.offsetHeight <span class="regexp">/ 4&#125;px -$&#123;el.offsetWidth /</span> <span class="number">4</span>&#125;</span>px`</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">getValue</span>(<span class="params">params</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (!params) <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">      <span class="keyword">const</span> arr = params.split(<span class="string">&#x27;px&#x27;</span>)</span><br><span class="line">      <span class="keyword">return</span> arr &amp;&amp; arr[<span class="number">0</span>]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">isAndroid</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">const</span> u = navigator.userAgent</span><br><span class="line">      <span class="keyword">return</span> u.indexOf(<span class="string">&#x27;Android&#x27;</span>) &gt; -<span class="number">1</span> || u.indexOf(<span class="string">&#x27;Adr&#x27;</span>) &gt; -<span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>一顿操作，终于实现了效果，迫不及待去真机上验证一番</p>
+<p>居然不居中了。。。。。</p>
+<p><img src= "/img/loading.gif" data-src="./unnamed.jpeg"></p>
+<p>百思不解，只能去再问问度娘了～</p>
+<p>原来，字号为奇数也会导致字体偏移，再看加上v-tag后的样式，height居然还有小数点</p>
+<p>对代码进行再一次改造</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">needBook.map(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> value = getComputedStyle(el)[item]</span><br><span class="line">  <span class="keyword">if</span> (getValue(value)) &#123;</span><br><span class="line">    - el.style[item] = getValue(value) * <span class="number">2</span> + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">    - <span class="keyword">if</span>(item === <span class="string">&#x27;height&#x27;</span>) &#123;</span><br><span class="line">    -   el.style.lineHeight = getValue(value) * <span class="number">2</span> + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">    - &#125;</span><br><span class="line">    + <span class="keyword">if</span>(item === <span class="string">&#x27;height&#x27;</span>) &#123;</span><br><span class="line">    +   <span class="keyword">const</span> num = <span class="built_in">Math</span>.ceil(getValue(value))</span><br><span class="line">    +   el.style[item] = (num - <span class="number">1</span>) * <span class="number">2</span> + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">    +   el.style.lineHeight = num * <span class="number">2</span> + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">    +   <span class="keyword">return</span></span><br><span class="line">    + &#125;</span><br><span class="line">    + el.style[item] = getValue(value) * <span class="number">2</span> + <span class="string">&#x27;px&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>对获取到的高度进行向上取整，同时减少1容错误差</p>
+</blockquote>
+<p>至此，实现了本次逻辑 </p>
+<p>最后，分享大家一个自定义指令自用的文件结构</p>
+<ol>
+<li>新建directives文件夹</li>
+<li>在directives文件夹下，新建tag.js copy代码</li>
+<li>在directives文件夹下，新建index.js<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tag <span class="keyword">from</span> <span class="string">&#x27;./tag&#x27;</span></span><br><span class="line"><span class="comment">// 自定义指令</span></span><br><span class="line"><span class="keyword">const</span> directives = &#123;</span><br><span class="line">  tag,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">install</span>(<span class="params">Vue</span>)</span> &#123;</span><br><span class="line">    <span class="built_in">Object</span>.keys(directives).forEach(<span class="function">(<span class="params">key</span>) =&gt;</span> &#123;</span><br><span class="line">      Vue.directive(key, directives[key])</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>在main.js中挂载<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> Directives <span class="keyword">from</span> <span class="string">&#x27;./directives&#x27;</span></span><br><span class="line"></span><br><span class="line">Vue.use(Directives)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<p>THE END 感谢你看到最后！</p>
+]]></content>
+      <tags>
+        <tag>兼容</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>按钮权限控制实现方案</title>
     <url>/2021/03/31/%E6%8C%89%E9%92%AE%E6%9D%83%E9%99%90%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/</url>
     <content><![CDATA[<h1 id="按钮权限控制实现方案"><a href="#按钮权限控制实现方案" class="headerlink" title="按钮权限控制实现方案"></a>按钮权限控制实现方案</h1><p>背景：某些管理系统需增加 ”按钮权限控制“ 功能，对权限的控制粒度要普及到按钮层级</p>
