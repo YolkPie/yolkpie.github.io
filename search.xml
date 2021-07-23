@@ -2316,6 +2316,90 @@
       </tags>
   </entry>
   <entry>
+    <title></title>
+    <url>/2021/07/23/line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<h2 id="行高"><a href="#行高" class="headerlink" title="行高"></a>行高</h2><p>“行高”，顾名思义是指的一行文字的高度，按照我们的理解,行高指的应该是两行文字间基线的距离。<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/base_line.jpg" alt="这是图片"><br>vertical-align中有top,middle,baseline,bottom与之是由关联的。但是由于中英文的差异，所以基线在中文中可能并不适用，实际表现不符合预期</p>
+<h3 id="行高的作用"><a href="#行高的作用" class="headerlink" title="行高的作用"></a>行高的作用</h3><p>CSS中起高度作用的除了我们熟知的height，另外line-height在css中也起了高度的作用，如果一个标签未定义高度（包括百分比高度），那么最终表现的高度一定是由line-height起作用的。</p>
+<p>之前，在我的认知中，若不设置高度，父盒子的高度应该是由内层文字撑起来的，但是是不是这样呢?</p>
+<p>我们来看一个实验：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;test1&quot;</span>&gt;测试&lt;/div&gt;</span><br><span class="line">&lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;test2&quot;</span>&gt;测试&lt;/div&gt;</span><br><span class="line"></span><br><span class="line">.test1 &#123;</span><br><span class="line">  font-size: 20px;</span><br><span class="line">  line-height: <span class="number">0</span>;</span><br><span class="line">  border:1px solid #cccccc; </span><br><span class="line">  background:#eeeeee;</span><br><span class="line"></span><br><span class="line">  margin: 40px auto;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.test2 &#123;</span><br><span class="line">  font-size: <span class="number">0</span>;</span><br><span class="line">  line-height: 20px;</span><br><span class="line">  border:1px solid #cccccc; </span><br><span class="line">  background:#eeeeee;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/%E4%BC%81%E4%B8%9A%E5%92%9A%E5%92%9A20210204150236.png" alt="这是图片"></p>
+<p>结果可以看出，div是由line-height撑开的，并不是我们之前认为的由文字撑开。</p>
+<p>那么line-height是怎么产生高度的呢？在inline box中，有个line box（行框盒子）,line box没有其他特性，只有高度。所以一个没有设置高度的div的高度是由一个一个line box的高度堆砌而成。  </p>
+<p>其实line box也不是真正的生产者，在它之中，还包含着一个inline box（内联盒子），包括span等… line box会取line-height最高的值来呈现。</p>
+<h3 id="行高的垂直居中性"><a href="#行高的垂直居中性" class="headerlink" title="行高的垂直居中性"></a>行高的垂直居中性</h3><p>行高还有一个重要特性，即垂直居中性。line-height的最终表现是通过line box（行框盒子）呈现的，而无论line box所占据的高度有多少，无论比文字大还是比文字小，它都会以文字的中垂线对称分布，我们就是利用这一特性来实现文字或图片的垂直居中。</p>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/2009-11-28_002310.png" alt="这是图片"></p>
+<p>test1，line box高度为0，但是还是以文字的中垂线对称分布。</p>
+<h3 id="单行或多行文字居中的应用"><a href="#单行或多行文字居中的应用" class="headerlink" title="单行或多行文字居中的应用"></a>单行或多行文字居中的应用</h3><h4 id="1-单行文字垂直居中"><a href="#1-单行文字垂直居中" class="headerlink" title="1.单行文字垂直居中"></a>1.单行文字垂直居中</h4><p>网上都是这么说的，把line-height值设置为height一样大小的值可以实现单行文字的垂直居中。这句话确实是正确的，但其实也是有问题的。问题在于height，看我的表述：“把line-height设置为您需要的box的大小可以实现单行文字的垂直居中”。  </p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;single_line&quot;</span>&gt;</span><br><span class="line">        &lt;span&gt;单行文字居中&lt;/span&gt;</span><br><span class="line">&lt;/p&gt;</span><br><span class="line">.single_line &#123;</span><br><span class="line">  border: 1px dashed #cccccc;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">.single_line span &#123;</span><br><span class="line">  line-height: 40px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/QQ%E5%9B%BE%E7%89%8720210322113259.png" alt="这是图片"></p>
+<h4 id="2-多行文字垂直居中"><a href="#2-多行文字垂直居中" class="headerlink" title="2.多行文字垂直居中"></a>2.多行文字垂直居中</h4><p>之前常见的多行文字居中常见的有flex、table等，而现在，我们同样可以利用line-height来实现。因为行高的垂直居中性，并且它可以撑起盒子的高度，所以我们用line-height来代替外层盒子的height。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;mulit_line&quot;</span>&gt;</span><br><span class="line">    &lt;span style=&#123;&#123;<span class="attr">fontSize</span>:<span class="number">12</span>&#125;&#125;&gt;</span><br><span class="line">        Xx这里是高度为<span class="number">150</span>像素的标签内的多行文字，文字大小为12Px。</span><br><span class="line">        &lt;br /&gt;</span><br><span class="line">        这里是第二行，用来测试多行的显示效果。</span><br><span class="line">    &lt;/span&gt;</span><br><span class="line">&lt;/p&gt;</span><br><span class="line">.mulit_line &#123;</span><br><span class="line">  line-height: 150px;</span><br><span class="line">  border: 1px dashed #cccccc;</span><br><span class="line">  padding-left: 5px;</span><br><span class="line">&#125;</span><br><span class="line">.mulit_line span &#123;</span><br><span class="line">  display: -moz-inline-stack;</span><br><span class="line">  display: inline-block;</span><br><span class="line">  line-height: <span class="number">1.</span>4em;</span><br><span class="line">  vertical-align: middle;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/QQ%E5%9B%BE%E7%89%8720210322103735.png" alt="这是图片"></p>
+<h2 id="line-height坑人的默认值：normal"><a href="#line-height坑人的默认值：normal" class="headerlink" title="line-height坑人的默认值：normal"></a>line-height坑人的默认值：normal</h2><p>line-height 的值可以是一个长度或者是一个数字，它的默认值是 normal。那么，normal 是什么呢？我们经常将 normal 理解为 1，或者 1.2，甚至连 CSS 规格文档都没有提到这一问题。</p>
+<h3 id="font-size"><a href="#font-size" class="headerlink" title="font-size"></a>font-size</h3><p>一个简单的例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;a&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;b&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;c&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">p  &#123; font-size: 100px &#125;</span><br><span class="line">.a &#123; font-family: Helvetica &#125;</span><br><span class="line">.b &#123; font-family: Gruppo    &#125;</span><br><span class="line">.c &#123; font-family: Catamaran &#125;</span><br></pre></td></tr></table></figure>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/QQ%E5%9B%BE%E7%89%8720210322104320.png" alt="这是图片"><br>相同的font-size，得出的span高度却是不同的，这是为什么呢？<br>原因在于字体本身，一款字体会定义一个em-square，它是用来盛放字符的容器，一般设定为宽高均为1000，但是也可能是1024、2048等<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-4c684524b8d37789295f6db964201c74_720w.png" alt="这是图片"><br>字体度量都是基于这个相对单位设置的，包括 ascender、descender、capital height、x-height 等。注意这里面的值是允许相对于 em-square 出去（bleed outside）的<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-7f1590fecc2f79484b22f38e2869d83b_720w.jpg" alt="这是图片"><br>在浏览器中绘制时，字体会按照你的font-size缩放。</p>
+<p>我们把 Catamaran 字体放到 FontForge 中，分析它的字体度量：</p>
+<ul>
+<li>em-square 是 1000</li>
+<li>ascender 是 1100，descender 是 540。通过测试发现，macOS 上的浏览器使用了 HHead Ascent 和 HHead Descent 值，Windows 上的浏览器使用了 Win Ascent 和 Win Descent（而且两个平台上的值不一样）。我们还看到 Capital Height 是 680，X height 是 485。<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-8fa5fa46b571db21c79bda208d6263c3_720w.png" alt="这是图片"></li>
+</ul>
+<p>这意味着 Catamaran 字体占据了 1100 + 540 个相对单位，尽管它的 em-square 只有 1000 个相对单位，所以当我们设置 font-size:100px 时，这个字体里的文字高度是 164px。这个计算出来的高度决定了 HTML 元素的 content-area（内容区域）。你可以认为 content-area 就是 background 作用的区域。</p>
+<p>我们还能看出大写字母的高度是 68px，小写字母的高度（x-height）是 49px。所以 1ex = 49px，1em = 100px，而不是 164px。（em 是基于 font-size，而不是基于计算出来的高度）</p>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-cb05dd4dc6908e522c0f69392ed1fe87_r.png" alt="这是图片"></p>
+<p>如果我们修改一下最初的 HTML 代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;p&gt;</span><br><span class="line">    Good design will be better.</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;a&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;b&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    &lt;span <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;c&quot;</span>&gt;Ba&lt;/span&gt;</span><br><span class="line">    We get to make a consequence.</span><br><span class="line">&lt;/p&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-cc56c718642f701c3f8739ee7a4453cf_r.png" alt="这是图片"></p>
+<p>可以看到，第二行的高度略高，这就是之前提到的，line box会取最大的inline box的高度，而不是content-area的高度。</p>
+<p><em>这句话是什么意思呢？</em><br>一个inline box（内联元素）包含两个高度：content-area和virtual-area（实际区域，可以理解成line-height，这是作者自定义的单词）<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-efe30b60d553cb6237f9c0cbdebb240b_720w.png" alt="这是图片"></p>
+<p>注：<em>按这种理解，line-height表示的并不是两个baseline之间的距离。个人感觉有些争议，，，</em></p>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-0301a379ebf7d2dfcbb995c4a2cfc7fa_r.jpg" alt="这是图片"></p>
+<p>virtual-area 和 content-area 高度的差异叫做 leading。leading 的一半会被加到 content-area 顶部，另一半会被加到底部。因此 content-area 总是处于 virtual-area 的中间。</p>
+<p>计算出来的 line-height（也就是 virtual-area 的高度）可以等于、大于或小于 content-area。如果 virtual-area 小于 content-area，那么 leading 就是负的，因此 line-box 看起来就比内容还矮了。</p>
+<p>常见的内联元素：</p>
+<ul>
+<li>可替换的内联元素，如 img / input / svg 等</li>
+<li>inline-block 元素，以及所有 display 值以 inline- 开头的元素，如 inline-table / inline-flex</li>
+<li>处于某种特殊格式化上下文的内联元素，例如 flexbox 元素中的子元素都处于 flex formatting context（弹性格式化上下文）中，这些子元素的 display 值都是「blockified」</li>
+</ul>
+<p>如果你将其 height 设置为 auto 的话，那么其高度的取值就是 line-height，其 content-area 的取值也是 line-height</p>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-924b688268ae43ff1c6ccda3bec78123_r.png" alt="这是图片"></p>
+<p>现在为止，还是没有解释line-height:normal。</p>
+<p>回到上图：<br><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-8fa5fa46b571db21c79bda208d6263c3_720w.png" alt="这是图片"><br>除了EM Size还看到了许多其他值，</p>
+<ul>
+<li>常规的 Ascent/Descent：ascender 是 770，descender 是 230，用于渲染字符。</li>
+<li>规格 Ascent/Descent：ascender 是 1100，descender 是 540。用于计算 content-area 的高度</li>
+<li>规格 Line Gap：用于计算 line-height: normal</li>
+</ul>
+<p>在 Catamaran 这款字体中，Line Gap 的值是 0，那么 line-height: normal 的结果就跟 content-area 的高度一样，是 1640 相对单位。<br>content-area 100/1000*(1100+540)</p>
+<p>100px/1000个相对单位*(上半部分相对单位数量+下半部分单位数量)</p>
+<p>为了对比，我们再看看 Arial 字体，它的 em-square 是 2048，ascender 是 1854，descender 是 434，line gap 是 67。那么当 font-size: 100px 时，</p>
+<ul>
+<li>其 content-area 的高度就是 100/2048*(1854+434) = 111.72，约为 112px；</li>
+<li>其 line-height: normal 的结果就是 100/2048*(67+1854+434) 约为 115px。</li>
+</ul>
+<p>所有这些值都是由字体设计师设置的。</p>
+<p>当 line-height 的值是一个数字时，其实就是相对 font-size 的倍数，而不是相对于 content-area。所以 line-height:1 很有可能使得 virtual-area 比 content-area 矮，从而引发很多其他的问题。</p>
+<p><img src= "/img/loading.gif" data-src="./line-height%E7%9A%84%E4%B8%80%E4%BA%9B%E5%8E%9F%E7%90%86/v2-01f0ec3f893c7162af0b6104cfc304e5_720w.png" alt="这是图片"></p>
+<p>不仅仅是 line-height:1 有问题，电脑上的 1117 款字体中，大概有 1059 款字体的 line-height 比 1 大，最低的是 0.618，最高的是 3.378。这说明，字体之间行高差距非常大。</p>
+<p>line-box 计算的一些细节：</p>
+<ul>
+<li>对于内联元素，padding 和 border 会增大 background 区域，但是不会增大 content-area（不是 line-box 的高度）。一般来说你无法再屏幕上看到 content-area。margin-top 和 margin-bottom 对两者都没有影响。</li>
+<li>对于可替换内联元素（replaced inline elements）、inline-block 元素和 blockified 内联元素，padding、margin 和 border 会增大 height（译者注：注意 margin），因此会影响 content-area 和 line-box 的高度</li>
+</ul>
+<p>现在我们终于得到一个结果：line-height:normal是由字体计算得出，并且它会对line box的表现产生影响。</p>
+<p>我得出的结论是，当我们要规定居中时，除了要考虑子元素的line-height，同时也要考虑父元素，因为父元素也有默认的normal，会对高度产生影响，所以我们在父元素中，用line-height取代height来呈现高度，能达到最好的结果</p>
+<p>结束。。。。</p>
+<p>参考文章：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/25808995">https://zhuanlan.zhihu.com/p/25808995</a></li>
+<li><a href="https://www.zhangxinxu.com/wordpress/2009/11/css%e8%a1%8c%e9%ab%98line-height%e7%9a%84%e4%b8%80%e4%ba%9b%e6%b7%b1%e5%85%a5%e7%90%86%e8%a7%a3%e5%8f%8a%e5%ba%94%e7%94%a8/">https://www.zhangxinxu.com/wordpress/2009/11/css%e8%a1%8c%e9%ab%98line-height%e7%9a%84%e4%b8%80%e4%ba%9b%e6%b7%b1%e5%85%a5%e7%90%86%e8%a7%a3%e5%8f%8a%e5%ba%94%e7%94%a8/</a></li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
     <title>MD To Html 的前端实现</title>
     <url>/2021/03/25/md2html%E7%9A%843%E7%A7%8D%E6%96%B9%E6%B3%95/</url>
     <content><![CDATA[<p>.md文件是markdown的一种标记语言，和html比较起来，更简单快捷，主要体现在：标记符的数量和书写上。</p>
