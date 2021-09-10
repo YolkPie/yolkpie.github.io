@@ -5633,6 +5633,49 @@ window.requestAnimationFrame(changePosition);
       </tags>
   </entry>
   <entry>
+    <title>安装证书</title>
+    <url>/2020/12/22/%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6/</url>
+    <content><![CDATA[<p>证书的安装不依赖于代理工具，Fiddler、Charles、Whistle都可以依照下面的步骤安装。(注意：证书的下载方式在不同代理工具中是不同的，这里默认已经下载了证书)</p>
+<blockquote>
+<p>安装证书的核心在<b>信任</b>证书的这步操作上，这两个字其实也是本文的核心。</p>
+</blockquote>
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><ol>
+<li>双击下载好的证书文件，点击安装<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/156646/1/1360/31950/5fe08c03E16ab94c8/093f9c23c5030147.png" alt="双击安装"></li>
+<li>选择存储位置为当前用户<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/151347/26/11830/32386/5fe08c03Ea91634e2/1a0e934cf9607b8c.png" alt="选择存储位置"></li>
+<li>选择将所有的证书都放入下列存储<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/148989/23/19257/26999/5fe08c03E9306869d/5198463e9213d285.png" alt="指定证书存储位置"></li>
+<li>这一步是关键的“信任”的步骤：点击浏览按钮，选择受信任的根证书颁发机构<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/152242/3/10881/34116/5fe08c03E8faf6f6d/08fb718ae8980a7f.png" alt="受信任的根证书颁发机构"></li>
+<li>导入完成<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/156009/19/1351/24923/5fe08c03Eb5448a05/9e74fa3a66015d80.png" alt="导入完成"></li>
+</ol>
+<h2 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h2><ol>
+<li>双击下载好的证书，系统会将证书添加到钥匙串并自动打开钥匙串的窗口，在钥匙串中找到wistle证书并选中，会发现页面提示该证书不受信任<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/140214/23/19534/558122/5fe15be5E6fe5c218/5b1347299597881c.jpg" alt="钥匙串"></li>
+<li>右键该证书，选择简介 -&gt; 信任 -&gt; 使用此证书修改为始终信任<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/145084/17/19471/414745/5fe15c4bE14c0903d/5e2cb0436e61b9f7.jpg" alt="信任证书"></li>
+<li>关闭窗口时系统会要求输入电脑密码，照做就行</li>
+<li>回到钥匙串窗口，此时页面会提示此证书已标记为受账户信任<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/143587/12/19500/553727/5fe15c29E8d3c1aa9/8ae332a26633593c.jpg" alt="此证书已标记为受账户信任"></li>
+</ol>
+<h2 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h2><ol>
+<li>系统设置 -&gt; 通用 -&gt; 描述文件与设备管理<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/153496/23/10319/52081/5fdc5922Ee183d0e0/86ddce16d2a308bb.jpg" alt="描述文件与设备管理"></li>
+<li>选择已经下载的证书<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/146189/7/18958/44348/5fdc5925E454049d7/3a9ee4b2484fd6c9.jpg" alt="选择证书"></li>
+<li>点击安装<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/153162/21/10375/41967/5fdc5925Ebf5a2b6f/e0c179099bca7278.jpg" alt="安装证书"></li>
+<li>输入密码，这个密码是手机的开机密码<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/141566/40/19047/38951/5fdc5925E470ec670/5c687269928aff3c.jpg" alt="输入密码"></li>
+<li>继续点击安装<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/130565/20/20599/52481/5fdc5925Edae2a1d9/bded077f3e57dc42.jpg" alt="警告"></li>
+<li>安装完成。别急，不要忘了核心的信任二字：iOS 10.3以下的版本会自动给安装的证书添加信任，如果你的iOS版本是<a href="https://support.apple.com/zh-cn/HT204477">10.3及以上</a>，还要手动给证书设置信任才行<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/150193/14/18800/37854/5fdc5922Eabd28996/b198eeceeb40b830.jpg" alt="安装完成"></li>
+<li>回到 设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/143797/4/19061/59581/5fdc5925E982c7de5/6b99488bfb0f6302.jpg" alt="证书信任设置"></li>
+<li>第2步我们选择的证书名称为whistle.1560220575433369（你会发现这个名称和Mac安装时whistle的钥匙串名称是一样的），这里选择该证书，并打开信任开关。到这一步，iOS的证书就真的是安装完成了。<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/140144/16/18961/335450/5fdc5926E1f261a6e/2ca582daf46a390c.png" alt="选择已安装证书"></li>
+</ol>
+<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><p>在Android手机中，如果下载了证书，浏览器会自动提示要不要安装，但因为这样安装的证书经常不被系统信任，建议不要使用这种安装方式。</p>
+<ol>
+<li>设置 -&gt; 安全和隐私 -&gt; 更多安全设置 -&gt; 从SD卡安装（这里以华为mate 10 为例，不同Android机型的设置选项是不同的，总的来说都是要在设置的选项里先找到与“安全”相关的配置，再找到与“用户凭据”或者“从SD卡安装”相关的内容，之后选择已经下载好的证书安装即可）<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/155127/4/10869/138769/5fe090f3Ecdad6eff/33b27c69761a8567.jpg" alt="从SD卡安装"></li>
+<li>选择刚才下载的证书文件（默认的文件夹里没有的话需要按照下载文件的实际路径选择）<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/144057/37/19303/96168/5fe090e6Ebc38a41d/5d9cdc8f6f3079cd.jpg" alt="选择证书文件"></li>
+<li>输入锁屏密码</li>
+<li>为证书命名，安装完成<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/141887/25/19384/143601/5fe090b7E39859168/89aa9d09a8dd7ff5.jpg" alt="为证书命名"></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>代理</tag>
+        <tag>证书</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>实时对话界面设计思考</title>
     <url>/2020/09/27/%E5%AE%9E%E6%97%B6%E5%AF%B9%E8%AF%9D%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%80%83/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>日常生活中，我们经常会用到即时通讯软件，对聊天对话界面已经很熟悉了。打开聊天界面，最主要的三个UI元素有：头像、文字气泡、和对话缩略图。那我们有没有想过，为什么有的头像是圆形的，有的是方形的？气泡的极限值应该怎么定义？对话中的缩略图又有什么样的展示比例？</p>
@@ -6435,49 +6478,6 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
       </tags>
   </entry>
   <entry>
-    <title>安装证书</title>
-    <url>/2020/12/22/%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6/</url>
-    <content><![CDATA[<p>证书的安装不依赖于代理工具，Fiddler、Charles、Whistle都可以依照下面的步骤安装。(注意：证书的下载方式在不同代理工具中是不同的，这里默认已经下载了证书)</p>
-<blockquote>
-<p>安装证书的核心在<b>信任</b>证书的这步操作上，这两个字其实也是本文的核心。</p>
-</blockquote>
-<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><ol>
-<li>双击下载好的证书文件，点击安装<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/156646/1/1360/31950/5fe08c03E16ab94c8/093f9c23c5030147.png" alt="双击安装"></li>
-<li>选择存储位置为当前用户<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/151347/26/11830/32386/5fe08c03Ea91634e2/1a0e934cf9607b8c.png" alt="选择存储位置"></li>
-<li>选择将所有的证书都放入下列存储<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/148989/23/19257/26999/5fe08c03E9306869d/5198463e9213d285.png" alt="指定证书存储位置"></li>
-<li>这一步是关键的“信任”的步骤：点击浏览按钮，选择受信任的根证书颁发机构<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/152242/3/10881/34116/5fe08c03E8faf6f6d/08fb718ae8980a7f.png" alt="受信任的根证书颁发机构"></li>
-<li>导入完成<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/156009/19/1351/24923/5fe08c03Eb5448a05/9e74fa3a66015d80.png" alt="导入完成"></li>
-</ol>
-<h2 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h2><ol>
-<li>双击下载好的证书，系统会将证书添加到钥匙串并自动打开钥匙串的窗口，在钥匙串中找到wistle证书并选中，会发现页面提示该证书不受信任<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/140214/23/19534/558122/5fe15be5E6fe5c218/5b1347299597881c.jpg" alt="钥匙串"></li>
-<li>右键该证书，选择简介 -&gt; 信任 -&gt; 使用此证书修改为始终信任<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/145084/17/19471/414745/5fe15c4bE14c0903d/5e2cb0436e61b9f7.jpg" alt="信任证书"></li>
-<li>关闭窗口时系统会要求输入电脑密码，照做就行</li>
-<li>回到钥匙串窗口，此时页面会提示此证书已标记为受账户信任<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/143587/12/19500/553727/5fe15c29E8d3c1aa9/8ae332a26633593c.jpg" alt="此证书已标记为受账户信任"></li>
-</ol>
-<h2 id="iOS"><a href="#iOS" class="headerlink" title="iOS"></a>iOS</h2><ol>
-<li>系统设置 -&gt; 通用 -&gt; 描述文件与设备管理<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/153496/23/10319/52081/5fdc5922Ee183d0e0/86ddce16d2a308bb.jpg" alt="描述文件与设备管理"></li>
-<li>选择已经下载的证书<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/146189/7/18958/44348/5fdc5925E454049d7/3a9ee4b2484fd6c9.jpg" alt="选择证书"></li>
-<li>点击安装<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/153162/21/10375/41967/5fdc5925Ebf5a2b6f/e0c179099bca7278.jpg" alt="安装证书"></li>
-<li>输入密码，这个密码是手机的开机密码<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/141566/40/19047/38951/5fdc5925E470ec670/5c687269928aff3c.jpg" alt="输入密码"></li>
-<li>继续点击安装<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/130565/20/20599/52481/5fdc5925Edae2a1d9/bded077f3e57dc42.jpg" alt="警告"></li>
-<li>安装完成。别急，不要忘了核心的信任二字：iOS 10.3以下的版本会自动给安装的证书添加信任，如果你的iOS版本是<a href="https://support.apple.com/zh-cn/HT204477">10.3及以上</a>，还要手动给证书设置信任才行<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/150193/14/18800/37854/5fdc5922Eabd28996/b198eeceeb40b830.jpg" alt="安装完成"></li>
-<li>回到 设置 -&gt; 通用 -&gt; 关于本机 -&gt; 证书信任设置<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/143797/4/19061/59581/5fdc5925E982c7de5/6b99488bfb0f6302.jpg" alt="证书信任设置"></li>
-<li>第2步我们选择的证书名称为whistle.1560220575433369（你会发现这个名称和Mac安装时whistle的钥匙串名称是一样的），这里选择该证书，并打开信任开关。到这一步，iOS的证书就真的是安装完成了。<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/140144/16/18961/335450/5fdc5926E1f261a6e/2ca582daf46a390c.png" alt="选择已安装证书"></li>
-</ol>
-<h2 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h2><p>在Android手机中，如果下载了证书，浏览器会自动提示要不要安装，但因为这样安装的证书经常不被系统信任，建议不要使用这种安装方式。</p>
-<ol>
-<li>设置 -&gt; 安全和隐私 -&gt; 更多安全设置 -&gt; 从SD卡安装（这里以华为mate 10 为例，不同Android机型的设置选项是不同的，总的来说都是要在设置的选项里先找到与“安全”相关的配置，再找到与“用户凭据”或者“从SD卡安装”相关的内容，之后选择已经下载好的证书安装即可）<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/155127/4/10869/138769/5fe090f3Ecdad6eff/33b27c69761a8567.jpg" alt="从SD卡安装"></li>
-<li>选择刚才下载的证书文件（默认的文件夹里没有的话需要按照下载文件的实际路径选择）<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/144057/37/19303/96168/5fe090e6Ebc38a41d/5d9cdc8f6f3079cd.jpg" alt="选择证书文件"></li>
-<li>输入锁屏密码</li>
-<li>为证书命名，安装完成<br><img src= "/img/loading.gif" data-src="https://img10.360buyimg.com/imagetools/jfs/t1/141887/25/19384/143601/5fe090b7E39859168/89aa9d09a8dd7ff5.jpg" alt="为证书命名"></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>代理</tag>
-        <tag>证书</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>本地缓存 Guava Cache + Caffeine Cache</title>
     <url>/2020/02/04/%E6%9C%AC%E5%9C%B0%E7%BC%93%E5%AD%98/</url>
     <content><![CDATA[<p>为什么我们要使用本地缓存？</p>
@@ -6877,6 +6877,70 @@ https://www.jianshu.com/p/38bd5f1cf2f2
 ]]></content>
       <tags>
         <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用户行为监控（轨迹追踪）</title>
+    <url>/2021/09/10/%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E7%9B%91%E6%8E%A7%EF%BC%88%E8%BD%A8%E8%BF%B9%E8%BF%BD%E8%B8%AA%EF%BC%89/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>作为一名前端，最头疼的问题莫过于用户反馈了线上问题但是却复现不了。有些复现不了的问题跟操作步骤有关，但是用户描述问题常常不够准确，需要通过客服再进行多次沟通。还有一种情况就是用户明明进行了某项操作（比如出价）却硬说自己没有任何点击行为。因此，对用户行为进行监控，对于定位线上问题和减少客诉来说很重要。</p>
+<p>如果要监控用户的操作行为，我们采用的是埋点上报的形式，这样做的好处是上报准确，而且依托于我们现有的埋点搜集系统，使用起来也比较方便。缺点也比较明显，那就是对代码的耦合度比较高，如果新增操作或者改变交互，上报的方法也要随之变动，如果操作过程的上报有所遗漏，整个用户行为其实是不完整的。本文尝试采用通用的一种上报方式，可以追踪用户的所有轨迹，希望能够在不侵入业务代码的情况下，对用户轨迹进行上报。</p>
+<h2 id="用户行为"><a href="#用户行为" class="headerlink" title="用户行为"></a>用户行为</h2><p>要监控用户行为，不仅仅要监控用户的操作，比如打开页面、点击等，还需要监控这些行为产生的的数据请求以及js报错问题。当然还有更复杂的用户行为，这里我们不做探讨。</p>
+<p>我们可以用枚举定义上面的四类用户行为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    jsError: &#123;</span><br><span class="line">        value: <span class="number">0</span>,</span><br><span class="line">        text: <span class="string">&#x27;js报错&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    network: &#123;</span><br><span class="line">        value: <span class="number">1</span>,</span><br><span class="line">        text: <span class="string">&#x27;网络请求&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    navigation: &#123;</span><br><span class="line">        value: <span class="number">2</span>,</span><br><span class="line">        text: <span class="string">&#x27;打开页面&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    clickEvent: &#123;</span><br><span class="line">        value: <span class="number">3</span>,</span><br><span class="line">        text: <span class="string">&#x27;用户点击&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上报数据的格式如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    base: &#123;</span><br><span class="line">        traceId: <span class="string">&#x27;&#x27;</span>, <span class="comment">// 用户轨迹Id</span></span><br><span class="line">        ua: <span class="string">&#x27;&#x27;</span>, <span class="comment">// ua信息</span></span><br><span class="line">        url: <span class="string">&#x27;&#x27;</span>, <span class="comment">// 页面地址</span></span><br><span class="line">        refer: <span class="string">&#x27;&#x27;</span>, <span class="comment">// 页面refer</span></span><br><span class="line">        ... <span class="comment">// 其他信息</span></span><br><span class="line">    &#125;,</span><br><span class="line">    logs: [&#123;</span><br><span class="line">        type: <span class="string">&#x27;&#x27;</span>, <span class="comment">// 轨迹名称</span></span><br><span class="line">        value: <span class="number">0</span>, <span class="comment">// 轨迹value</span></span><br><span class="line">        data: &#123;&#125; <span class="comment">// 轨迹上报data</span></span><br><span class="line">    &#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="用户行为的监控"><a href="#用户行为的监控" class="headerlink" title="用户行为的监控"></a>用户行为的监控</h2><h3 id="打开页面"><a href="#打开页面" class="headerlink" title="打开页面"></a>打开页面</h3><p>对于多页面应用来说，可以通过监听浏览器的 onload 事件来实现。但是在单页面应用中，因为只有在第一次进入页面才会触发 onload 事件，还需要监听路由的变化。单页面应用有两种路由模式：hash 模式和 history 模式，两者的处理方式有所差异：</p>
+<ul>
+<li>hash 模式：hash 模式是通过改变 url 的 hash 值来实现无页面刷新的，hash 的变化会触发浏览器的 hashchange 事件，因此需要监听 hashchange 事件。</li>
+<li>history 模式：history 模式是通过操纵浏览器原生的 history 对象实现的，方法如下：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">history.go()</span><br><span class="line">history.forward()</span><br><span class="line">history.back()</span><br><span class="line">history.pushState()</span><br><span class="line">history.replaceState()</span><br></pre></td></tr></table></figure>
+<p>history.go、history.forward 和 history.back 3个方法会触发浏览器的 popstate 事件，但是 history.pushState 和 history.replaceState 这两个方法不会。如果要监听 history.pushState 和 history.replaceState，我们需要在 history.pushState 和 history.replaceState 方法中添加自定义事件：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addHistoryEvent</span>(<span class="params">eventName</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (history[eventName]) &#123;</span><br><span class="line">        <span class="keyword">const</span> oFunc = history[eventName]</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> res = oFunc.apply(<span class="built_in">this</span>, <span class="built_in">arguments</span>)</span><br><span class="line">            <span class="keyword">var</span> event = <span class="keyword">new</span> Event(eventName)</span><br><span class="line">            event.arguments = <span class="built_in">arguments</span></span><br><span class="line">            <span class="built_in">window</span>.dispatchEvent(event)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，我们给 window 增加监听事件来监控页面的打开：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addNavigationListener</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    addEvent(<span class="built_in">window</span>, <span class="string">&#x27;load&#x27;</span>, addNavigationLog)</span><br><span class="line">    addEvent(<span class="built_in">window</span>, <span class="string">&#x27;hashchange&#x27;</span>, addNavigationLog)</span><br><span class="line">    addEvent(<span class="built_in">window</span>, <span class="string">&#x27;popstate&#x27;</span>, addNavigationLog)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="js报错"><a href="#js报错" class="headerlink" title="js报错"></a>js报错</h3><p>我之前在<a href="https://yolkpie.net/2021/01/28/%E5%89%8D%E7%AB%AF%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/">前端异常处理</a>中总结过，如果要捕获全局的异常，需要监听 onerror 和 onunhandledrejection 事件，这里就不再重复了。</p>
+<p>如果浏览器在页面加载之前向注入的 js 发生了错误（比如离线应用）是没有办法捕获到的，这时候我们需要重写下 console.error。如果 js（非浏览器注入）加载完成，需要停止 console.error 的错误上报，由 onerror 和 onunhandledrejection 来接管。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.error = handleConsoleError</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> errorMsg = <span class="built_in">arguments</span>[<span class="number">0</span>] &amp;&amp; <span class="built_in">arguments</span>[<span class="number">0</span>].message</span><br><span class="line"><span class="keyword">const</span> url = <span class="built_in">window</span>.location.href</span><br><span class="line"><span class="keyword">const</span> lineNumber = <span class="number">0</span></span><br><span class="line"><span class="keyword">const</span> columnNumber = <span class="number">0</span></span><br><span class="line"><span class="keyword">let</span> errorObj = <span class="built_in">arguments</span>[<span class="number">0</span>] &amp;&amp; <span class="built_in">arguments</span>[<span class="number">0</span>].stack</span><br><span class="line"><span class="keyword">if</span> (!errorObj) errorObj = <span class="built_in">arguments</span>[<span class="number">0</span>]</span><br><span class="line"><span class="keyword">if</span> (jsErrorReported) &#123;</span><br><span class="line">    <span class="comment">// onerror和onunhandledrejection开始处理报错后，停止console.error的上报</span></span><br><span class="line">    handleError(errorMsg, url, lineNumber, columnNumber, errorObj)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="用户点击"><a href="#用户点击" class="headerlink" title="用户点击"></a>用户点击</h3><p>监控用户的点击行为，就是重写下 document.onclick 方法，然后获取元素的文本内容、属性信息等。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.onclick = <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> attributes = event.target.attributes</span><br><span class="line">    <span class="keyword">const</span> tag = event.target.tagName.toLowerCase()</span><br><span class="line">    <span class="keyword">const</span> attributesObj = &#123;&#125;</span><br><span class="line">    <span class="keyword">const</span> ignoreTag = [<span class="string">&#x27;html&#x27;</span>]</span><br><span class="line">    <span class="keyword">if</span> (ignoreTag.includes(tag)) <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> attributes) &#123;</span><br><span class="line">        <span class="keyword">if</span> (attributes[key][<span class="string">&#x27;value&#x27;</span>] != <span class="literal">undefined</span>) &#123;</span><br><span class="line">            attributesObj[attributes[key][<span class="string">&#x27;name&#x27;</span>]] = attributes[key][<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> innerText = event.target.innerText.replace(<span class="regexp">/\s*/g</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">    addClickEventLog(&#123;</span><br><span class="line">        attributes: attributesObj,</span><br><span class="line">        innerText</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="网络请求"><a href="#网络请求" class="headerlink" title="网络请求"></a>网络请求</h3><p>对于网络请求的监控可以通过监听 XMLHttpRequest 和 fetch 请求来实现。</p>
+<ul>
+<li>监听 XMLHttpRequest 请求</li>
+</ul>
+<p>XMLHttpRequest 请求支持的事件如下：<br><img src= "/img/loading.gif" data-src="https://img11.360buyimg.com/imagetools/jfs/t1/110720/23/16103/238966/613af5d4E2a5e4c02/eab15c215acfe3f9.png" alt="XMLHttpRequest请求支持的事件如下："></p>
+<p>我们在 XMLHttpRequest 的事件中增加自定义事件来触发相应的上报操作：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 监听XMLHttpRequest事件中增加自定义事件</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajaxEventTrigger</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> ajaxEvent = <span class="keyword">new</span> CustomEvent(event, &#123;</span><br><span class="line">        detail: <span class="built_in">this</span></span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="built_in">window</span>.dispatchEvent(ajaxEvent)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> oldXHR = <span class="built_in">window</span>.XMLHttpRequest</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">newXHR</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> realXHR = <span class="keyword">new</span> oldXHR()</span><br><span class="line">    realXHR.addEventListener(<span class="string">&#x27;abort&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; ajaxEventTrigger.call(<span class="built_in">this</span>, <span class="string">&#x27;ajaxAbort&#x27;</span>); &#125;, <span class="literal">false</span>)</span><br><span class="line">    realXHR.addEventListener(<span class="string">&#x27;error&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; ajaxEventTrigger.call(<span class="built_in">this</span>, <span class="string">&#x27;ajaxError&#x27;</span>); &#125;, <span class="literal">false</span>)</span><br><span class="line">    realXHR.addEventListener(<span class="string">&#x27;load&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; ajaxEventTrigger.call(<span class="built_in">this</span>, <span class="string">&#x27;ajaxLoad&#x27;</span>); &#125;, <span class="literal">false</span>)</span><br><span class="line">    realXHR.addEventListener(<span class="string">&#x27;loadstart&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; ajaxEventTrigger.call(<span class="built_in">this</span>, <span class="string">&#x27;ajaxLoadStart&#x27;</span>) &#125;, <span class="literal">false</span>)</span><br><span class="line">    realXHR.addEventListener(<span class="string">&#x27;progress&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; ajaxEventTrigger.call(<span class="built_in">this</span>, <span class="string">&#x27;ajaxProgress&#x27;</span>); &#125;, <span class="literal">false</span>)</span><br><span class="line">    realXHR.addEventListener(<span class="string">&#x27;timeout&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; ajaxEventTrigger.call(<span class="built_in">this</span>, <span class="string">&#x27;ajaxTimeout&#x27;</span>); &#125;, <span class="literal">false</span>)</span><br><span class="line">    realXHR.addEventListener(<span class="string">&#x27;loadend&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; ajaxEventTrigger.call(<span class="built_in">this</span>, <span class="string">&#x27;ajaxLoadEnd&#x27;</span>); &#125;, <span class="literal">false</span>)</span><br><span class="line">    realXHR.addEventListener(<span class="string">&#x27;readystatechange&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; ajaxEventTrigger.call(<span class="built_in">this</span>, <span class="string">&#x27;ajaxReadyStateChange&#x27;</span>) &#125;, <span class="literal">false</span>)</span><br><span class="line">    <span class="keyword">return</span> realXHR</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">window</span>.XMLHttpRequest = newXHR</span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听自定义事件</span></span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">&#x27;ajaxAbort&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">    addNetworkEventLog(event)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">&#x27;ajaxError&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">    addNetworkEventLog(event)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">&#x27;ajaxLoad&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">    addNetworkEventLog(event)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>因为 CustomEvent 在 IE 等浏览器中有兼容问题（如下），需要使用 document.createEvent(‘CustomEvent’) 来创建：</p>
+<p><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/61807/16/16787/755169/613b1a9eEf9f182e7/d9ae910b4f6ec941.jpg" alt="CustomEvent兼容问题"></p>
+<blockquote>
+<p>While a window.CustomEvent object exists, it cannot be called as a constructor. Instead of new CustomEvent(…), you must use e = document.createEvent(‘CustomEvent’) and then e.initCustomEvent(…)</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> ( <span class="keyword">typeof</span> <span class="built_in">window</span>.CustomEvent === <span class="string">&#x27;function&#x27;</span>) <span class="keyword">return</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomEvent</span> (<span class="params"> event, params </span>) </span>&#123;</span><br><span class="line">    params = params || &#123; <span class="attr">bubbles</span>: <span class="literal">false</span>, <span class="attr">cancelable</span>: <span class="literal">false</span>, <span class="attr">detail</span>: <span class="literal">undefined</span> &#125;</span><br><span class="line">    <span class="keyword">const</span> evt = <span class="built_in">document</span>.createEvent( <span class="string">&#x27;CustomEvent&#x27;</span> )</span><br><span class="line">    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail )</span><br><span class="line">    <span class="keyword">return</span> evt</span><br><span class="line">&#125;</span><br><span class="line">CustomEvent.prototype = <span class="built_in">window</span>.Event.prototype</span><br><span class="line"><span class="built_in">window</span>.CustomEvent = CustomEvent</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>监听fetch请求</li>
+</ul>
+<p>fetch 没有提供可供监听的事件，因此我们需要在 fetch 返回的 Promise 中进行处理（当然你也可以参考 vue 数据劫持的思路，使用 defineProperty 或者 proxy）。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">rewriteFetcnEvent</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> oldFetch = <span class="built_in">window</span>.fetch</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">newFetch</span>(<span class="params">url, options</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">            oldFetch(url, options).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">                addFecthEventLog(res)</span><br><span class="line">                resolve(res)</span><br><span class="line">            &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">                addFecthEventLog(err)</span><br><span class="line">                reject(err)</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">window</span>.fetch = newFetch</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>我在页面上模拟了点击和发送请求的操作，最终上报的数据如下：<br><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/62199/4/16976/825298/613b286dE946e3acc/6d52993d9fe167be.jpg" alt="上报数据"></p>
+<p>这个demo只是简单梳理了一下监控用户轨迹的基本思路，还存在很多很多的问题，下面举的例子只是这众多问题的一小部分，是在写 demo 的时候想到的：</p>
+<ul>
+<li>页面的hash值改变时，会同时触发 pushState 和 hashChange 事件，造成事件的重复上报</li>
+<li>监控用户点击事件时需要对一些无效的事件进行过滤，过滤规则需要全盘考虑下，另外，表单元素 value 值的获取也需要单独处理</li>
+<li>网络请求上报的数据需要按照实际场景进行更细化的处理，XMLHttpRequest 和 fetch 的上报数据格式需要合并</li>
+</ul>
+<p>总之，这只是一个小小的开始，希望我能坚持完善下去。</p>
+]]></content>
+      <tags>
+        <tag>监控</tag>
       </tags>
   </entry>
   <entry>
