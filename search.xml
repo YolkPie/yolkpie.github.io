@@ -6301,6 +6301,159 @@ _注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸
       </tags>
   </entry>
   <entry>
+    <title>微前端实践三（Micro-App落地）</title>
+    <url>/2021/09/09/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%89/</url>
+    <content><![CDATA[<h2 id="微前端架构之Micro-App"><a href="#微前端架构之Micro-App" class="headerlink" title="微前端架构之Micro-App"></a>微前端架构之Micro-App</h2><p>经过前面一系列调研，最终决定使用京东出品的微前端框架Micro-App来落地我们的新项目</p>
+<h3 id="关于Micro-App"><a href="#关于Micro-App" class="headerlink" title="关于Micro-App"></a>关于Micro-App</h3><p><code>single-spa</code>是通过监听 <code>url change</code> 事件，在路由变化时匹配到渲染的子应用并进行渲染，这个思路也是目前实现微前端的主流方式。同时<code>single-spa</code>要求子应用修改渲染逻辑并暴露出三个方法：<code>bootstrap</code>、<code>mount</code>、<code>unmount</code>，分别对应初始化、渲染和卸载，这也导致子应用需要对入口文件进行修改。因为<code>qiankun</code>是基于<code>single-spa</code>进行封装，所以这些特点也被<code>qiankun</code>继承下来，并且需要对<code>webpack</code>配置进行一些修改。</p>
+<p><code>micro-app</code>并没有沿袭<code>single-spa</code>的思路，而是借鉴了<code>WebComponent</code>的思想，通过<code>CustomElement</code>结合自定义的<code>ShadowDom</code>，将微前端封装成一个类<code>WebComponent</code>组件，从而实现微前端的组件化渲染。并且由于自定义<code>ShadowDom</code>的隔离特性，<code>micro-app</code>不需要像<code>single-spa</code>和<code>qiankun</code>一样要求子应用修改渲染逻辑并暴露出方法，也不需要修改<code>webpack</code>配置，相对接入微前端成本最低的方案。</p>
+<p>Micro-App 概念图<br><img src= "/img/loading.gif" data-src="%E6%A6%82%E5%BF%B5%E5%9B%BE.png" alt="概念图"></p>
+<h3 id="Micro-App的优势"><a href="#Micro-App的优势" class="headerlink" title="Micro-App的优势"></a>Micro-App的优势</h3><ol>
+<li><p>使用简单<br>它将所有功能都封装到一个类<code>WebComponent</code>组件中，从而实现在基座应用中嵌入一行代码即可渲染一个微前端应用，使用类似：<code>iframe</code>。<br>同时<code>Micro-App</code>还提供了<code>js沙箱</code>、<code>样式隔离</code>、<code>元素隔离</code>、<code>预加载</code>、<code>数据通信</code>、<code>静态资源补全</code>等一系列完善的功能。</p>
+</li>
+<li><p>零依赖<br><code>Micro-App</code>没有任何依赖，这赋予它小巧的体积和更高的扩展性。</p>
+</li>
+<li><p>兼容所有框架<br>为了保证各个业务之间独立开发、独立部署的能力，<code>Micro-App</code>做了诸多兼容，在任何技术框架中都可以正常运行。</p>
+</li>
+</ol>
+<h3 id="开始实战"><a href="#开始实战" class="headerlink" title="开始实战"></a>开始实战</h3><p><a href="https://zeroing.jd.com/micro-app/docs.html#/">Micro-App官网</a><br>Micro-App的官网写的太理想的，单看里面的一些介绍根本无从下手。<br>那我们再来一个官网的Demo: <a href="https://github.com/micro-zoe/micro-app.git">GitHub: Micro-App</a></p>
+<p>很不幸，你从GitHub上下载下来的demo可以无法在本地顺利的运行，可能会遇到各种各样的问题，但是：你要把问题解决了，项目是可以运行起来的，而且效果还不错。具体遇到啥问题，咨询官方吧！不在本次分享范畴里。</p>
+<blockquote>
+<p>项目背景<br>需求：做一个客户管理系统，简单描述功能模块：<br>  1、首页 工作台：统计客户昨日新增量，活跃度，发布消息数等<br>  2、客户信息管理：客户列表，基本信息维护，给客户发短信等<br>  3、系统日志：记录每个用户登录系统后的所有操作<br>  4、权限控制：用户权限不同，能访问的菜单也不同，页面内展示的模块，操作按钮等也不同</p>
+</blockquote>
+<h4 id="一、安装依赖"><a href="#一、安装依赖" class="headerlink" title="一、安装依赖"></a>一、安装依赖</h4><p><strong>基座应用</strong><br>1、安装依赖</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm i @micro-zoe/micro-app --save</span><br></pre></td></tr></table></figure>
+<p>2、引入依赖</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line">microApp.start()</span><br></pre></td></tr></table></figure>
+<p>3、给子应用分配路由</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// router.js</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> VueRouter <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"><span class="keyword">import</span> Customer <span class="keyword">from</span> <span class="string">&#x27;./customer.vue&#x27;</span></span><br><span class="line"></span><br><span class="line">Vue.use(VueRouter)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> routes = [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// 非严格匹配，/customer/* 都将匹配到 Customer 组件</span></span><br><span class="line">    path: <span class="string">&#x27;/customer/*&#x27;</span>, </span><br><span class="line">    name: <span class="string">&#x27;customer&#x27;</span>,</span><br><span class="line">    component: Customer,</span><br><span class="line">  &#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> routes</span><br></pre></td></tr></table></figure>
+<p>4、在 customer.vue 页面中使用组件</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- customer.vue --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>客户管理<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- url为html地址 (url只是html地址，子应用的路由还是基于浏览器地址) --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">micro-app</span> <span class="attr">name</span>=<span class="string">&#x27;customer&#x27;</span> <span class="attr">url</span>=<span class="string">&#x27;http://localhost:3001/&#x27;</span> <span class="attr">baseurl</span>=<span class="string">&#x27;/customer&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">micro-app</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>子应用</strong><br>1、添加路由前缀<code>(如果基座应用是history路由，子应用是hash路由，不需要设置路由前缀，这一步可以省略)</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// mian.js</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> VueRouter <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"><span class="keyword">import</span> routes <span class="keyword">from</span> <span class="string">&#x27;./router&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> VueRouter(&#123;</span><br><span class="line">  options: &#123;</span><br><span class="line">    <span class="comment">// 添加路由前缀，子应用可以通过window.__MICRO_APP_BASE_URL__获取基座下发的baseurl</span></span><br><span class="line">    base: <span class="built_in">window</span>.__MICRO_APP_BASE_URL__ || <span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  routes,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> app = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  router,</span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App),</span><br><span class="line">&#125;).$mount(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>2、在webpack-dev-server的headers中设置跨域支持。<code>为什么要支持跨域访问？</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  headers: &#123;</span><br><span class="line">    <span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>: <span class="string">&#x27;*&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>完成以上步骤微前端即可正常渲染。</p>
+<blockquote>
+<p>注意：<br>1、name必传，name值不可以重复，它是区分子应用的标识<br>2、url必传，与子应用路由没任何关系，它只是子应用资源的访问地址，是html页面的地址哦<br>3、baseurl是基座应用分配给子应用的路由前缀，非必传，默认值为空字符串。<br>4、子应用必须支持跨域访问。</p>
+</blockquote>
+<h4 id="二、主要功能"><a href="#二、主要功能" class="headerlink" title="二、主要功能"></a>二、主要功能</h4><p><strong>1、配置项</strong><br><strong>name</strong>: 必须， 子应用标识，全局唯一, <code>name</code> 值变化时，会卸载当前应用并重新渲染<br><strong>url</strong>: 必须， 子应用访问地址：页面的访问地址：<a href="http://xxx.jd.com/appname/index.html">http://xxx.jd.com/appname/index.html</a>; 基座会解析出页面中依赖的js、css 之后下载资源,并执行<br><strong>baseurl</strong>:非必须 用于设置子应用的路由前缀，类似react-router中的 basename</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;BrowserRouter basename=&#123;<span class="built_in">window</span>.proxyWindow.__MICRO_APP_BASE_URL__ || <span class="string">&#x27;/&#x27;</span>&gt;</span><br><span class="line">  &lt;Switch&gt;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &lt;/Switch&gt;</span><br><span class="line">&lt;/BrowserRouter&gt;</span><br></pre></td></tr></table></figure>
+<p>其他配置，参考官方文档</p>
+<p><strong>2、环境变量</strong><br>在子应用中通过 <code>window.proxyWindow.__MICRO_APP_ENVIRONMENT__</code> 变量判断是否在<code>micro-app</code>环境中。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.proxyWindow.__MICRO_APP_ENVIRONMENT__) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;我在 micro-app 环境中渲染&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// window.proxyWindow 属性上，有基座注入到window上的全局变量，如：baseurl, public_path, appname,environment(是否Micro-app环境)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong>3、数据通信</strong></p>
+<ul>
+<li><ol>
+<li>基座应用和子应用之间的通信</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>全局通信</li>
+</ol>
+</li>
+</ul>
+<p><strong>基座应用和子应用之间的通信</strong></p>
+<ul>
+<li>基座主动给子应用发送数据，基座主动问子应用要数据</li>
+<li>子应用主动给基座发送数据，子应用主动问基座要数据</li>
+</ul>
+<p><strong>1）基座应用 –<code>发送Data</code>–&gt; 子应用</strong></p>
+<ul>
+<li>方法一: 属性绑定<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;micro-app</span><br><span class="line">  name=<span class="string">&quot;my-app&quot;</span></span><br><span class="line">  url=<span class="string">&quot;xx&quot;</span></span><br><span class="line">  :data=<span class="string">&quot;data&quot;</span> <span class="comment">// data只接受对象类型，数据变化时会重新发送</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure></li>
+<li>方法二：调用setData方法<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送数据给子应用 appName</span></span><br><span class="line">microApp.setData(<span class="string">&#x27;appName&#x27;</span>, &#123;<span class="attr">type</span>: <span class="string">&#x27;数据&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>2）基座应用 –<code>获取Data</code>–&gt; 子应用</strong></p>
+<ul>
+<li>方法一：监听事件<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;micro-app</span><br><span class="line">  name=<span class="string">&#x27;appName&#x27;</span></span><br><span class="line">  url=<span class="string">&#x27;xxxxx&#x27;</span></span><br><span class="line">  :data=<span class="string">&#x27;data&#x27;</span></span><br><span class="line">  <span class="comment">// 数据在事件对象的detail.data字段中，子应用每次发送数据都会重新触发事件</span></span><br><span class="line">  @datachange=<span class="string">&#x27;handleDataChange&#x27;</span></span><br><span class="line">/&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">methods:&#123;</span><br><span class="line">  <span class="function"><span class="title">handleDataChange</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理子应用发送的数据</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;script&gt;</span><br></pre></td></tr></table></figure></li>
+<li>方法二：手动绑定监听函数<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataListener</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;来自子应用appName的数据&#x27;</span>, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定监听函数</span></span><br><span class="line"><span class="comment"> * appName: 应用名称</span></span><br><span class="line"><span class="comment"> * dataListener: 绑定函数</span></span><br><span class="line"><span class="comment"> * autoTrigger: 在初次绑定监听函数时有缓存数据，是否需要主动触发一次，默认为false</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">microApp.addDataListener(appName: string, <span class="attr">dataListener</span>: <span class="built_in">Function</span>, autoTrigger?: boolean)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解绑监听my-app子应用的函数</span></span><br><span class="line">microApp.removeDataListener(appName: string, <span class="attr">dataListener</span>: <span class="built_in">Function</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有监听appName子应用的函数</span></span><br><span class="line">microApp.clearDataListener(appName: string)</span><br></pre></td></tr></table></figure></li>
+<li>方法三：<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">microApp.getData(appName) <span class="comment">// 返回子应用发送的data数据</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>3）子应用 –<code>发送Data</code>–&gt; 基座应用</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 数据是对象&#123;&#125;</span></span><br><span class="line"><span class="built_in">window</span>.microApp.dispatch(&#123;<span class="attr">type</span>: <span class="string">&#x27;子应用发送的数据&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>4）子应用 –<code>拉取Data</code>–&gt; 基座应用</strong></p>
+<ul>
+<li>方法一：监听函数</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataListener</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;来自基座应用的数据&#x27;</span>, data)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定监听函数</span></span><br><span class="line"><span class="comment"> * dataListener: 绑定函数</span></span><br><span class="line"><span class="comment"> * autoTrigger: 在初次绑定监听函数时有缓存数据，是否需要主动触发一次，默认为false</span></span><br><span class="line"><span class="comment"> * 补充: autoTrigger主要是为子应用提供的，因为子应用是异步渲染的，如果在子应用还没渲染时基座应用发送数据，子应用在初始化后不会触发绑定函数，但这个数据会放入缓存中，此时可以设置autoTrigger为true主动触发一次监听函数来获取数据。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">window</span>.microApp.addDataListener(dataListener: <span class="built_in">Function</span>, autoTrigger?: boolean)</span><br><span class="line"><span class="comment">// 对应基座的的</span></span><br><span class="line"><span class="comment">// microApp.setData(&#x27;appName&#x27;, &#123;type: &#x27;数据&#x27;&#125;)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 解除绑定</span></span><br><span class="line"><span class="built_in">window</span>.microApp.removeDataListener(dataListener)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有当前应用的绑定函数</span></span><br><span class="line"><span class="built_in">window</span>.microApp.clearDataListener()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>方法二：主动获取<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.microApp.getData() <span class="comment">// 返回data数据</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>全局数据通信</strong><br>全局数据通信会向基座应用和所有子应用发送数据，在跨应用通信的场景中适用</p>
+<p><strong>1）数据监听与解绑</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基座中</span></span><br><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataListener</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;全局数据&#x27;</span>, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定监听函数</span></span><br><span class="line"><span class="comment"> * dataListener: 绑定函数</span></span><br><span class="line"><span class="comment"> * autoTrigger: 在初次绑定监听函数时有缓存数据，是否需要主动触发一次，默认为false</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">microApp.addGlobalDataListener(dataListener: <span class="built_in">Function</span>, autoTrigger?: boolean)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解除绑定</span></span><br><span class="line">microApp.removeGlobalDataListener(dataListener)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有全局数据的绑定函数</span></span><br><span class="line">microApp.clearGlobalDataListener()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子应用</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataListener</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;全局数据&#x27;</span>, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定监听函数</span></span><br><span class="line"><span class="comment"> * dataListener: 绑定函数</span></span><br><span class="line"><span class="comment"> * autoTrigger: 在初次绑定监听函数时有缓存数据，是否需要主动触发一次，默认为false</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">window</span>.microApp?.addGlobalDataListener(dataListener: <span class="built_in">Function</span>, autoTrigger?: boolean)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解除绑定</span></span><br><span class="line"><span class="built_in">window</span>.microApp?.removeGlobalDataListener(dataListener)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有全局数据绑定函数</span></span><br><span class="line"><span class="built_in">window</span>.microApp?.clearGlobalDataListener()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意: window.microApp 的判空操作</span></span><br></pre></td></tr></table></figure>
+<p><strong>2）发送数据</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基座</span></span><br><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line">microApp.setGlobalData(&#123;<span class="attr">type</span>: <span class="string">&#x27;全局数据&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子应用</span></span><br><span class="line"><span class="built_in">window</span>.microApp?.setGlobalData(&#123;<span class="attr">type</span>: <span class="string">&#x27;全局数据&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意：window.microApp 判空</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：<br>1、clearGlobalDataListener会清空所有应用的绑定，不仅限于自身<br>2、在子应用卸载时，需要调用removeGlobalDataListener主动解绑函数。</p>
+</blockquote>
+<p><strong>4、路由</strong><br><strong>url属性与子应用路由的关系</strong>  <code>答：没关系</code><br><code>micro-app</code>不是<code>iframe</code>，不会重开一个<code>window</code>窗口，基座应用和子应用本质是在同一个页面渲染，所以影响到子应用路由的是浏览器地址。<code>micro-app</code>的<code>url</code>属性只是<code>html</code>的地址，它只是用来获取<code>html</code>。</p>
+<p>基座应用：根据浏览器地址决定访问哪个子应用<br>子应用：根据浏览器地址，决定渲染哪个页面</p>
+<p>例如：浏览器访问：<a href="http://localhost/customer/list">http://localhost/customer/list</a></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基座路由配置</span></span><br><span class="line">&#123; <span class="attr">title</span>:<span class="string">&#x27;客户管理&#x27;</span>, <span class="attr">name</span>:<span class="string">&#x27;customer&#x27;</span>, <span class="attr">path</span>:<span class="string">&#x27;/customer/*&#x27;</span>, <span class="attr">view</span>:<span class="string">&#x27;/customer.vue&#x27;</span>&#125;,</span><br><span class="line"><span class="comment">// customer.vue</span></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;micro-app</span><br><span class="line">    name=<span class="string">&#x27;customer&#x27;</span></span><br><span class="line">    url=<span class="string">&#x27;http://localhost:8001/&#x27;</span>&gt;</span><br><span class="line">  &lt;/micro-app&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子应用路由配置</span></span><br><span class="line">&#123; <span class="attr">title</span>:<span class="string">&#x27;&#x27;</span>, <span class="attr">name</span>:<span class="string">&#x27;customerList&#x27;</span>, <span class="attr">path</span>:<span class="string">&#x27;/customer/list&#x27;</span>, <span class="attr">view</span>:<span class="string">&#x27;/customer/List.vue&#x27;</span>&#125;,</span><br><span class="line"><span class="comment">// customer/List.vue</span></span><br><span class="line"><span class="comment">// 正常页面排版，js逻辑</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>页面访问及解析流程：<br><img src= "/img/loading.gif" data-src="%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="流程图"></p>
+<p><strong>几个例子</strong></p>
+<ul>
+<li><ol>
+<li>基座，子应用都是history模式<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 浏览器地址为：http://localhost/page1/，此时路由地址为page1。</span></span><br><span class="line"><span class="comment">//    基座匹配路由 page1 渲染组件； 子应用 page1匹配 并渲染组件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 基座micr-app配置, url 不包含page1, 路由还在浏览器地址栏取</span></span><br><span class="line"><span class="comment">// http://localhost:8001/ 会兜底到 http://localhost:8001/index.html</span></span><br><span class="line">&lt;micro-app url=<span class="string">&#x27;http://localhost:8001/&#x27;</span>&gt;&lt;/micro-app&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li><ol start="2">
+<li>基座 history 子应用 hash<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- // 浏览器地址： http://localhost/appName#/page1 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- // 这里的#/page1是无效的，应该添加到浏览器地址上 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">micro-app</span> <span class="attr">url</span>=<span class="string">&#x27;http://localhost:8001/#/page1&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">micro-app</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- // 这个url才是正确的 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">micro-app</span> <span class="attr">url</span>=<span class="string">&#x27;http://localhost:8001/&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">micro-app</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>基座 history 子应用 history<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 子应用通过baseurl设置路由前缀，路由 /page1 就变为 /appNmae/page1 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">micro-app</span> <span class="attr">url</span>=<span class="string">&#x27;http://localhost:8001/&#x27;</span> <span class="attr">baseurl</span>=<span class="string">&#x27;/appNmae&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">micro-app</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+</li>
+</ul>
+<p><strong>注意</strong></p>
+<ul>
+<li>1）基座是hash路由，子应用也必须是hash路由</li>
+<li>2）基座是history路由，子应用可以是hash或history路由</li>
+</ul>
+<p><strong>5、应用之间如何跳转</strong><br>因为每个应用的路由实例都是不同的，路由实例只能控制自身，无法影响其它应用，要实现应用之间的跳转有两种方式：</p>
+<ul>
+<li><p><strong>方法一：history.pushState(replaceState)</strong><br><code>history.pushState</code>和<code>history.replaceState</code>可以直接修改浏览器地址，但是它们无法触发<code>popstate</code>事件，所以在跳转后需要主动触发一次<code>popstate</code>事件。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// history 模式</span></span><br><span class="line">history.pushState(<span class="literal">null</span>, <span class="literal">null</span>, <span class="string">&#x27;page2&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主动触发一次popstate事件</span></span><br><span class="line"><span class="built_in">window</span>.dispatchEvent(<span class="keyword">new</span> PopStateEvent(<span class="string">&#x27;popstate&#x27;</span>, &#123; <span class="attr">state</span>: <span class="literal">null</span> &#125;))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// hash模式</span></span><br><span class="line">history.pushState(<span class="literal">null</span>, <span class="literal">null</span>, <span class="string">&#x27;#/page2&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主动触发一次popstate事件</span></span><br><span class="line"><span class="built_in">window</span>.dispatchEvent(<span class="keyword">new</span> PopStateEvent(<span class="string">&#x27;popstate&#x27;</span>, &#123; <span class="attr">state</span>: <span class="literal">null</span> &#125;))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>方法二：利用数据通信机制，让基座跳转路由</strong><br>如基座下发指令控制子应用进行跳转，或者子应用向基座应用上传一个可以控制自身路由的函数。</p>
+</li>
+</ul>
+<h3 id="QA"><a href="#QA" class="headerlink" title="QA"></a>QA</h3><ul>
+<li><p><strong>1、子应用一定要支持跨域吗？</strong><br><code>是的！</code><br>开发环境配置</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack-devserver 中配置， 或 vue.config.js中</span></span><br><span class="line">devServer: &#123;</span><br><span class="line">  headers: &#123;</span><br><span class="line">    <span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>: <span class="string">&#x27;*&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>线上环境，通过nginx配置解决</p>
+</li>
+<li><p><strong>2、兼容性如何</strong><br>micro-app依赖于CustomElements和Proxy两个较新的API。</p>
+</li>
+</ul>
+<p>对于不支持CustomElements的浏览器，可以通过引入polyfill进行兼容，详情可参考：webcomponents/polyfills。</p>
+<p>但是Proxy暂时没有做兼容，所以对于不支持Proxy的浏览器无法运行micro-app。</p>
+<p>浏览器兼容性可以查看：<a href="https://caniuse.com/?search=Proxy">Can I Use</a></p>
+<p>总体如下：</p>
+<ul>
+<li>PC端：除了IE浏览器，其它浏览器基本兼容。</li>
+<li>移动端：ios10+、android5+</li>
+</ul>
+<p><a href="https://zeroing.jd.com/micro-app/docs.html#/zh-cn/questions">官网问答</a></p>
+<p>参考文档<br><a href="https://zeroing.jd.com/micro-app/docs.html">https://zeroing.jd.com/micro-app/docs.html</a><br><a href="https://github.com/micro-zoe/micro-app.git">https://github.com/micro-zoe/micro-app.git</a></p>
+]]></content>
+      <categories>
+        <category>JS</category>
+      </categories>
+      <tags>
+        <tag>微前端</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>情绪版的应用</title>
     <url>/2021/06/28/%E6%83%85%E7%BB%AA%E7%89%88%E7%9A%84%E5%BA%94%E7%94%A8/</url>
     <content><![CDATA[<p>在很多项目总结中，我们几乎都能看到情绪板的运用，精美的图片搭配符合主题的关键词，可以向需求方和产品侧准确地表达出页面的设计方向和风格。那什么是情绪版呢，我们又该怎么建立情绪版呢，以下是我写的一点点总结。</p>
@@ -7369,159 +7522,6 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       <tags>
         <tag>组件</tag>
         <tag>设计模式</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>微前端实践三（Micro-App落地）</title>
-    <url>/2021/09/09/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%89(%E8%90%BD%E5%9C%B0)/%E5%BE%AE%E5%89%8D%E7%AB%AF%E5%AE%9E%E8%B7%B5%E4%B8%89/</url>
-    <content><![CDATA[<h2 id="微前端架构之Micro-App"><a href="#微前端架构之Micro-App" class="headerlink" title="微前端架构之Micro-App"></a>微前端架构之Micro-App</h2><p>经过前面一系列调研，最终决定使用京东出品的微前端框架Micro-App来落地我们的新项目</p>
-<h3 id="关于Micro-App"><a href="#关于Micro-App" class="headerlink" title="关于Micro-App"></a>关于Micro-App</h3><p><code>single-spa</code>是通过监听 <code>url change</code> 事件，在路由变化时匹配到渲染的子应用并进行渲染，这个思路也是目前实现微前端的主流方式。同时<code>single-spa</code>要求子应用修改渲染逻辑并暴露出三个方法：<code>bootstrap</code>、<code>mount</code>、<code>unmount</code>，分别对应初始化、渲染和卸载，这也导致子应用需要对入口文件进行修改。因为<code>qiankun</code>是基于<code>single-spa</code>进行封装，所以这些特点也被<code>qiankun</code>继承下来，并且需要对<code>webpack</code>配置进行一些修改。</p>
-<p><code>micro-app</code>并没有沿袭<code>single-spa</code>的思路，而是借鉴了<code>WebComponent</code>的思想，通过<code>CustomElement</code>结合自定义的<code>ShadowDom</code>，将微前端封装成一个类<code>WebComponent</code>组件，从而实现微前端的组件化渲染。并且由于自定义<code>ShadowDom</code>的隔离特性，<code>micro-app</code>不需要像<code>single-spa</code>和<code>qiankun</code>一样要求子应用修改渲染逻辑并暴露出方法，也不需要修改<code>webpack</code>配置，相对接入微前端成本最低的方案。</p>
-<p>Micro-App 概念图<br><img src= "/img/loading.gif" data-src="%E6%A6%82%E5%BF%B5%E5%9B%BE.png" alt="概念图"></p>
-<h3 id="Micro-App的优势"><a href="#Micro-App的优势" class="headerlink" title="Micro-App的优势"></a>Micro-App的优势</h3><ol>
-<li><p>使用简单<br>它将所有功能都封装到一个类<code>WebComponent</code>组件中，从而实现在基座应用中嵌入一行代码即可渲染一个微前端应用，使用类似：<code>iframe</code>。<br>同时<code>Micro-App</code>还提供了<code>js沙箱</code>、<code>样式隔离</code>、<code>元素隔离</code>、<code>预加载</code>、<code>数据通信</code>、<code>静态资源补全</code>等一系列完善的功能。</p>
-</li>
-<li><p>零依赖<br><code>Micro-App</code>没有任何依赖，这赋予它小巧的体积和更高的扩展性。</p>
-</li>
-<li><p>兼容所有框架<br>为了保证各个业务之间独立开发、独立部署的能力，<code>Micro-App</code>做了诸多兼容，在任何技术框架中都可以正常运行。</p>
-</li>
-</ol>
-<h3 id="开始实战"><a href="#开始实战" class="headerlink" title="开始实战"></a>开始实战</h3><p><a href="https://zeroing.jd.com/micro-app/docs.html#/">Micro-App官网</a><br>Micro-App的官网写的太理想的，单看里面的一些介绍根本无从下手。<br>那我们再来一个官网的Demo: <a href="https://github.com/micro-zoe/micro-app.git">GitHub: Micro-App</a></p>
-<p>很不幸，你从GitHub上下载下来的demo可以无法在本地顺利的运行，可能会遇到各种各样的问题，但是：你要把问题解决了，项目是可以运行起来的，而且效果还不错。具体遇到啥问题，咨询官方吧！不在本次分享范畴里。</p>
-<blockquote>
-<p>项目背景<br>需求：做一个客户管理系统，简单描述功能模块：<br>  1、首页 工作台：统计客户昨日新增量，活跃度，发布消息数等<br>  2、客户信息管理：客户列表，基本信息维护，给客户发短信等<br>  3、系统日志：记录每个用户登录系统后的所有操作<br>  4、权限控制：用户权限不同，能访问的菜单也不同，页面内展示的模块，操作按钮等也不同</p>
-</blockquote>
-<h4 id="一、安装依赖"><a href="#一、安装依赖" class="headerlink" title="一、安装依赖"></a>一、安装依赖</h4><p><strong>基座应用</strong><br>1、安装依赖</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">npm i @micro-zoe/micro-app --save</span><br></pre></td></tr></table></figure>
-<p>2、引入依赖</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line">microApp.start()</span><br></pre></td></tr></table></figure>
-<p>3、给子应用分配路由</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// router.js</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> VueRouter <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"><span class="keyword">import</span> Customer <span class="keyword">from</span> <span class="string">&#x27;./customer.vue&#x27;</span></span><br><span class="line"></span><br><span class="line">Vue.use(VueRouter)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> routes = [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// 非严格匹配，/customer/* 都将匹配到 Customer 组件</span></span><br><span class="line">    path: <span class="string">&#x27;/customer/*&#x27;</span>, </span><br><span class="line">    name: <span class="string">&#x27;customer&#x27;</span>,</span><br><span class="line">    component: Customer,</span><br><span class="line">  &#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> routes</span><br></pre></td></tr></table></figure>
-<p>4、在 customer.vue 页面中使用组件</p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- customer.vue --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>客户管理<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- url为html地址 (url只是html地址，子应用的路由还是基于浏览器地址) --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">micro-app</span> <span class="attr">name</span>=<span class="string">&#x27;customer&#x27;</span> <span class="attr">url</span>=<span class="string">&#x27;http://localhost:3001/&#x27;</span> <span class="attr">baseurl</span>=<span class="string">&#x27;/customer&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">micro-app</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>子应用</strong><br>1、添加路由前缀<code>(如果基座应用是history路由，子应用是hash路由，不需要设置路由前缀，这一步可以省略)</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// mian.js</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> VueRouter <span class="keyword">from</span> <span class="string">&#x27;vue-router&#x27;</span></span><br><span class="line"><span class="keyword">import</span> routes <span class="keyword">from</span> <span class="string">&#x27;./router&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> router = <span class="keyword">new</span> VueRouter(&#123;</span><br><span class="line">  options: &#123;</span><br><span class="line">    <span class="comment">// 添加路由前缀，子应用可以通过window.__MICRO_APP_BASE_URL__获取基座下发的baseurl</span></span><br><span class="line">    base: <span class="built_in">window</span>.__MICRO_APP_BASE_URL__ || <span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  routes,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> app = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  router,</span><br><span class="line">  render: <span class="function"><span class="params">h</span> =&gt;</span> h(App),</span><br><span class="line">&#125;).$mount(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>2、在webpack-dev-server的headers中设置跨域支持。<code>为什么要支持跨域访问？</code></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">  headers: &#123;</span><br><span class="line">    <span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>: <span class="string">&#x27;*&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-<p>完成以上步骤微前端即可正常渲染。</p>
-<blockquote>
-<p>注意：<br>1、name必传，name值不可以重复，它是区分子应用的标识<br>2、url必传，与子应用路由没任何关系，它只是子应用资源的访问地址，是html页面的地址哦<br>3、baseurl是基座应用分配给子应用的路由前缀，非必传，默认值为空字符串。<br>4、子应用必须支持跨域访问。</p>
-</blockquote>
-<h4 id="二、主要功能"><a href="#二、主要功能" class="headerlink" title="二、主要功能"></a>二、主要功能</h4><p><strong>1、配置项</strong><br><strong>name</strong>: 必须， 子应用标识，全局唯一, <code>name</code> 值变化时，会卸载当前应用并重新渲染<br><strong>url</strong>: 必须， 子应用访问地址：页面的访问地址：<a href="http://xxx.jd.com/appname/index.html">http://xxx.jd.com/appname/index.html</a>; 基座会解析出页面中依赖的js、css 之后下载资源,并执行<br><strong>baseurl</strong>:非必须 用于设置子应用的路由前缀，类似react-router中的 basename</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;BrowserRouter basename=&#123;<span class="built_in">window</span>.proxyWindow.__MICRO_APP_BASE_URL__ || <span class="string">&#x27;/&#x27;</span>&gt;</span><br><span class="line">  &lt;Switch&gt;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &lt;/Switch&gt;</span><br><span class="line">&lt;/BrowserRouter&gt;</span><br></pre></td></tr></table></figure>
-<p>其他配置，参考官方文档</p>
-<p><strong>2、环境变量</strong><br>在子应用中通过 <code>window.proxyWindow.__MICRO_APP_ENVIRONMENT__</code> 变量判断是否在<code>micro-app</code>环境中。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.proxyWindow.__MICRO_APP_ENVIRONMENT__) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;我在 micro-app 环境中渲染&#x27;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// window.proxyWindow 属性上，有基座注入到window上的全局变量，如：baseurl, public_path, appname,environment(是否Micro-app环境)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>3、数据通信</strong></p>
-<ul>
-<li><ol>
-<li>基座应用和子应用之间的通信</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>全局通信</li>
-</ol>
-</li>
-</ul>
-<p><strong>基座应用和子应用之间的通信</strong></p>
-<ul>
-<li>基座主动给子应用发送数据，基座主动问子应用要数据</li>
-<li>子应用主动给基座发送数据，子应用主动问基座要数据</li>
-</ul>
-<p><strong>1）基座应用 –<code>发送Data</code>–&gt; 子应用</strong></p>
-<ul>
-<li>方法一: 属性绑定<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;micro-app</span><br><span class="line">  name=<span class="string">&quot;my-app&quot;</span></span><br><span class="line">  url=<span class="string">&quot;xx&quot;</span></span><br><span class="line">  :data=<span class="string">&quot;data&quot;</span> <span class="comment">// data只接受对象类型，数据变化时会重新发送</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure></li>
-<li>方法二：调用setData方法<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送数据给子应用 appName</span></span><br><span class="line">microApp.setData(<span class="string">&#x27;appName&#x27;</span>, &#123;<span class="attr">type</span>: <span class="string">&#x27;数据&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p><strong>2）基座应用 –<code>获取Data</code>–&gt; 子应用</strong></p>
-<ul>
-<li>方法一：监听事件<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;micro-app</span><br><span class="line">  name=<span class="string">&#x27;appName&#x27;</span></span><br><span class="line">  url=<span class="string">&#x27;xxxxx&#x27;</span></span><br><span class="line">  :data=<span class="string">&#x27;data&#x27;</span></span><br><span class="line">  <span class="comment">// 数据在事件对象的detail.data字段中，子应用每次发送数据都会重新触发事件</span></span><br><span class="line">  @datachange=<span class="string">&#x27;handleDataChange&#x27;</span></span><br><span class="line">/&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">methods:&#123;</span><br><span class="line">  <span class="function"><span class="title">handleDataChange</span>(<span class="params">data</span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 处理子应用发送的数据</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;script&gt;</span><br></pre></td></tr></table></figure></li>
-<li>方法二：手动绑定监听函数<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataListener</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;来自子应用appName的数据&#x27;</span>, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定监听函数</span></span><br><span class="line"><span class="comment"> * appName: 应用名称</span></span><br><span class="line"><span class="comment"> * dataListener: 绑定函数</span></span><br><span class="line"><span class="comment"> * autoTrigger: 在初次绑定监听函数时有缓存数据，是否需要主动触发一次，默认为false</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">microApp.addDataListener(appName: string, <span class="attr">dataListener</span>: <span class="built_in">Function</span>, autoTrigger?: boolean)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解绑监听my-app子应用的函数</span></span><br><span class="line">microApp.removeDataListener(appName: string, <span class="attr">dataListener</span>: <span class="built_in">Function</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有监听appName子应用的函数</span></span><br><span class="line">microApp.clearDataListener(appName: string)</span><br></pre></td></tr></table></figure></li>
-<li>方法三：<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">microApp.getData(appName) <span class="comment">// 返回子应用发送的data数据</span></span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<p><strong>3）子应用 –<code>发送Data</code>–&gt; 基座应用</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 数据是对象&#123;&#125;</span></span><br><span class="line"><span class="built_in">window</span>.microApp.dispatch(&#123;<span class="attr">type</span>: <span class="string">&#x27;子应用发送的数据&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
-
-
-<p><strong>4）子应用 –<code>拉取Data</code>–&gt; 基座应用</strong></p>
-<ul>
-<li>方法一：监听函数</li>
-</ul>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataListener</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;来自基座应用的数据&#x27;</span>, data)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定监听函数</span></span><br><span class="line"><span class="comment"> * dataListener: 绑定函数</span></span><br><span class="line"><span class="comment"> * autoTrigger: 在初次绑定监听函数时有缓存数据，是否需要主动触发一次，默认为false</span></span><br><span class="line"><span class="comment"> * 补充: autoTrigger主要是为子应用提供的，因为子应用是异步渲染的，如果在子应用还没渲染时基座应用发送数据，子应用在初始化后不会触发绑定函数，但这个数据会放入缓存中，此时可以设置autoTrigger为true主动触发一次监听函数来获取数据。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">window</span>.microApp.addDataListener(dataListener: <span class="built_in">Function</span>, autoTrigger?: boolean)</span><br><span class="line"><span class="comment">// 对应基座的的</span></span><br><span class="line"><span class="comment">// microApp.setData(&#x27;appName&#x27;, &#123;type: &#x27;数据&#x27;&#125;)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 解除绑定</span></span><br><span class="line"><span class="built_in">window</span>.microApp.removeDataListener(dataListener)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有当前应用的绑定函数</span></span><br><span class="line"><span class="built_in">window</span>.microApp.clearDataListener()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<ul>
-<li>方法二：主动获取<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.microApp.getData() <span class="comment">// 返回data数据</span></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ul>
-<p><strong>全局数据通信</strong><br>全局数据通信会向基座应用和所有子应用发送数据，在跨应用通信的场景中适用</p>
-<p><strong>1）数据监听与解绑</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基座中</span></span><br><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataListener</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;全局数据&#x27;</span>, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定监听函数</span></span><br><span class="line"><span class="comment"> * dataListener: 绑定函数</span></span><br><span class="line"><span class="comment"> * autoTrigger: 在初次绑定监听函数时有缓存数据，是否需要主动触发一次，默认为false</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">microApp.addGlobalDataListener(dataListener: <span class="built_in">Function</span>, autoTrigger?: boolean)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解除绑定</span></span><br><span class="line">microApp.removeGlobalDataListener(dataListener)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有全局数据的绑定函数</span></span><br><span class="line">microApp.clearGlobalDataListener()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子应用</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataListener</span> (<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&#x27;全局数据&#x27;</span>, data)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 绑定监听函数</span></span><br><span class="line"><span class="comment"> * dataListener: 绑定函数</span></span><br><span class="line"><span class="comment"> * autoTrigger: 在初次绑定监听函数时有缓存数据，是否需要主动触发一次，默认为false</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="built_in">window</span>.microApp?.addGlobalDataListener(dataListener: <span class="built_in">Function</span>, autoTrigger?: boolean)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解除绑定</span></span><br><span class="line"><span class="built_in">window</span>.microApp?.removeGlobalDataListener(dataListener)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清空所有全局数据绑定函数</span></span><br><span class="line"><span class="built_in">window</span>.microApp?.clearGlobalDataListener()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意: window.microApp 的判空操作</span></span><br></pre></td></tr></table></figure>
-<p><strong>2）发送数据</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基座</span></span><br><span class="line"><span class="keyword">import</span> microApp <span class="keyword">from</span> <span class="string">&#x27;@micro-zoe/micro-app&#x27;</span></span><br><span class="line"></span><br><span class="line">microApp.setGlobalData(&#123;<span class="attr">type</span>: <span class="string">&#x27;全局数据&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 子应用</span></span><br><span class="line"><span class="built_in">window</span>.microApp?.setGlobalData(&#123;<span class="attr">type</span>: <span class="string">&#x27;全局数据&#x27;</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意：window.microApp 判空</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注意：<br>1、clearGlobalDataListener会清空所有应用的绑定，不仅限于自身<br>2、在子应用卸载时，需要调用removeGlobalDataListener主动解绑函数。</p>
-</blockquote>
-<p><strong>4、路由</strong><br><strong>url属性与子应用路由的关系</strong>  <code>答：没关系</code><br><code>micro-app</code>不是<code>iframe</code>，不会重开一个<code>window</code>窗口，基座应用和子应用本质是在同一个页面渲染，所以影响到子应用路由的是浏览器地址。<code>micro-app</code>的<code>url</code>属性只是<code>html</code>的地址，它只是用来获取<code>html</code>。</p>
-<p>基座应用：根据浏览器地址决定访问哪个子应用<br>子应用：根据浏览器地址，决定渲染哪个页面</p>
-<p>例如：浏览器访问：<a href="http://localhost/customer/list">http://localhost/customer/list</a></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 基座路由配置</span></span><br><span class="line">&#123; <span class="attr">title</span>:<span class="string">&#x27;客户管理&#x27;</span>, <span class="attr">name</span>:<span class="string">&#x27;customer&#x27;</span>, <span class="attr">path</span>:<span class="string">&#x27;/customer/*&#x27;</span>, <span class="attr">view</span>:<span class="string">&#x27;/customer.vue&#x27;</span>&#125;,</span><br><span class="line"><span class="comment">// customer.vue</span></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;micro-app</span><br><span class="line">    name=<span class="string">&#x27;customer&#x27;</span></span><br><span class="line">    url=<span class="string">&#x27;http://localhost:8001/&#x27;</span>&gt;</span><br><span class="line">  &lt;/micro-app&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 子应用路由配置</span></span><br><span class="line">&#123; <span class="attr">title</span>:<span class="string">&#x27;&#x27;</span>, <span class="attr">name</span>:<span class="string">&#x27;customerList&#x27;</span>, <span class="attr">path</span>:<span class="string">&#x27;/customer/list&#x27;</span>, <span class="attr">view</span>:<span class="string">&#x27;/customer/List.vue&#x27;</span>&#125;,</span><br><span class="line"><span class="comment">// customer/List.vue</span></span><br><span class="line"><span class="comment">// 正常页面排版，js逻辑</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>页面访问及解析流程：<br><img src= "/img/loading.gif" data-src="%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="流程图"></p>
-<p><strong>几个例子</strong></p>
-<ul>
-<li><ol>
-<li>基座，子应用都是history模式<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 浏览器地址为：http://localhost/page1/，此时路由地址为page1。</span></span><br><span class="line"><span class="comment">//    基座匹配路由 page1 渲染组件； 子应用 page1匹配 并渲染组件</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 基座micr-app配置, url 不包含page1, 路由还在浏览器地址栏取</span></span><br><span class="line"><span class="comment">// http://localhost:8001/ 会兜底到 http://localhost:8001/index.html</span></span><br><span class="line">&lt;micro-app url=<span class="string">&#x27;http://localhost:8001/&#x27;</span>&gt;&lt;/micro-app&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ol>
-</li>
-<li><ol start="2">
-<li>基座 history 子应用 hash<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- // 浏览器地址： http://localhost/appName#/page1 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- // 这里的#/page1是无效的，应该添加到浏览器地址上 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">micro-app</span> <span class="attr">url</span>=<span class="string">&#x27;http://localhost:8001/#/page1&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">micro-app</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- // 这个url才是正确的 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">micro-app</span> <span class="attr">url</span>=<span class="string">&#x27;http://localhost:8001/&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">micro-app</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-</li>
-<li><ol start="3">
-<li>基座 history 子应用 history<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 子应用通过baseurl设置路由前缀，路由 /page1 就变为 /appNmae/page1 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">micro-app</span> <span class="attr">url</span>=<span class="string">&#x27;http://localhost:8001/&#x27;</span> <span class="attr">baseurl</span>=<span class="string">&#x27;/appNmae&#x27;</span>&gt;</span><span class="tag">&lt;/<span class="name">micro-app</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-</li>
-</ul>
-<p><strong>注意</strong></p>
-<ul>
-<li>1）基座是hash路由，子应用也必须是hash路由</li>
-<li>2）基座是history路由，子应用可以是hash或history路由</li>
-</ul>
-<p><strong>5、应用之间如何跳转</strong><br>因为每个应用的路由实例都是不同的，路由实例只能控制自身，无法影响其它应用，要实现应用之间的跳转有两种方式：</p>
-<ul>
-<li><p><strong>方法一：history.pushState(replaceState)</strong><br><code>history.pushState</code>和<code>history.replaceState</code>可以直接修改浏览器地址，但是它们无法触发<code>popstate</code>事件，所以在跳转后需要主动触发一次<code>popstate</code>事件。</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// history 模式</span></span><br><span class="line">history.pushState(<span class="literal">null</span>, <span class="literal">null</span>, <span class="string">&#x27;page2&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主动触发一次popstate事件</span></span><br><span class="line"><span class="built_in">window</span>.dispatchEvent(<span class="keyword">new</span> PopStateEvent(<span class="string">&#x27;popstate&#x27;</span>, &#123; <span class="attr">state</span>: <span class="literal">null</span> &#125;))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// hash模式</span></span><br><span class="line">history.pushState(<span class="literal">null</span>, <span class="literal">null</span>, <span class="string">&#x27;#/page2&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主动触发一次popstate事件</span></span><br><span class="line"><span class="built_in">window</span>.dispatchEvent(<span class="keyword">new</span> PopStateEvent(<span class="string">&#x27;popstate&#x27;</span>, &#123; <span class="attr">state</span>: <span class="literal">null</span> &#125;))</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>方法二：利用数据通信机制，让基座跳转路由</strong><br>如基座下发指令控制子应用进行跳转，或者子应用向基座应用上传一个可以控制自身路由的函数。</p>
-</li>
-</ul>
-<h3 id="QA"><a href="#QA" class="headerlink" title="QA"></a>QA</h3><ul>
-<li><p><strong>1、子应用一定要支持跨域吗？</strong><br><code>是的！</code><br>开发环境配置</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// webpack-devserver 中配置， 或 vue.config.js中</span></span><br><span class="line">devServer: &#123;</span><br><span class="line">  headers: &#123;</span><br><span class="line">    <span class="string">&#x27;Access-Control-Allow-Origin&#x27;</span>: <span class="string">&#x27;*&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
-<p>线上环境，通过nginx配置解决</p>
-</li>
-<li><p><strong>2、兼容性如何</strong><br>micro-app依赖于CustomElements和Proxy两个较新的API。</p>
-</li>
-</ul>
-<p>对于不支持CustomElements的浏览器，可以通过引入polyfill进行兼容，详情可参考：webcomponents/polyfills。</p>
-<p>但是Proxy暂时没有做兼容，所以对于不支持Proxy的浏览器无法运行micro-app。</p>
-<p>浏览器兼容性可以查看：<a href="https://caniuse.com/?search=Proxy">Can I Use</a></p>
-<p>总体如下：</p>
-<ul>
-<li>PC端：除了IE浏览器，其它浏览器基本兼容。</li>
-<li>移动端：ios10+、android5+</li>
-</ul>
-<p><a href="https://zeroing.jd.com/micro-app/docs.html#/zh-cn/questions">官网问答</a></p>
-<p>参考文档<br><a href="https://zeroing.jd.com/micro-app/docs.html">https://zeroing.jd.com/micro-app/docs.html</a><br><a href="https://github.com/micro-zoe/micro-app.git">https://github.com/micro-zoe/micro-app.git</a></p>
-]]></content>
-      <categories>
-        <category>JS</category>
-      </categories>
-      <tags>
-        <tag>微前端</tag>
       </tags>
   </entry>
   <entry>
