@@ -1172,6 +1172,102 @@
       </tags>
   </entry>
   <entry>
+    <title>React高阶组件</title>
+    <url>/2021/09/26/React%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/</url>
+    <content><![CDATA[<h1 id="React-高阶组件"><a href="#React-高阶组件" class="headerlink" title="React 高阶组件"></a>React 高阶组件</h1><p>高阶组件（HOC）是 React 中用于复用组件逻辑的一种高级技巧。HOC 自身不是 React API 的一部分，它是一种基于 React 的组合特性而形成的设计模式。</p>
+<blockquote>
+<p>具体而言，高阶组件是参数为组件，返回值为新组件的函数。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const EnhancedComponent &#x3D; higherOrderComponent(WrappedComponent);</span><br></pre></td></tr></table></figure>
+<p>组件是将 props 转换为 UI，而高阶组件是将组件转换为另一个组件。</p>
+<p>HOC 在 React 的第三方库中很常见，例如 Redux 的 connect 和 Relay 的 createFragmentContainer。</p>
+<p>在本文档中，我们将讨论为什么高阶组件有用，以及如何编写自己的 HOC 函数。</p>
+<h2 id="使用-HOC-解决横切关注点问题"><a href="#使用-HOC-解决横切关注点问题" class="headerlink" title="使用 HOC 解决横切关注点问题"></a>使用 HOC 解决横切关注点问题</h2><p>组件是 React 中代码复用的基本单元。但你会发现某些模式并不适合传统组件。</p>
+<p>例如，假设有一个 CommentList 组件，它订阅外部数据源，用以渲染评论列表：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class CommentList extends React.Component &#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    this.handleChange &#x3D; this.handleChange.bind(this);</span><br><span class="line">    this.state &#x3D; &#123;</span><br><span class="line">      &#x2F;&#x2F; 假设 &quot;DataSource&quot; 是个全局范围内的数据源变量</span><br><span class="line">      comments: DataSource.getComments()</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    &#x2F;&#x2F; 订阅更改</span><br><span class="line">    DataSource.addChangeListener(this.handleChange);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentWillUnmount() &#123;</span><br><span class="line">    &#x2F;&#x2F; 清除订阅</span><br><span class="line">    DataSource.removeChangeListener(this.handleChange);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handleChange() &#123;</span><br><span class="line">    &#x2F;&#x2F; 当数据源更新时，更新组件状态</span><br><span class="line">    this.setState(&#123;</span><br><span class="line">      comments: DataSource.getComments()</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    return (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &#123;this.state.comments.map((comment) &#x3D;&gt; (</span><br><span class="line">          &lt;Comment comment&#x3D;&#123;comment&#125; key&#x3D;&#123;comment.id&#125; &#x2F;&gt;</span><br><span class="line">        ))&#125;</span><br><span class="line">      &lt;&#x2F;div&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>稍后，编写了一个用于订阅单个博客帖子的组件，该帖子遵循类似的模式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class BlogPost extends React.Component &#123;</span><br><span class="line">  constructor(props) &#123;</span><br><span class="line">    super(props);</span><br><span class="line">    this.handleChange &#x3D; this.handleChange.bind(this);</span><br><span class="line">    this.state &#x3D; &#123;</span><br><span class="line">      blogPost: DataSource.getBlogPost(props.id)</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentDidMount() &#123;</span><br><span class="line">    DataSource.addChangeListener(this.handleChange);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  componentWillUnmount() &#123;</span><br><span class="line">    DataSource.removeChangeListener(this.handleChange);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handleChange() &#123;</span><br><span class="line">    this.setState(&#123;</span><br><span class="line">      blogPost: DataSource.getBlogPost(this.props.id)</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    return &lt;TextBlock text&#x3D;&#123;this.state.blogPost&#125; &#x2F;&gt;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CommentList 和 BlogPost 不同 - 它们在 DataSource 上调用不同的方法，且渲染不同的结果。但它们的大部分实现都是一样的：</p>
+<ul>
+<li>在挂载时，向 DataSource 添加一个更改侦听器。</li>
+<li>在侦听器内部，当数据源发生变化时，调用 setState。</li>
+<li>在卸载时，删除侦听器。</li>
+</ul>
+<p>你可以想象，在一个大型应用程序中，这种订阅 DataSource 和调用 setState 的模式将一次又一次地发生。我们需要一个抽象，允许我们在一个地方定义这个逻辑，并在许多组件之间共享它。这正是高阶组件擅长的地方。</p>
+<p>对于订阅了 DataSource 的组件，比如 CommentList 和 BlogPost，我们可以编写一个创建组件函数。该函数将接受一个子组件作为它的其中一个参数，该子组件将订阅数据作为 prop。让我们调用函数 withSubscription：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const CommentListWithSubscription &#x3D; withSubscription(</span><br><span class="line">  CommentList,</span><br><span class="line">  (DataSource) &#x3D;&gt; DataSource.getComments()</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">const BlogPostWithSubscription &#x3D; withSubscription(</span><br><span class="line">  BlogPost,</span><br><span class="line">  (DataSource, props) &#x3D;&gt; DataSource.getBlogPost(props.id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>第一个参数是被包装组件。第二个参数通过 DataSource 和当前的 props 返回我们需要的数据。</p>
+<p>当渲染 CommentListWithSubscription 和 BlogPostWithSubscription 时， CommentList 和 BlogPost 将传递一个 data prop，其中包含从 DataSource 检索到的最新数据：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 此函数接收一个组件...</span><br><span class="line">function withSubscription(WrappedComponent, selectData) &#123;</span><br><span class="line">  &#x2F;&#x2F; ...并返回另一个组件...</span><br><span class="line">  return class extends React.Component &#123;</span><br><span class="line">    constructor(props) &#123;</span><br><span class="line">      super(props);</span><br><span class="line">      this.handleChange &#x3D; this.handleChange.bind(this);</span><br><span class="line">      this.state &#x3D; &#123;</span><br><span class="line">        data: selectData(DataSource, props)</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    componentDidMount() &#123;</span><br><span class="line">      &#x2F;&#x2F; ...负责订阅相关的操作...</span><br><span class="line">      DataSource.addChangeListener(this.handleChange);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    componentWillUnmount() &#123;</span><br><span class="line">      DataSource.removeChangeListener(this.handleChange);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    handleChange() &#123;</span><br><span class="line">      this.setState(&#123;</span><br><span class="line">        data: selectData(DataSource, this.props)</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    render() &#123;</span><br><span class="line">      &#x2F;&#x2F; ... 并使用新数据渲染被包装的组件!</span><br><span class="line">      &#x2F;&#x2F; 请注意，我们可能还会传递其他属性</span><br><span class="line">      return &lt;WrappedComponent data&#x3D;&#123;this.state.data&#125; &#123;...this.props&#125; &#x2F;&gt;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>请注意，HOC 不会修改传入的组件，也不会使用继承来复制其行为。相反，HOC 通过将组件包装在容器组件中来组成新组件。HOC 是纯函数，没有副作用。</p>
+<p>被包装组件接收来自容器组件的所有 prop，同时也接收一个新的用于 render 的 data prop。HOC 不需要关心数据的使用方式或原因，而被包装组件也不需要关心数据是怎么来的。</p>
+<p>因为 withSubscription 是一个普通函数，你可以根据需要对参数进行增添或者删除。例如，您可能希望使 data prop 的名称可配置，以进一步将 HOC 与包装组件隔离开来。或者你可以接受一个配置 shouldComponentUpdate 的参数，或者一个配置数据源的参数。因为 HOC 可以控制组件的定义方式，这一切都变得有可能。</p>
+<p>与组件一样，withSubscription 和包装组件之间的契约完全基于之间传递的 props。这种依赖方式使得替换 HOC 变得容易，只要它们为包装的组件提供相同的 prop 即可。例如你需要改用其他库来获取数据的时候，这一点就很有用。</p>
+<h2 id="不要改变原始组件。使用组合。"><a href="#不要改变原始组件。使用组合。" class="headerlink" title="不要改变原始组件。使用组合。"></a>不要改变原始组件。使用组合。</h2><p>不要试图在 HOC 中修改组件原型（或以其他方式改变它）。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function logProps(InputComponent) &#123;</span><br><span class="line">  InputComponent.prototype.componentDidUpdate &#x3D; function(prevProps) &#123;</span><br><span class="line">    console.log(&#39;Current props: &#39;, this.props);</span><br><span class="line">    console.log(&#39;Previous props: &#39;, prevProps);</span><br><span class="line">  &#125;;</span><br><span class="line">  &#x2F;&#x2F; 返回原始的 input 组件，暗示它已经被修改。</span><br><span class="line">  return InputComponent;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 每次调用 logProps 时，增强组件都会有 log 输出。</span><br><span class="line">const EnhancedComponent &#x3D; logProps(InputComponent);</span><br></pre></td></tr></table></figure>
+
+<p>这样做会产生一些不良后果。其一是输入组件再也无法像 HOC 增强之前那样使用了。更严重的是，如果你再用另一个同样会修改 componentDidUpdate 的 HOC 增强它，那么前面的 HOC 就会失效！同时，这个 HOC 也无法应用于没有生命周期的函数组件。</p>
+<p>修改传入组件的 HOC 是一种糟糕的抽象方式。调用者必须知道他们是如何实现的，以避免与其他 HOC 发生冲突。</p>
+<p>HOC 不应该修改传入组件，而应该使用组合的方式，通过将组件包装在容器组件中实现功能：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function logProps(WrappedComponent) &#123;</span><br><span class="line">  return class extends React.Component &#123;</span><br><span class="line">    componentDidUpdate(prevProps) &#123;</span><br><span class="line">      console.log(&#39;Current props: &#39;, this.props);</span><br><span class="line">      console.log(&#39;Previous props: &#39;, prevProps);</span><br><span class="line">    &#125;</span><br><span class="line">    render() &#123;</span><br><span class="line">      &#x2F;&#x2F; 将 input 组件包装在容器中，而不对其进行修改。Good!</span><br><span class="line">      return &lt;WrappedComponent &#123;...this.props&#125; &#x2F;&gt;;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该 HOC 与上文中修改传入组件的 HOC 功能相同，同时避免了出现冲突的情况。它同样适用于 class 组件和函数组件。而且因为它是一个纯函数，它可以与其他 HOC 组合，甚至可以与其自身组合。</p>
+<p>您可能已经注意到 HOC 与容器组件模式之间有相似之处。容器组件担任将高级和低级关注点分离的责任，由容器管理订阅和状态，并将 prop 传递给处理 UI 的组件。HOC 使用容器作为其实现的一部分，你可以将 HOC 视为参数化容器组件。</p>
+<h2 id="将不相关的-props-传递给被包裹的组件"><a href="#将不相关的-props-传递给被包裹的组件" class="headerlink" title="将不相关的 props 传递给被包裹的组件"></a>将不相关的 props 传递给被包裹的组件</h2><p>HOC 为组件添加特性。自身不应该大幅改变约定。HOC 返回的组件与原组件应保持类似的接口。</p>
+<p>HOC 应该透传与自身无关的 props。大多数 HOC 都应该包含一个类似于下面的 render 方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  &#x2F;&#x2F; 过滤掉非此 HOC 额外的 props，且不要进行透传</span><br><span class="line">  const &#123; extraProp, ...passThroughProps &#125; &#x3D; this.props;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; 将 props 注入到被包装的组件中。</span><br><span class="line">  &#x2F;&#x2F; 通常为 state 的值或者实例方法。</span><br><span class="line">  const injectedProp &#x3D; someStateOrInstanceMethod;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; 将 props 传递给被包装组件</span><br><span class="line">  return (</span><br><span class="line">    &lt;WrappedComponent</span><br><span class="line">      injectedProp&#x3D;&#123;injectedProp&#125;</span><br><span class="line">      &#123;...passThroughProps&#125;</span><br><span class="line">    &#x2F;&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这就保证了 HOC 的灵活性以及可复用性。</p>
+<h2 id="最大化可组合性"><a href="#最大化可组合性" class="headerlink" title="最大化可组合性"></a>最大化可组合性</h2><p>并不是所有的 HOC 都一样。有时候它仅接受一个参数，也就是被包裹的组件：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const NavbarWithRouter &#x3D; withRouter(Navbar);</span><br></pre></td></tr></table></figure>
+
+<p>HOC 通常可以接收多个参数。比如在 Relay 中，HOC 额外接收了一个配置对象用于指定组件的数据依赖：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const CommentWithRelay &#x3D; Relay.createContainer(Comment, config);</span><br></pre></td></tr></table></figure>
+
+<p>最常见的 HOC 签名如下:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; React Redux 的 &#96;connect&#96; 函数</span><br><span class="line">const ConnectedComment &#x3D; connect(commentSelector, commentActions)(CommentList);</span><br></pre></td></tr></table></figure>
+
+<p>刚刚发生了什么？！如果你把它分开，就会更容易看出发生了什么。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; connect 是一个函数，它的返回值为另外一个函数。</span><br><span class="line">const enhance &#x3D; connect(commentListSelector, commentListActions);</span><br><span class="line">&#x2F;&#x2F; 返回值为 HOC，它会返回已经连接 Redux store 的组件</span><br><span class="line">const ConnectedComment &#x3D; enhance(CommentList);</span><br></pre></td></tr></table></figure>
+
+<p>换句话说，connect 是一个返回高阶组件的高阶函数！</p>
+<p>这种形式可能看起来令人困惑或不必要，但它有一个有用的属性。 像 connect 函数返回的单参数 HOC 具有签名 Component =&gt; Component。 输出类型与输入类型相同的函数很容易组合在一起。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 而不是这样...</span><br><span class="line">const EnhancedComponent &#x3D; withRouter(connect(commentSelector)(WrappedComponent))</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ... 你可以编写组合工具函数</span><br><span class="line">&#x2F;&#x2F; compose(f, g, h) 等同于 (...args) &#x3D;&gt; f(g(h(...args)))</span><br><span class="line">const enhance &#x3D; compose(</span><br><span class="line">  &#x2F;&#x2F; 这些都是单参数的 HOC</span><br><span class="line">  withRouter,</span><br><span class="line">  connect(commentSelector)</span><br><span class="line">)</span><br><span class="line">const EnhancedComponent &#x3D; enhance(WrappedComponent)</span><br></pre></td></tr></table></figure>
+<p>（同样的属性也允许 connect 和其他 HOC 承担装饰器的角色，装饰器是一个实验性的 JavaScript 提案。）</p>
+<p>许多第三方库都提供了 compose 工具函数，包括 lodash （比如 lodash.flowRight）， Redux 和 Ramda。</p>
+<h2 id="包装显示名称以便轻松调试"><a href="#包装显示名称以便轻松调试" class="headerlink" title="包装显示名称以便轻松调试"></a>包装显示名称以便轻松调试</h2><p>HOC 创建的容器组件会与任何其他组件一样，会显示在 React Developer Tools 中。为了方便调试，请选择一个显示名称，以表明它是 HOC 的产物。</p>
+<p>最常见的方式是用 HOC 包住被包装组件的显示名称。比如高阶组件名为 withSubscription，并且被包装组件的显示名称为 CommentList，显示名称应该为 WithSubscription(CommentList)：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function withSubscription(WrappedComponent) &#123;</span><br><span class="line">  class WithSubscription extends React.Component &#123;&#x2F;* ... *&#x2F;&#125;</span><br><span class="line">  WithSubscription.displayName &#x3D; &#96;WithSubscription($&#123;getDisplayName(WrappedComponent)&#125;)&#96;;</span><br><span class="line">  return WithSubscription;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getDisplayName(WrappedComponent) &#123;</span><br><span class="line">  return WrappedComponent.displayName || WrappedComponent.name || &#39;Component&#39;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>高阶组件有一些需要注意的地方，对于 React 新手来说可能并不容易发现。</p>
+<h3 id="不要在-render-方法中使用-HOC"><a href="#不要在-render-方法中使用-HOC" class="headerlink" title="不要在 render 方法中使用 HOC"></a>不要在 render 方法中使用 HOC</h3><p>React 的 diff 算法（称为协调）使用组件标识来确定它是应该更新现有子树还是将其丢弃并挂载新子树。 如果从 render 返回的组件与前一个渲染中的组件相同（===），则 React 通过将子树与新子树进行区分来递归更新子树。 如果它们不相等，则完全卸载前一个子树。</p>
+<p>通常，你不需要考虑这点。但对 HOC 来说这一点很重要，因为这代表着你不应在组件的 render 方法中对一个组件应用 HOC：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">render() &#123;</span><br><span class="line">  &#x2F;&#x2F; 每次调用 render 函数都会创建一个新的 EnhancedComponent</span><br><span class="line">  &#x2F;&#x2F; EnhancedComponent1 !&#x3D;&#x3D; EnhancedComponent2</span><br><span class="line">  const EnhancedComponent &#x3D; enhance(MyComponent);</span><br><span class="line">  &#x2F;&#x2F; 这将导致子树每次渲染都会进行卸载，和重新挂载的操作！</span><br><span class="line">  return &lt;EnhancedComponent &#x2F;&gt;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这不仅仅是性能问题 - 重新挂载组件会导致该组件及其所有子组件的状态丢失。</p>
+<p>如果在组件之外创建 HOC，这样一来组件只会创建一次。因此，每次 render 时都会是同一个组件。一般来说，这跟你的预期表现是一致的。</p>
+<p>在极少数情况下，你需要动态调用 HOC。你可以在组件的生命周期方法或其构造函数中进行调用。</p>
+<h3 id="务必复制静态方法"><a href="#务必复制静态方法" class="headerlink" title="务必复制静态方法"></a>务必复制静态方法</h3><p>有时在 React 组件上定义静态方法很有用。例如，Relay 容器暴露了一个静态方法 getFragment 以方便组合 GraphQL 片段。</p>
+<p>但是，当你将 HOC 应用于组件时，原始组件将使用容器组件进行包装。这意味着新组件没有原始组件的任何静态方法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 定义静态函数</span><br><span class="line">WrappedComponent.staticMethod &#x3D; function() &#123;&#x2F;*...*&#x2F;&#125;</span><br><span class="line">&#x2F;&#x2F; 现在使用 HOC</span><br><span class="line">const EnhancedComponent &#x3D; enhance(WrappedComponent);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 增强组件没有 staticMethod</span><br><span class="line">typeof EnhancedComponent.staticMethod &#x3D;&#x3D;&#x3D; &#39;undefined&#39; &#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+
+<p>为了解决这个问题，你可以在返回之前把这些方法拷贝到容器组件上：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function enhance(WrappedComponent) &#123;</span><br><span class="line">  class Enhance extends React.Component &#123;&#x2F;*...*&#x2F;&#125;</span><br><span class="line">  &#x2F;&#x2F; 必须准确知道应该拷贝哪些方法 :(</span><br><span class="line">  Enhance.staticMethod &#x3D; WrappedComponent.staticMethod;</span><br><span class="line">  return Enhance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但要这样做，你需要知道哪些方法应该被拷贝。你可以使用 hoist-non-react-statics 自动拷贝所有非 React 静态方法:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import hoistNonReactStatic from &#39;hoist-non-react-statics&#39;;</span><br><span class="line">function enhance(WrappedComponent) &#123;</span><br><span class="line">  class Enhance extends React.Component &#123;&#x2F;*...*&#x2F;&#125;</span><br><span class="line">  hoistNonReactStatic(Enhance, WrappedComponent);</span><br><span class="line">  return Enhance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了导出组件，另一个可行的方案是再额外导出这个静态方法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 使用这种方式代替...</span><br><span class="line">MyComponent.someFunction &#x3D; someFunction;</span><br><span class="line">export default MyComponent;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ...单独导出该方法...</span><br><span class="line">export &#123; someFunction &#125;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ...并在要使用的组件中，import 它们</span><br><span class="line">import MyComponent, &#123; someFunction &#125; from &#39;.&#x2F;MyComponent.js&#39;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Refs-不会被传递"><a href="#Refs-不会被传递" class="headerlink" title="Refs 不会被传递"></a>Refs 不会被传递</h3><p>虽然高阶组件的约定是将所有 props 传递给被包装组件，但这对于 refs 并不适用。那是因为 ref 实际上并不是一个 prop - 就像 key 一样，它是由 React 专门处理的。如果将 ref 添加到 HOC 的返回组件中，则 ref 引用指向容器组件，而不是被包装组件。</p>
+<p>这个问题的解决方案是通过使用 React.forwardRef API（React 16.3 中引入）。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>SameSiteForCookie</title>
     <url>/2021/02/03/SameSiteForCookie/</url>
     <content><![CDATA[<h1 id="Cookie、Session、Token到底是什么"><a href="#Cookie、Session、Token到底是什么" class="headerlink" title="Cookie、Session、Token到底是什么"></a>Cookie、Session、Token到底是什么</h1><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><ol>
