@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>生产环境debugger | YolkPie</title><meta name="description" content="开发环境 debug 是每个程序员上岗的必备技能。生产环境呢？虽然生产环境 debug 是一件非常不优雅的行为，但是由于种种原因，我们又不得不这么干。  那我们今天讲一讲如何使用 chrome 在生产环境进行 debug 。 生产环境 debug 步骤生产环境 debug 需要几步？这问题和“把大象装进冰箱拢共分几步”一样简单。  第一步，把冰箱门打开。F12 打开 devTools；  第二步"><meta name="keywords" content="异常"><meta name="author" content="YolkPie"><meta name="copyright" content="YolkPie"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yolkpie.net/2021/12/23/%E5%89%8D%E7%AB%AF%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83debugger%E6%8A%80%E5%B7%A7/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="生产环境debugger"><meta property="og:url" content="https://yolkpie.net/2021/12/23/%E5%89%8D%E7%AB%AF%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83debugger%E6%8A%80%E5%B7%A7/"><meta property="og:site_name" content="YolkPie"><meta property="og:description" content="开发环境 debug 是每个程序员上岗的必备技能。生产环境呢？虽然生产环境 debug 是一件非常不优雅的行为，但是由于种种原因，我们又不得不这么干。  那我们今天讲一讲如何使用 chrome 在生产环境进行 debug 。 生产环境 debug 步骤生产环境 debug 需要几步？这问题和“把大象装进冰箱拢共分几步”一样简单。  第一步，把冰箱门打开。F12 打开 devTools；  第二步"><meta property="og:image" content="https://img12.360buyimg.com/imagetools/jfs/t1/169203/7/4620/173190/601266a8E8ad356b4/4fdec47d3f9e5259.png"><meta property="article:published_time" content="2021-12-23T07:15:00.000Z"><meta property="article:modified_time" content="2021-12-23T08:23:52.414Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="prev" title="" href="https://yolkpie.net/2021/12/23/CSS%E5%BC%80%E5%8F%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%8A%80%E5%B7%A7/"><link rel="next" title="我用flutter写了一个明天吃什么的软件" href="https://yolkpie.net/2021/11/21/%E6%88%91%E7%94%A8flutter%E5%86%99%E4%BA%86%E4%B8%80%E4%B8%AA%E6%98%8E%E5%A4%A9%E5%90%83%E4%BB%80%E4%B9%88%E7%9A%84%E8%BD%AF%E4%BB%B6/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: false,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 5.0.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">132</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">80</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">33</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83-debug-%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.</span> <span class="toc-text">生产环境 debug 步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A%E6%A0%B9%E6%8D%AE%E5%AF%B9%E4%BB%A3%E7%A0%81%E7%9A%84%E5%AE%9E%E7%8E%B0%E7%9A%84%E4%BA%86%E8%A7%A3%EF%BC%8C%E5%88%A4%E6%96%AD%E6%8A%A5%E9%94%99%E5%B1%9E%E4%BA%8E%E5%89%8D%E7%AB%AF%E8%BF%98%E6%98%AF%E5%90%8E%E7%AB%AF%E3%80%82"><span class="toc-number">1.1.</span> <span class="toc-text">方案一：根据对代码的实现的了解，判断报错属于前端还是后端。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A%E5%89%8D%E7%AB%AF%E4%BB%A3%E7%A0%81%E5%85%A8%E5%B1%80%E6%90%9C%E7%B4%A2%E5%85%B3%E9%94%AE%E5%AD%97%EF%BC%8C%E5%B7%A5%E7%A8%8B%E4%BB%A3%E7%A0%81%E9%87%8C%E6%90%9C%E7%B4%A2-%E6%8E%A7%E5%88%B6%E5%8F%B0%E6%89%93%E5%BC%80%E6%90%9C%E7%B4%A2%E3%80%82"><span class="toc-number">1.2.</span> <span class="toc-text">方案二：前端代码全局搜索关键字，工程代码里搜索&#x2F;控制台打开搜索。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%EF%BC%9A%E7%BF%BB%E9%98%85-network-%E9%9D%A2%E6%9D%BF%E4%B8%AD%E7%9A%84%E8%AF%B7%E6%B1%82%E3%80%82"><span class="toc-number">1.3.</span> <span class="toc-text">方案三：翻阅 network 面板中的请求。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B9%E6%A1%88%E5%9B%9B%EF%BC%9A%E4%BD%BF%E7%94%A8-network-search-%E8%BF%9B%E8%A1%8C%E6%90%9C%E7%B4%A2%E3%80%82"><span class="toc-number">1.4.</span> <span class="toc-text">方案四：使用 network search 进行搜索。</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E5%AE%9A%E4%BD%8D%E5%88%B0%E9%97%AE%E9%A2%98%E7%9B%B8%E5%85%B3%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="toc-number">1.4.1.</span> <span class="toc-text">如何快速定位到问题相关的代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95-debug-%E6%B7%B7%E6%B7%86%E5%90%8E%E7%9A%84-js-%EF%BC%9F"><span class="toc-number">1.5.</span> <span class="toc-text">如何 debug 混淆后的 js ？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E4%BD%BF%E7%94%A8%E6%9C%AC%E5%9C%B0-sourceMap-%E8%B0%83%E8%AF%95%EF%BC%9F"><span class="toc-number">1.5.1.</span> <span class="toc-text">如何在生产环境使用本地 sourceMap 调试？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8-chrome-%E4%B8%AD%E4%BF%AE%E6%94%B9%E4%BB%A3%E7%A0%81%E5%B9%B6%E8%B0%83%E8%AF%95%EF%BC%9F"><span class="toc-number">1.5.2.</span> <span class="toc-text">如何在 chrome 中修改代码并调试？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#local-overrides-%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9F"><span class="toc-number">1.5.3.</span> <span class="toc-text">local overrides 如何工作的？</span></a></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://img12.360buyimg.com/imagetools/jfs/t1/169203/7/4620/173190/601266a8E8ad356b4/4fdec47d3f9e5259.png)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">YolkPie</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">生产环境debugger</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2021-12-23 15:15:00"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2021-12-23</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2021-12-23 16:23:52"><i class="fas fa-history fa-fw"></i> 更新于 2021-12-23</span></time></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><blockquote>
+<p>开发环境 debug 是每个程序员上岗的必备技能。生产环境呢？虽然生产环境 debug 是一件非常不优雅的行为，但是由于种种原因，我们又不得不这么干。</p>
+</blockquote>
+<p>那我们今天讲一讲如何使用 chrome 在生产环境进行 debug 。</p>
+<h2 id="生产环境-debug-步骤"><a href="#生产环境-debug-步骤" class="headerlink" title="生产环境 debug 步骤"></a>生产环境 debug 步骤</h2><p>生产环境 debug 需要几步？这问题和“把大象装进冰箱拢共分几步”一样简单。</p>
+<ul>
+<li><p>第一步，把冰箱门打开。F12 打开 devTools；</p>
+</li>
+<li><p>第二步，把大象装进冰箱。找到需要 debug 的前端文件，格式化，打断点，调试上下文，定位问题；</p>
+</li>
+<li><p>第三部，关闭冰箱门。解决问题。</p>
+</li>
+</ul>
+<p>如何快速定位错误是前端还是后端接口返回的？<br>在把大象装进冰箱之前，先初步判断下，是否真的需要由你将大象装进冰箱。</p>
+<p>首先我们需要判断，错误是前端还是后端报的，那么如何快速判断？</p>
+<h3 id="方案一：根据对代码的实现的了解，判断报错属于前端还是后端。"><a href="#方案一：根据对代码的实现的了解，判断报错属于前端还是后端。" class="headerlink" title="方案一：根据对代码的实现的了解，判断报错属于前端还是后端。"></a>方案一：根据对代码的实现的了解，判断报错属于前端还是后端。</h3><p>这个方案前提是需要你对代码实现很熟悉，也是最简单的方式。</p>
+<h3 id="方案二：前端代码全局搜索关键字，工程代码里搜索-控制台打开搜索。"><a href="#方案二：前端代码全局搜索关键字，工程代码里搜索-控制台打开搜索。" class="headerlink" title="方案二：前端代码全局搜索关键字，工程代码里搜索/控制台打开搜索。"></a>方案二：前端代码全局搜索关键字，工程代码里搜索/控制台打开搜索。</h3><p>对应工程 gitlab 或者 vscode 或者 devTools global search 里去进行全局搜索。</p>
+<h3 id="方案三：翻阅-network-面板中的请求。"><a href="#方案三：翻阅-network-面板中的请求。" class="headerlink" title="方案三：翻阅 network 面板中的请求。"></a>方案三：翻阅 network 面板中的请求。</h3><p>翻阅 network 面板中的请求，看下返回的 response 是否携带错误提示，有则表示后端返回的；如果报错的接口刚好是以非200 的状态返回，或者是由新的操作触发调用接口，我们很快就能查找到对应的接口，如下：<br><img src= "/img/loading.gif" data-src="01.gif" alt="01"></p>
+<h3 id="方案四：使用-network-search-进行搜索。"><a href="#方案四：使用-network-search-进行搜索。" class="headerlink" title="方案四：使用 network search 进行搜索。"></a>方案四：使用 network search 进行搜索。</h3><p>但是很多情况，接口业务错误会以 http status 200 的状态码返回，如果此时请求了大量的接口（举个例子：进入页面调用了大量的接口，其中有一个接口返回了错误信息），那么除了逐个翻阅 network 这种低效的方式，chrome devTools 还提供了 network search 面板这种更便捷的方式，可以搜索接口详细信息（包括详细的返回信息），返回匹配结果。</p>
+<p>如何打开 network search 面板？</p>
+<p>在 network 面板中，按快捷键<code> ⌘ + F</code>（Mac）、 <code>CTRL + F</code>（Windows）可呼出 network search 面板。<br><img src= "/img/loading.gif" data-src="02.png" alt="02"></p>
+<h4 id="如何快速定位到问题相关的代码"><a href="#如何快速定位到问题相关的代码" class="headerlink" title="如何快速定位到问题相关的代码"></a>如何快速定位到问题相关的代码</h4><p>global search ，全局搜素关键字，再定位到关键的代码<br>chrome devTools 的 global search 是一个非常实用的一个功能，当你不知道需要调试的代码在哪个文件时，当你是一个非常大的系统，引用了很多的资源文件，你可以使用 global search 进行搜索关键字，这个操作会搜索所有加载进来的资源，点击搜索结果，就可以使用 source 面板打开对应的资源文件，然后格式化代码，再然后在当前的文件内 再次搜索关键字，打断点。</p>
+<p>打开 global search 快捷键：</p>
+<p><code>⌘ + ⌥ + F</code> （Mac），<code>CTRL + SHIFT + F</code> （Windows）</p>
+<p>看下图例子，我们随便找个页面根据提示搜索代码：<br><img src= "/img/loading.gif" data-src="3.gif" alt="3"></p>
+<p>可以尝试使用哪些关键字进行搜索：</p>
+<p>(1) 页面存在明确的报错信息，且已经明确该错误文案是写在前端代码中错误信息文案。提示信息在 coding 过程中一般是使用 字符串，压缩混淆过程中一般是不会进行处理的，会保留原文，当然代码打包构建过程中，对代码压缩混淆也可以选择对中文进行 unicode 转码，此时如果关键字是中文，就需要先转码再搜索了。</p>
+<p>(2) 已知相关代码中存在的编译混淆后依然还保留的的关键代码，会向外暴露的方法名；</p>
+<h3 id="如何-debug-混淆后的-js-？"><a href="#如何-debug-混淆后的-js-？" class="headerlink" title="如何 debug 混淆后的 js ？"></a>如何 debug 混淆后的 js ？</h3><p>生产环境的 js 基本上都是混淆过的（点击了解前端代码的压缩混淆），压缩混淆的优点就不赘述了，压缩混淆后随之来的是生产环境调试的难度，虽然通过打断点，勉强还能看的懂，但是已经很反人类了。</p>
+<p>我们用一个最简单的 demo ，对比一下代码生产环境构建编译前后的差距。</p>
+<p>这里选择用 vue-cli 创建了一个最简单的 demo ，看下源代码和编译后的代码。</p>
+<p>源代码：<br><img src= "/img/loading.gif" data-src="4.png" alt="4"><br>构建编译后的代码（此处关闭了 sourceMap ）：</p>
+<p><img src= "/img/loading.gif" data-src="5.png" alt="5"><br>这里我们看到构建编译后的代码做了压缩混淆，出现了出现了大量大的 a 、b 、 c 、 d 替换了原有的函数方法名、变量名，编译后的代码已经不是能通过单纯的读代码码能读懂的了。但是我们通过 debug ，大概还是能看得懂。<br><img src= "/img/loading.gif" data-src="6.png" alt="6"><br>那么有没有方式使用本地的 sourceMap 调试生产环境的代码？答案当然是有的。<br><img src= "/img/loading.gif" data-src="7.png" alt="7"></p>
+<h4 id="如何在生产环境使用本地-sourceMap-调试？"><a href="#如何在生产环境使用本地-sourceMap-调试？" class="headerlink" title="如何在生产环境使用本地 sourceMap 调试？"></a>如何在生产环境使用本地 sourceMap 调试？</h4><p>第一步：打开混淆代码</p>
+<p>第二步：右键 -&gt; 选择【Add source map】</p>
+<p>第三步：输入本地 sourceMap 的地址（此处需要启用一个静态资源服务，可以使用 <code>http-server</code>），完成。本地代码执行构建命令，注意需要打开 sourceMap 配置，编译产生出构建后的代码，此时构建后的结果会包含 sourceMap 文件。<br><img src= "/img/loading.gif" data-src="8.png" alt="8"><br><img src= "/img/loading.gif" data-src="9.png" alt="9"><br>关联上 sourceMap 后，我们就可以看到 sources -&gt; page 面板上的变化了<br><img src= "/img/loading.gif" data-src="10.png" alt="10"></p>
+<h4 id="如何在-chrome-中修改代码并调试？"><a href="#如何在-chrome-中修改代码并调试？" class="headerlink" title="如何在 chrome 中修改代码并调试？"></a>如何在 chrome 中修改代码并调试？</h4><p>开发环境中，我们可以直接在 IDE 中修改代码，代码的变更就直接更新到了浏览器中了。那么生产环境，我们可以直接在 chrome 中修改代码，然后立马看代码修改后的效果吗？</p>
+<p>当然，你想要的 chrome devTools 都有。chrome devTools 提供了 local overrides 能力。</p>
+<h4 id="local-overrides-如何工作的？"><a href="#local-overrides-如何工作的？" class="headerlink" title="local overrides 如何工作的？"></a>local overrides 如何工作的？</h4><p>指定修改后的文件的本地保存目录，当修改完代码保存的时候，就会将修改后的文件保存到你指定的目录目录下，当再次加载页面的时候，对应的文件不再读取网络上的文件，而是读取存储在本地修改过的文件。</p>
+<p>local overrides 如何使用？<br>首先，打开 sources 下的 overrides 面板；</p>
+<p>然后，点击【select folder overrides】选择修改后的文件存储地址；</p>
+<p>再然后，点击顶部的授权，确认同意；</p>
+<p>最后，我们就可以打开文件修改，修改完成后保存，重新刷新页面后，修改后的代码就被执行到了。</p>
+<p>⚠️注意，原js文件直接 format 是无法修改的；在代码 format 之前先添加无效代码进行代码变更进行保存，然后再 format 就可以修改</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">YolkPie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yolkpie.net/2021/12/23/%E5%89%8D%E7%AB%AF%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83debugger%E6%8A%80%E5%B7%A7/">https://yolkpie.net/2021/12/23/%E5%89%8D%E7%AB%AF%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83debugger%E6%8A%80%E5%B7%A7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yolkpie.net" target="_blank">YolkPie</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BC%82%E5%B8%B8/">异常</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/12/23/CSS%E5%BC%80%E5%8F%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%8A%80%E5%B7%A7/"><img class="prev-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2021/11/21/%E6%88%91%E7%94%A8flutter%E5%86%99%E4%BA%86%E4%B8%80%E4%B8%AA%E6%98%8E%E5%A4%A9%E5%90%83%E4%BB%80%E4%B9%88%E7%9A%84%E8%BD%AF%E4%BB%B6/"><img class="next-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">我用flutter写了一个明天吃什么的软件</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2021/03/23/从sgm-web指标来看页面加载速度优化/" title="从sgm-web指标来看页面加载速度优化"><img class="relatedPosts_cover" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/158535/22/7215/96620/602f2a91Eb6020785/997b23c6f02a6baa.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-23</div><div class="relatedPosts_title">从sgm-web指标来看页面加载速度优化</div></div></a></div><div class="relatedPosts_item"><a href="/2021/01/28/前端异常处理/" title="前端异常处理"><img class="relatedPosts_cover" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/169203/7/4620/173190/601266a8E8ad356b4/4fdec47d3f9e5259.png"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2021-01-28</div><div class="relatedPosts_title">前端异常处理</div></div></a></div></div></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By YolkPie</div><div class="framework-info"><span>驱动 </span><a target="_blank" rel="noopener" href="https://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
