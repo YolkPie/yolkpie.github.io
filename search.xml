@@ -348,7 +348,7 @@
   </entry>
   <entry>
     <title></title>
-    <url>/2021/12/23/CSS%E5%BC%80%E5%8F%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%8A%80%E5%B7%A7/</url>
+    <url>/2021/12/24/CSS%E5%BC%80%E5%8F%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%8A%80%E5%B7%A7/</url>
     <content><![CDATA[<h3 id="使用CSS重置（reset）"><a href="#使用CSS重置（reset）" class="headerlink" title="使用CSS重置（reset）"></a>使用CSS重置（reset）</h3><p>css重置库如normalize.css已经被使用很多年了，它们可以为你的网站样式提供一个比较清晰的标准，来确保跨浏览器之间的一致性。</p>
 <p>大多数项目并不需要这些库包含的所有规则，可以通过一条简单的规则来应用于布局中的所有元素，删除所有的margin、padding改变浏览器默认的盒模型。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">*&#123; box-sizing:border-box; margin:0; padding:0 &#125;</span><br></pre></td></tr></table></figure>
@@ -6944,7 +6944,7 @@ window.requestAnimationFrame(changePosition);
   </entry>
   <entry>
     <title></title>
-    <url>/2021/12/23/%E5%B7%A7%E7%94%A8JavaScript%E8%BF%90%E7%AE%97%E7%AC%A6/</url>
+    <url>/2021/12/24/%E5%B7%A7%E7%94%A8JavaScript%E8%BF%90%E7%AE%97%E7%AC%A6/</url>
     <content><![CDATA[<p>巧用运算符，事半功倍！</p>
 <h2 id="非空运算符"><a href="#非空运算符" class="headerlink" title="?? 非空运算符"></a>?? 非空运算符</h2><p>在 JS 中，?? 运算符被称为非空运算符。如果第一个参数不是 null/undefined（译者注：这里只有两个假值，但是 JS 中假值包含：未定义 undefined、空对象 null、数值 0、空数字 NaN、布尔 false，空字符串’’，不要搞混了），将返回第一个参数，否则返回第二个参数。比如，</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">null ?? 5 &#x2F;&#x2F; &#x3D;&gt; 5</span><br><span class="line">3 ?? 5 &#x2F;&#x2F; &#x3D;&gt; 3</span><br></pre></td></tr></table></figure>
@@ -6984,6 +6984,30 @@ window.requestAnimationFrame(changePosition);
 
 <p>在结束之前，让我们使用三元运算符重构前面示例中的函数：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function addPlansWhenUndefined(plans, location, budget) &#123;</span><br><span class="line"> var newPlans &#x3D;</span><br><span class="line">   plans.tuesday?.location &#x3D;&#x3D;&#x3D; undefined</span><br><span class="line">     ? &#123;</span><br><span class="line">         plans,</span><br><span class="line">         tuesday: &#123;</span><br><span class="line">           location: location ?? &quot;公园&quot;,</span><br><span class="line">           budget: budget ?? 200</span><br><span class="line">         &#125;,</span><br><span class="line">       &#125;</span><br><span class="line">     : console.log(&quot;已安排计划&quot;);</span><br><span class="line"> newPlans ??&#x3D; plans;</span><br><span class="line"> return newPlans;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+  </entry>
+  <entry>
+    <title>微信小程序canvas(二)：绘制顶部或底部有凹凸弧度的矩形或图片</title>
+    <url>/2020/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8Fcanvas(%E4%B8%80)%EF%BC%9A%E7%BB%98%E5%88%B6%E9%A1%B6%E9%83%A8%E6%88%96%E5%BA%95%E9%83%A8%E6%9C%89%E5%87%B9%E5%87%B8%E5%BC%A7%E5%BA%A6%E7%9A%84%E7%9F%A9%E5%BD%A2%E6%88%96%E5%9B%BE%E7%89%87/</url>
+    <content><![CDATA[<p>要实现顶部或底部有凹凸弧度的矩形或图片，实现的效果如下：<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/90092/12/12709/105215/5e4e2a2aE8c55ded3/5caeb3c5a8aa1cf0.png" alt="图片 1.png"></p>
+<h3 id="第一步：需要定义生成顶部或底部有弧度的矩形的函数"><a href="#第一步：需要定义生成顶部或底部有弧度的矩形的函数" class="headerlink" title="第一步：需要定义生成顶部或底部有弧度的矩形的函数"></a>第一步：需要定义生成顶部或底部有弧度的矩形的函数</h3><ul>
+<li>参数定义：topRadianHeight： 顶部弧度的高度，大于0为顶部凸，小于0为顶部凹；bottomRadianHeight：底部弧度高度，大于0为底部凸，小于0为底部凹<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 画顶部或底部有弧度的矩形或图片需要用到的方法</span><br><span class="line"> * @param params</span><br><span class="line"> * @param topRadianHeight 顶部弧度，大于0为顶部凸，小于0为顶部凹</span><br><span class="line"> * @param bottomRadianHeight 底部弧度，大于0为底部凸，小于0为底部凹</span><br><span class="line"> * @param ctx</span><br><span class="line"> *&#x2F;</span><br><span class="line">const toDrawArcRect &#x3D; (params, ctx) &#x3D;&gt; &#123; &#x2F;&#x2F; 画上下左右方向有弧度的矩形</span><br><span class="line">  const &#123;</span><br><span class="line">    left, top, width, height,</span><br><span class="line">    topRadianHeight, bottomRadianHeight</span><br><span class="line">  &#125; &#x3D; params</span><br><span class="line"> </span><br><span class="line">  const halfWidth &#x3D; width &#x2F; 2</span><br><span class="line">  const radianHeight &#x3D; topRadianHeight || bottomRadianHeight || 0</span><br><span class="line">  const r &#x3D; (halfWidth * halfWidth + radianHeight * radianHeight) &#x2F; (2 * Math.abs(radianHeight))</span><br><span class="line">  const radiusX &#x3D; left + halfWidth &#x2F;&#x2F; 圆心X的坐标</span><br><span class="line">  const radianValue &#x3D; Math.acos(halfWidth &#x2F; r) &#x2F;&#x2F; 弧度</span><br><span class="line">  ctx.beginPath()</span><br><span class="line">  if (bottomRadianHeight) &#123; &#x2F;&#x2F; 底部凸</span><br><span class="line">    if (bottomRadianHeight &gt; 0) &#123;</span><br><span class="line">      ctx.arc(radiusX, top + height - r, r, radianValue, -radianValue + Math.PI)</span><br><span class="line">      ctx.lineTo(left, top)</span><br><span class="line">      ctx.lineTo(left + width, top)</span><br><span class="line">      ctx.lineTo(left + width, top - radianHeight + height)</span><br><span class="line">    &#125; else &#123; &#x2F;&#x2F; 底部凹</span><br><span class="line">      ctx.arc(radiusX, top + height + r + radianHeight, r, radianValue - Math.PI, -radianValue)</span><br><span class="line">      ctx.lineTo(left + width, top)</span><br><span class="line">      ctx.lineTo(left, top)</span><br><span class="line">      ctx.lineTo(left, top + height)</span><br><span class="line">    &#125;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  if (topRadianHeight) &#123;</span><br><span class="line">    if (topRadianHeight &gt; 0) &#123; &#x2F;&#x2F; 顶部凸</span><br><span class="line">      ctx.arc(radiusX, top + r, r, radianValue - Math.PI, -radianValue)</span><br><span class="line">      ctx.lineTo(left + width, top + height)</span><br><span class="line">      ctx.lineTo(left, top + height)</span><br><span class="line">      ctx.lineTo(left, top + radianHeight)</span><br><span class="line">    &#125; else &#123; &#x2F;&#x2F; 顶部凹</span><br><span class="line">      ctx.arc(radiusX, top - r - topRadianHeight, r, radianValue, -radianValue + Math.PI)</span><br><span class="line">      ctx.lineTo(left, top + height)</span><br><span class="line">      ctx.lineTo(left + width, top + height)</span><br><span class="line">      ctx.lineTo(left + width, top)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="第二步：绘制顶部或底部有凹凸弧度的线框、矩形或图片"><a href="#第二步：绘制顶部或底部有凹凸弧度的线框、矩形或图片" class="headerlink" title="第二步：绘制顶部或底部有凹凸弧度的线框、矩形或图片"></a>第二步：绘制顶部或底部有凹凸弧度的线框、矩形或图片</h3><ul>
+<li>画线框<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">toDrawArcRect(***)</span><br><span class="line">this.ctx.stroke()</span><br></pre></td></tr></table></figure></li>
+<li>画矩形<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">toDrawArcRect(***)</span><br><span class="line">this.ctx.fill()</span><br></pre></td></tr></table></figure></li>
+<li>画图片<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">this.ctx.save()</span><br><span class="line">toDrawArcRect(***)</span><br><span class="line">ctx.strokeStyle &#x3D; &#39;rgba(255,255,255,0)&#39;</span><br><span class="line">ctx.stroke()</span><br><span class="line">this.ctx.clip()</span><br><span class="line">this.ctx.drawImage(***)</span><br><span class="line">this.ctx.restore()</span><br></pre></td></tr></table></figure>
+_注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸。一旦剪切了某个区域，则所有之后的绘图都会被限制在被剪切的区域内（不能访问画布上的其他区域）。可以在使用 clip() 方法前通过使用 save() 方法对当前画布区域进行保存，并在以后的任意时间通过 restore() 方法对其进行恢复。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>小程序</category>
+      </categories>
+      <tags>
+        <tag>微信小程序</tag>
+        <tag>canvas</tag>
+      </tags>
   </entry>
   <entry>
     <title>微信小程序canvas(一)：绘制圆角矩形或图片</title>
@@ -8100,6 +8124,75 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       </tags>
   </entry>
   <entry>
+    <title>生成海报遇到的问题汇总</title>
+    <url>/2021/12/24/%E7%94%9F%E6%88%90%E6%B5%B7%E6%8A%A5%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/</url>
+    <content><![CDATA[<p>如果要生成海报图片，要分两步才能完成：</p>
+<ol>
+<li>绘制 canvas</li>
+<li>canvas 转换成图片</li>
+</ol>
+<h2 id="第一步：绘制-canvas"><a href="#第一步：绘制-canvas" class="headerlink" title="第一步：绘制 canvas"></a>第一步：绘制 canvas</h2><p>如果要生成海报图片，第一步是根据设计稿，将要展示的内容绘制到 canvas 上。绘制 canvas 有两种不同的方式：直接绘制和使用html2canvas 进行转换。</p>
+<h3 id="直接绘制"><a href="#直接绘制" class="headerlink" title="直接绘制"></a>直接绘制</h3><p>直接绘制就是使用 canvas 的方法将要展示的元素一个个绘制出来。如果要展示的元素相对来说比较简单也不经常变动，推荐使用这种方式，因为和使用html2canvas 相比，直接绘制不用依赖外部，项目可以小而精。下面是我在使用过程中遇到的问题：</p>
+<ol>
+<li><p>尺寸转换问题<br> 说到尺寸，首先我们要注意 canvas 元素上和 CSS 样式中的 width / height 属性的区别：canvas 元素上的属性是画布的宽高，而 CSS 样式中的宽高是 canvas 元素在页面上展示的大小。为什么区分这两个尺寸呢， 因为 canvas 是位图模式的，如果不做高清屏适配的话浏览器就会以多个像素点的宽度来渲染一个像素，图片就会很模糊，因此需要将 canvas 画布的宽高乘以 window.devicePixelRatio。如果在二倍屏的手机上展示，两者的宽高应该是这样设置的：</p>
+ <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;myCanvas&quot;</span> <span class="attr">width</span>=<span class="string">&quot;200px&quot;</span> <span class="attr">height</span>=<span class="string">&quot;200px&quot;</span> <span class="attr">style</span>=<span class="string">&quot;width: 100px; height: 100px&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>绘制层级问题<br>使用 canvas 绘制时，还要注意层级的问题。我之前用 canvas 绘制的时候，因为没有对 canvas 的功能没有做深入的了解，走了不少的弯路。比如要将文字绘制到图片背景之上，因为图片加载是异步的，为了保证图片绘制时不会遮挡文字，将绘制文字的逻辑写到了绘制图片的回调里，如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> image = <span class="keyword">new</span> Image()</span><br><span class="line">image.onload = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    context.drawImage(image, <span class="number">0</span>, <span class="number">0</span>, <span class="number">300</span>, <span class="number">200</span>)</span><br><span class="line">    <span class="keyword">const</span> text = <span class="string">&#x27;Hello World&#x27;</span></span><br><span class="line">    context.fillStyle = <span class="string">&#x27;#fff&#x27;</span></span><br><span class="line">    context.font = <span class="string">&#x27;20px 微软雅黑&#x27;</span></span><br><span class="line">    context.fillText(text, <span class="number">100</span>, <span class="number">100</span>)</span><br><span class="line">&#125;</span><br><span class="line">image.src = <span class="string">&#x27;...&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>如果有更复杂的层叠情况，简直要陷入回调地狱，也不利于封装。这时候，我们需要用到 canvas 的 globalCompositeOperation 属性。 globalCompositeOperation 属性用于设置或返回如何将一个源（新的）图像绘制到目标（已有）的图像上。</p>
+</li>
+</ol>
+<ul>
+<li>源图像 = 打算放置到画布上的绘图</li>
+<li>目标图像 = 已经放置在画布上的绘图</li>
+</ul>
+<p>globalCompositeOperation 的默认值是 source-over， 即在目标图像上显示源图像，也就是说源图像绘制时如果和目标图像有重叠的话，会直接进行覆盖。我们可以将 globalCompositeOperation 设置为 destination-over，表示在目标图像上方显示源图像：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> image = <span class="keyword">new</span> Image()</span><br><span class="line">image.onload = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    context.drawImage(image, <span class="number">0</span>, <span class="number">0</span>, <span class="number">300</span>, <span class="number">200</span>)</span><br><span class="line">&#125;</span><br><span class="line">image.src = <span class="string">&#x27;...&#x27;</span></span><br><span class="line"></span><br><span class="line">context.globalCompositeOperation = <span class="string">&#x27;destination-over&#x27;</span></span><br><span class="line"><span class="keyword">const</span> text = <span class="string">&#x27;Hello World&#x27;</span></span><br><span class="line">context.fillStyle = <span class="string">&#x27;#fff&#x27;</span></span><br><span class="line">context.font = <span class="string">&#x27;20px 微软雅黑&#x27;</span></span><br><span class="line">context.fillText(text, <span class="number">100</span>, <span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+<p>按照上面的写法，即使图片是后绘制的，也不会把文字覆盖掉。我们可以按照这个思路，梳理海报中内容的层叠关系，分层进行绘制，这样就不用担心因为绘制的先后而会相互覆盖了。</p>
+<ol start="3">
+<li>文本换行和缩进问题</li>
+</ol>
+<p>如果要进行文本换行或者缩进，不像我们平时写样式用几个 css 属性就能实现，需要手动写逻辑：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">const</span> drawIndentText = <span class="function">(<span class="params">context, canvasWidth, str, initX, initY, lineHeight, indentWidth, maxLineCount</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> lineWidth = <span class="number">0</span></span><br><span class="line">  <span class="keyword">let</span> lineCount = <span class="number">0</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; str.length; i++) &#123;</span><br><span class="line">    lineWidth += context.measureText(str[i]).width</span><br><span class="line">    <span class="keyword">if</span> (indentWidth &gt; <span class="number">0</span> &amp;&amp; lineWidth &gt; canvasWidth - <span class="number">2</span> * initX - indentWidth) &#123;</span><br><span class="line">      context.fillText(str.substr(<span class="number">0</span>, i), initX + indentWidth, initY)</span><br><span class="line">      initY += lineHeight</span><br><span class="line">      lineWidth = <span class="number">0</span></span><br><span class="line">      indentWidth = <span class="number">0</span></span><br><span class="line">      str = str.substr(i)</span><br><span class="line">      i = -<span class="number">1</span></span><br><span class="line">      lineCount += <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (lineWidth &gt; canvasWidth - <span class="number">2</span> * initX) &#123;</span><br><span class="line">      context.fillText(str.substr(<span class="number">0</span>, i), initX, initY)</span><br><span class="line">      initY += lineHeight</span><br><span class="line">      str = str.substr(i)</span><br><span class="line">      i = -<span class="number">1</span></span><br><span class="line">      lineWidth = <span class="number">0</span></span><br><span class="line">      lineCount += <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (i === str.length - <span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (lineCount) &#123;</span><br><span class="line">        <span class="comment">// 最多展示 maxLineCount 行</span></span><br><span class="line">        <span class="keyword">if</span> (lineCount &lt; maxLineCount) &#123;</span><br><span class="line">          context.fillText(str.substr(<span class="number">0</span>, i + <span class="number">1</span>), initX, initY)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 只有一行文案也要缩进</span></span><br><span class="line">        context.fillText(str.substr(<span class="number">0</span>, i + <span class="number">1</span>), initX + indentWidth, initY)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> initY</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>iOS 和 Android 兼容问题</li>
+</ol>
+<p>即使使用 canvas 绘制，也避免不了兼容性问题，比如绘制文字时 iOS 和安卓是有区别的，如果想要上下居中，需要注意对此做区分。因为没有足够的机型做统计，绘制文字时我一般把安卓的 y 值设置的比 iOS 多几个像素。</p>
+<ol start="5">
+<li>图片跨域问题</li>
+</ol>
+<p>在绘制图片的时候，如果出现 Tainted canvases may not be exported 的错误，是因为图片跨域引起的，需要给图片添加 crossOrigin 属性，如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">image.setAttribute(<span class="string">&#x27;crossOrigin&#x27;</span>, <span class="string">&#x27;anonymous&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>当然，如果图片不支持跨域，比如微信头像返回头是不允许跨域的，即使设置了 crossOrigin 也没有用，这时需要我们就需要使用 nginx 代理。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location &#x2F;wechat_image&#x2F; &#123;</span><br><span class="line">  add_header &#39;Access-Control-Allow-Origin&#39; &quot;$http_origin&quot; always;</span><br><span class="line">  add_header &#39;Access-Control-Allow-Credentials&#39; &#39;true&#39; always;</span><br><span class="line">  add_header &#39;Access-Control-Allow-Methods&#39; &#39;GET, OPTIONS&#39; always;</span><br><span class="line">  add_header &#39;Access-Control-Allow-Headers&#39; &#39;Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With&#39; always;</span><br><span class="line">  proxy_pass http:&#x2F;&#x2F;thirdwx.qlogo.cn&#x2F;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>图片加载完成问题</li>
+</ol>
+<p>因为图片加载是异步的，所以需要注意图片全部加载完成之后，canvas 才算绘制完成，我们可以使用 Promise.all 等方式，这里不再多说。</p>
+<h3 id="使用-html2canvas"><a href="#使用-html2canvas" class="headerlink" title="使用 html2canvas"></a>使用 html2canvas</h3><p>和直接绘制相比，使用 html2canvas 是更为便捷，我们可以直接将 dom 转成 canvas， 这种方式适用于逻辑复杂、频繁变动的项目。但是引用外部的包也是把双刃剑，因为如果包本身出bug了，我们就会很被动。</p>
+<ol>
+<li><p>文字或者 border 不展示的问题<br>遇到文字或者 border 不展示，可以使用 html2canvas 的 1.0.0-alpha.12 版本。（使用低版本不是一个好办法哦～）</p>
+</li>
+<li><p>background 覆盖的问题<br>假如我们使用了两个 span 包裹文字，第二个 span 的文字设置了背景颜色，那么就会出现第一个 span 就会被第二个 span 的背景颜色覆盖掉，如下：</p>
+</li>
+</ol>
+<p><img src= "/img/loading.gif" data-src="https://img14.360buyimg.com/imagetools/jfs/t1/210063/36/13104/34411/61be9d95E635d5a5a/ebcf2646397b3529.png" alt="html"><br>图1：html展示的内容<br><img src= "/img/loading.gif" data-src="https://img12.360buyimg.com/imagetools/jfs/t1/214125/21/8446/29642/61be9eb3E67eb8902/582ce773ad17dc43.png" alt="html2canvas"><br>图2：html2canvas 转换的结果</p>
+<p>从图上可以看出，折行文字的背景色覆盖了前后的文字，因为一旦文字折行。遇到这种情况，就只能在转 canvas 的时候将背景去掉:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> nodesWithBg = doc.querySelectorAll(<span class="string">&#x27;[style*=background]&#x27;</span>)</span><br><span class="line"><span class="keyword">if</span> (nodesWithBg) &#123;</span><br><span class="line">    nodesWithBg.forEach(<span class="function"><span class="params">element</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 表格的背景色要保留</span></span><br><span class="line">        <span class="keyword">const</span> tagsExclude = [<span class="string">&#x27;table&#x27;</span>, <span class="string">&#x27;thead&#x27;</span> ,<span class="string">&#x27;tbody&#x27;</span>, <span class="string">&#x27;tfoot&#x27;</span>, <span class="string">&#x27;tr&#x27;</span>, <span class="string">&#x27;td&#x27;</span>, <span class="string">&#x27;th&#x27;</span>]</span><br><span class="line">        <span class="keyword">if</span> (!(element.tagName &amp;&amp; tagsExclude.includes(element.tagName.toLowerCase()))) &#123;</span><br><span class="line">            element.style.backgroundColor = <span class="string">&#x27;transparent&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上两种方式，如果让我选的话，我会选择第一种，因为使用 html2canvas，一旦出现问题，我们就只能在产品功能上做妥协，这可能会背离项目开始的初衷。</p>
+<h2 id="第二步：canvas-转换成图片"><a href="#第二步：canvas-转换成图片" class="headerlink" title="第二步：canvas 转换成图片"></a>第二步：canvas 转换成图片</h2><p>将 canvas 转成图片很简单，核心代码如下：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">canvas.toDataURL(<span class="string">&#x27;image/png&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这一步我使用了 canvas2image 的 npm 包，这个包的逻辑比较简单，主要是支持将 canvas 转换成不同的格式和尺寸。我们在这一步注意的问题是 canvas 默认是抗锯齿的，如果有些像素不想被平滑消掉，需要在将 canvas 转成图片之前，首先需要关闭 canvas 的抗锯齿：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">context.mozImageSmoothingEnabled = <span class="literal">false</span></span><br><span class="line">context.webkitImageSmoothingEnabled = <span class="literal">false</span></span><br><span class="line">context.msImageSmoothingEnabled = <span class="literal">false</span></span><br><span class="line">context.imageSmoothingEnabled = <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>海报, canvas, html2canvas</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>用javaScript原生的方式实现设计模式</title>
     <url>/2021/05/23/%E7%94%A8javaScript%E5%8E%9F%E7%94%9F%E7%9A%84%E6%96%B9%E5%BC%8F%E5%AE%9E%E7%8E%B0%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
     <content><![CDATA[<h1 id="用javaScript原生的方式实现设计模式"><a href="#用javaScript原生的方式实现设计模式" class="headerlink" title="用javaScript原生的方式实现设计模式"></a>用javaScript原生的方式实现设计模式</h1><p><strong>应该在JavaScript中使用Class么</strong></p>
@@ -8621,32 +8714,8 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       </tags>
   </entry>
   <entry>
-    <title>微信小程序canvas(二)：绘制顶部或底部有凹凸弧度的矩形或图片</title>
-    <url>/2020/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8Fcanvas(%E4%B8%80)%EF%BC%9A%E7%BB%98%E5%88%B6%E9%A1%B6%E9%83%A8%E6%88%96%E5%BA%95%E9%83%A8%E6%9C%89%E5%87%B9%E5%87%B8%E5%BC%A7%E5%BA%A6%E7%9A%84%E7%9F%A9%E5%BD%A2%E6%88%96%E5%9B%BE%E7%89%87/</url>
-    <content><![CDATA[<p>要实现顶部或底部有凹凸弧度的矩形或图片，实现的效果如下：<br><img src= "/img/loading.gif" data-src="https://img13.360buyimg.com/imagetools/jfs/t1/90092/12/12709/105215/5e4e2a2aE8c55ded3/5caeb3c5a8aa1cf0.png" alt="图片 1.png"></p>
-<h3 id="第一步：需要定义生成顶部或底部有弧度的矩形的函数"><a href="#第一步：需要定义生成顶部或底部有弧度的矩形的函数" class="headerlink" title="第一步：需要定义生成顶部或底部有弧度的矩形的函数"></a>第一步：需要定义生成顶部或底部有弧度的矩形的函数</h3><ul>
-<li>参数定义：topRadianHeight： 顶部弧度的高度，大于0为顶部凸，小于0为顶部凹；bottomRadianHeight：底部弧度高度，大于0为底部凸，小于0为底部凹<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 画顶部或底部有弧度的矩形或图片需要用到的方法</span><br><span class="line"> * @param params</span><br><span class="line"> * @param topRadianHeight 顶部弧度，大于0为顶部凸，小于0为顶部凹</span><br><span class="line"> * @param bottomRadianHeight 底部弧度，大于0为底部凸，小于0为底部凹</span><br><span class="line"> * @param ctx</span><br><span class="line"> *&#x2F;</span><br><span class="line">const toDrawArcRect &#x3D; (params, ctx) &#x3D;&gt; &#123; &#x2F;&#x2F; 画上下左右方向有弧度的矩形</span><br><span class="line">  const &#123;</span><br><span class="line">    left, top, width, height,</span><br><span class="line">    topRadianHeight, bottomRadianHeight</span><br><span class="line">  &#125; &#x3D; params</span><br><span class="line"> </span><br><span class="line">  const halfWidth &#x3D; width &#x2F; 2</span><br><span class="line">  const radianHeight &#x3D; topRadianHeight || bottomRadianHeight || 0</span><br><span class="line">  const r &#x3D; (halfWidth * halfWidth + radianHeight * radianHeight) &#x2F; (2 * Math.abs(radianHeight))</span><br><span class="line">  const radiusX &#x3D; left + halfWidth &#x2F;&#x2F; 圆心X的坐标</span><br><span class="line">  const radianValue &#x3D; Math.acos(halfWidth &#x2F; r) &#x2F;&#x2F; 弧度</span><br><span class="line">  ctx.beginPath()</span><br><span class="line">  if (bottomRadianHeight) &#123; &#x2F;&#x2F; 底部凸</span><br><span class="line">    if (bottomRadianHeight &gt; 0) &#123;</span><br><span class="line">      ctx.arc(radiusX, top + height - r, r, radianValue, -radianValue + Math.PI)</span><br><span class="line">      ctx.lineTo(left, top)</span><br><span class="line">      ctx.lineTo(left + width, top)</span><br><span class="line">      ctx.lineTo(left + width, top - radianHeight + height)</span><br><span class="line">    &#125; else &#123; &#x2F;&#x2F; 底部凹</span><br><span class="line">      ctx.arc(radiusX, top + height + r + radianHeight, r, radianValue - Math.PI, -radianValue)</span><br><span class="line">      ctx.lineTo(left + width, top)</span><br><span class="line">      ctx.lineTo(left, top)</span><br><span class="line">      ctx.lineTo(left, top + height)</span><br><span class="line">    &#125;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  if (topRadianHeight) &#123;</span><br><span class="line">    if (topRadianHeight &gt; 0) &#123; &#x2F;&#x2F; 顶部凸</span><br><span class="line">      ctx.arc(radiusX, top + r, r, radianValue - Math.PI, -radianValue)</span><br><span class="line">      ctx.lineTo(left + width, top + height)</span><br><span class="line">      ctx.lineTo(left, top + height)</span><br><span class="line">      ctx.lineTo(left, top + radianHeight)</span><br><span class="line">    &#125; else &#123; &#x2F;&#x2F; 顶部凹</span><br><span class="line">      ctx.arc(radiusX, top - r - topRadianHeight, r, radianValue, -radianValue + Math.PI)</span><br><span class="line">      ctx.lineTo(left, top + height)</span><br><span class="line">      ctx.lineTo(left + width, top + height)</span><br><span class="line">      ctx.lineTo(left + width, top)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-<h3 id="第二步：绘制顶部或底部有凹凸弧度的线框、矩形或图片"><a href="#第二步：绘制顶部或底部有凹凸弧度的线框、矩形或图片" class="headerlink" title="第二步：绘制顶部或底部有凹凸弧度的线框、矩形或图片"></a>第二步：绘制顶部或底部有凹凸弧度的线框、矩形或图片</h3><ul>
-<li>画线框<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">toDrawArcRect(***)</span><br><span class="line">this.ctx.stroke()</span><br></pre></td></tr></table></figure></li>
-<li>画矩形<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">toDrawArcRect(***)</span><br><span class="line">this.ctx.fill()</span><br></pre></td></tr></table></figure></li>
-<li>画图片<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">this.ctx.save()</span><br><span class="line">toDrawArcRect(***)</span><br><span class="line">ctx.strokeStyle &#x3D; &#39;rgba(255,255,255,0)&#39;</span><br><span class="line">ctx.stroke()</span><br><span class="line">this.ctx.clip()</span><br><span class="line">this.ctx.drawImage(***)</span><br><span class="line">this.ctx.restore()</span><br></pre></td></tr></table></figure>
-_注：原理是，clip() 方法会在原始画布上剪切任意形状和尺寸。一旦剪切了某个区域，则所有之后的绘图都会被限制在被剪切的区域内（不能访问画布上的其他区域）。可以在使用 clip() 方法前通过使用 save() 方法对当前画布区域进行保存，并在以后的任意时间通过 restore() 方法对其进行恢复。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>小程序</category>
-      </categories>
-      <tags>
-        <tag>微信小程序</tag>
-        <tag>canvas</tag>
-      </tags>
-  </entry>
-  <entry>
     <title></title>
-    <url>/2021/12/23/Http%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</url>
+    <url>/2021/12/24/Http%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>HTTP是一个属于应用层的面向对象的协议，由于其简捷、快速的方式，适用于分布式超媒体信息系统。它于1990年提出，经过几年的使用与发展，得到不断地完善和扩展。目前在WWW中使用的是HTTP/1.0的第六版，HTTP/1.1的规范化工作正在进行之中，而且HTTP-NG(Next Generation of HTTP)的建议已经提出。<br>HTTP协议的主要特点可概括如下：</p>
 <ul>
 <li>支持客户/服务器模式。</li>
