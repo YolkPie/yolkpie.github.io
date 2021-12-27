@@ -348,7 +348,7 @@
   </entry>
   <entry>
     <title></title>
-    <url>/2021/12/24/CSS%E5%BC%80%E5%8F%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%8A%80%E5%B7%A7/</url>
+    <url>/2021/12/27/CSS%E5%BC%80%E5%8F%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%8A%80%E5%B7%A7/</url>
     <content><![CDATA[<h3 id="使用CSS重置（reset）"><a href="#使用CSS重置（reset）" class="headerlink" title="使用CSS重置（reset）"></a>使用CSS重置（reset）</h3><p>css重置库如normalize.css已经被使用很多年了，它们可以为你的网站样式提供一个比较清晰的标准，来确保跨浏览器之间的一致性。</p>
 <p>大多数项目并不需要这些库包含的所有规则，可以通过一条简单的规则来应用于布局中的所有元素，删除所有的margin、padding改变浏览器默认的盒模型。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">*&#123; box-sizing:border-box; margin:0; padding:0 &#125;</span><br></pre></td></tr></table></figure>
@@ -6944,7 +6944,7 @@ window.requestAnimationFrame(changePosition);
   </entry>
   <entry>
     <title></title>
-    <url>/2021/12/24/%E5%B7%A7%E7%94%A8JavaScript%E8%BF%90%E7%AE%97%E7%AC%A6/</url>
+    <url>/2021/12/27/%E5%B7%A7%E7%94%A8JavaScript%E8%BF%90%E7%AE%97%E7%AC%A6/</url>
     <content><![CDATA[<p>巧用运算符，事半功倍！</p>
 <h2 id="非空运算符"><a href="#非空运算符" class="headerlink" title="?? 非空运算符"></a>?? 非空运算符</h2><p>在 JS 中，?? 运算符被称为非空运算符。如果第一个参数不是 null/undefined（译者注：这里只有两个假值，但是 JS 中假值包含：未定义 undefined、空对象 null、数值 0、空数字 NaN、布尔 false，空字符串’’，不要搞混了），将返回第一个参数，否则返回第二个参数。比如，</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">null ?? 5 &#x2F;&#x2F; &#x3D;&gt; 5</span><br><span class="line">3 ?? 5 &#x2F;&#x2F; &#x3D;&gt; 3</span><br></pre></td></tr></table></figure>
@@ -8714,8 +8714,70 @@ https://www.jianshu.com/p/38bd5f1cf2f2
       </tags>
   </entry>
   <entry>
+    <title>骨架屏实现</title>
+    <url>/2021/12/27/%E9%AA%A8%E6%9E%B6%E5%B1%8F%E5%AE%9E%E7%8E%B0%E4%BE%8B%E5%AD%90/</url>
+    <content><![CDATA[<h1 id="骨架屏用途"><a href="#骨架屏用途" class="headerlink" title="骨架屏用途"></a>骨架屏用途</h1><ul>
+<li>作为spa中路由切换的 loading, 结合组件的生命周期和ajax请求返回的时机来使用.（ 作为loading 使用）。作为与用户联系最为密切的前端开发者，用户体验是最值得关注的问题。关于页面loading状态的展示，主流的主要有loading图和进度条两种。除此之外，越来越多的APP采用了“骨架屏”的方式去展示未加载内容，给予了用户焕然一新的体验。</li>
+<li>作为首屏渲染的优化</li>
+</ul>
+<h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><ul>
+<li><ol>
+<li>定义一个抽象组件，在抽象组件的render函数里获取插槽</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>深度循环遍历插槽，将每个元素都添加上gm-skeleton的类名</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>将vnode textContent预暂后清空保证骨架屏出现时不会出现默认文字</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>返回slots</li>
+</ol>
+</li>
+</ul>
+<h3 id="定义一个抽象组件"><a href="#定义一个抽象组件" class="headerlink" title="定义一个抽象组件"></a>定义一个抽象组件</h3><p>什么是抽象组件? 在渲染时会被跳过，只做运行时的操作的组件</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  name: <span class="string">&#x27;YKSkeleton&#x27;</span>,</span><br><span class="line">  abstract: <span class="literal">true</span> <span class="comment">// 抽象组件的属性</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取插槽并初始化操作骨架屏"><a href="#获取插槽并初始化操作骨架屏" class="headerlink" title="获取插槽并初始化操作骨架屏"></a>获取插槽并初始化操作骨架屏</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">render</span>(<span class="params">h</span>)</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> slots = <span class="built_in">this</span>.$slots.default || [h(<span class="string">&#x27;&#x27;</span>)]</span><br><span class="line">  <span class="built_in">this</span>.$nextTick().then(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.handlerPrefix(slots, <span class="built_in">this</span>.showSpin ? <span class="built_in">this</span>.addSkeletPrefix : <span class="built_in">this</span>.removeSkeletPrefix)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> slots.length &gt; <span class="number">1</span> ? h(<span class="string">&#x27;div&#x27;</span>, &#123;</span><br><span class="line">     staticClass: <span class="built_in">this</span>.showSpin ? <span class="string">&#x27;g-spinner&#x27;</span> : <span class="string">&#x27;&#x27;</span></span><br><span class="line">  &#125;, slots) : slots</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们将处理slots的方法放置在nextTick里面, <code>因为handlerPrefix里需要获取真实的DOM</code>，nextTick是用来执行<code>排序后</code>的更新队列里的所有方法, 在执行render前, <code>YKSkeleton组件的renderWatcher已被收集到更新队列里</code>，所以此时定义nextTick CallBack函数里能获取到渲染后对应插槽里所有真实DOM</p>
+<h3 id="循环slots操作类名"><a href="#循环slots操作类名" class="headerlink" title="循环slots操作类名"></a>循环slots操作类名</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">handlerComponent</span>(<span class="params">slot, handler<span class="comment">/* addSkeletPrefix | removeSkeletPrefix */</span>, init</span>)</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> originchildren = (((slot.componentInstance || &#123;&#125;)._vnode || &#123;&#125;).componentOptions || &#123;&#125;).children</span><br><span class="line">  <span class="keyword">const</span> compchildren = ((slot.componentInstance || &#123;&#125;)._vnode || &#123;&#125;).children</span><br><span class="line">  !init &amp;&amp; handler(slot)</span><br><span class="line">  <span class="keyword">if</span> (compchildren) <span class="built_in">this</span>.handlerPrefix(compchildren, handler, <span class="literal">false</span>)</span><br><span class="line">  <span class="keyword">if</span> (originchildren) <span class="built_in">this</span>.handlerPrefix(originchildren, handler, <span class="literal">false</span>)</span><br><span class="line">&#125;,</span><br><span class="line"><span class="function"><span class="title">handlerPrefix</span>(<span class="params">slots, handler, init = <span class="literal">true</span></span>)</span> &#123;</span><br><span class="line">  slots.forEach(<span class="function"><span class="params">slot</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">var</span> children = slot.children || (slot.componentOptions || &#123;&#125;).children || ((slot.componentInstance || &#123;&#125;)._vnode || &#123;&#125;).children</span><br><span class="line">    <span class="keyword">if</span> (slot.data) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!slot.componentOptions) &#123;</span><br><span class="line">        !init &amp;&amp; handler(slot)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!<span class="built_in">this</span>.$hoc_utils.getAbstractComponent(slot)) &#123;</span><br><span class="line">        ;(<span class="function"><span class="keyword">function</span>(<span class="params">slot</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">const</span> handlerComponent = <span class="built_in">this</span>.handlerComponent.bind(<span class="built_in">this</span>, slot, handler, init)</span><br><span class="line">          <span class="keyword">const</span> insert = (slot.data.hook || &#123;&#125;).insert</span><br><span class="line">          ;(slot.data.hook || &#123;&#125;).insert = <span class="function">() =&gt;</span> &#123; <span class="comment">// 函数重构, 修改原有的组件hook, 并且保证insert只执行一次</span></span><br><span class="line">            insert(slot)</span><br><span class="line">            handlerComponent()</span><br><span class="line">          &#125;</span><br><span class="line">          ;(slot.data.hook || &#123;&#125;).postpatch = handlerComponent</span><br><span class="line">        &#125;).call(<span class="built_in">this</span>, slot)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (slot &amp;&amp; slot.elm &amp;&amp; slot.elm.nodeType === <span class="number">3</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="built_in">this</span>.showSpin) &#123;</span><br><span class="line">        slot.memorizedtextContent = slot.elm.textContent</span><br><span class="line">        slot.elm.textContent = <span class="string">&#x27;&#x27;</span></span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        slot.elm.textContent = slot.memorizedtextContent || slot.elm.textContent || slot.text</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    children &amp;&amp; <span class="built_in">this</span>.handlerPrefix(children, handler, <span class="literal">false</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;,</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>逐步分析:</p>
+<ul>
+<li><ol>
+<li>我们遍历slots插槽</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>获取当前vnode下的children集合以备做下一次循环</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>判断是否是原生HTML元素，只有组件vnode才会具备componentOptions属性</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>判断是否抽象组件，我们知道抽象组件是不会渲染到真实DOMTree上的，例如keep-alive、transition，每个组件的vnode拥有独有的hooks生命周期: init(初始化)、insert(插入)、prepatch(更新)、destroy(销毁)，每个生命周期会在不同阶段触发, 劫持insert，保留原有的insert方法，随后重构vnode的insert方法在里面调用handlerComponent方法进行添加类名，这里与上面的mounted的nextTick用法理念类似，由于handlerComponent需要知道子组件的实例，所以必须在实例化后去调用，而组件的init方法会实例组件并且直接调用watcher.update(watcher.render()), 也就是我们在调用insert方法的时候其实是在update(render())后，所以这里能够获取到实例化后子组件</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>判断nodeType是否是文本节点，若是的话需要先将textContent保存后进行删除，保证在骨架屏出现时不会显示默认文字，在骨架屏消失时，将原先保留的默认文字返回给vnode，这样就能自由在骨架屏的显示隐藏期间自由切换</li>
+</ol>
+</li>
+</ul>
+<h3 id="操作vnode的静态类名"><a href="#操作vnode的静态类名" class="headerlink" title="操作vnode的静态类名"></a>操作vnode的静态类名</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="title">addSkeletPrefix</span>(<span class="params">slot</span>)</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> rootVnode = slot.componentOptions ? (slot.componentInstance || &#123;&#125;)._vnode || &#123;&#125; : slot;</span><br><span class="line">  <span class="keyword">if</span> (rootVnode.elm) &#123;</span><br><span class="line">    rootVnode.elm.classList.add(<span class="built_in">this</span>.skeletPrefix)</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    ;(rootVnode.data || &#123;&#125;).staticClass += <span class="string">` <span class="subst">$&#123;<span class="built_in">this</span>.skeletPrefix&#125;</span>`</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line"><span class="function"><span class="title">removeSkeletPrefix</span>(<span class="params">slot</span>)</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> rootVnode = slot.componentOptions ? (slot.componentInstance || &#123;&#125;)._vnode || &#123;&#125; : slot;</span><br><span class="line">  <span class="keyword">if</span> (rootVnode.elm) &#123;</span><br><span class="line">    rootVnode.elm.classList &amp;&amp; rootVnode.elm.classList.remove(<span class="built_in">this</span>.skeletPrefix)</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (rootVnode.data.staticClass) &#123;</span><br><span class="line">    rootVnode.data.staticClass = rootVnode.data.staticClass.replace(<span class="string">` <span class="subst">$&#123;<span class="built_in">this</span>.skeletPrefix&#125;</span>`</span>, <span class="string">&#x27;&#x27;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>addSkeletePrefix用于添加gm-skeleton类名，而removeSkeletonPrefix则是用于删除gm-skeleton类名</p>
+<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">  <span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line">  <span class="keyword">import</span> YKSkeleton <span class="keyword">from</span> <span class="string">&#x27;path/to/YKSkeleton&#x27;</span></span><br><span class="line">  </span><br><span class="line">  Vue.use(YKSkeleton)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  &lt;template&gt;</span><br><span class="line">  &lt;yk-skeleton&gt;</span><br><span class="line">    &lt;div style=<span class="string">&quot;margin-top: 20px;margin-left: 10px;&quot;</span>&gt;</span><br><span class="line">      &lt;b&gt;测试标题&lt;/b&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;p style=<span class="string">&quot;margin-top: 20px;&quot;</span>&gt;</span><br><span class="line">      &lt;span&gt; 测试&lt;/span&gt;</span><br><span class="line">    &lt;/p&gt;</span><br><span class="line">    &lt;p <span class="class"><span class="keyword">class</span></span>=<span class="string">&quot;content&quot;</span>&gt;</span><br><span class="line">      &lt;i&gt; 我也是有内容的我也是有内容的我也是有内容的我也是有内容的&lt;/i&gt;</span><br><span class="line">    &lt;/p&gt;</span><br><span class="line">  &lt;/yk-skeleton&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> YKSkeleton <span class="keyword">from</span> <span class="string">&#x27;./YKSkeleton.js&#x27;</span></span><br><span class="line">Vue.component(YKSkeleton.name, YKSkeleton)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="comment">// components: &#123; YKSkeleton &#125;,</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;style lang=<span class="string">&quot;scss&quot;</span>&gt;</span><br><span class="line">  .content&#123;<span class="attr">width</span>: 3rem; margin-top:  50px; margin-left: 60px;&#125;</span><br><span class="line">  .yk-skeleton &#123;</span><br><span class="line">    background-image: linear-gradient(90deg,#f2f2f2 <span class="number">25</span>%,#e6e6e6 <span class="number">37</span>%,#f2f2f2 <span class="number">63</span>%) !important;</span><br><span class="line">    background-color: transparent !important;</span><br><span class="line">    background-size: <span class="number">400</span>% <span class="number">100</span>%;</span><br><span class="line">    animation: skeleton-loading <span class="number">1.</span>5s ease-<span class="keyword">in</span> infinite;</span><br><span class="line">    min-height: .3rem;</span><br><span class="line">    min-width: 1rem;</span><br><span class="line">    display: inline-block;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  @keyframes skeleton-loading &#123;</span><br><span class="line">    <span class="keyword">from</span> &#123;</span><br><span class="line">      background-position: <span class="number">100</span>% <span class="number">50</span>%;</span><br><span class="line">    &#125;</span><br><span class="line">    to &#123;</span><br><span class="line">      background-position: <span class="number">0</span> <span class="number">50</span>%;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;/style&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p><code>showSpin</code>    Boolean    判断是否显示骨架屏(默认为true)<br><code>className</code>    String    骨架屏ClassName(默认为yk-skeleton)<br><code>init</code>    Boolean    默认第一层的子元素不添加骨架屏名字，因为背景色一般都会设置在根元素上，所以这里不做骨架屏处理，默认为true</p>
+]]></content>
+  </entry>
+  <entry>
     <title></title>
-    <url>/2021/12/24/Http%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</url>
+    <url>/2021/12/27/Http%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>HTTP是一个属于应用层的面向对象的协议，由于其简捷、快速的方式，适用于分布式超媒体信息系统。它于1990年提出，经过几年的使用与发展，得到不断地完善和扩展。目前在WWW中使用的是HTTP/1.0的第六版，HTTP/1.1的规范化工作正在进行之中，而且HTTP-NG(Next Generation of HTTP)的建议已经提出。<br>HTTP协议的主要特点可概括如下：</p>
 <ul>
 <li>支持客户/服务器模式。</li>
