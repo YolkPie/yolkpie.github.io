@@ -347,8 +347,8 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/12/27/CSS%E5%BC%80%E5%8F%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%8A%80%E5%B7%A7/</url>
+    <title>CSS开发快速提升技巧</title>
+    <url>/2021/12/20/CSS%E5%BC%80%E5%8F%91%E5%BF%AB%E9%80%9F%E6%8F%90%E5%8D%87%E6%8A%80%E5%B7%A7/</url>
     <content><![CDATA[<h3 id="使用CSS重置（reset）"><a href="#使用CSS重置（reset）" class="headerlink" title="使用CSS重置（reset）"></a>使用CSS重置（reset）</h3><p>css重置库如normalize.css已经被使用很多年了，它们可以为你的网站样式提供一个比较清晰的标准，来确保跨浏览器之间的一致性。</p>
 <p>大多数项目并不需要这些库包含的所有规则，可以通过一条简单的规则来应用于布局中的所有元素，删除所有的margin、padding改变浏览器默认的盒模型。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">*&#123; box-sizing:border-box; margin:0; padding:0 &#125;</span><br></pre></td></tr></table></figure>
@@ -6943,8 +6943,8 @@ window.requestAnimationFrame(changePosition);
 ]]></content>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/12/27/%E5%B7%A7%E7%94%A8JavaScript%E8%BF%90%E7%AE%97%E7%AC%A6/</url>
+    <title>巧用JavaScript运算符</title>
+    <url>/2021/12/20/%E5%B7%A7%E7%94%A8JavaScript%E8%BF%90%E7%AE%97%E7%AC%A6/</url>
     <content><![CDATA[<p>巧用运算符，事半功倍！</p>
 <h2 id="非空运算符"><a href="#非空运算符" class="headerlink" title="?? 非空运算符"></a>?? 非空运算符</h2><p>在 JS 中，?? 运算符被称为非空运算符。如果第一个参数不是 null/undefined（译者注：这里只有两个假值，但是 JS 中假值包含：未定义 undefined、空对象 null、数值 0、空数字 NaN、布尔 false，空字符串’’，不要搞混了），将返回第一个参数，否则返回第二个参数。比如，</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">null ?? 5 &#x2F;&#x2F; &#x3D;&gt; 5</span><br><span class="line">3 ?? 5 &#x2F;&#x2F; &#x3D;&gt; 3</span><br></pre></td></tr></table></figure>
@@ -8776,8 +8776,8 @@ https://www.jianshu.com/p/38bd5f1cf2f2
 ]]></content>
   </entry>
   <entry>
-    <title></title>
-    <url>/2021/12/27/Http%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</url>
+    <title>Http协议详解</title>
+    <url>/2021/12/10/Http%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>HTTP是一个属于应用层的面向对象的协议，由于其简捷、快速的方式，适用于分布式超媒体信息系统。它于1990年提出，经过几年的使用与发展，得到不断地完善和扩展。目前在WWW中使用的是HTTP/1.0的第六版，HTTP/1.1的规范化工作正在进行之中，而且HTTP-NG(Next Generation of HTTP)的建议已经提出。<br>HTTP协议的主要特点可概括如下：</p>
 <ul>
 <li>支持客户/服务器模式。</li>
