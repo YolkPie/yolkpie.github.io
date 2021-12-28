@@ -1,0 +1,404 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>flex布局 | YolkPie</title><meta name="description" content="简介： flex布局（Flexible布局，弹性布局）是在小程序开发经常使用的布局方式  开启了flex布局的元素叫做flex container  flex container里面的直接子元素叫做flex items（也就是开启了flex布局的盒子包裹的第一层子元素）  设置display的属性为flex或者inline-flex可以开启flex布局即成为flex container    属性"><meta name="keywords" content="前端技术博客"><meta name="author" content="YolkPie"><meta name="copyright" content="YolkPie"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yolkpie.net/2021/12/27/flex/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="flex布局"><meta property="og:url" content="https://yolkpie.net/2021/12/27/flex/"><meta property="og:site_name" content="YolkPie"><meta property="og:description" content="简介： flex布局（Flexible布局，弹性布局）是在小程序开发经常使用的布局方式  开启了flex布局的元素叫做flex container  flex container里面的直接子元素叫做flex items（也就是开启了flex布局的盒子包裹的第一层子元素）  设置display的属性为flex或者inline-flex可以开启flex布局即成为flex container    属性"><meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><meta property="article:published_time" content="2021-12-27T16:00:00.000Z"><meta property="article:modified_time" content="2021-12-28T05:58:49.366Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="prev" title="react中的样式策略" href="https://yolkpie.net/2021/12/27/css%E6%A0%B7%E5%BC%8F%E7%AD%96%E7%95%A5/"><link rel="next" title="骨架屏实现" href="https://yolkpie.net/2021/12/27/%E9%AA%A8%E6%9E%B6%E5%B1%8F%E5%AE%9E%E7%8E%B0%E4%BE%8B%E5%AD%90/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: false,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 5.0.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">139</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">81</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">33</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">简介：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%9E%E6%80%A7%E5%80%BC%E8%AE%BE%E7%BD%AE%E4%B8%BAflex%E5%92%8Cinline-flex%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">属性值设置为flex和inline-flex的区别：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%A8flex-container%E4%B8%8A%E7%9A%84CSS%E5%B1%9E%E6%80%A7"><span class="toc-number">3.</span> <span class="toc-text">应用在flex container上的CSS属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%A8flex-items%E4%B8%8A%E7%9A%84CSS%E5%B1%9E%E6%80%A7"><span class="toc-number">4.</span> <span class="toc-text">应用在flex items上的CSS属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%96%91%E9%9A%BE%E7%82%B9%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="toc-number">5.</span> <span class="toc-text">疑难点解析：</span></a></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">YolkPie</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">flex布局</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2021-12-28 00:00:00"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2021-12-28</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2021-12-28 13:58:49"><i class="fas fa-history fa-fw"></i> 更新于 2021-12-28</span></time></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h4 id="简介："><a href="#简介：" class="headerlink" title="简介："></a>简介：</h4><ul>
+<li><p>flex布局（Flexible布局，弹性布局）是在小程序开发经常使用的布局方式</p>
+</li>
+<li><p>开启了flex布局的元素叫做<code>flex container</code></p>
+</li>
+<li><p><code>flex container</code>里面的直接子元素叫做<code>flex items</code>（也就是开启了flex布局的盒子包裹的第一层子元素）</p>
+</li>
+<li><p>设置display的属性为flex或者<code>inline-flex</code>可以开启flex布局即成为<code>flex container</code></p>
+</li>
+</ul>
+<hr>
+<h4 id="属性值设置为flex和inline-flex的区别："><a href="#属性值设置为flex和inline-flex的区别：" class="headerlink" title="属性值设置为flex和inline-flex的区别："></a>属性值设置为flex和inline-flex的区别：</h4><ol>
+<li><p>如果display对应的值是flex的话，那么<code>flex container</code>是以<code>block-level</code>的形式存在的，相当于是一个块级元素</p>
+</li>
+<li><p>如果display的值设置为<code>inline-flex</code>的话，那么<code>flex container</code>是以<code>inline-level</code>的形式存在的，相当于是一个行内块元素</p>
+</li>
+<li><p>这两个属性值差异的影响在设置了属性值的元素上面，它们在子元素上的效果都是一样的</p>
+</li>
+<li><p>如果一个元素的父元素开启了flex布局；那么其子元素的display属性对自身的影响将会失效，但是对其内容的影响依旧存在的；</p>
+</li>
+</ol>
+<p>举个例子：父元素设置了<code>display: flex</code>，即使子元素设置了<code>display：block</code>或者<code>display：inline</code>的属性，子元素还是会表现的像个行内块元素一样，这就是父元素对其的影响使其display属性对自身的影响失效了；</p>
+<p>但是为什么我们说其对内容的影响还在呢？假如说父子元素都设置了<code>display: flex</code>，那么子元素自身依然是行块级元素，并不会因为其开启了flex布局就变为块级元素，但是该子元素的内容依然会受到它flex布局的影响，各种flex特有的属性就会生效；</p>
+<p>总结：我们如果想让设置flex布局的盒子变成块级元素的话，那就dispaly的属性值就设置为flex；如果想让盒子变为行内块元素的话，就设置为<code>inline-flex</code>；父元素开启了flex布局之后，子元素的display属性对元素本身的影响就会失效，但是依旧可以影响盒子内部的元素；</p>
+<h4 id="应用在flex-container上的CSS属性"><a href="#应用在flex-container上的CSS属性" class="headerlink" title="应用在flex container上的CSS属性"></a>应用在flex container上的CSS属性</h4><ol>
+<li><strong>flex-flow</strong></li>
+</ol>
+<ul>
+<li><p><code>felx-flow</code>是<code>flex-direction || flex-wrap</code>的缩写，这个属性很灵活，你可以只写一个属性，也可以两个都写，甚至交换前后顺序都是可以的</p>
+</li>
+<li><p><code>flex-flow：column wrap</code> === <code>flex-direction：column；flex-wrap：wrap</code></p>
+</li>
+<li><p>如果只写了一个属性值的话，那么另一个属性就直接取默认值；<code>flex-flow：row-reverse</code> === <code>flex-direction：row-reverse；flex-wrap：nowrap</code>；</p>
+</li>
+</ul>
+<ol>
+<li><strong>flex-direction</strong></li>
+</ol>
+<p><code>flex items</code>默认都是沿着<code>main axis</code>（主轴）从<code>main start</code>开始往<code>main end</code>方向排布的</p>
+<ul>
+<li><p><code>flex-direction</code>决定了主轴的方向，有四个取值</p>
+</li>
+<li><p>分别为<code>row</code>（默认值）、<code>row-reverse</code>、<code>column</code>、<code>column-reverse</code></p>
+</li>
+<li><p>注意：<code>flex-direction</code>并不是直接改变<code>flex items</code>的排列顺序，他只是通过改变了主轴方向间接的改变了顺序</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>属性值</strong></th>
+<th><strong>main start（主轴的起始位置）</strong></th>
+<th><strong>main end（主轴的结束位置）</strong></th>
+<th><strong>主轴方向</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>row（默认值）</td>
+<td>左</td>
+<td>右</td>
+<td>——–&gt;</td>
+</tr>
+<tr>
+<td>row-reverse</td>
+<td>右</td>
+<td>左</td>
+<td>&lt;——–</td>
+</tr>
+<tr>
+<td>column</td>
+<td>上</td>
+<td>下</td>
+<td>从上往下</td>
+</tr>
+<tr>
+<td>column-reverse</td>
+<td>下</td>
+<td>上</td>
+<td>从下往上</td>
+</tr>
+</tbody></table>
+<ol>
+<li><strong>flex-wrap</strong></li>
+</ol>
+<p>flex-wrap能够决定flex items是在单行还是多行显示</p>
+<ul>
+<li>nowrap（默认）：单行</li>
+</ul>
+<p>本例中父盒子宽度为500px，子盒子为100px；当增加了多个子盒子并且给父盒子设置了flex-wrap：nowrap属性后，效果如下图所示：</p>
+<p>我们会惊奇的发现，父盒子的宽度没有变化，子盒子也确实没有换行，但是他们的宽度均缩小至能适应不换行的条件为止了，这也就是flex布局又称为弹性布局的原因</p>
+<p>所以，我们也可以得出一个结论：如果使用了flex布局的话，一个盒子的大小就算是将宽高写死了也是有可能发生改变的</p>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6cd369915cc14ef19525f1f087c277ae~tplv-k3u1fbpfcp-watermark.awebp" alt="img"><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/de6237bbe45a4c3c8df9d6e586a37b36~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li>wrap：多行</li>
+</ul>
+<p>换行后元素是往哪边排列跟交叉轴的方向有很大的关系，排列方向是顺着交叉轴的方向来的；</p>
+<p>用的还是刚刚的例子，只不过现在将属性flex-wrap的值设置为了wrap，效果如下图所示：</p>
+<p>子盒子的高度在能够正常换行的情况不会发生变化，但因为当前交叉轴的方向是从上往下的，那么要换行的元素就会排列在下方</p>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/eb15a665a2f645da93028e2340479486~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li>wrap-reverse：多行（对比wrap，cross start与cross end相反），这个方法可以让交叉轴起点和终点相反，这样整体的布局就会翻转过来</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c8529d8d76304b8ab4fb0f19aa3d8887~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<p>注意：这里就不是单纯的将要换行的元素向上排列，所有的元素都会受到影响，因为交叉轴的起始点和终止点已经反过来了</p>
+<ol>
+<li><strong>justify-content</strong></li>
+</ol>
+<p>Tip：下列图像灰色部分均无任何元素，其他颜色的区域为盒子内容区域</p>
+<p>justify-content决定了flex items在主轴上的对齐方式，总共有6个属性值：</p>
+<ul>
+<li><strong>flex-start（默认值）：在主轴方向上与main start对齐</strong></li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ab7497e3556e4870b46b3b58d4b091b5~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li><strong>flex-end：在主轴方向上与main end对齐</strong></li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d1996d5820de4222b3e7dde5c5ccb1ca~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li><strong>center：在主轴方向上居中对齐</strong></li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3e8254152e9f40e4ae8c796d1ebf3ec6~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li><strong>space-between</strong></li>
+</ul>
+<p>特点：</p>
+<ol>
+<li>与main start、main end两端对齐</li>
+<li>flex items之间的距离相等</li>
+</ol>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e27be892fe4b4faaba3a826b9808fdcf~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li><strong>space-evenly</strong></li>
+</ul>
+<p>特点：</p>
+<ol>
+<li>flex items之间的距离相等</li>
+<li>flex items与main start、main end之间的距离等于flex items的距离</li>
+</ol>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e9250f45b2bd4273b11d10f47dd95401~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li><strong>space-around</strong></li>
+</ul>
+<p>特点：</p>
+<ol>
+<li>flex items之间的距离相等</li>
+<li>flex items与main start、main end之间的距离等于flex items的距离的一半</li>
+</ol>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/88a5bd2f2bc84b47afcb8300e92c1bd2~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ol>
+<li><strong>align-items</strong></li>
+</ol>
+<p><code>align-items</code>决定了<strong>单行</strong><code>flex items</code>在cross axis（交叉轴）上的对齐方式</p>
+<p>注意：主轴只要是横向的，无论<code>flex-direction</code>设置的是<code>row</code>还是<code>row-reverse</code>，其交叉轴都是从上指向下的；</p>
+<p>主轴只要是纵向的，无论<code>flex-direction</code>设置的是<code>column</code>还是<code>column-reverse</code>，其交叉轴都是从左指向右的；</p>
+<p>也就是说：主轴可能会有四种，但是交叉轴只有两种</p>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c68dda4b69be4ca88bd2321b19d6cd52~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<p>该属性具有如下几个属性值：</p>
+<ul>
+<li>stretch（默认值）：当<strong>flex items</strong>在交叉轴方向上的size（指width或者height，由交叉轴方向确定）为auto时，会自动拉伸至填充；但是如果<code>flex items</code>的size并不是<code>auto</code>，那么产生的效果就和设置为<code>flex-start</code>一样</li>
+</ul>
+<p>注意：触发条件为：父元素设置<code>align-items</code>的属性值为<code>stretch</code>，而子元素在交叉轴方向上的size设置为auto</p>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1557f2fae43a4143aa89fdd5e6740f6f~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li>flex-start：与cross start对齐</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b4be2b0407e3485a8f0d44071da4532a~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li>flex-end：与cross end对齐</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d2a2f4a755f7401ea9d2e6494f84f984~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li>center：居中对齐</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0170f55d19884403b673e47b6d1fc65a~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li>baseline：与基准线对齐</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3f149616f86e4653af6a02d34737b2f1~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<p>至于baseline这个属性值，平时用的并不是很多，基准线可以认为是盒子里面文字的底线，基准线对齐就是让每个盒子文字的底线对齐</p>
+<p>注意：<code>align-items</code>的默认值与<code>justify-content</code>的默认值不同，它并不是<code>flex-start</code>，而是<code>stretch</code></p>
+<ol>
+<li><strong>align-content</strong></li>
+</ol>
+<ul>
+<li><p><code>align-content</code>决定了<strong>多行</strong><code>flex-items</code>在主轴上的对齐方式，用法与<code>justify-content</code>类似，具有以下属性值</p>
+</li>
+<li><p><code>stretch</code>（默认值）、<code>flex-start</code>、<code>flex-end</code>、<code>center</code>、<code>space-bewteen</code>、<code>space-around</code>、<code>space-evenly</code></p>
+</li>
+<li><p>大部分属性值看图应该就能明白，主要说一下<code>stretch</code>，当<code>flex items</code>在交叉轴方向上的size设置为<code>auto</code>之后，多行元素的高度之和会挤满父盒子，并且他们的高度是均分的，这和<code>align-items</code>的<code>stretch</code>属性有点不一样，后者是每一个元素对应的size会填充父盒子，而前者则是均分</p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7dd0cb1b03d148f7a847c78ca56a11bc~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<h4 id="应用在flex-items上的CSS属性"><a href="#应用在flex-items上的CSS属性" class="headerlink" title="应用在flex items上的CSS属性"></a>应用在flex items上的CSS属性</h4><ol>
+<li><strong>flex</strong></li>
+</ol>
+<ul>
+<li>flex是flex-grow flex-shrink？|| flex-basis的简写，说明flex属性值可以是一个、两个、或者是三个，剩下的为默认值</li>
+<li>默认值为flex： 0 1 auto（不放大但会缩小）</li>
+<li>none： 0 0 auto（既不放大也不缩小）</li>
+<li>auto：1 1 auto（放大且缩小）</li>
+<li>但是其简写方式是多种多样的，不过我们用到最多的还是flex：n；举个”栗子”：如果flex是一个非负整数n，则该数字代表的是flex-grow的值，对应的flex-shrink默认为1，但是要格外注意：这里flex-basis的值并不是默认值auto，而是改成了0%；即flex：n === flex：n 1 0%；所以我们常用的flex：1 –&gt; flex：1 1 0%；下图是flex简写的所有情况：</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/aa0bb655a1064d1f8ce0cdd3568c00cb~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ol>
+<li><strong>flex-grow</strong></li>
+</ol>
+<ul>
+<li><p><code>flex-grow</code>决定了<code>flex-items</code>如何扩展</p>
+</li>
+<li><p>可以设置任何非负数字（正整数、正小数、0），<strong>默认值为0</strong></p>
+</li>
+<li><p>只有当<code>flex container</code>在主轴上有剩余的size时，该属性才会生效</p>
+</li>
+<li><p>如果所有的<code>flex items</code>的<code>flex-grow</code>属性值总和sum超过1，每个<code>flex item</code>扩展的size就为<code>flex container剩余size * flex-grow / sum</code></p>
+</li>
+<li><p><strong>利用上一条计算公式，我们可以得出：当</strong><code>flex items</code><strong>的</strong><code>flex-grow</code><strong>属性值总和sum不超过1时，扩展的总长度为剩余 size * sum，但是sum又小于1，所以最终flex items不可能完全填充felx container</strong></p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">  .box &#123;</span><br><span class="line">    display: flex;</span><br><span class="line">    align-items: center;</span><br><span class="line">    width: 500px;</span><br><span class="line">    height: 500px;</span><br><span class="line">    background-color: aquamarine;</span><br><span class="line">  &#125;</span><br><span class="line">  .item &#123;</span><br><span class="line">    display: flex;</span><br><span class="line">    justify-content: center;</span><br><span class="line">    align-items: center;</span><br><span class="line">    width: 100px;</span><br><span class="line">    height: 100px;</span><br><span class="line">    font-size: 34px;</span><br><span class="line">    color: white;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(1) &#123;</span><br><span class="line">    flex-grow: 1;</span><br><span class="line">    background-color: bisque;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(2) &#123;</span><br><span class="line">    flex-grow: 1;</span><br><span class="line">    background-color: #f8f;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(3) &#123;</span><br><span class="line">    flex-grow: 1;</span><br><span class="line">    background-color: #ccc;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a937333d070b4b819b2f6f88cd68c91b~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ul>
+<li>如果所有的<code>flex items</code>的<code>flex-grow</code>属性值总和sum不超过1，每个<code>flex item</code>扩展的size就为<code>flex container剩余size * flex-grow</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    .item:nth-child(1) &#123;</span><br><span class="line">    flex-grow: 0.1;</span><br><span class="line">    background-color: bisque;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(2) &#123;</span><br><span class="line">    flex-grow: 0.2;</span><br><span class="line">    background-color: #f8f;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(3) &#123;</span><br><span class="line">    flex-grow: 0.3;</span><br><span class="line">    background-color: #ccc;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a9aaef8fe29a4793a5b16a55cc2d0bba~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<p>注意：不要认为<code>flex item</code>扩展的值都是按照<code>flex-grow/sum</code>的比例来进行分配，也并不是说看到<code>flex-grow</code>是小数，就认为其分配到的空间是剩余<code>size*flex-grow</code>，这些都是不准确的。当看到flex item使用了该属性时，首先判断的应该是sum是否大于1，再来判断通过哪种方法来计算比例</p>
+<ul>
+<li>flex items扩展后的最终size不能超过max-width/max-height</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">    .item:nth-child(1) &#123;</span><br><span class="line">    flex-grow: 1;</span><br><span class="line">    max-width: 150px; &#x2F;&#x2F; 当设置了max-width之后，就算flex-grow生效且分配到的空间加上原空间大于max-width，但是最多宽度也只能到max-width的大小</span><br><span class="line">    background-color: bisque;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(2) &#123;</span><br><span class="line">    background-color: #f8f;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(3) &#123;</span><br><span class="line">    background-color: #ccc;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5f9de49b4b074939a2dad96b1b877694~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ol>
+<li><strong>flex-basis</strong></li>
+</ol>
+<ul>
+<li><p><code>flex-basis</code>用来设置<code>flex items</code>在<strong>主轴</strong>方向上的base size，以后<code>flew-grow</code>和<code>flex-shrink</code>计算时所需要用的base size就是这个</p>
+</li>
+<li><p>auto（默认值）、content：取决于内容本身的size，这两个属性可以认为效果都是一样的，当然也可以设置具体的值和百分数（根据父盒子的比例计算）</p>
+</li>
+<li><p>决定<code>flex items</code>最终base size因素的优先级为<code>max-width/max-height/min-width/min-height</code> &gt; <code>flex-basis</code> &gt; <code>width/height</code> &gt; <code>内容本身的size</code></p>
+</li>
+<li><p>可以理解为给<code>flex items</code>设置了flex-basis属性且属性值为具体的值或者百分数的话，主轴上对应的size（width/height）就不管用了</p>
+</li>
+</ul>
+<ol>
+<li><strong>flex-shrink</strong></li>
+</ol>
+<ul>
+<li><p><code>flex-shrink</code>决定了<code>flex items</code>如何收缩</p>
+</li>
+<li><p>可以设置任意非负数字（正小数、正整数、0），默认值是1</p>
+</li>
+<li><p>当<code>flex items</code>在主轴方向上超过了<code>flex container</code>的size之后，<code>flex-shrink</code>属性才会生效</p>
+</li>
+<li><p>注意：与<code>flex-grow</code>不同，计算每个<code>flex item</code>缩小的大小都是通过同一个公式来的，计算比例的方式也有所不同</p>
+</li>
+<li><p>收缩比例 = <code>flex-shrink * flex item的base size</code>，base size就是<code>flex item</code>放入<code>flex container</code>之前的size</p>
+</li>
+<li><p>每个<code>flex item</code>收缩的size为<code>flex items超出flex container的size * 收缩比例 / 所有flex items 的收缩比例之和</code></p>
+</li>
+<li><p><code>flex items</code>收缩后的最终size不能小于<code>min-width/min-height</code></p>
+</li>
+<li><p><strong>总结：当flex items的flex-shrink属性值的总和小于1时，通过其计算收缩size的公式可知，其总共收缩的距离是超出的size * sum，由于sum是小于1的，那么无论如何子盒子都不会完全收缩至超过的距离，也就是说在不换行的情况下子元素一定会有超出</strong></p>
+</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7f7ace10e8f4496aa266b07146863d20~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">  .item &#123;</span><br><span class="line">    display: flex;</span><br><span class="line">    justify-content: center;</span><br><span class="line">    align-items: center;</span><br><span class="line">    flex-shrink: 1;</span><br><span class="line">    height: 100px;</span><br><span class="line">    font-size: 34px;</span><br><span class="line">    color: white;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(1) &#123;</span><br><span class="line">    width: 100px;</span><br><span class="line">    background-color: bisque;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(2) &#123;</span><br><span class="line">    width: 110px;</span><br><span class="line">    background-color: #f8f;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(3) &#123;</span><br><span class="line">    width: 120px;</span><br><span class="line">    background-color: #ccc;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(4) &#123;</span><br><span class="line">    width: 130px;</span><br><span class="line">    background-color: yellowgreen;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(5) &#123;</span><br><span class="line">    width: 140px;</span><br><span class="line">    background-color: green;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(6) &#123;</span><br><span class="line">    width: 150px;</span><br><span class="line">    background-color: blue;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(7) &#123;</span><br><span class="line">    width: 160px;</span><br><span class="line">    background-color: red;</span><br><span class="line">  &#125;</span><br><span class="line">&lt;&#x2F;style&gt;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>不同的盒子缩小的值和其自身的flex-shrink属性有关，而且还与自己的原始宽度有关，这是跟flex-grow最大的区别</p>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bb48707bd1cf4d919d43bf69cec95949~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ol>
+<li><strong>order</strong></li>
+</ol>
+<ul>
+<li><p><code>order</code>决定了<code>flex items</code>的排布顺序</p>
+</li>
+<li><p>可以设置为任意整数（正整数、负整数、0），值越小就排在越前面</p>
+</li>
+<li><p>默认值为0，当<code>flex items</code>的<code>order</code>一致时，则按照渲染的顺序排列</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;style&gt;</span><br><span class="line">  .item:nth-child(1) &#123;</span><br><span class="line">    background-color: bisque;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(2) &#123;</span><br><span class="line">    order: 2;</span><br><span class="line">    background-color: #f8f;</span><br><span class="line">  &#125;</span><br><span class="line">  .item:nth-child(3) &#123;</span><br><span class="line">    order: -1;</span><br><span class="line">    background-color: #ccc;</span><br><span class="line">  &#125;</span><br><span class="line"> &lt;&#x2F;style&gt;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/36f8124783fc417b9971b3faa3028fb2~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<ol>
+<li><strong>align-self</strong></li>
+</ol>
+<ul>
+<li><p><code>flex items</code>可以通过<code>align-self</code>覆盖<code>flex container</code>设置的<code>align-items</code></p>
+</li>
+<li><p>默认值为<code>auto</code>：默认遵从<code>flex container</code>的<code>align-items</code>设置</p>
+</li>
+<li><p><code>stretch</code>、<code>flex-start</code>、<code>flex-end</code>、<code>center</code>、<code>baseline</code>，效果跟<code>align-items</code>一致，简单来说，就是<code>align-items</code>有什么属性，<code>align-self</code>就有哪些属性，当然auto除外</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.item:nth-child(2) &#123;</span><br><span class="line">    align-self: flex-start;</span><br><span class="line">    background-color: #f8f;</span><br><span class="line"> &#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/873ad14a004f4a88800573ba0734fa19~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<h4 id="疑难点解析："><a href="#疑难点解析：" class="headerlink" title="疑难点解析："></a>疑难点解析：</h4><p>大家在看到flex-wrap那里换行的图片会不会有疑惑，为什么换行的元素不是紧挨着上一行的元素呢？而是有点像居中了的感觉</p>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8cf1e0b004984a3280515c9aa384ff56~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+<p>想想多行元素在交叉轴上是上依靠哪一个属性进行排列的，当然是<code>align-content</code>了，那它的默认属性值是什么呢？—&gt;stretch</p>
+<p>对，就是因为默认值是stretch，但是<code>flex item</code>又设置了高度，所以flex item不会被拉伸，但是它们会排列在要被拉伸的位置；我们可以测试一下，将<code>flex-items</code>交叉轴上的size设置为auto之后，stretch属性值才会表现的更加明显，平分<code>flex-container</code>在主轴上的高度，每个元素所在的位置就是上一张图所在的位置</p>
+<p><img src= "/img/loading.gif" data-src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e31a8512d656453396b8c414d268e3ec~tplv-k3u1fbpfcp-watermark.awebp" alt="img"></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">YolkPie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yolkpie.net/2021/12/27/flex/">https://yolkpie.net/2021/12/27/flex/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yolkpie.net" target="_blank">YolkPie</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2021/12/27/css%E6%A0%B7%E5%BC%8F%E7%AD%96%E7%95%A5/"><img class="prev-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">react中的样式策略</div></div></a></div><div class="next-post pull-right"><a href="/2021/12/27/%E9%AA%A8%E6%9E%B6%E5%B1%8F%E5%AE%9E%E7%8E%B0%E4%BE%8B%E5%AD%90/"><img class="next-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">骨架屏实现</div></div></a></div></nav></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By YolkPie</div><div class="framework-info"><span>驱动 </span><a target="_blank" rel="noopener" href="https://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
