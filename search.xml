@@ -10659,6 +10659,306 @@ Label 的格式为：<figure class="highlight plain"><table><tr><td class="code"
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;block wx:<span class="keyword">if</span>=<span class="string">&quot;&#123;&#123;text&#125;&#125;&quot;</span>&gt;&#123;&#123;text&#125;&#125;&lt;/block&gt;</span><br><span class="line">&lt;block wx:<span class="keyword">else</span>&gt;</span><br><span class="line">    &lt;slot&gt;&lt;/slot&gt;</span><br><span class="line">&lt;/block&gt;</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
+    <title>你不知道的TypeScript高级技巧</title>
+    <url>/2022/03/26/TypeScript%E7%9A%84%E4%B8%80%E4%BA%9B%E9%AB%98%E7%BA%A7%E6%8A%80%E5%B7%A7/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>TS 已经越来越火，不管是服务端（Node.js），还是前端框架（Angular、Vue3），都有越来越多的项目使用 TS 开发，作为前端程序员，TS 已经成为一项必不可少的技能。本文旨在介绍 TS 中的一些高级技巧，提高大家对这门语言更深层次的认知。</p>
+<h3 id="Typescript-简介"><a href="#Typescript-简介" class="headerlink" title="Typescript 简介"></a>Typescript 简介</h3><ul>
+<li><p>ECMAScript 的超集 (stage 3)</p>
+</li>
+<li><p>编译期的类型检查</p>
+</li>
+<li><p>不引入额外开销（零依赖，不扩展 js 语法，不侵入运行时）</p>
+</li>
+<li><p>编译出通用的、易读的 js 代码</p>
+</li>
+</ul>
+<p><code>Typescript = Type + ECMAScript + Babel-Lite</code></p>
+<blockquote>
+<p>Typescript 设计目标: <a href="https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals">https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals</a></p>
+</blockquote>
+<h3 id="为什么使用-Typescript"><a href="#为什么使用-Typescript" class="headerlink" title="为什么使用 Typescript"></a>为什么使用 Typescript</h3><ul>
+<li><p>增加了代码的可读性和可维护性</p>
+</li>
+<li><p>减少运行时错误，写出的代码更加安全，减少 BUG</p>
+</li>
+<li><p>享受到代码提示带来的好处</p>
+</li>
+<li><p>重构神器</p>
+</li>
+</ul>
+<h3 id="基础类型"><a href="#基础类型" class="headerlink" title="基础类型"></a>基础类型</h3><ul>
+<li><p>boolean</p>
+</li>
+<li><p>number</p>
+</li>
+<li><p>string</p>
+</li>
+<li><p>array</p>
+</li>
+<li><p>tuple</p>
+</li>
+<li><p>enum</p>
+</li>
+<li><p>void</p>
+</li>
+<li><p>null &amp; undefined</p>
+</li>
+<li><p>any &amp; unknown</p>
+</li>
+<li><p>never</p>
+</li>
+<li><p>…</p>
+</li>
+</ul>
+<h5 id="any-和-unknown-的区别"><a href="#any-和-unknown-的区别" class="headerlink" title="any 和 unknown 的区别"></a>any 和 unknown 的区别</h5><ul>
+<li><p>any: 任意类型</p>
+</li>
+<li><p>unknown: 未知的类型</p>
+</li>
+</ul>
+<p>任何类型都能分配给 unknown，但 unknown 不能分配给其他基本类型，而 any 啥都能分配和被分配。</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">let foo: unknown</span><br><span class="line"></span><br><span class="line">foo &#x3D; true &#x2F;&#x2F; ok</span><br><span class="line">foo &#x3D; 123 &#x2F;&#x2F;ok</span><br><span class="line"></span><br><span class="line">foo.toFixed(2) &#x2F;&#x2F; error</span><br><span class="line"></span><br><span class="line">let foo1: string &#x3D; foo &#x2F;&#x2F; error</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">let bar: any</span><br><span class="line"></span><br><span class="line">bar &#x3D; true &#x2F;&#x2F; ok</span><br><span class="line">bar &#x3D; 123 &#x2F;&#x2F;ok</span><br><span class="line"></span><br><span class="line">foo.toFixed(2) &#x2F;&#x2F; ok</span><br><span class="line"></span><br><span class="line">let bar1:string  &#x3D; bar &#x2F;&#x2F; ok</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，用了 any 就相当于完全丢失了类型检查，所以大家尽量少用 any，对于未知类型可以用 unknown。</p>
+<h5 id="unknown-的正确用法"><a href="#unknown-的正确用法" class="headerlink" title="unknown 的正确用法"></a>unknown 的正确用法</h5><p>我们可以通过不同的方式将 <code>unknown</code> 类型缩小为更具体的类型范围:</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">  function getLen(value: unknown): number &#123;</span><br><span class="line">  if (typeof value &#x3D;&#x3D;&#x3D; &#39;string&#39;) &#123;</span><br><span class="line">    &#x2F;&#x2F; 因为类型保护的原因，此处 value 被判断为 string 类型</span><br><span class="line">   return value.length</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="never"><a href="#never" class="headerlink" title="never"></a>never</h4><p><code>never</code> 一般表示哪些用户无法达到的类型。在最新的 typescript 3.7 中，下面代码会报错:  </p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; never 用户控制流分析</span><br><span class="line">function neverReach (): never &#123;</span><br><span class="line">  throw new Error(&#39;an error&#39;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const x &#x3D; 2</span><br><span class="line"></span><br><span class="line">neverReach()</span><br><span class="line"></span><br><span class="line">x.toFixed(2)  &#x2F;&#x2F; x is unreachable</span><br></pre></td></tr></table></figure>
+
+<p>never 还可以用于联合类型的 幺元：<br>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type T0 &#x3D; string | number | never &#x2F;&#x2F; T0 is string | number</span><br></pre></td></tr></table></figure></p>
+<h5 id="函数类型"><a href="#函数类型" class="headerlink" title="函数类型"></a>函数类型</h5><p>几种函数类型的返回值类型写法</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function fn(): number &#123;</span><br><span class="line">  return 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const fn &#x3D; function (): number &#123;</span><br><span class="line">  return 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const fn &#x3D; (): number &#x3D;&gt; &#123;</span><br><span class="line">  return 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const obj &#x3D; &#123;</span><br><span class="line">  fn (): number &#123;</span><br><span class="line">    return 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 () 后面添加返回值类型即可。</p>
+<h5 id="函数类型-1"><a href="#函数类型-1" class="headerlink" title="函数类型"></a>函数类型</h5><p>ts 中也有函数类型，用来描述一个函数：</p>
+<p><code>type FnType = (x: number, y: number) =&gt; number</code></p>
+<h5 id="完整的函数写法"><a href="#完整的函数写法" class="headerlink" title="完整的函数写法"></a>完整的函数写法</h5>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">let myAdd: (x: number, y: number) &#x3D;&gt; number &#x3D; function(x: number, y: number): number &#123;</span><br><span class="line">  return x + y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 使用 FnType 类型</span><br><span class="line">let myAdd: FnType &#x3D; function(x: number, y: number): number &#123;</span><br><span class="line">  return x + y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ts 自动推导参数类型</span><br><span class="line">let myAdd: FnType &#x3D; function(x, y) &#123;</span><br><span class="line">  return x + y</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="函数重载？"><a href="#函数重载？" class="headerlink" title="函数重载？"></a>函数重载？</h5><p>js 因为是动态类型，本身不需要支持重载，ts 为了保证类型安全，支持了函数签名的类型重载。即：</p>
+<p>多个重载签名和一个实现签名</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 重载签名（函数类型定义）</span><br><span class="line">function toString(x: string): string;</span><br><span class="line">function toString(x: number): string;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 实现签名（函数体具体实现）</span><br><span class="line">function toString(x: string | number) &#123;</span><br><span class="line">  return String(x)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let a &#x3D; toString(&#39;hello&#39;) &#x2F;&#x2F; ok</span><br><span class="line">let b &#x3D; toString(2) &#x2F;&#x2F; ok</span><br><span class="line">let c &#x3D; toString(true) &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+
+
+<p>如果定义了重载签名，则实现签名对外不可见</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function toString(x: string): string;</span><br><span class="line"></span><br><span class="line">function toString(x: number): string &#123;</span><br><span class="line">  return String(x)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">len(2) &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+
+
+<p>实现签名必须兼容重载签名</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function toString(x: string): string;</span><br><span class="line">function toString(x: number): string; &#x2F;&#x2F; error</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 函数实现</span><br><span class="line">function toString(x: string) &#123;</span><br><span class="line">  return String(x)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>重载签名的类型不会合并</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 重载签名（函数类型定义）</span><br><span class="line">function toString(x: string): string;</span><br><span class="line">function toString(x: number): string;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 实现签名（函数体具体实现）</span><br><span class="line">function toString(x: string | number) &#123;</span><br><span class="line">  return String(x)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function stringOrNumber(x): string | number &#123;</span><br><span class="line">  return x ? &#39;&#39; : 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; input 是 string 和 number 的联合类型</span><br><span class="line">&#x2F;&#x2F; 即 string | number</span><br><span class="line">const input &#x3D; stringOrNumber(1)</span><br><span class="line"></span><br><span class="line">toString(&#39;hello&#39;) &#x2F;&#x2F; ok</span><br><span class="line">toString(2) &#x2F;&#x2F; ok</span><br><span class="line">toString(input) &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+
+<h5 id="类型推断"><a href="#类型推断" class="headerlink" title="类型推断"></a>类型推断</h5><p>ts 中的类型推断是非常强大，而且其内部实现也是非常复杂的。</p>
+<p>基本类型推断：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; ts 推导出 x 是 number 类型</span><br><span class="line">let x &#x3D; 10</span><br></pre></td></tr></table></figure>
+
+
+<p>对象类型推断：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; ts 推断出 myObj 的类型：myObj: &#123; x: number; y: string; z: boolean; &#125;</span><br><span class="line">const myObj &#x3D; &#123;</span><br><span class="line">  x: 1,</span><br><span class="line">  y: &#39;2&#39;,</span><br><span class="line">  z: true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="函数类型推断："><a href="#函数类型推断：" class="headerlink" title="函数类型推断："></a>函数类型推断：</h5>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; ts 推导出函数返回值是 number 类型</span><br><span class="line">function len (str: string) &#123;</span><br><span class="line">  return str.length</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>上下文类型推断：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; ts 推导出 event 是 ProgressEvent 类型</span><br><span class="line">const xhr &#x3D; new XMLHttpRequest()</span><br><span class="line">xhr.onload &#x3D; function (event) &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>所以有时候对于一些简单的类型可以不用手动声明其类型，让 ts 自己去推断。</p>
+<h5 id="类型兼容性"><a href="#类型兼容性" class="headerlink" title="类型兼容性"></a>类型兼容性</h5><p>typescript 的子类型是基于 结构子类型 的，只要结构可以兼容，就是子类型。（Duck Type）</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Point &#123;</span><br><span class="line">  x: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function getPointX(point: Point) &#123;</span><br><span class="line">  return point.x</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Point2 &#123;</span><br><span class="line">  x: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let point2 &#x3D; new Point2()</span><br><span class="line"></span><br><span class="line">getPointX(point2) &#x2F;&#x2F; OK</span><br></pre></td></tr></table></figure>
+
+
+<p>java、c++ 等传统静态类型语言是基于 名义子类型 的，必须显示声明子类型关系（继承），才可以兼容。</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">public class Main &#123;</span><br><span class="line">  public static void main (String[] args) &#123;</span><br><span class="line">    getPointX(new Point()); &#x2F;&#x2F; ok</span><br><span class="line">    getPointX(new ChildPoint()); &#x2F;&#x2F; ok</span><br><span class="line">    getPointX(new Point1());  &#x2F;&#x2F; error</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public static void getPointX (Point point) &#123;</span><br><span class="line">    System.out.println(point.x);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  static class Point &#123;</span><br><span class="line">    public int x &#x3D; 1;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  static class Point2 &#123;</span><br><span class="line">    public int x &#x3D; 2;</span><br><span class="line">  &#125;</span><br><span class="line">    </span><br><span class="line">  static class ChildPoint extends Point &#123;</span><br><span class="line">    public int x &#x3D; 3;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="对象子类型"><a href="#对象子类型" class="headerlink" title="对象子类型"></a>对象子类型</h5><p>子类型中必须包含源类型所有的属性和方法:</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function getPointX(point: &#123; x: number &#125;) &#123;</span><br><span class="line">  return point.x</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const point &#x3D; &#123;</span><br><span class="line">x: 1,</span><br><span class="line">  y: &#39;2&#39;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getPointX(point) &#x2F;&#x2F; OK</span><br></pre></td></tr></table></figure>
+
+<p>注意: 如果直接传入一个对象字面量是会报错的：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function getPointX(point: &#123; x: number &#125;) &#123;</span><br><span class="line">  return point.x</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getPointX(&#123; x: 1, y: &#39;2&#39; &#125;) &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+
+
+<p>这是 ts 中的另一个特性，叫做:  excess property check  ，当传入的参数是一个对象字面量时，会进行额外属性检查。</p>
+<h5 id="函数子类型"><a href="#函数子类型" class="headerlink" title="函数子类型"></a>函数子类型</h5><p>介绍函数子类型前先介绍一下逆变与协变的概念，逆变与协变并不是 TS 中独有的概念，在其他静态语言中也有相关理念。</p>
+<p>在介绍之前，先假设一个问题，约定如下标记：</p>
+<ul>
+<li><p>A ≼ B 表示 A 是 B 的子类型，A 包含 B 的所有属性和方法。</p>
+</li>
+<li><p>A =&gt; B 表示以 A 为参数，B 为返回值的方法。(param: A) =&gt; B</p>
+</li>
+</ul>
+<p>如果我们现在有三个类型 Animal 、 Dog 、 WangCai(旺财) ，那么肯定存在下面的关系：</p>
+<p>  <code>WangCai ≼ Dog ≼ Animal // 即旺财属于狗属于动物</code></p>
+<p>问题：以下哪种类型是 Dog =&gt; Dog 的子类呢?</p>
+<ul>
+<li><p>WangCai =&gt; WangCai</p>
+</li>
+<li><p>WangCai =&gt; Animal</p>
+</li>
+<li><p>Animal  =&gt; Animal</p>
+</li>
+<li><p>Animal  =&gt; WangCai</p>
+</li>
+</ul>
+<p>从代码来看解答</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Animal &#123;</span><br><span class="line">  sleep: Function</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Dog extends Animal &#123;</span><br><span class="line">  &#x2F;&#x2F; 吠</span><br><span class="line">  bark: Function</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class WangCai extends Dog &#123;</span><br><span class="line">  dance: Function</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function getDogName (cb: (dog: Dog) &#x3D;&gt; Dog) &#123;</span><br><span class="line">  const dog &#x3D; cb(new Dog())</span><br><span class="line">  dog.bark()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 对于入参来说，WangCai 是 Dog 的子类，Dog 类上没有 dance 方法, 产生异常。</span><br><span class="line">&#x2F;&#x2F; 对于出参来说，WangCai 类继承了 Dog 类，肯定会有 bark 方法</span><br><span class="line">getDogName((wangcai: WangCai) &#x3D;&gt; &#123;</span><br><span class="line">  wangcai.dance()</span><br><span class="line">  return new WangCai()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 对于入参来说，WangCai 是 Dog 的子类，Dog 类上没有 dance 方法, 产生异常。</span><br><span class="line">&#x2F;&#x2F; 对于出参来说，Animal 类上没有 bark 方法, 产生异常。</span><br><span class="line">getDogName((wangcai: WangCai) &#x3D;&gt; &#123;</span><br><span class="line">  wangcai.dance()</span><br><span class="line">  return new Animal()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 对于入参来说，Animal 类是 Dog 的父类，Dog 类肯定有 sleep 方法。</span><br><span class="line">&#x2F;&#x2F; 对于出参来说，WangCai 类继承了 Dog 类，肯定会有 bark 方法</span><br><span class="line">getDogName((animal: Animal) &#x3D;&gt; &#123;</span><br><span class="line">  animal.sleep()</span><br><span class="line">  return new WangCai()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 对于入参来说，Animal 类是 Dog 的父类，Dog 类肯定有 sleep 方法。</span><br><span class="line">&#x2F;&#x2F; 对于出参来说，Animal 类上没有 bark 方法, 产生异常。</span><br><span class="line">getDogName((animal: Animal) &#x3D;&gt; &#123;</span><br><span class="line">  animal.sleep()</span><br><span class="line">  return new Animal()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到只有 <code>Animal =&gt; WangCai</code> 才是 <code>Dog =&gt; Dog</code> 的子类型，可以得到一个结论，对于函数类型来说，函数参数的类型兼容是反向的，我们称之为 逆变 ，返回值的类型兼容是正向的，称之为 协变 。</p>
+<p>逆变与协变的例子只说明了函数参数只有一个时的情况，如果函数参数有多个时该如何区分？</p>
+<p>其实函数的参数可以转化为 <code>Tuple</code> 的类型兼容性：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Tuple1 &#x3D; [string, number]</span><br><span class="line">type Tuple2 &#x3D; [string, number, boolean]</span><br><span class="line"></span><br><span class="line">let tuple1: Tuple1 &#x3D; [&#39;1&#39;, 1]</span><br><span class="line">let tuple2: Tuple2 &#x3D; [&#39;1&#39;, 1, true]</span><br><span class="line"></span><br><span class="line">let t1: Tuple1 &#x3D; tuple2 &#x2F;&#x2F; ok</span><br><span class="line">let t2: Tuple2 &#x3D; tuple1 &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 <code>Tuple2 =&gt; Tuple1</code> ，即长度大的是长度小的子类型，再由于函数参数的逆变特性，所以函数参数少的可以赋值给参数多的（参数从前往后需一一对应），从数组的 <code>forEach</code> 方法就可以看出来：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[1, 2].forEach((item, index) &#x3D;&gt; &#123;</span><br><span class="line">console.log(item)</span><br><span class="line">&#125;) &#x2F;&#x2F; ok</span><br><span class="line"></span><br><span class="line">[1, 2].forEach((item, index, arr, other) &#x3D;&gt; &#123;</span><br><span class="line">console.log(other)</span><br><span class="line">&#125;) &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+
+<h5 id="高级类型"><a href="#高级类型" class="headerlink" title="高级类型"></a>高级类型</h5><h6 id="联合类型与交叉类型"><a href="#联合类型与交叉类型" class="headerlink" title="联合类型与交叉类型"></a>联合类型与交叉类型</h6><ul>
+<li>联合类型(union type)表示多种类型的 “或” 关系</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function genLen(x: string | any[]) &#123;</span><br><span class="line">  return x.length</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">genLen(&#39;&#39;) &#x2F;&#x2F; ok</span><br><span class="line">genLen([]) &#x2F;&#x2F; ok</span><br><span class="line">genLen(1) &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>交叉类型表示多种类型的 “与” 关系</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string</span><br><span class="line">  age: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface Animal &#123;</span><br><span class="line">  name: string</span><br><span class="line">  color: string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const x: Person &amp; Animal &#x3D; &#123;</span><br><span class="line">  name: &#39;x&#39;,</span><br><span class="line">  age: 1,</span><br><span class="line">  color: &#39;red</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用联合类型表示枚举</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Position &#x3D; &#39;UP&#39; | &#39;DOWN&#39; | &#39;LEFT&#39; | &#39;RIGHT&#39;</span><br><span class="line"></span><br><span class="line">const position: Position &#x3D; &#39;UP&#39;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以避免使用 enum 侵入了运行时。</p>
+</blockquote>
+<h5 id="类型保护"><a href="#类型保护" class="headerlink" title="类型保护"></a>类型保护</h5><h6 id="ts-初学者很容易写出下面的代码："><a href="#ts-初学者很容易写出下面的代码：" class="headerlink" title="ts 初学者很容易写出下面的代码："></a>ts 初学者很容易写出下面的代码：</h6>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function isString (value) &#123;</span><br><span class="line">  return Object.prototype.toString.call(value) &#x3D;&#x3D;&#x3D; &#39;[object String]&#39;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function fn (x: string | number) &#123;</span><br><span class="line">  if (isString(x)) &#123;</span><br><span class="line">    return x.length &#x2F;&#x2F; error 类型“string | number”上不存在属性“length”。</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    &#x2F;&#x2F; .....</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="如何让-ts-推断出来上下文的类型呢？"><a href="#如何让-ts-推断出来上下文的类型呢？" class="headerlink" title="如何让 ts 推断出来上下文的类型呢？"></a>如何让 ts 推断出来上下文的类型呢？</h5><ul>
+<li><ol>
+<li>使用 ts 的 is 关键词</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function isString (value: unknown): value is string &#123;</span><br><span class="line">  return Object.prototype.toString.call(value) &#x3D;&#x3D;&#x3D; &#39;[object String]&#39;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function fn (x: string | number) &#123;</span><br><span class="line">  if (isString(x)) &#123;</span><br><span class="line">    return x.length</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    &#x2F;&#x2F; .....</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><ol start="2">
+<li>typeof 关键词</li>
+</ol>
+</li>
+</ul>
+<p>在 ts 中，代码实现中的 <code>typeof</code> 关键词能够帮助 ts 判断出变量的基本类型:</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function fn (x: string | number) &#123;</span><br><span class="line">  if (typeof x &#x3D;&#x3D;&#x3D; &#39;string&#39;) &#123; &#x2F;&#x2F; x is string</span><br><span class="line">    return x.length</span><br><span class="line">  &#125; else &#123; &#x2F;&#x2F; x is number</span><br><span class="line">    &#x2F;&#x2F; .....</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><ol start="3">
+<li>instanceof 关键词</li>
+</ol>
+</li>
+</ul>
+<p>在 ts 中，<code>instanceof</code> 关键词能够帮助 ts 判断出构造函数的类型:<br>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function fn1 (x: XMLHttpRequest | string) &#123;</span><br><span class="line">  if (x instanceof XMLHttpRequest) &#123; &#x2F;&#x2F; x is XMLHttpRequest</span><br><span class="line">    return x.getAllResponseHeaders()</span><br><span class="line">  &#125; else &#123; &#x2F;&#x2F; x is string</span><br><span class="line">    return x.length</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="4">
+<li>针对 null 和 undefined 的类型保护</li>
+</ol>
+</li>
+</ul>
+<p>在条件判断中，ts 会自动对 <code>null</code> 和 <code>undefined</code> 进行类型保护:<br>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function fn2 (x?: string) &#123;</span><br><span class="line">  if (x) &#123;</span><br><span class="line">    return x.length</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><ol start="5">
+<li>针对 null 和 undefined 的类型断言</li>
+</ol>
+</li>
+</ul>
+<p>如果我们已经知道的参数不为空，可以使用 <code>!</code> 来手动标记:<br>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function fn2 (x?: string) &#123;</span><br><span class="line">  return x!.length</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="typeof-关键词"><a href="#typeof-关键词" class="headerlink" title="typeof 关键词"></a>typeof 关键词</h5><p><code>typeof</code> 关键词除了做类型保护，还可以从实现推出类型，。</p>
+<blockquote>
+<p>注意：此时的 typeof 是一个类型关键词，只可以用在类型语法中。</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function fn(x: string) &#123;</span><br><span class="line">  return x.length</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const obj &#x3D; &#123;</span><br><span class="line">  x: 1,</span><br><span class="line">  y: &#39;2&#39;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type T0 &#x3D; typeof fn &#x2F;&#x2F; (x: string) &#x3D;&gt; number</span><br><span class="line">type T1 &#x3D; typeof obj &#x2F;&#x2F; &#123;x: number; y: string &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="keyof-关键词"><a href="#keyof-关键词" class="headerlink" title="keyof 关键词"></a>keyof 关键词</h5><p><code>keyof</code> 也是一个 类型关键词 ，可以用来取得一个对象接口的所有 key 值:</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string</span><br><span class="line">  age: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type PersonAttrs &#x3D; keyof Person &#x2F;&#x2F; &#39;name&#39; | &#39;age&#39;</span><br></pre></td></tr></table></figure>
+<h5 id="in-关键词"><a href="#in-关键词" class="headerlink" title="in 关键词"></a>in 关键词</h5><p><code>in</code> 也是一个 类型关键词, 可以对联合类型进行遍历，只可以用在 <code>type</code> 关键词下面。</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Person &#x3D; &#123;</span><br><span class="line">  [key in &#39;name&#39; | &#39;age&#39;]: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; &#123; name: number; age: number; &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="操作符"><a href="#操作符" class="headerlink" title="[ ] 操作符"></a>[ ] 操作符</h5><p>使用 [] 操作符可以进行索引访问，也是一个 类型关键词</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string</span><br><span class="line">  age: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type x &#x3D; Person[&#39;name&#39;] &#x2F;&#x2F; x is string</span><br></pre></td></tr></table></figure>
+<h5 id="一个小栗子"><a href="#一个小栗子" class="headerlink" title="一个小栗子"></a>一个小栗子</h5><p>写一个类型复制的类型工具:</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Copy&lt;T&gt; &#x3D; &#123;</span><br><span class="line">  [key in keyof T]: T[key]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">interface Person &#123;</span><br><span class="line">  name: string</span><br><span class="line">  age: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type Person1 &#x3D; Copy&lt;Person&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h5><p>泛型相当于一个类型的参数，在 ts 中，泛型可以用在 类、接口、方法、类型别名 等实体中。</p>
+<h6 id="小试牛刀"><a href="#小试牛刀" class="headerlink" title="小试牛刀"></a>小试牛刀</h6>  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function createList&lt;T&gt;(): T[] &#123;</span><br><span class="line">  return [] as T[]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const numberList &#x3D; createList&lt;number&gt;() &#x2F;&#x2F; number[]</span><br><span class="line">const stringList &#x3D; createList&lt;string&gt;() &#x2F;&#x2F; string[]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>有了泛型的支持，createList 方法可以传入一个类型，返回有类型的数组，而不是一个 any[]。</p>
+</blockquote>
+<h5 id="泛型约束"><a href="#泛型约束" class="headerlink" title="泛型约束"></a>泛型约束</h5><p>如果我们只希望 createList 函数只能生成指定的类型数组，该如何做，可以使用 <code>extends</code> 关键词来约束泛型的范围和形状。</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Lengthwise &#x3D; &#123;</span><br><span class="line">  length: number</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function createList&lt;T extends number | Lengthwise&gt;(): T[] &#123;</span><br><span class="line">  return [] as T[]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const numberList &#x3D; createList&lt;number&gt;() &#x2F;&#x2F; ok</span><br><span class="line">const stringList &#x3D; createList&lt;string&gt;() &#x2F;&#x2F; ok</span><br><span class="line">const arrayList &#x3D; createList&lt;any[]&gt;() &#x2F;&#x2F; ok</span><br><span class="line">const boolList &#x3D; createList&lt;boolean&gt;() &#x2F;&#x2F; error</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>any[] 是一个数组类型，数组类型是有 length 属性的，所以 ok。string 类型也是有 length 属性的，所以 ok。但是 boolean 就不能通过这个约束了。</p>
+</blockquote>
+<h5 id="条件控制"><a href="#条件控制" class="headerlink" title="条件控制"></a>条件控制</h5><p><code>extends</code> 除了做约束类型，还可以做条件控制，相当于与一个三元运算符，只不过是针对 类型 的。</p>
+<p>表达式：<code>T extends U ? X : Y</code></p>
+<blockquote>
+<p>含义：如果 T 可以被分配给 U，则返回 X，否则返回 Y。一般条件下，如果 T 是 U 的子类型，则认为 T 可以分配给 U，例如：</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type IsNumber&lt;T&gt; &#x3D; T extends number ? true : false</span><br><span class="line"></span><br><span class="line">type x &#x3D; IsNumber&lt;string&gt;  &#x2F;&#x2F; false</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="映射类型"><a href="#映射类型" class="headerlink" title="映射类型"></a>映射类型</h5><p>映射类型相当于一个类型的函数，可以做一些类型运算，输入一个类型，输出另一个类型，前文我们举了个 Copy 的例子。</p>
+<ul>
+<li><p>几个内置的映射类型</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 每一个属性都变成可选</span><br><span class="line">type Partial&lt;T&gt; &#x3D; &#123;</span><br><span class="line">  [P in keyof T]?: T[P]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 每一个属性都变成只读</span><br><span class="line">type Readonly&lt;T&gt; &#x3D; &#123;</span><br><span class="line">  readonly [P in keyof T]: T[P]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 选择对象中的某些属性</span><br><span class="line">type Pick&lt;T, K extends keyof T&gt; &#x3D; &#123;</span><br><span class="line">  [P in K]: T[P];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; ......</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>typescript 2.8 在 <code>lib.d.ts</code> 中内置了几个映射类型:</p>
+<ul>
+<li><p>Partial<T> – 将 T 中的所有属性变成可选。</p>
+</li>
+<li><p>Readonly<T> – 将 T 中的所有属性变成只读。</p>
+</li>
+<li><p>Pick&lt;T, U&gt; – 选择 T 中可以赋值给U的类型。</p>
+</li>
+<li><p>Exclude&lt;T, U&gt; – 从T中剔除可以赋值给U的类型。</p>
+</li>
+<li><p>Extract&lt;T, U&gt; – 提取T中可以赋值给U的类型。</p>
+</li>
+<li><p>NonNullable<T> – 从T中剔除null和undefined。</p>
+</li>
+<li><p>ReturnType<T> – 获取函数返回值类型。</p>
+</li>
+<li><p>InstanceType<T> – 获取构造函数类型的实例类型。</p>
+</li>
+</ul>
+<p>所以我们平时写 TS 时可以直接使用这些类型工具：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">interface ApiRes &#123;</span><br><span class="line">  code: string;</span><br><span class="line">  flag: string;</span><br><span class="line">  message: string;</span><br><span class="line">  data: object;</span><br><span class="line">  success: boolean;</span><br><span class="line">  error: boolean;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">type IApiRes &#x3D; Pick&lt;ApiRes, &#39;code&#39; | &#39;flag&#39; | &#39;message&#39; | &#39;data&#39;&gt;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; &#123;</span><br><span class="line">&#x2F;&#x2F;   code: string;</span><br><span class="line">&#x2F;&#x2F;   flag: string;</span><br><span class="line">&#x2F;&#x2F;   message: string;</span><br><span class="line">&#x2F;&#x2F;   data: object;</span><br><span class="line">&#x2F;&#x2F; &#125;</span><br></pre></td></tr></table></figure>
+<h6 id="extends-条件分发"><a href="#extends-条件分发" class="headerlink" title="extends 条件分发"></a>extends 条件分发</h6><p>对于 <code>T extends U ? X : Y</code> 来说，还存在一个特性，当 T 是一个联合类型时，会进行条件分发。</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Union &#x3D; string | number</span><br><span class="line">type isNumber&lt;T&gt; &#x3D; T extends number ? &#39;isNumber&#39; : &#39;notNumber&#39;</span><br><span class="line"></span><br><span class="line">type UnionType &#x3D; isNumber&lt;Union&gt; &#x2F;&#x2F; &#39;notNumber&#39; | &#39;isNumber&#39;</span><br></pre></td></tr></table></figure>
+
+<p>实际上，<code>extends</code> 运算会变成如下形式：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(string extends number ? &#39;isNumber&#39; : &#39;notNumber&#39;) | (number extends number ? &#39;isNumber&#39; : &#39;notNumber&#39;)</span><br></pre></td></tr></table></figure>
+
+<p>Extract 就是基于此特性，再配合 never 幺元的特性实现的：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type Exclude&lt;T, K&gt; &#x3D; T extends K ? never : T</span><br><span class="line"></span><br><span class="line">type T1 &#x3D; Exclude&lt;string | number | boolean, string | boolean&gt;  &#x2F;&#x2F; number</span><br></pre></td></tr></table></figure>
+<h5 id="infer-关键词"><a href="#infer-关键词" class="headerlink" title="infer 关键词"></a>infer 关键词</h5><p><code>infer</code> 可以对运算过程中的类型进行存储，内置的<code>ReturnType</code> 就是基于此特性实现的：</p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">type ReturnType&lt;T&gt; &#x3D; </span><br><span class="line">  T extends (...args: any) &#x3D;&gt; infer R ? R : never</span><br><span class="line"></span><br><span class="line">type Fn &#x3D; (str: string) &#x3D;&gt; number</span><br><span class="line"></span><br><span class="line">type FnReturn &#x3D; ReturnType&lt;Fn&gt; &#x2F;&#x2F; number</span><br></pre></td></tr></table></figure>
+
+<h5 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h5><h6 id="全局模块-vs-文件模块"><a href="#全局模块-vs-文件模块" class="headerlink" title="全局模块 vs. 文件模块"></a>全局模块 vs. 文件模块</h6><p>默认情况下，我们所写的代码是位于全局模块下的：</p>
+<p>  <code>const foo = 2</code><br>此时，如果我们创建了另一个文件，并写下如下代码，ts 认为是正常的：</p>
+<p>  <code>const bar = foo // ok</code><br>如果要打破这种限制，只要文件中有 import 或者 export 表达式即可：</p>
+<p>  <code>export const bar = foo // error</code></p>
+<h6 id="模块解析策略"><a href="#模块解析策略" class="headerlink" title="模块解析策略"></a>模块解析策略</h6><p>Tpescript 有两种模块的解析策略：Node 和 Classic。当 tsconfig.json 中 module 设置成 AMD、System、ES2015 时，默认为 classic ，否则为 Node ，也可以使用 moduleResolution  手动指定模块解析策略。</p>
+<p>两种模块解析策略的区别在于，对于下面模块引入来说：</p>
+<p>  <code>import moduleB from &#39;moduleB&#39;</code></p>
+<p> <b> Classic 模式的路径寻址： </b></p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;root&#x2F;src&#x2F;folder&#x2F;moduleB.ts</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;folder&#x2F;moduleB.d.ts</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;moduleB.ts</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;moduleB.d.ts</span><br><span class="line">&#x2F;root&#x2F;moduleB.ts</span><br><span class="line">&#x2F;root&#x2F;moduleB.d.ts</span><br><span class="line">&#x2F;moduleB.ts</span><br><span class="line">&#x2F;moduleB.d.ts</span><br></pre></td></tr></table></figure>
+
+
+<p> <b> Node 模式的路径寻址： </b></p>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;root&#x2F;src&#x2F;node_modules&#x2F;moduleB.ts</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;node_modules&#x2F;moduleB.tsx</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;node_modules&#x2F;moduleB.d.ts</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;node_modules&#x2F;moduleB&#x2F;package.json (如果指定了&quot;types&quot;属性)</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;node_modules&#x2F;moduleB&#x2F;index.ts</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;node_modules&#x2F;moduleB&#x2F;index.tsx</span><br><span class="line">&#x2F;root&#x2F;src&#x2F;node_modules&#x2F;moduleB&#x2F;index.d.ts</span><br><span class="line"></span><br><span class="line">&#x2F;root&#x2F;node_modules&#x2F;moduleB.ts</span><br><span class="line">&#x2F;root&#x2F;node_modules&#x2F;moduleB.tsx</span><br><span class="line">&#x2F;root&#x2F;node_modules&#x2F;moduleB.d.ts</span><br><span class="line">&#x2F;root&#x2F;node_modules&#x2F;moduleB&#x2F;package.json (如果指定了&quot;types&quot;属性)</span><br><span class="line">&#x2F;root&#x2F;node_modules&#x2F;moduleB&#x2F;index.ts</span><br><span class="line">&#x2F;root&#x2F;node_modules&#x2F;moduleB&#x2F;index.tsx</span><br><span class="line">&#x2F;root&#x2F;node_modules&#x2F;moduleB&#x2F;index.d.ts</span><br><span class="line"></span><br><span class="line">&#x2F;node_modules&#x2F;moduleB.ts</span><br><span class="line">&#x2F;node_modules&#x2F;moduleB.tsx</span><br><span class="line">&#x2F;node_modules&#x2F;moduleB.d.ts</span><br><span class="line">&#x2F;node_modules&#x2F;moduleB&#x2F;package.json (如果指定了&quot;types&quot;属性)</span><br><span class="line">&#x2F;node_modules&#x2F;moduleB&#x2F;index.ts</span><br><span class="line">&#x2F;node_modules&#x2F;moduleB&#x2F;index.tsx</span><br><span class="line">&#x2F;node_modules&#x2F;moduleB&#x2F;index.d.ts</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
     <title>Vue3迁移指南</title>
     <url>/2020/09/27/Vue3%E8%BF%81%E7%A7%BB%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>Vue 3</code>已经正式发布，我们现有的项目基本都是基于<code>Vue 2</code>进行开发的，如何由<code>Vue 2.x</code>迁移到<code>Vue 3.x</code>，<a href="https://v3.cn.vuejs.org/guide/migration/introduction.html#%E6%A6%82%E8%A7%88">官方文档</a>已经提供了迁移指南，本文是对官方迁移指南的总结。</p>
