@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YolkPie | YolkPie</title><meta name="description" content="一、背景作为前端开发，模块化我们已经耳熟能详，我们平时接触到的 ES6 的 import，nodejs中的require他们有啥区别？我们也听过CommonJS、CMD、AMD、ES6模块系统，这些都有什么联系呢？本文将对这些问题进行归纳总结，可以对模块化有个清晰的认识。二、为何需要模块化？  起源最开始 js 是没有模块化的概念的，就是普通的脚本语言放到 script 标签里，做些简单的校验，代"><meta name="keywords" content="前端技术博客"><meta name="author" content="YolkPie"><meta name="copyright" content="YolkPie"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yolkpie.net/2022/03/31/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="YolkPie"><meta property="og:url" content="https://yolkpie.net/2022/03/31/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/"><meta property="og:site_name" content="YolkPie"><meta property="og:description" content="一、背景作为前端开发，模块化我们已经耳熟能详，我们平时接触到的 ES6 的 import，nodejs中的require他们有啥区别？我们也听过CommonJS、CMD、AMD、ES6模块系统，这些都有什么联系呢？本文将对这些问题进行归纳总结，可以对模块化有个清晰的认识。二、为何需要模块化？  起源最开始 js 是没有模块化的概念的，就是普通的脚本语言放到 script 标签里，做些简单的校验，代"><meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><meta property="article:published_time" content="2022-03-31T12:34:39.578Z"><meta property="article:modified_time" content="2022-03-31T12:34:39.578Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="prev" title="" href="https://yolkpie.net/2022/03/31/%E6%9C%89%E8%B6%A3%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%20CSS%20%E5%B0%8F%E6%8A%80%E5%B7%A7/"><link rel="next" title="" href="https://yolkpie.net/2022/03/31/js%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F-%E5%81%A5%E5%A3%AE%E6%80%A7/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: false,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: false
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 5.0.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">154</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">83</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">35</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">YolkPie</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">无题</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2022-03-31 20:34:39"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2022-03-31</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2022-03-31 20:34:39"><i class="fas fa-history fa-fw"></i> 更新于 2022-03-31</span></time></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><p>一、背景<br>作为前端开发，模块化我们已经耳熟能详，我们平时接触到的 ES6 的 import，nodejs中的require他们有啥区别？<br>我们也听过CommonJS、CMD、AMD、ES6模块系统，这些都有什么联系呢？<br>本文将对这些问题进行归纳总结，可以对模块化有个清晰的认识。<br>二、为何需要模块化？</p>
+<ol>
+<li>起源<br>最开始 js 是没有模块化的概念的，就是普通的脚本语言放到 script 标签里，做些简单的校验，代码量比较少。<br>随着ajax的出现，前端可以请求数据了，做的事情变的更多了，逻辑越来越复杂，就会出现很多问题。</li>
+<li>1 全局变量冲突<br>因为大家的代码都在一个作用域，不同人定义的变量名可能重复，导致覆盖。<br>var num = 1; // 一个人声明了<br>…<br>var num = 2; // 其他人又声明了</li>
+<li>2 依赖关系管理麻烦<br>比如我们引入了3个js文件，他们直接相互依赖，我们需要按照依赖关系从上到下排序。<script src='./one.js'></script>
+<script src='./two.js'></script>
+<script src='./three.js'></script>
+如果文件有十多个，我们需要理清楚依赖关系再手动按顺序引入，会导致后续代码更加难以维护。</li>
+<li>早期解决方案<br>针对前面说的问题，其实也有一些响应的解决方案。</li>
+<li>1 命名空间<br>命名空间是将一组实体、变量、函数、对象封装在一个空间的行为。这里展现了模块化思想雏形，通过简单的命名空间进行「块儿」的切分，体现了分离和内聚的思想。著名案例 「YUI2」。<br>点击查看这篇文章，对于命名空间讲解的比较详细<br>// 示例：<br>const car = {<br>name: ‘小汽车’,<br>start: () =&gt; {<br>  console.log(‘start’)<br>},<br>stop: () =&gt; {<br>  console.log(‘stop’)<br>}<br>}<br>上面示例可以发现可能存在问题，比如我们修改了car的name，会导致原有的name被更改<br>car.name = ‘测试’</li>
+</ol>
+<p>console.log(car) // {name: ‘111’, start: ƒ, stop: ƒ}<br>2.2 闭包<br>再次提升模块化的解决方案，利用闭包使污染的问题得到解决，更加纯粹的内聚<br>moduleA = function（） {<br>   var name = ‘小汽车’;<br>   return {<br>      start: function (c){<br>         return name + ‘启动’;<br>      };<br>   }<br>}()<br>上面示例中function内部的变量就对全局隐藏了，达到了封装的目的。但是模块名称暴露在全局，还是存在命名冲突的问题。<br>下面这个基于 IIFE 和闭包实现的效果：<br>// moduleA.js<br>(function(global) {<br>  var name = ‘小汽车’;</p>
+<p>  function start() {};</p>
+<p>  global.moduleA = { name, start };<br>})(window)<br>上面表达式中的变量 name 不能直接从外部访问。<br>综上，所以模块化解决的问题有哪些：</p>
+<p>解决命名污染，全局污染，变量冲突等问题<br>内聚私有，变量不能被外面访问到<br>怎么引入其它模块，怎样暴露出接口给其它模块<br>引入其他模块可能存在循环引用的问题</p>
+<p>三、主流模块化解决方案</p>
+<ol>
+<li>CommonJS<br>可以点击 CommonJS规范查看相关介绍。<br>1）每个文件就是一个模块，有自己的作用域。在一个文件里面定义的变量、函数、类，都是私有的，对其他文件不可见。<br>2）CommonJS规范规定，每个模块内部，module变量代表当前模块。这个变量是一个对象，它的exports属性（即module.exports）是对外的接口。加载某个模块，其实是加载该模块的module.exports属性。<br>3）require方法用于加载模块。</li>
+<li>1 加载模块<br>var example = require(‘./example.js’);<br>var config = require(‘config.js’);<br>var http = require(‘http’);</li>
+</ol>
+<p>1.2 对外暴露模块<br>module.exports.example = function () {<br>  …<br>}<br>module.exports = function(x){<br>    console.log(x)<br>}</p>
+<p>1.3 Node.js的模块化<br>说到CommonJS 我们要提一下 Node.js，Node.js的出现让我们可以用JavaScript来写服务端代码，而 Node 应用由模块组成，采用的是 CommonJS 模块规范，当然并非完全按照CommonJS来，它进行了取舍，增加了一些自身的特性。<br>1）Node内部提供一个Module构建函数。所有模块都是Module的实例，每个模块内部，都有一个module对象，代表当前模块。包含以下属性：</p>
+<p>module.id 模块的识别符，通常是带有绝对路径的模块文件名。<br>module.filename 模块的文件名，带有绝对路径。<br>module.loaded 返回一个布尔值，表示模块是否已经完成加载。<br>module.parent 返回一个对象，表示调用该模块的模块。<br>module.children 返回一个数组，表示该模块要用到的其他模块。<br>module.exports 表示模块对外输出的值。</p>
+<p>2）Node使用CommonJS模块规范，内置的require命令用于加载模块文件。<br>3）第一次加载某个模块时，Node会缓存该模块。以后再加载该模块，就直接从缓存取出该模块的module.exports属性。所有缓存的模块保存在require.cache之中。<br>// a.js<br>var name = ‘Lucy’<br>exports.name = name</p>
+<p>// b.js<br>var a = require(‘a.js’)<br>console.log(a.name) // “Lucy”<br>a.name = “hello”;<br>var b = require(‘./a.js’)<br>console.log(b.name) // “hello”</p>
+<p>上面第一次加载以后修改了name值，第二次加载的时候打印的name是上次修改的，证明是从缓存中读取的。<br>想删除模块的缓存可以这样：<br>delete require.cache[moduleName];</p>
+<p>4）CommonJS模块的加载机制是，输入的是被输出的值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。请看下面这个例子。<br>// a.js<br>var counter = 3<br>exports.counter = counter<br>exports.addCounter = function(a){<br>    counter++<br>}<br>// b.js<br>var a = require(‘a.js’)<br>console.log(a.counter) // 3<br>a.addCounter()<br>console.log(a.age) // 3</p>
+<p>这个例子说明a.js模块加载以后，模块内部的变化就影响不到a.counter了。这是因为a.counter是一个原始类型的值，会被缓存。除非写成一个函数，才能得到内部变动后的值。<br>2.前端模块化<br>前面所说的CommonJS规范，都是基于node来说的，所以CommonJS都是针对服务端的实现。为什么呢？</p>
+<p>因为CommonJS规范加载模块是同步的，也就是说，只有加载完成，才能执行后面的操作。由于Node.js主要用于服务器编程，模块文件一般都已经存在于本地硬盘，所以加载起来比较快，不用考虑非同步加载的方式，所以CommonJS规范比较适用。</p>
+<p>如果是浏览器环境，要从服务器端加载模块，用CommonJS需要等模块下载完并运行后才能使用，将阻塞后面代码的执行，这时就必须采用非同步模式，因此浏览器端一般采用AMD规范，解决异步加载的问题。<br>2.1 AMD（Asynchronous Module Definition）和 RequireJS<br>AMD是异步加载模块规范。<br>RequireJS是一个工具库。主要用于客户端的模块管理。它可以让客户端的代码分成一个个模块，实现异步或动态加载，从而提高代码的性能和可维护性。它的模块管理遵守AMD规范。<br>2.1.1 模块定义<br>1）独立模块（不需要依赖任何其他模块）<br>//独立模块定义<br>define({<br>  method1: function() {}<br>  method2: function() {}<br>});  </p>
+<p>//或者<br>define(function(){<br>  return {<br>    method1: function() {},<br>    method2: function() {},<br>  }<br>}); </p>
+<p>2）非独立模块（需要依赖其他模块）<br>define([‘module1’, ‘module2’], function(m1, m2){<br>    return {<br>        method: function() {<br>            m1.methodA();<br>            m2.methodB();<br>        }<br>    };<br>});</p>
+<p>define方法：</p>
+<p>第一个参数是一个数组，它的成员是当前模块所依赖的模块</p>
+<p>第二个参数是一个函数，当前面数组的所有成员加载成功后，它将被调用。它的参数与数组的成员一一对应，这个函数必须返回一个对象，供其他模块调用</p>
+<p>2.1.2 模块调用<br>require方法用于调用模块。它的参数与define方法类似。<br>require([‘a’, ‘b’], function ( a, b ) {<br>    a.doSomething();<br>});</p>
+<p>define和require这两个定义模块、调用模块的方法，合称为AMD模式。它的模块定义的方法非常清晰，不会污染全局环境，能够清楚地显示依赖关系。<br>2.1.3 require.js的config方法<br>require方法本身也是一个对象，它带有一个config方法，用来配置require.js运行参数。<br>require.config({<br>    paths: {<br>        jquery: [<br>            ‘//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js’,<br>            ‘lib/jquery’<br>        ]<br>    }<br>});</p>
+<p>参数对象包含：</p>
+<p>paths 指定各个模块的位置<br>baseUrl 指定本地模块位置的基准目<br>shim 用来帮助require.js加载非AMD规范的库。</p>
+<p>2.1.3 CommonJS 和AMD的对比</p>
+<p>CommonJS一般用于服务端比如node，AMD一般用于浏览器环境，并且允许非同步加载模块，可以根据需要动态加载模块<br>CommonJS和AMD都是运行时加载</p>
+<p>2.1.4 运行时加载<br>简单来讲，就是CommonJS和AMD都只能在运行时才能确定一些东西，所以是运行时加载。比如下面的例子：<br>// CommonJS模块<br>let { stat, exists, readFile } = require(‘fs’);</p>
+<p>// 等同于<br>let _fs = require(‘fs’);<br>let stat = _fs.stat;<br>let exists = _fs.exists;<br>let readfile = _fs.readfile;</p>
+<p>上面代码其实是整体加载了fs模块，生成了一个_fs 的对象,然后从这个对象上读取三个方法。因为只有运行时才能得到这个对象，所以成为运行时加载。<br>下面是AMD的例子：<br>// AMD<br>define(‘a’, function () {<br>  console.log(‘a 加载’)<br>  return {<br>    run: function () { console.log(‘a 执行’) }<br>  }<br>})</p>
+<p>define(‘b’, function () {<br>  console.log(‘b 加载’)<br>  return {<br>    run: function () { console.log(‘b 执行’) }<br>  }<br>})</p>
+<p>//运行<br>require([‘a’, ‘b’], function (a, b) {<br>  console.log(‘main 执行’)<br>  a.run()<br>  b.run()<br>})</p>
+<p>// 运行结果：<br>// a 加载<br>// b 加载<br>// main 执行<br>// a 执行<br>// b 执行</p>
+<p>我们可以看到执行的时候，a和b先加载，后面才从main开始执行。所以require一个模块的时候，模块会先被加载，并返回一个对象，并且这个对象是整体加载的，也就是常说的 依赖前置。<br>2.2 CMD(Common Module Definition) 和 SeaJS<br>在 Sea.js 中，所有 JavaScript 模块都遵循 CMD（Common Module Definition） 模块定义规范。<br>Sea.js和 RequireJS 区别在哪里呢？<br>这里有个官方给出的区别。</p>
+<p>RequireJS 遵循 AMD（异步模块定义）规范，Sea.js 遵循 CMD （通用模块定义）规范。规范的不同，导致了两者 API 不同。Sea.js 更贴近 CommonJS Modules/1.1 和 Node Modules 规范。</p>
+<p>这里对AMD和CMD做个简单对比：</p>
+<p>AMD 定义模块时，指定所有的依赖，依赖模块加载后会执行回调并通过参数传到这回调方法中：<br>define([‘module1’, ‘module2’], function(m1, m2) {<br>   …<br>});</p>
+<p>CMD规范中一个模块就是一个文件，模块更接近于Node对CommonJS规范的定义：<br>define(factory); // factory 可以是一个函数，也可以是一个对象或字符串。</p>
+<p>factory 为函数时，表示是模块的构造方法。执行该构造方法，可以得到模块向外提供的接口。factory 方法在执行时，默认会传入三个参数：require、exports 和 module：<br>define(function(require, exports, module) {<br>  // 模块代码<br>});</p>
+<p>其中，require 是一个方法，接受 模块标识 作为唯一参数，用来获取其他模块提供的接口。需要依赖模块时，随时调用require( )引入即可<br>define(function(require, exports) {<br>  // 获取模块 a 的接口<br>  var a = require(‘./a’);</p>
+<p>  // 调用模块 a 的方法<br>  a.doSomething();<br>});</p>
+<p>下面演示一下CMD的执行</p>
+<p>define(‘a’, function (require, exports, module) {<br>  console.log(‘a 加载’)<br>  exports.run = function () { console.log(‘a 执行’) }<br>})</p>
+<p>define(‘b’, function (require, exports, module) {<br>  console.log(‘b 加载’)<br>  exports.run = function () { console.log(‘b 执行’) }<br>})</p>
+<p>define(‘main’, function (require, exports, module) {<br>  console.log(‘main 执行’)<br>  var a = require(‘a’)<br>  a.run()<br>  var b = require(‘b’)<br>  b.run()<br>})</p>
+<p>// main 执行<br>// a 加载<br>// a 执行<br>// b 加载<br>// b 执行</p>
+<p>看到执行结果，会在真正需要使用(依赖)模块时才执行该模块，感觉这好像和我们认知的一样，毕竟我也是这么想的执行顺序，但是看前面AMD的执行结果，是先把a和b都加载以后，才开始执行main的。所以相较于AMD的依赖前置、提前执行，CMD则推崇依赖就近、延迟执行。<br>2.3 UMD(Universal Module Definition) 通用模块规范<br>可以看到其实兼容模式是将几种常见模块定义方式都做了兼容处理。<br>(function (global, factory) {<br>  typeof exports === ‘object’ &amp;&amp; typeof module !== ‘undefined’<br>  ? factory(require(‘lodash’))  // node, commonJS<br>  : typeof define === ‘function’ &amp;&amp; define.amd<br>      ? define([‘lodash’], factory) // amd cmd<br>      : (<br>          global = typeof globalThis !== ‘undefined’<br>              ? globalThis<br>              : global || self, factory(global.lodash)<br>          );<br>}(this, (function (lodash) { ‘use strict’;<br>    …<br>})));</p>
+<p>2.4 ES6 模块<br>模块功能主要由两个命令构成：export和import。export命令用于规定模块的对外接口，import命令用于输入其他模块提供的功能。<br>2.4.1 模块导出<br>一个模块就是一个独立的文件。该文件内部的所有变量，外部无法获取。如果你希望外部能够读取模块内部的某个变量（函数或类），就必须使用export关键字输出该变量（函数或类）。<br>1） 导出变量 和 函数<br>// a.js</p>
+<p>// 导出变量<br>export var name = ‘Michael’;<br>export var year = 2010;</p>
+<p>// 或者<br>// 也可以这样导出<br>var name = ‘Michael’;<br>export { name, year };</p>
+<p>// 导出函数<br>export function multiply(x, y) {<br>  return x * y;<br>};</p>
+<p>2） as的使用<br>通常情况下，export输出的变量就是本来的名字，但是可以使用as关键字重命名。<br>function v1() { … }<br>function v2() { … }</p>
+<p>export {<br>  v1 as streamV1,<br>  v2 as streamV2,<br>  v2 as streamLatestVersion<br>};</p>
+<p>2.4.2 模块引入<br>1） 使用export命令定义了模块的对外接口以后，其他 JS 文件就可以通过import命令加载这个模块。<br>// 一般用法<br>import { name, year} from ‘./a.js’;</p>
+<p>// as 用法<br>import { name as userName } from ‘./a.js’;</p>
+<p>注意：</p>
+<p>import命令具有提升效果，会提升到整个模块的头部，首先执行。</p>
+<p>下面的代码不会报错，因为import的执行早于foo的调用。这种行为的本质是，import命令是编译阶段执行的（后面对比CommonJs时会讲到），在代码运行之前。<br>foo();</p>
+<p>import { foo } from ‘my_module’;</p>
+<p>2）整体模块加载<br>//user.js<br>export name = ‘lili’;<br>export age = 18;</p>
+<p>//逐一加载<br>import { age, name } from ‘./user.js’;</p>
+<p>//整体加载<br>import * as user from ‘./user.js’;<br>console.log(user.name);<br>console.log(user.age);</p>
+<p>3）export default 命令<br>export default命令用于指定模块的默认输出。显然，一个模块只能有一个默认输出，因此export default命令只能使用一次。所以，import命令后面才不用加大括号，因为只可能唯一对应export default命令。<br>export default function foo() { // 输出<br>  // …<br>}</p>
+<p>import foo from ‘foo’; // 输入</p>
+<p>注意：<br>正是因为export default命令其实只是输出一个叫做default的变量，所以它后面不能跟变量声明语句。<br>// 正确<br>var a = 1;<br>export default a;</p>
+<p>// 错误<br>// <code>export default a</code>的含义是将变量<code>a</code>的值赋给变量<code>default</code>。<br>// 所以，这种写法会报错。<br>export default var a = 1; </p>
+<p>2.4.3 ES6模块、CommonJS和AMD模块区别<br>1） 编译时加载 和 运行时加载<br>ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。所以ES6是编译时加载。CommonJS 和 AMD 模块，都只能在运行时确定这些东西。比如，CommonJS 模块就是对象，输入时必须查找对象属性。<br>// CommonJS模块<br>let { stat, exists, readFile } = require(‘fs’); </p>
+<p>// 等同于<br>let _fs = require(‘fs’);<br>let stat = _fs.stat;<br>let exists = _fs.exists;<br>let readfile = _fs.readfile;</p>
+<p>// —————–<br>// ES6模块<br>import { stat, exists, readFile } from ‘fs’;</p>
+<p>CommonJS和ES6模块加载区别：</p>
+<p>CommonJS 实质是整体加载fs模块（即加载fs的所有方法），生成一个对象（_fs），然后再从这个对象上面读取 3 个方法。这种加载称为“运行时加载”，因为只有运行时才能得到这个对象，导致完全没办法在编译时做“静态优化”。</p>
+<p>ES6模块 实质是从fs模块加载 3 个方法，其他方法不加载。这种加载称为“编译时加载 ”或者静态加载，即 ES6 可以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高。</p>
+<p>2） 值拷贝 和 引用拷贝</p>
+<p>前面 1.3 Node.js模块化提到了 CommonJS是值拷贝，模块加载完并输出一个值，模块内部的变化就影响不到这个值。因为这个值是一个原始类型的值，会被缓存。</p>
+<p>ES6 模块的运行机制与 CommonJS 不一样。JS 引擎对脚本静态分析的时候，遇到模块加载命令import，就会生成一个只读引用。等到脚本真正执行时，再根据这个只读引用，到被加载的那个模块里面去取值。换句话说，ES6 的import有点像 Unix 系统的“符号连接”，原始值变了，import加载的值也会跟着变。因此，ES6 模块是动态引用，并且不会缓存值，模块里面的变量绑定其所在的模块。</p>
+<p>// a.js<br>export let counter = 3;<br>export function addCounter() {<br>  counter++;<br>}</p>
+<p>// b.js<br>import { counter, addCounter } from ‘./a’;<br>console.log(counter); // 3<br>addCounter();<br>console.log(counter); // 4</p>
+<p>ES6 模块输入的变量counter是活的，完全反应其所在模块a.js内部的变化。</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">YolkPie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yolkpie.net/2022/03/31/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/">https://yolkpie.net/2022/03/31/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96%E7%9F%A5%E8%AF%86%E6%A2%B3%E7%90%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yolkpie.net" target="_blank">YolkPie</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/31/%E6%9C%89%E8%B6%A3%E4%B8%94%E5%AE%9E%E7%94%A8%E7%9A%84%20CSS%20%E5%B0%8F%E6%8A%80%E5%B7%A7/"><img class="prev-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2022/03/31/js%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F-%E5%81%A5%E5%A3%AE%E6%80%A7/"><img class="next-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info"></div></div></a></div></nav></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By YolkPie</div><div class="framework-info"><span>驱动 </span><a target="_blank" rel="noopener" href="https://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
