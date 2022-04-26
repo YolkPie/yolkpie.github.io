@@ -1,0 +1,207 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>带你了解Webpack | YolkPie</title><meta name="description" content="前言Webpack 凭借强大的功能与良好的使用体验，已经成为目前最流行，社区最活跃的构建工具，是现代 Web 开发必须掌握的技能之一。  构建其实是工程化、自动化思想在前端开发中的体现，把一系列流程用代码去实现，让代码自动化地执行这一系列复杂的流程。 构建给前端开发注入了更大的活力，解放了我们的生产力。  背景在当下的前端环境里，各种框架和工具层出不穷，比如 React、Vue、Angular 等"><meta name="keywords" content="前端技术博客"><meta name="author" content="YolkPie"><meta name="copyright" content="YolkPie"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://yolkpie.net/2022/03/18/%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3Webpack/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta property="og:type" content="article"><meta property="og:title" content="带你了解Webpack"><meta property="og:url" content="https://yolkpie.net/2022/03/18/%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3Webpack/"><meta property="og:site_name" content="YolkPie"><meta property="og:description" content="前言Webpack 凭借强大的功能与良好的使用体验，已经成为目前最流行，社区最活跃的构建工具，是现代 Web 开发必须掌握的技能之一。  构建其实是工程化、自动化思想在前端开发中的体现，把一系列流程用代码去实现，让代码自动化地执行这一系列复杂的流程。 构建给前端开发注入了更大的活力，解放了我们的生产力。  背景在当下的前端环境里，各种框架和工具层出不穷，比如 React、Vue、Angular 等"><meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><meta property="article:published_time" content="2022-03-18T11:08:07.000Z"><meta property="article:modified_time" content="2022-04-26T03:31:46.633Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="prev" title="你不知道的TypeScript高级技巧" href="https://yolkpie.net/2022/03/26/TypeScript%E7%9A%84%E4%B8%80%E4%BA%9B%E9%AB%98%E7%BA%A7%E6%8A%80%E5%B7%A7/"><link rel="next" title="nginx限流配置" href="https://yolkpie.net/2022/03/15/nginx%E9%99%90%E6%B5%81%E9%85%8D%E7%BD%AE/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: false,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: false,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 5.0.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">157</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">83</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">35</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%83%8C%E6%99%AF"><span class="toc-number">2.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Webpack-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">3.</span> <span class="toc-text">Webpack 的基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Webpack-%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="toc-number">4.</span> <span class="toc-text">Webpack 的基本配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Webpack-%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">5.</span> <span class="toc-text">Webpack 的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">5.0.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="toc-number">5.0.2.</span> <span class="toc-text">缺点：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9-Webpack-%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-number">6.</span> <span class="toc-text">选择 Webpack 的原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96"><span class="toc-number">7.</span> <span class="toc-text">前端工程化</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Webpack-%E7%9A%84%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B%E4%B8%BB%E8%A6%81%E6%9C%89%E5%93%AA%E4%BA%9B%E7%8E%AF%E8%8A%82%EF%BC%9F%E5%A6%82%E6%9E%9C%E5%8F%AF%E4%BB%A5%E8%AF%B7%E5%B0%BD%E5%8F%AF%E8%83%BD%E8%AF%A6%E5%B0%BD%E7%9A%84%E6%8F%8F%E8%BF%B0-Webpack-%E6%89%93%E5%8C%85%E7%9A%84%E6%95%B4%E4%B8%AA%E8%BF%87%E7%A8%8B%E3%80%82"><span class="toc-number">7.0.0.1.</span> <span class="toc-text">Webpack 的构建流程主要有哪些环节？如果可以请尽可能详尽的描述 Webpack 打包的整个过程。</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Loader-%E5%92%8C-Plugin-%E6%9C%89%E5%93%AA%E4%BA%9B%E4%B8%8D%E5%90%8C%EF%BC%9F%E8%AF%B7%E6%8F%8F%E8%BF%B0%E4%B8%80%E4%B8%8B%E5%BC%80%E5%8F%91-Loader-%E5%92%8C-Plugin-%E7%9A%84%E6%80%9D%E8%B7%AF%E3%80%82"><span class="toc-number">7.0.0.2.</span> <span class="toc-text">Loader 和 Plugin 有哪些不同？请描述一下开发 Loader 和 Plugin 的思路。</span></a></li></ol></li></ol></li></ol></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">YolkPie</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">带你了解Webpack</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2022-03-18 19:08:07"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2022-03-18</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2022-04-26 11:31:46"><i class="fas fa-history fa-fw"></i> 更新于 2022-04-26</span></time></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Webpack 凭借强大的功能与良好的使用体验，已经成为目前最流行，社区最活跃的构建工具，是现代 Web 开发必须掌握的技能之一。</p>
+<blockquote>
+<p>构建其实是工程化、自动化思想在前端开发中的体现，把一系列流程用代码去实现，让代码自动化地执行这一系列复杂的流程。 构建给前端开发注入了更大的活力，解放了我们的生产力。</p>
+</blockquote>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在当下的前端环境里，各种框架和工具层出不穷，比如 React、Vue、Angular 等，极大的提高了我们的开发效率，但是，他们都有一个共同点：源代码无法直接运行，必须经过转换之后才可执行。</p>
+<p>而转换代码的这个过程我们可以称之为构建，被用来进行构建的工具我们叫做构建工具，而 Webpack 便是其中的佼佼者。</p>
+<p>构建工具的常规作用：</p>
+<ul>
+<li><p>代码转换：TypeScript 编译成 JavaScript、SCSS 编译成 CSS 等。</p>
+</li>
+<li><p>文件优化：压缩 JavaScript、CSS、HTML 代码，压缩合并图片等。</p>
+</li>
+<li><p>代码分割：提取多个页面的公共代码、提取首屏不需要执行部分的代码让其异步加载。</p>
+</li>
+<li><p>模块合并：在采用模块化的项目里会有很多个模块和文件，需要构建功能把模块分类合并成一个文件。</p>
+</li>
+<li><p>自动刷新：监听本地源代码的变化，自动重新构建、刷新浏览器。</p>
+</li>
+<li><p>代码校验：在代码被提交到仓库前需要校验代码是否符合规范，以及单元测试是否通过。</p>
+</li>
+<li><p>自动发布：更新完代码后，自动构建出线上发布代码并传输给发布系统。</p>
+</li>
+</ul>
+<h2 id="Webpack-的基本概念"><a href="#Webpack-的基本概念" class="headerlink" title="Webpack 的基本概念"></a>Webpack 的基本概念</h2><p>Webpack 是使用 NodeJs 开发出来的一个构建工具，本质上，它是一个现代 JavaScript 应用程序的静态模块打包器（module bundler）。</p>
+<p>当 Webpack 处理应用程序时，它会递归地构建一个依赖关系图（dependency graph），其中包含应用程序需要的每个模块，然后将所有这些模块打包成一个或多个 bundle。</p>
+<p>在 Webpack 里一切文件皆模块，通过 Loader 转换文件，通过 Plugin 注入钩子，最后输出由多个模块组合成的文件。</p>
+<p>Webpack 专注于构建模块化项目。借用 Webpack 官网首页的图片来看一下它到底是什么</p>
+<p><img src= "/img/loading.gif" data-src="https://static001.geekbang.org/infoq/97/979f6d8773003f91ddbfd0a59e1d5010.png"></p>
+<blockquote>
+<p>一切文件：JavaScript、CSS、SCSS、图片、模板，在 Webpack 眼中都是一个个模块，这样的好处是能清晰地描述出各个模块之间的依赖关系，以方便 Webpack 对模块进行组合和打包。 经过 Webpack 的处理，最终会输出浏览器能使用的静态资源。</p>
+</blockquote>
+<h2 id="Webpack-的基本配置"><a href="#Webpack-的基本配置" class="headerlink" title="Webpack 的基本配置"></a>Webpack 的基本配置</h2><p>以下是 Webpack 的基本配置，主要包含了 webpack 的四个核心概念：</p>
+<ul>
+<li><p>入口(entry)</p>
+</li>
+<li><p>输出(output)</p>
+</li>
+<li><p>loader</p>
+</li>
+<li><p>插件(plugins)</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">const path &#x3D; require(&#39;path&#39;);</span><br><span class="line"></span><br><span class="line">module.exports &#x3D; &#123;</span><br><span class="line">    &#x2F;&#x2F; 模式配置</span><br><span class="line">    mode: &quot;production&quot;, &#x2F;&#x2F; &quot;production&quot; | &quot;development&quot; | &quot;none&quot;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 入口文件</span><br><span class="line">    entry: &quot;.&#x2F;app&#x2F;entry&quot;, &#x2F;&#x2F; string | object | array</span><br><span class="line"></span><br><span class="line">    output: &#123;</span><br><span class="line">        &#x2F;&#x2F; webpack 如何输出结果的相关选项</span><br><span class="line">        path: path.resolve(__dirname,</span><br><span class="line">            &quot;dist&quot;), &#x2F;&#x2F; string</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    module: &#123;</span><br><span class="line">        &#x2F;&#x2F; 关于模块配置</span><br><span class="line">        rules: [</span><br><span class="line">            &#x2F;&#x2F; 模块规则（配置 loader、解析器等选项）</span><br><span class="line">            &#123;</span><br><span class="line">                test: &#x2F;\.jsx?$&#x2F;,</span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; 插件</span><br><span class="line">    plugins: [</span><br><span class="line">        &#x2F;&#x2F; ...</span><br><span class="line">    ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Webpack-的优缺点"><a href="#Webpack-的优缺点" class="headerlink" title="Webpack 的优缺点"></a>Webpack 的优缺点</h2><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<li><p>专注于处理模块化的项目，能做到开箱即用一步到位；</p>
+</li>
+<li><p>通过 Plugin 扩展，完整好用又不失灵活；</p>
+</li>
+<li><p>使用场景不仅限于 Web 开发；</p>
+</li>
+<li><p>社区庞大活跃，经常引入紧跟时代发展的新特性，能为大多数场景找到已有- 的开源扩展；</p>
+</li>
+<li><p>良好的开发体验。</p>
+</li>
+</ul>
+<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4><ul>
+<li>只能采用模块化开发</li>
+</ul>
+<h2 id="选择-Webpack-的原因"><a href="#选择-Webpack-的原因" class="headerlink" title="选择 Webpack 的原因"></a>选择 Webpack 的原因</h2><ul>
+<li><p>大多数团队在开发新项目时会采用紧跟时代的技术，这些技术几乎都会采用“模块化+新语言+新框架”，Webpack 可以为这些新项目提供一站式的解决方案；</p>
+</li>
+<li><p>Webpack 有良好的生态链和维护团队，能提供良好的开发体验和保证质量；</p>
+</li>
+<li><p>Webpack 被全世界的大量 Web 开发者使用和验证，能找到各个层面所需的教程和经验分享。</p>
+</li>
+</ul>
+<h2 id="前端工程化"><a href="#前端工程化" class="headerlink" title="前端工程化"></a>前端工程化</h2><h5 id="Webpack-的构建流程主要有哪些环节？如果可以请尽可能详尽的描述-Webpack-打包的整个过程。"><a href="#Webpack-的构建流程主要有哪些环节？如果可以请尽可能详尽的描述-Webpack-打包的整个过程。" class="headerlink" title="Webpack 的构建流程主要有哪些环节？如果可以请尽可能详尽的描述 Webpack 打包的整个过程。"></a>Webpack 的构建流程主要有哪些环节？如果可以请尽可能详尽的描述 Webpack 打包的整个过程。</h5><ul>
+<li><p>entry-option(初始化 option)</p>
+</li>
+<li><p>run(开始编译)</p>
+</li>
+<li><p>make(从 entry 开始递归的分析依赖，对每个依赖模块进行 build)</p>
+</li>
+<li><p>before-resolve(对模块位置进行解析)</p>
+</li>
+<li><p>build-modue(开始构建某个模块)</p>
+</li>
+<li><p>normal-modue-loader(将 load 而加载完成的 module 进行编译，生成 AST 树)</p>
+</li>
+<li><p>program(遍历 AST，当遇到 require 等一些调用表达式时，收集依赖)</p>
+</li>
+<li><p>seal(所有依赖 build 完成，开始优化)</p>
+</li>
+<li><p>emit(输出到 dist 目录)</p>
+</li>
+</ul>
+<h5 id="Loader-和-Plugin-有哪些不同？请描述一下开发-Loader-和-Plugin-的思路。"><a href="#Loader-和-Plugin-有哪些不同？请描述一下开发-Loader-和-Plugin-的思路。" class="headerlink" title="Loader 和 Plugin 有哪些不同？请描述一下开发 Loader 和 Plugin 的思路。"></a>Loader 和 Plugin 有哪些不同？请描述一下开发 Loader 和 Plugin 的思路。</h5><ul>
+<li><p>ader:  loader 让 webpack 能够去处理那些非 JavaScript 文件（webpack 自身只理解 JavaScript）。loader 可以将所有类型的文件转换为 webpack 能够处理的有效模块，然后你就可以利用 webpack 的打包能力，对它们进行处理。本质上，webpack loader 将所有类型的文件，转换为应用程序的依赖图（和最终的 bundle）可以直接引用的模块。</p>
+</li>
+<li><p>plugin； loader 被用于转换某些类型的模块，而插件则可以用于执行范围更广的任务。插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量。插件接口功能极其强大，可以用来处理各种各样的任务。</p>
+</li>
+<li><p>开发一个 loader 同时也可能需要安装其他的插件，比如开发一个解析 markdown 文件的 loader，可能需要用到 marked 插件，总而言之最终 loader 无论如何输出的结果只有两种</p>
+<ul>
+<li><p>生成一段 js 代码供给 webpack 直接使用</p>
+</li>
+<li><p>如果不能生成一段 js 代码就必须把输出的数据交给下一个 loader 进行处理，就比如 css-loader 后面必须使用 style-loader 才能正常打包 css 文件，因为 css-loader 生成的数据 webpack 无法直接使用</p>
+</li>
+<li><p>开发一个 Plugin 需要将任务挂载在 webpack 生命周期的钩子（相当于事件监听）上才能实现</p>
+</li>
+<li><p>webpack 插件是一个具有 apply 属性的 JavaScript 对象。apply 属性会被 webpack compiler 调用，并且 compiler 对象可在整个编译生命周期访问。</p>
+</li>
+<li><p>我们可以发现，几乎每一个插件使用的时候都要 new 一个新对象，所以我们可以使用创建一个构造函数（类）的方法创建一个新插件，内部添加一个 apply 方法</p>
+</li>
+<li><p>apply 接受一个 webpack 核心对象参数 compiler，使用 compiler 对象中的 compiler.hooks.钩子.tap()方法的方式实现插件的加载,例如：</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class MyPlugin &#123;</span><br><span class="line">  apply(compiler) &#123;</span><br><span class="line">    compiler.hooks.钩子.tap(&#39;MyPlugin&#39;, compilation &#x3D;&gt;&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">YolkPie</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://yolkpie.net/2022/03/18/%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3Webpack/">https://yolkpie.net/2022/03/18/%E5%B8%A6%E4%BD%A0%E4%BA%86%E8%A7%A3Webpack/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://yolkpie.net" target="_blank">YolkPie</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/03/26/TypeScript%E7%9A%84%E4%B8%80%E4%BA%9B%E9%AB%98%E7%BA%A7%E6%8A%80%E5%B7%A7/"><img class="prev-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">你不知道的TypeScript高级技巧</div></div></a></div><div class="next-post pull-right"><a href="/2022/03/15/nginx%E9%99%90%E6%B5%81%E9%85%8D%E7%BD%AE/"><img class="next-cover" data-src="https://m.360buyimg.com/img/jfs/t1/156694/16/17976/4358/605c7d52Edbdb2a53/b95b369946c69565.webp" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">nginx限流配置</div></div></a></div></nav></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By YolkPie</div><div class="framework-info"><span>驱动 </span><a target="_blank" rel="noopener" href="https://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
